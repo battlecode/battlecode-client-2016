@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+
+<ivy-module version="2.0">
+  <info organisation="org.battlecode" module="${ant.project.name}">
+    <ivyauthor name="Battlecode" url="http://battlecode.mit.edu"/>
+    <description>Battlecode</description>
+  </info>
+
+  <dependencies>
+    <dependency org="junit" name="junit" rev="4.4"/>
+  </dependencies>
+</ivy-module>
