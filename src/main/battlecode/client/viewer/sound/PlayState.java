@@ -4,6 +4,7 @@ import battlecode.common.*;
 import battlecode.serial.*;
 import battlecode.client.viewer.*;
 import battlecode.world.signal.*;
+import battlecode.world.GameMap;
 
 import java.util.*;
 
@@ -12,8 +13,8 @@ public class PlayState extends GameState {
 
     private static class Factory implements GameStateFactory<PlayState> {
 
-        public PlayState createState(MatchHeader header) {
-            return new PlayState(header);
+        public PlayState createState(GameMap map) {
+            return new PlayState();
         }
 
         public PlayState cloneState(PlayState state) {
@@ -42,10 +43,6 @@ public class PlayState extends GameState {
         futureClips = new HashSet<GameSoundBank.ClipGroup>();
         robotTypes = new HashMap<Integer, RobotType>();
       
-    }
-
-    public PlayState(MatchHeader header) {
-        this();
     }
 
     private PlayState(PlayState clone) {
@@ -136,10 +133,6 @@ public class PlayState extends GameState {
     }
 
     public Void visitSetDirectionSignal(SetDirectionSignal s) {
-        return null;
-    }
-
-    public Void visitAwesomenessSignal(AwesomenessSignal s) {
         return null;
     }
 

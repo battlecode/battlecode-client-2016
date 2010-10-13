@@ -7,7 +7,7 @@ import battlecode.client.*;
 import battlecode.client.viewer.render.MatchRanker;
 import battlecode.serial.*;
 import battlecode.serial.notification.*;
-import battlecode.world.signal.Signal;
+import battlecode.engine.signal.Signal;
 import battlecode.world.GameMap;
 
 public final class BufferedMatch {

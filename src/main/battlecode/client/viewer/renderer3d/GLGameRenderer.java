@@ -45,6 +45,7 @@ import battlecode.common.Team;
 import battlecode.serial.MatchFooter;
 import battlecode.serial.MatchHeader;
 import battlecode.server.Config;
+import battlecode.world.GameMap;
 
 import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.GLUT;
@@ -223,9 +224,10 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     }
     public static int BRACKET_INDEX = 0;
 
+	@SuppressWarnings("unchecked")
     private void processHeader(MatchHeader header) {
         System.out.println("PROCESS HEADER: " + header);
-        battlecode.world.GameMap map = new battlecode.world.GameMap(header.getMap());
+        GameMap map = new GameMap((GameMap)header.getMap());
         drawMap = new GLDrawMap(map);
         //ds.clearBlockNumberDeltas();
         origin = map.getMapOrigin();

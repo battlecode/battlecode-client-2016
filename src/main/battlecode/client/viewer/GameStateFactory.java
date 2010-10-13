@@ -1,10 +1,10 @@
 package battlecode.client.viewer;
 
-import battlecode.serial.MatchHeader;
+import battlecode.world.GameMap;
 
 public interface GameStateFactory<E extends GameState> {
 
-  public abstract E createState(MatchHeader header);
+  public abstract E createState(GameMap map);
 
   public abstract E cloneState(E state);
 

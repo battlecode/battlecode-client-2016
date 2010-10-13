@@ -1,7 +1,7 @@
 package battlecode.client.viewer;
 
 import battlecode.serial.*;
-import battlecode.world.signal.Signal;
+import battlecode.engine.signal.Signal;
 
 import java.util.*;
 
@@ -62,8 +62,9 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 		deleteObservers();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void createKeyFrames() {
-		E gs = gsf.createState(match.getHeader());
+		E gs = gsf.createState((battlecode.world.GameMap)match.getHeader().getMap());
 		keyFrames.addElement(cloneState(gs));
 		roundsProcessed = 0;
 		while (active) {

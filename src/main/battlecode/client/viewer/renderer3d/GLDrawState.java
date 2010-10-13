@@ -38,11 +38,10 @@ import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
 import battlecode.common.TerrainTile;
-import battlecode.serial.MatchHeader;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
+import battlecode.analysis.AwesomenessSignal;
 import battlecode.world.signal.AttackSignal;
-import battlecode.world.signal.AwesomenessSignal;
 import battlecode.world.signal.BroadcastSignal;
 import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.ControlBitsSignal;
@@ -76,8 +75,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
     private static class Factory implements GameStateFactory<GLDrawState> {
 
-        public GLDrawState createState(MatchHeader header) {
-            return new GLDrawState(header);
+        public GLDrawState createState(GameMap map) {
+            return new GLDrawState(map);
         }
 
         public GLDrawState cloneState(GLDrawState state) {
@@ -182,11 +181,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         bombers = new LinkedList<GLDrawObject>();*/
     }
 
-    private GLDrawState(MatchHeader header) {
+    private GLDrawState(GameMap map) {
     	
         this();
-        this.setGameMap(header.getMap());
-        this.mapMinPoints = header.getMap().getMinPoints();
+        this.setGameMap(map);
+        this.mapMinPoints = map.getMinPoints();
         flux = new byte [gameMap.getHeight()][gameMap.getWidth()];
     }
 

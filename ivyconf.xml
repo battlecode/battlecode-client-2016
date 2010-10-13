@@ -9,6 +9,11 @@
                root='http://www.ibiblio.org/maven2/'
 	       pattern='[organisation]/[module]/[revision]/[module]-[revision].[ext]'
                m2compatible='true' />
+	  <!-- jogl isn't in the ibiblio repository -->
+	  <ibiblio name="java.net"
+	  	root="http://download.java.net/maven/2/"
+        pattern="[organization]/[module]/[revision]/[module]-[revision].[ext]" 
+		m2compatible='true' />
     </chain>
   </resolvers>
 

@@ -5,6 +5,7 @@ import battlecode.common.*;
 import battlecode.serial.*;
 import battlecode.client.util.ImageFile;
 import battlecode.server.Config;
+import battlecode.world.GameMap;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -131,8 +132,9 @@ public class GameRenderer extends BaseRenderer {
         return false;
     }
 
+	@SuppressWarnings("unchecked")
     private synchronized void processHeader(MatchHeader header) {
-        battlecode.world.GameMap map = header.getMap();
+        GameMap map = (GameMap)header.getMap();
         drawMap = new DrawMap(map);
         origin = map.getMapOrigin();
         sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));

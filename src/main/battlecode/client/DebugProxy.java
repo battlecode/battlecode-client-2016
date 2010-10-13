@@ -1,7 +1,7 @@
 package battlecode.client;
 
 import battlecode.serial.notification.Notification;
-import battlecode.world.signal.Signal;
+import battlecode.engine.signal.Signal;
 
 public interface DebugProxy {
 

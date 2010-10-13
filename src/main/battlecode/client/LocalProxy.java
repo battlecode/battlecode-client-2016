@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import battlecode.serial.*;
 import battlecode.serial.notification.Notification;
 import battlecode.server.proxy.Proxy;
-import battlecode.world.signal.Signal;
+import battlecode.engine.signal.Signal;
 
 public class LocalProxy extends Proxy implements ClientProxy {
 

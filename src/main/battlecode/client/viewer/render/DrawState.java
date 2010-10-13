@@ -31,7 +31,6 @@ import battlecode.world.GameMap;
 import battlecode.serial.MatchHeader;
 import battlecode.serial.RoundStats;
 import battlecode.world.signal.AttackSignal;
-import battlecode.world.signal.AwesomenessSignal;
 import battlecode.world.signal.BroadcastSignal;
 import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.ControlBitsSignal;
@@ -63,8 +62,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     private static class Factory implements GameStateFactory<DrawState> {
 
-        public DrawState createState(MatchHeader header) {
-            return new DrawState(header);
+        public DrawState createState(GameMap map) {
+            return new DrawState(map);
         }
 
         public DrawState cloneState(DrawState state) {
@@ -122,9 +121,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
          */
     }
 
-    private DrawState(MatchHeader header) {
+    private DrawState(GameMap map) {
         this();
-        this.setGameMap(header.getMap());
+        this.setGameMap(map);
         flux = new byte[gameMap.getHeight()][gameMap.getWidth()];
     }
 

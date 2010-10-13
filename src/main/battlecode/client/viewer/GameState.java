@@ -1,8 +1,10 @@
 package battlecode.client.viewer;
 
-import battlecode.serial.*;
+import battlecode.serial.RoundDelta;
+import battlecode.serial.RoundStats;
 
-import battlecode.world.signal.*;
+import battlecode.engine.signal.Signal;
+import battlecode.engine.signal.AutoSignalHandler;
 
 public abstract class GameState extends AutoSignalHandler<Void> {
 
