@@ -63,8 +63,14 @@
             description="Disable remote fetches (useful if you are offline or aren't on VPN)">
         <property name="disable.remotes" value="true"/>
     </target>
+	
+	<condition property="ivy.exists">
+		<resourceexists>
+			<file file="${ivy.jar.file}"/>
+		</resourceexists>
+	</condition>
 
-    <target name="download-ivy" unless="disable.remotes">
+    <target name="download-ivy" unless="ivy.exists">
         <mkdir dir="${ivy.jar.dir}"/>
         <get dest="${ivy.jar.file}"
                 usetimestamp="true"
@@ -133,13 +139,7 @@
     <target name="jar"
             description="Build the jar (with dependencies included)."
             depends="compile">
-        <jar jarfile="${pkg.build.jar}" basedir="${pkg.build.dir}">
-            <!-- Pack some external dependencies into the overdrive jar. -->
-            <zipgroupfileset
-                dir="${lib.dir}"
-                includes="*.jar"
-                excludes="easymock-*, *-javadoc.jar, *-sources.jar, hadoop-*, ant-*, cobertura-*"/>
-        </jar>
+        <jar jarfile="${pkg.build.jar}" basedir="${pkg.build.dir}"/>
     </target>
 
     <!-- ========== TESTING ========= -->
