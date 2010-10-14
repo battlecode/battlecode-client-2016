@@ -23,6 +23,8 @@
 
     <property name="javadoc.destdir" value="docs/api"/>
 
+	<property name="path.native.local" value="lib"/>
+	
     <!-- Unit tests -->
     <property name="test.src.dir" value="${basedir}/src/test"/>
     <property name="test.timeout" value="900000"/>
@@ -118,8 +120,10 @@
     </target>
 
 	<target name="run" description="Run the client." depends="compile">
+		<echo message="${path.native.local}"/>
 		<java fork="yes" classname="battlecode.client.Main" dir="${bc.working-directory}">
 			<classpath refid="classpath-libs"/>
+			<sysproperty key="java.library.path" value="${path.native.local}"/>
 		</java>
 	</target>
 
