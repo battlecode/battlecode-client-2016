@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="Battlecode"
+<project name="Battlecode Client"
         xmlns:ivy="antlib:org.apache.ivy.ant"
         default="compile">
 
@@ -124,6 +124,12 @@
         </javac>
     </target>
 
+	<target name="run" description="Run the client." depends="compile">
+		<java fork="yes" classname="battlecode.client.Main" dir="${bc.working-directory}">
+			<classpath refid="classpath-libs"/>
+		</java>
+	</target>
+
     <target name="jar"
             description="Build the jar (with dependencies included)."
             depends="compile">
@@ -135,7 +141,6 @@
                 excludes="easymock-*, *-javadoc.jar, *-sources.jar, hadoop-*, ant-*, cobertura-*"/>
         </jar>
     </target>
-
 
     <!-- ========== TESTING ========= -->
 
