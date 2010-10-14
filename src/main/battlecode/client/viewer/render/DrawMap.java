@@ -34,7 +34,6 @@ public class DrawMap {
     private Stroke gridStroke;
     private float scaleSize;
     // number of blocks at each square
-    int blockHeightMatrix[][];
     // origin of the map
     MapLocation origin;
     private int imgSize = 32;
@@ -43,16 +42,6 @@ public class DrawMap {
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
         origin = map.getMapOrigin();
-
-        // allocate and initialize matrix
-        //blockHeightMatrix = map.getBlockMapMatrix().clone();
-        //System.out.println("mb "+map.getInitialBlockMapMatrix());
-        blockHeightMatrix = new int[map.getInitialBlockMapMatrix().length][map.getInitialBlockMapMatrix()[0].length];
-        for (int i = 0; i < blockHeightMatrix.length; i++) {
-            for (int j = 0; j < blockHeightMatrix[0].length; j++) {
-                blockHeightMatrix[i][j] = map.getInitialBlockMapMatrix()[i][j];
-            }
-        }
 
         //FIXME: commented out for now
 //		if (!RenderConfiguration.getInstance().isTournamentMode()) {
@@ -132,19 +121,6 @@ public class DrawMap {
         terrainImg.unload();
 
         scaleSize = imgSize;
-    }
-
-    private void renderHeights(Graphics2D g2, int[][] blockNumberDeltas) {
-        // put in height numbers
-        g2.setColor(new Color(0.9f, 0.9f, 0.45f, 1.0f));
-        Font f = g2.getFont().deriveFont(36.0f);
-        g2.setFont(f);
-        for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
-                int height = blockHeightMatrix[i][j] + blockNumberDeltas[i][j];
-                if (height == 0)
-                    continue;
-                g2.drawString(Integer.toString(height), i * scaleSize + scaleSize / 4, j * scaleSize + scaleSize);
-            }
     }
 
     public void prerenderMap(BufferedImage bg) {
