@@ -120,7 +120,6 @@
     </target>
 
 	<target name="run" description="Run the client." depends="compile">
-		<echo message="${path.native.local}"/>
 		<java fork="yes" classname="battlecode.client.Main" dir="${bc.working-directory}">
 			<classpath refid="classpath-libs"/>
 			<sysproperty key="java.library.path" value="${path.native.local}"/>
@@ -130,7 +129,9 @@
     <target name="jar"
             description="Build the jar (with dependencies included)."
             depends="compile">
-        <jar jarfile="${pkg.build.jar}" basedir="${pkg.build.dir}"/>
+        <jar jarfile="${pkg.build.jar}" basedir="${pkg.build.dir}">
+			<zipgroupfileset dir="${lib.dir}" excludes="battlecode-*, junit-*"/>
+		</jar>
     </target>
 
     <!-- ========== TESTING ========= -->
