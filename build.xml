@@ -4,7 +4,9 @@
         xmlns:ivy="antlib:org.apache.ivy.ant"
         default="compile">
 
-    <property name="rootname" value="battlecode-client"/>
+	<property file="build.conf.local"/>
+    
+	<property name="rootname" value="battlecode-client"/>
     <property name="src.dir" value="${basedir}/src/main"/>
     <property name="lib.dir" value="${basedir}/lib"/>
     <property name="build.dir" value="${basedir}/build"/>
@@ -23,8 +25,8 @@
 
     <property name="javadoc.destdir" value="docs/api"/>
 
-	<property name="path.native.local" value="lib"/>
-	<property name="args.extra" value=""/>
+	<property name="extern.dir" value=".."/>
+	<property name="extern.target" value="run"/>
 
     <!-- Unit tests -->
     <property name="test.src.dir" value="${basedir}/src/test"/>
@@ -120,15 +122,11 @@
         </javac>
     </target>
 
-	<target name="run" description="Run the client." depends="compile">
-		<java fork="yes" classname="battlecode.client.Main" dir="${bc.working-directory}">
-			<classpath refid="classpath-libs"/>
-			<sysproperty key="java.library.path" value="${path.native.local}"/>
-			<arg line="${args.extra}"/>
-		</java>
+	<target name="extern" depends="jar" description="Build the jar, then run an external build file.">
+		<ant dir="${extern.dir}" target="${extern.target}"/>
 	</target>
-
-    <target name="jar"
+    
+	<target name="jar"
             description="Build the jar (with dependencies included)."
             depends="compile">
         <jar jarfile="${pkg.build.jar}" basedir="${pkg.build.dir}">
