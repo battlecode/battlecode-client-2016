@@ -117,7 +117,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	public RoundStats getRoundStats() {
 		return stats;
 	}
+    
+	public void setGameMap(GameMap map) {
+        gameMap = new GameMap(map);
+		origin = gameMap.getMapOrigin();
+    }
 
+    public GameMap getGameMap(){
+    	return gameMap;
+    }
+    
 	protected abstract void mineFlux(DrawObject object);
 
 	protected void updateRound() {

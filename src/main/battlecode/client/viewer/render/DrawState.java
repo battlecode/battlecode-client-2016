@@ -44,7 +44,6 @@ import battlecode.world.signal.FluxChangeSignal;
 import battlecode.world.signal.FluxTransferSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LightningShieldSignal;
-import battlecode.world.signal.MapOriginSignal;
 import battlecode.world.signal.MatchObservationSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
@@ -133,14 +132,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     }
 
 	protected DrawObject createDrawObject(RobotType type, Team team) { return new DrawObject(type,team); }
-
-    public void setGameMap(GameMap map) {
-        this.gameMap = new GameMap(map);
-    }
-
-    public GameMap getGameMap() {
-        return gameMap;
-    }
 
     public MapLocation[][] getConvexHullsA() {
         return convexHullsA;
@@ -368,12 +359,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             debug.setTarget(hoverID, hoverLoc, controlBits);
         }
 
-    }
-
-    // get the map origin
-    public Void visitMapOriginSignal(MapOriginSignal s) {
-        origin = s.getMapOrigin();
-        return null;
     }
 
     public Void visitDeploySignal(DeploySignal s) {

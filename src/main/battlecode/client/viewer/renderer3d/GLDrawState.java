@@ -55,7 +55,6 @@ import battlecode.world.signal.FluxTransferSignal;
 import battlecode.world.signal.EvolutionSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LightningShieldSignal;
-import battlecode.world.signal.MapOriginSignal;
 import battlecode.world.signal.MatchObservationSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
@@ -198,15 +197,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
     public Vector2f getAwesomePoint() {
         return awesomePoint;
-    }
-    
-    public void setGameMap(GameMap map){
-    	this.gameMap = new GameMap(map);
-    }
-    
-    public GameMap getGameMap(){
-    	
-    	return gameMap;
     }
     
     public MapLocation[][] getConvexHullsA() {
@@ -1192,13 +1182,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     public void unloadTextures() {
         // unload all textures
         textureCache.unloadAll();
-    }
-
-
-    // get map origin, should be first signal
-    public Void visitMapOriginSignal(MapOriginSignal s) {
-        origin = s.getMapOrigin();
-        return null;
     }
 
     public Void visitDeploySignal(DeploySignal s) {

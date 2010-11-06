@@ -175,11 +175,6 @@ public class PlayState extends GameState {
         activeClips.clear();
     }
 
-
-    public Void visitMapOriginSignal(MapOriginSignal s) {
-        return null;
-    }
-
     public Void visitDeploySignal(DeploySignal s) {
         return null;//FIXME I AM NOT IMPLEMENTED!
     }
