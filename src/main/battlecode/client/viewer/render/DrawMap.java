@@ -22,7 +22,7 @@ import battlecode.common.Team;
 import battlecode.common.TerrainTile;
 import java.awt.AlphaComposite;
 
-import static battlecode.common.GameConstants.MAX_FLUX_PER_TILE;
+import static battlecode.common.TerrainTile.*;
 
 public class DrawMap {
 
@@ -53,11 +53,10 @@ public class DrawMap {
         TerrainTile[][] map = m.getTerrainMatrix();
 
         byte[][] indices = new byte[mapWidth + 1][mapHeight + 1]; // init indices
-        TerrainTile.TerrainType WATER = TerrainTile.TerrainType.VOID;
         for (int j = 0; j <= mapHeight; j++) for (int i = 0; i <= mapWidth; i++) {
                 int top = (j == 0 ? 0x03 : (indices[i][j - 1] & 0x03));
-                int bottom = (j == mapHeight ? 0x03 : (i == 0 || map[i - 1][j].getType() == WATER ? 0x02 : 0x00)
-                        | (i == mapWidth || map[i][j].getType() == WATER ? 0x01 : 0x00));
+                int bottom = (j == mapHeight ? 0x03 : (i == 0 || map[i - 1][j] == VOID ? 0x02 : 0x00)
+                        | (i == mapWidth || map[i][j] == VOID ? 0x01 : 0x00));
                 indices[i][j] = (byte) (top << 2 | bottom);
             }
         ImageFile terrainImg = new ImageFile("art/terrain.png"); // actual rendering
@@ -85,18 +84,12 @@ public class DrawMap {
                 //g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
             }
         // find max height
-        float maxHeight = 1;
-        for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
-                float height = map[i][j].getHeight();
-                if (height > maxHeight)
-                    maxHeight = height;
-            }
 
         for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
                 if (map[i][j].getType() == TerrainTile.VOID)
                     continue;
 
-                float height = map[i][j].getHeight() / maxHeight;
+                float height = 0;
                 g2.setColor(new Color(height, height, height, 0.5f));
                 g2.fill(new Rectangle(imgSize * i, imgSize * j, imgSize, imgSize));
             }

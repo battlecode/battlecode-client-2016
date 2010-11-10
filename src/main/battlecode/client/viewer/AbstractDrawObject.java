@@ -5,6 +5,7 @@ import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.Chassis;
+import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import battlecode.client.viewer.render.RenderConfiguration;
 
@@ -213,24 +214,22 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		attackAction = ActionType.TRANSFORMING;
 		//roundsUntilIdle = type.wakeDelay();
 		info = new RobotInfo(type, info.team);
-		maxEnergon = type.maxEnergon();
+		maxEnergon = type.maxHp;
 	}
 
-	public void setAttacking(MapLocation target, RobotLevel height) {
+	public void setAttacking(MapLocation target, RobotLevel height, ComponentType component) {
 		attackAction = ActionType.ATTACKING;
-		roundsUntilAttackIdle = info.type.attackDelay();
+		roundsUntilAttackIdle = component.delay;
 		targetLoc = target;
-		if (info.type == Chassis.CHAINER) {
-			animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
-		}
+		//if (info.type == Chassis.CHAINER) {
+		//	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
+		//}
 	}
 	
 	public void setMoving(boolean isMovingForward) {
 		movementAction = ActionType.MOVING;
 		moving = (isMovingForward ? 1 : -1);
-		roundsUntilMovementIdle = (dir.isDiagonal()
-								   ? info.type.moveDelayDiagonal()
-								   : info.type.moveDelayOrthogonal());
+		roundsUntilMovementIdle = moveDelay();
 		updateDrawLoc();
 	}
 
@@ -239,10 +238,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		moving = (isMovingForward ? 1 : -1);
 		roundsUntilMovementIdle = delay;
 		updateDrawLoc();
-	}
-
-	public void setTransfer(MapLocation loc, RobotLevel height, float amt, boolean isFlux) {
-		animations.put(ENERGON_TRANSFER,createEnergonTransferAnim(loc, height,amt,isFlux));
 	}
 
 	public void setTeleport(MapLocation src, MapLocation loc) {

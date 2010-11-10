@@ -70,25 +70,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         towers = new LinkedList<DrawObject>();
         fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
         currentRound = -1;
-        // HACK: from DrawMap update hack
-		/*
-        blockNumber = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++)
-        blockNumber[i][j] = 0;
-        }
-         */
         convexHullsA = new MapLocation[0][];
         convexHullsB = new MapLocation[0][];
 
-        /*
-        flux = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++) {
-        flux[i][j] = 0;
-        }
-        }
-         */
     }
 
     private DrawState(GameMap map) {
@@ -110,10 +94,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     public MapLocation[][] getConvexHullsB() {
         return convexHullsB;
-    }
-
-    public byte[][] getFlux() {
-        return flux;
     }
 
     private synchronized void copyStateFrom(DrawState src) {
@@ -147,11 +127,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
          */
 
-        flux = new byte[src.flux.length][];
-
-        for (int i = 0; i < flux.length; i++)
-            flux[i] = java.util.Arrays.copyOf(src.flux[i], src.flux[i].length);
-
         if (src.gameMap != null) {
             gameMap = src.gameMap;
         }
@@ -177,20 +152,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     }
 
     protected void mineFlux(DrawObject obj) {
-        if (gameMap != null) {
-            MapLocation robotLoc = obj.getLocation();
-            int x = robotLoc.getX();
-            int y = robotLoc.getY();
-            for (int i = fluxMineOffsetsX.length - 1; i >= 0; i--) {
-                int normalX = x + fluxMineOffsetsX[i] - origin.getX();
-                int normalY = y + fluxMineOffsetsY[i] - origin.getY();
-                if (normalX < 0 || normalX >= gameMap.getWidth())
-                    continue;
-                if (normalY < 0 || normalY >= gameMap.getHeight())
-                    continue;
-                flux[normalY][normalX] = 0;
-            }
-        }
     }
 
     // return the set of all flux deposits to be drawn in proper order by GameRenderer

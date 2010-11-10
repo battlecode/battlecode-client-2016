@@ -16,10 +16,6 @@ import java.util.Map;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
-	protected static final int[][] fluxMineOffsets = GameMap.computeOffsets360(GameConstants.FLUX_RADIUS_SQUARED);
-	protected static final int[] fluxMineOffsetsX = fluxMineOffsets[0];
-	protected static final int[] fluxMineOffsetsY = fluxMineOffsets[1];
-
 	protected abstract DrawObject createDrawObject(Chassis type, Team team);
 
 	protected Map<Integer, DrawObject> groundUnits;
@@ -29,7 +25,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	protected static MapLocation origin = null;
 	protected GameMap gameMap;
 	protected int currentRound;
-	protected byte[][] flux;
 	protected RoundStats stats = null;
 
 	protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
@@ -104,9 +99,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	}
 
 	protected void tryAddArchon(DrawObject archon) {
-		if (archon.getType() == Chassis.ARCHON) {
-			(archon.getTeam() == Team.A ? archonsA : archonsB).add(archon);
-		}
+		//if (archon.getType() == Chassis.ARCHON) {
+		//	(archon.getTeam() == Team.A ? archonsA : archonsB).add(archon);
+		//}
 	}
 
 	public List<DrawObject> getArchons(Team team) {
@@ -136,34 +131,18 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 			obj.updateRound();
 			if (!obj.isAlive()) {
 				it.remove();
-				if (obj.getType() == Chassis.ARCHON) {
-					(obj.getTeam() == Team.A ? archonsA : archonsB).remove(obj);
-				}
+				//if (obj.getType() == Chassis.ARCHON) {
+				//	(obj.getTeam() == Team.A ? archonsA : archonsB).remove(obj);
+				//}
 			}
-			if (obj.getType() == Chassis.WOUT) {
-				mineFlux(obj);
-			}
-		}
-		if (gameMap != null) {
-			TerrainTile[][] terrain = gameMap.getTerrainMatrix();
-			for (int y = 0; y < gameMap.getHeight(); y++) {
-				for (int x = 0; x < gameMap.getWidth(); x++) {
-					if (terrain[x][y].getType() != TerrainType.LAND){
-						continue;
-					}
-					if (flux[y][x] >= GameConstants.MAX_FLUX_PER_TILE){
-							continue;
-					}
-					if (currentRound % terrain[x][y].getHeight() == 0){
-						flux[y][x]++;
-					}
-				}
-			}
+			//if (obj.getType() == Chassis.WOUT) {
+			//	mineFlux(obj);
+			//}
 		}
 	}
 
 	public Void visitAttackSignal(AttackSignal s) {
-		getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
+		getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight(), s.weaponType);
 		return null;
 	}
 
