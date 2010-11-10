@@ -12,7 +12,7 @@ import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 
 class GLTeleportAnim extends GLAnimation {
 	private final MapLocation target;

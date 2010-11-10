@@ -23,7 +23,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 import battlecode.common.Team;
 import battlecode.world.GameMap;
 
@@ -69,7 +69,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	private int teleportRounds;
 	private MapLocation teleportLoc;
 
-	public DrawObject(RobotType type, Team team) {
+	public DrawObject(Chassis type, Team team) {
 		super(type, team);
 		img = preEvolve = ir.getResource(info, getAvatarPath(info));
 		maxEnergon = type.maxEnergon();
@@ -90,7 +90,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	}
 
 	public static void loadAll() {
-		for (RobotType type : RobotType.values()) {
+		for (Chassis type : Chassis.values()) {
 			for (Team team : Team.values()) {
 				/*if (team == Team.NEUTRAL) {
 				continue;
@@ -330,7 +330,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 				}
 				// it's easier to see what is being attacked if we draw
 				// the crosshair in addition to the cannonball
-				//if (info.type != RobotType.CHAINER) {
+				//if (info.type != Chassis.CHAINER) {
 				if (getTeam() == Team.A)
 					g2.setColor(Color.RED);
 				else
@@ -358,7 +358,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 		return img.image;
 	}
 
-	public void evolve(RobotType type) {
+	public void evolve(Chassis type) {
 		super.evolve(type);
 		img = ir.getResource(info, getAvatarPath(info));
 	}

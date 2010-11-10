@@ -21,7 +21,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 import battlecode.common.Team;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
@@ -44,7 +44,7 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     private AuraType currentAura = null;
     private boolean auraActivated = false;
 
-    public GLDrawObject(RobotType type, Team team) {
+    public GLDrawObject(Chassis type, Team team) {
 	super(type, team);
     }
 

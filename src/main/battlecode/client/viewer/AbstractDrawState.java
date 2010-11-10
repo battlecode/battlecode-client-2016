@@ -3,13 +3,12 @@ package battlecode.client.viewer;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 import battlecode.common.Team;
-import battlecode.common.TerrainTile.TerrainType;
+import battlecode.common.TerrainTile;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
-import battlecode.world.InternalTerrainTile;
 
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +20,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	protected static final int[] fluxMineOffsetsX = fluxMineOffsets[0];
 	protected static final int[] fluxMineOffsetsY = fluxMineOffsets[1];
 
-	protected abstract DrawObject createDrawObject(RobotType type, Team team);
+	protected abstract DrawObject createDrawObject(Chassis type, Team team);
 
 	protected Map<Integer, DrawObject> groundUnits;
 	protected Map<Integer, DrawObject> airUnits;
@@ -105,7 +104,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	}
 
 	protected void tryAddArchon(DrawObject archon) {
-		if (archon.getType() == RobotType.ARCHON) {
+		if (archon.getType() == Chassis.ARCHON) {
 			(archon.getTeam() == Team.A ? archonsA : archonsB).add(archon);
 		}
 	}
@@ -137,16 +136,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 			obj.updateRound();
 			if (!obj.isAlive()) {
 				it.remove();
-				if (obj.getType() == RobotType.ARCHON) {
+				if (obj.getType() == Chassis.ARCHON) {
 					(obj.getTeam() == Team.A ? archonsA : archonsB).remove(obj);
 				}
 			}
-			if (obj.getType() == RobotType.WOUT) {
+			if (obj.getType() == Chassis.WOUT) {
 				mineFlux(obj);
 			}
 		}
 		if (gameMap != null) {
-			InternalTerrainTile[][] terrain = gameMap.getTerrainMatrix();
+			TerrainTile[][] terrain = gameMap.getTerrainMatrix();
 			for (int y = 0; y < gameMap.getHeight(); y++) {
 				for (int x = 0; x < gameMap.getWidth(); x++) {
 					if (terrain[x][y].getType() != TerrainType.LAND){
@@ -178,23 +177,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		return null;
 	}
 
-	public Void visitDoTeleportSignal(DoTeleportSignal s) {
-		//System.out.println("DTS");
-		DrawObject obj = getRobot(s.getRobotID());
-		obj.setTeleport(obj.getLocation(), s.getTeleportLoc());
-		obj.setLocation(s.getTeleportLoc());
-		return null;
-	}
-
-	public Void visitFluxChangeSignal(FluxChangeSignal s) {
-		int[] robotIDs = s.getRobotIDs();
-		double[] flux = s.getFlux();
-		for (int i = 0; i < robotIDs.length; i++) {
-			getRobot(robotIDs[i]).setFlux(flux[i]);
-		}
-		return null;
-	}
-
 	public Void visitEnergonChangeSignal(EnergonChangeSignal s) {
 		int[] robotIDs = s.getRobotIDs();
 		double[] energon = s.getEnergon();
@@ -204,32 +186,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		return null;
 	}
 
-	public Void visitEnergonTransferSignal(EnergonTransferSignal s) {
-		getRobot(s.getRobotID()).setTransfer(s.getTargetLoc(),
-				s.getTargetHeight(),
-				(float) (s.getAmount()), false);
-		return null;
-	}
-	
-	public Void visitFluxTransferSignal(FluxTransferSignal s) {
-		getRobot(s.getRobotID()).setTransfer(s.getTargetLoc(),
-				s.getTargetHeight(),
-				(float) (s.getAmount()*battlecode.common.GameConstants.FLUX_TO_ENERGON_CONVERSION),true);
-		return null;
-	}
-
-	public Void visitEvolutionSignal(EvolutionSignal s) {
-		getRobot(s.getRobotID()).evolve(s.getType());
-		return null;
-	}
-
 	public Void visitIndicatorStringSignal(IndicatorStringSignal s) {
 		if (!RenderConfiguration.isTournamentMode())
 			getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());
-		return null;
-	}
-
-	public Void visitMatchObservationSignal(MatchObservationSignal s) {
 		return null;
 	}
 

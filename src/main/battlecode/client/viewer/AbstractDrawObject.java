@@ -1,11 +1,10 @@
 package battlecode.client.viewer;
 
-import battlecode.common.ActionType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 import battlecode.common.Team;
 import battlecode.client.viewer.render.RenderConfiguration;
 
@@ -19,10 +18,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 	public static class RobotInfo {
 
-		public final RobotType type;
+		public final Chassis type;
 		public final Team team;
 
-		public RobotInfo(RobotType type, Team team) {
+		public RobotInfo(Chassis type, Team team) {
 			this.type = type;
 			this.team = team;
 		}
@@ -38,7 +37,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		}
 	}
 
-	public AbstractDrawObject(RobotType type, Team team) {
+	public AbstractDrawObject(Chassis type, Team team) {
 		info = new RobotInfo(type,team);
 	}
 
@@ -68,7 +67,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	public abstract Animation createTeleportAnim(MapLocation src, MapLocation teleportLoc);
 	public abstract Animation createDeathExplosionAnim(boolean isArchon);
 	public abstract Animation createMortarAttackAnim(MapLocation target);
-	public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
 	public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
 
 	protected RobotInfo info;
@@ -79,13 +77,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 	protected double energon = 0;
 	protected double maxEnergon;
-	protected double flux = 0;
-	protected static final double production = GameConstants.ARCHON_PRODUCTION;
 	protected int roundsUntilAttackIdle;
 	protected int roundsUntilMovementIdle;
-
-	protected ActionType attackAction = ActionType.IDLE;
-	protected ActionType movementAction = ActionType.IDLE;
 
 	protected MapLocation targetLoc = null;
 
@@ -121,7 +114,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		return broadcast;
 	}
 
-	public RobotType getType() {
+	public Chassis getType() {
 		return info.type;
 	}
 
@@ -220,7 +213,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 			animations.get(AbstractAnimation.AnimationType.MORTAR_EXPLOSION)!=null;
 	}
 
-	public void evolve(RobotType type) {
+	public void evolve(Chassis type) {
 		movementAction = ActionType.TRANSFORMING;
 		attackAction = ActionType.TRANSFORMING;
 		//roundsUntilIdle = type.wakeDelay();
@@ -232,7 +225,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		attackAction = ActionType.ATTACKING;
 		roundsUntilAttackIdle = info.type.attackDelay();
 		targetLoc = target;
-		if (info.type == RobotType.CHAINER) {
+		if (info.type == Chassis.CHAINER) {
 			animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
 		}
 	}
@@ -273,7 +266,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		attackAction = ActionType.IDLE;
 		energon = 0;
 		flux = 0;
-		animations.put(DEATH_EXPLOSION,createDeathExplosionAnim(getType() == RobotType.ARCHON));
+		animations.put(DEATH_EXPLOSION,createDeathExplosionAnim(getType() == Chassis.ARCHON));
 		animations.remove(ENERGON_TRANSFER);
 	}
 

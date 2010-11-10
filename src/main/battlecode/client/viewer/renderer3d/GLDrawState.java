@@ -34,7 +34,7 @@ import battlecode.client.viewer.renderer3d.GLDrawObject;
 import battlecode.common.ActionType;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
+import battlecode.common.Chassis;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
 import battlecode.common.TerrainTile;
@@ -193,7 +193,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         copyStateFrom(clone);
     }
 
-	protected GLDrawObject createDrawObject(RobotType type, Team team) { return new GLDrawObject(type,team); }
+	protected GLDrawObject createDrawObject(Chassis type, Team team) { return new GLDrawObject(type,team); }
 
     public Vector2f getAwesomePoint() {
         return awesomePoint;
@@ -221,17 +221,17 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     }
 
     private void addAcceleratorUnit(GLDrawObject o) {
-        /*if(o.getType() == RobotType.SNIPER) {
+        /*if(o.getType() == Chassis.SNIPER) {
         snipers.add(o);
-        } else if(o.getType() == RobotType.SOLDIER) {
+        } else if(o.getType() == Chassis.SOLDIER) {
         soldiers.add(o);
-        } else if(o.getType() == RobotType.MORTAR) {
+        } else if(o.getType() == Chassis.MORTAR) {
         mortars.add(o);
-        } else if(o.getType() == RobotType.SCOUT) {
+        } else if(o.getType() == Chassis.SCOUT) {
         scouts.add(o);
-        } else if(o.getType() == RobotType.BOMBER) {
+        } else if(o.getType() == Chassis.BOMBER) {
         bombers.add(o);
-        } else if(o.getType() == RobotType.ARCHON) {
+        } else if(o.getType() == Chassis.ARCHON) {
         archons.add(o);
         }*/
     }
@@ -617,7 +617,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     gl.glColor4f(0.75f, 0.0f, 0.0f, 0.2f);
                 else
                     gl.glColor4f(0.0f, 0.0f, 0.75f, 0.2f);
-                glu.gluDisk(quadric, 0.0f, Math.sqrt(RobotType.CHAINER.attackRadiusMaxSquared()), 16, 1);
+                glu.gluDisk(quadric, 0.0f, Math.sqrt(Chassis.CHAINER.attackRadiusMaxSquared()), 16, 1);
                 gl.glPopMatrix();
             }
 
@@ -653,7 +653,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING && obj.getType() != RobotType.CHAINER) {
+            if (obj.getAttackAction() == ActionType.ATTACKING && obj.getType() != Chassis.CHAINER) {
               /*  final String crosshairRed = "art/crosshair.png";
                 final String crosshairBlue = "art/crosshair2.png";
                 String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
@@ -668,7 +668,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     float deltay = ty - y;
                     float deltaz = tz;
 
-                    if (/*obj.getType() == RobotType.WOUT2XXX ||*/obj.getType() == RobotType.ARCHON) {
+                    if (/*obj.getType() == Chassis.WOUT2XXX ||*/obj.getType() == Chassis.ARCHON) {
                         deltaz -= maxHeight;
                         drawArch = false;
                     } else
@@ -726,7 +726,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
                     gl.glLineWidth(4.0f);
                     gl.glBegin(GL.GL_LINES);
-                    //if (obj.getType() == RobotType.WOUT2XXX)
+                    //if (obj.getType() == Chassis.WOUT2XXX)
                     //    gl.glVertex3f(0.0f, 0.0f, 0.0f);
                     //else
                     gl.glVertex3f(0.0f, 0.5f, 0.0f);
@@ -751,7 +751,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw archon circle
-            if (obj.getType() == RobotType.ARCHON /*|| obj.getType() == RobotType.WOUT2XXX*/) {
+            if (obj.getType() == Chassis.ARCHON /*|| obj.getType() == Chassis.WOUT2XXX*/) {
                 gl.glDisable(GL.GL_LIGHTING);
                 gl.glDisable(GL.GL_CULL_FACE);
                 gl.glEnable (GL.GL_BLEND); 
@@ -840,7 +840,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             final float MODEL_SCALE = 0.1f;
             final float ARCHON_MODEL_SCALE = 0.07f;
             if (GLGameRenderer.USE_MODELS) {
-                if (obj.getType() == RobotType.ARCHON) {
+                if (obj.getType() == Chassis.ARCHON) {
                     String archonBodyTexPath = (obj.getTeam() == Team.A) ? archonBodyTexPathR : archonBodyTexPathB;
                     Texture bodyTex = textureCache.getResource(archonBodyTexPath, archonBodyTexPath).tex;
 
@@ -858,7 +858,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
 
 
-                } else if (obj.getType() == RobotType.CHAINER) {
+                } else if (obj.getType() == Chassis.CHAINER) {
                    // String channelerWingTexPath = (obj.getTeam() == Team.A) ? channelerWingTexPathR : channelerWingTexPathB;
                     String chainerBodyTexPath = (obj.getTeam() == Team.A) ? chainerBodyTexPathR : chainerBodyTexPathB;
 
@@ -889,7 +889,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
                     gl.glEnable(GL.GL_BLEND);
 
-                } else if (obj.getType() == RobotType.TURRET) {
+                } else if (obj.getType() == Chassis.TURRET) {
                     String sniperTurretTexPath = (obj.getTeam() == Team.A) ? sniperTurretTexPathR : sniperTurretTexPathB;
                   //  String sniperBodyTexPath = (obj.getTeam() == Team.A) ? sniperBodyTexPathR : sniperBodyTexPathB;
 
@@ -912,7 +912,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     sniperTurret.draw(gl);
                     gl.glEnable(GL.GL_BLEND);
 */
-                    /*} else if (obj.getType() == RobotType.WOUT2XXX) {
+                    /*} else if (obj.getType() == Chassis.WOUT2XXX) {
 
                     String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
 
@@ -930,7 +930,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     gl.glRotatef(time, 0.0f, 1.0f, 0.0f);
                     gl.glScalef(0.5f, 0.5f, 0.5f);
                     scoutRotor.draw(gl);*/
-                } else if (obj.getType() == RobotType.SOLDIER) {
+                } else if (obj.getType() == Chassis.SOLDIER) {
                     String soldierBodyTexPath = (obj.getTeam() == Team.A) ? soldierBodyTexPathR : soldierBodyTexPathB;
 
                     Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
@@ -943,7 +943,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                    
                     soldierBody.draw(gl);
 
-                } else if (obj.getType() == RobotType.WOUT) {
+                } else if (obj.getType() == Chassis.WOUT) {
 
                     // now draw the worker
                     String woutBodyTexPath = (obj.getTeam() == Team.A) ? woutBodyTexPathR : woutBodyTexPathB;
@@ -1122,7 +1122,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             double rad = 0.5f;
-            if (obj.getType() == RobotType.ARCHON)
+            if (obj.getType() == Chassis.ARCHON)
                 rad = 0.6f;
 
             glu.gluSphere(quadric, rad, 5, 5);

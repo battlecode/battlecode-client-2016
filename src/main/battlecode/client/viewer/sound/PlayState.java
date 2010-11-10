@@ -34,14 +34,14 @@ public class PlayState extends GameState {
     }
     private Set<GameSoundBank.ClipGroup> activeClips;
     private Set<GameSoundBank.ClipGroup> futureClips;
-    private Map<Integer, RobotType> robotTypes;
+    private Map<Integer, Chassis> robotTypes;
     private int intensityLevel = 0;
     
 
     public PlayState() {
         activeClips = new HashSet<GameSoundBank.ClipGroup>();
         futureClips = new HashSet<GameSoundBank.ClipGroup>();
-        robotTypes = new HashMap<Integer, RobotType>();
+        robotTypes = new HashMap<Integer, Chassis>();
       
     }
 
@@ -85,54 +85,13 @@ public class PlayState extends GameState {
         return null;
     }
 
-    public Void visitBroadcastSignal(BroadcastSignal s) {
-        return null;
-    }
-
     public Void visitDeathSignal(DeathSignal s) {
         scheduleClip(GameSoundBank.DEATH);
-    	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + RobotType.ARCHON);
+    	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + Chassis.ARCHON);
     
-    	if(robotTypes.get(s.getObjectID()) == RobotType.ARCHON){
+    	if(robotTypes.get(s.getObjectID()) == Chassis.ARCHON){
     		intensityLevel += 100;
     	}
-        return null;
-    }
-
-    public Void visitEnergonChangeSignal(EnergonChangeSignal s) {
-        return null;
-    }
-
-    public Void visitEnergonTransferSignal(EnergonTransferSignal s) {
-        return null;
-    }
-
-    public Void visitEvolutionSignal(EvolutionSignal s) {
-        robotTypes.put(s.getRobotID(), s.getType());
-        return null;
-    }
-
-    public Void visitIndicatorStringSignal(IndicatorStringSignal s) {
-        return null;
-    }
-
-    public Void visitMatchObservationSignal(MatchObservationSignal s) {
-        return null;
-    }
-
-    public Void visitControlBitsSignal(ControlBitsSignal s) {
-        return null;
-    }
-
-    public Void visitMovementOverrideSignal(MovementOverrideSignal s) {
-        return null;
-    }
-
-    public Void visitMovementSignal(MovementSignal s) {
-        return null;
-    }
-
-    public Void visitSetDirectionSignal(SetDirectionSignal s) {
         return null;
     }
 
@@ -140,10 +99,6 @@ public class PlayState extends GameState {
         scheduleClip(GameSoundBank.SNIPE, -10.f);
     	//System.out.println( s.getType());
         robotTypes.put(s.getRobotID(), s.getType());
-        return null;
-    }
-
-    public Void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
         return null;
     }
 
@@ -173,13 +128,5 @@ public class PlayState extends GameState {
             clipGroup.play();
         }
         activeClips.clear();
-    }
-
-    public Void visitDeploySignal(DeploySignal s) {
-        return null;//FIXME I AM NOT IMPLEMENTED!
-    }
-
-    public Void visitLightningShieldSignal(LightningShieldSignal s) {
-        return null;//FIXME I AM NOT IMPLEMENTED!
     }
 }
