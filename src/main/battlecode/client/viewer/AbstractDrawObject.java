@@ -48,7 +48,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		loc = copy.loc;
 		dir = copy.dir;
 		energon = copy.energon;
-		flux = copy.flux;
 		moving = copy.moving;
 		targetLoc = copy.targetLoc;
 		broadcast = copy.broadcast;
@@ -79,6 +78,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	protected double maxEnergon;
 	protected int roundsUntilAttackIdle;
 	protected int roundsUntilMovementIdle;
+	protected ActionType attackAction;
+	protected ActionType movementAction;
 
 	protected MapLocation targetLoc = null;
 
@@ -106,8 +107,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		dir = d;
 	}
 
+	private static final double sq2 = Math.sqrt(2.);
+
 	protected int moveDelay() {
-		return dir.isDiagonal()?info.type.moveDelayDiagonal():info.type.moveDelayOrthogonal();
+		int baseDelay = info.type.motor.delay;
+		if(dir.isDiagonal())
+			return (int)Math.round(sq2*baseDelay);
+		else
+			return baseDelay;
 	}
 
 	public long getBroadcast() {
@@ -146,14 +153,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		return energon;
 	}
 
-	public double getProduction() {
-		return production;
-	}
-
-	public double getFlux() {
-		return flux;
-	}
-
 	public String getIndicatorString(int index) {
 		return indicatorStrings[index];
 	}
@@ -184,10 +183,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 	public void setEnergon(double energon) {
 		this.energon = energon;
-	}
-
-	public void setFlux(double flux){
-		this.flux = flux;
 	}
 
 	public void setTeam(Team team) {
@@ -254,19 +249,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		animations.put(TELEPORT,createTeleportAnim(src,loc));
 	}
 	
-	// remove this eventually
-	public void drain() {
-		attackAction = ActionType.DRAINING;
-		roundsUntilAttackIdle = 1;
-		//roundsUntilIdle = 2;
-	}
-
 	public void destroyUnit() {
 		movementAction = ActionType.IDLE;
 		attackAction = ActionType.IDLE;
 		energon = 0;
-		flux = 0;
-		animations.put(DEATH_EXPLOSION,createDeathExplosionAnim(getType() == Chassis.ARCHON));
+		animations.put(DEATH_EXPLOSION,createDeathExplosionAnim(false));
 		animations.remove(ENERGON_TRANSFER);
 	}
 

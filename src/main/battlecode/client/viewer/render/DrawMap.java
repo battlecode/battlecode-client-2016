@@ -19,9 +19,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.FluxDepositState;
 import battlecode.common.MapLocation;
 import battlecode.common.Team;
-import battlecode.world.InternalTerrainTile;
 import battlecode.common.TerrainTile;
-import battlecode.common.TerrainTile.TerrainType;
 import java.awt.AlphaComposite;
 
 import static battlecode.common.GameConstants.MAX_FLUX_PER_TILE;
@@ -95,7 +93,7 @@ public class DrawMap {
             }
 
         for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
-                if (map[i][j].getType() == TerrainType.VOID)
+                if (map[i][j].getType() == TerrainTile.VOID)
                     continue;
 
                 float height = map[i][j].getHeight() / maxHeight;

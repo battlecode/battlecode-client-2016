@@ -73,10 +73,10 @@ public class PlayState extends GameState {
             switch (robotTypes.get(s.getRobotID())) {
                 /*case WOUT2XXX:
                     scheduleClip(GameSoundBank.ATTACK2, -10, 0);
-                    break;*/
+                    break;
                 case TURRET:
                     scheduleClip(GameSoundBank.MORTAR, -2, 0);
-                    break;
+                    break;*/
                 default:
                     scheduleClip(GameSoundBank.ATTACK, -5, 0);
             }
@@ -89,9 +89,9 @@ public class PlayState extends GameState {
         scheduleClip(GameSoundBank.DEATH);
     	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + Chassis.ARCHON);
     
-    	if(robotTypes.get(s.getObjectID()) == Chassis.ARCHON){
-    		intensityLevel += 100;
-    	}
+    	//if(robotTypes.get(s.getObjectID()) == Chassis.ARCHON){
+    	//	intensityLevel += 100;
+    	//}
         return null;
     }
 

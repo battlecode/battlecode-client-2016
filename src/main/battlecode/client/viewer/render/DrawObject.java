@@ -1,6 +1,5 @@
 package battlecode.client.viewer.render;
 
-import battlecode.common.AuraType;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,7 +17,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
-import battlecode.common.ActionType;
+import battlecode.client.viewer.ActionType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
@@ -53,15 +52,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	private static final ImageFile [] activeTeleporterBlue = new ImageFile [] { new ImageFile("art/teleporter2_t1.png"), new ImageFile("art/teleporter2_t2.png"), new ImageFile("art/teleporter2_t3.png") };
 	private ImageFile img;
 	private ImageFile preEvolve;
-	//private EnergonTransferAnim energonTransferAnim = null;
 	
-	//private boolean shouldAura = false;
-	//private AuraAnimation auraAnimation = null;
-	//private ExplosionAnim deathExplosionAnim = null;
-	//private MortarAttackAnim mortarAttackAnim = null;
-	//private ExplosionAnim mortarExplosionAnim = null;
-	//private TeleportAnim teleportAnim = null;
-
 	private static final int maxTransfers = 10;
 
 	public static final AbstractAnimation.AnimationType [] preDrawOrder = new AbstractAnimation.AnimationType [] { TELEPORT };
@@ -394,13 +385,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 		return anim;
 	}
 
-	/*
-	public void setAura(AuraType auraType, GameMap m) {
-		auraAnimation = new AuraAnimation(this, auraType);
-		shouldAura = true;
-	}
-	*/
-
 	public void updateRound() {
 		super.updateRound();
 
@@ -409,18 +393,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 			if(teleportLoc==null&&teleportRounds%3==2)
 				dir = dir.rotateRight().rotateRight();
 		}
-/*
-		if (auraAnimation != null) {
-			auraAnimation.updateRound();
-			
-		}
-*/
-		/*
-		if(!shouldAura){
-			auraAnimation = null;
-		}
-		shouldAura = false;
-		*/
 	}
 
 	public void activateTeleporter() {

@@ -20,11 +20,7 @@ import javax.vecmath.Vector3f;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.MapLocation;
 import battlecode.common.TerrainTile;
-import battlecode.world.InternalTerrainTile;
-import battlecode.common.TerrainTile.TerrainType;
 
-
-import static battlecode.common.GameConstants.MAX_FLUX_PER_TILE;
 
 import com.sun.opengl.util.texture.Texture;
 
@@ -178,13 +174,13 @@ public class GLDrawMap {
 
 				
 				int numLand = 0;
-				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.LAND)
+				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainTile.LAND)
 					numLand++;
-				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.LAND)
+				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainTile.LAND)
 					numLand++;
-				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.LAND)
+				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainTile.LAND)
 					numLand++;
-				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.LAND)
+				if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainTile.LAND)
 					numLand++;
 				
 				float landFrac = (float)numLand / 4.0f;
@@ -381,7 +377,7 @@ public class GLDrawMap {
 		for(int i = 0; i < mapHeight; i++) {
 			for(int j = 0; j < mapWidth; j++) {
 				pointHeight = getMapHeight(j, i)* MAP_SCALE;
-				if(map[j/DENSITY][i/DENSITY].getType() == TerrainType.VOID){
+				if(map[j/DENSITY][i/DENSITY].getType() == TerrainTile.VOID){
 					
 				}
 				pts[i][j] = new Vector3f(((float)j+.5f)/DENSITY, pointHeight,
@@ -427,8 +423,8 @@ public class GLDrawMap {
 		// return height of cell + height number of blocks / 3
 	
 		
-		return (float)map.getTerrainMatrix()[ix][iy].getHeight();
-		
+		//return (float)map.getTerrainMatrix()[ix][iy].getHeight();
+		return 0;
 	}
 	
 	
@@ -549,7 +545,6 @@ public class GLDrawMap {
 		for(int j = 0; j < mapHeight; j++) {
 			for(int i = 0; i < mapWidth; i++) {
 				
-				 float fluxAmount = flux[j/DENSITY][i/DENSITY];
 				//float fluxAmount = getMapHeight(i, j)/64.f;
 			//	System.out.println(flux[j/DENSITY][i/DENSITY] + " " + fluxAmount);
 				
@@ -558,7 +553,7 @@ public class GLDrawMap {
 				Color4f tintColor = new Color4f();
 				Color4f trueColor = new Color4f();
 				
-				tintColor.interpolate(lowColor, highColor, fluxAmount/MAX_FLUX_PER_TILE);
+				tintColor.interpolate(lowColor, highColor, 0);
 				//System.out.println(actualHeight/maxHeight);
 				
 				

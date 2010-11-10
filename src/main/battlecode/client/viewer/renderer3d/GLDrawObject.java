@@ -15,7 +15,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.render.RenderConfiguration;
-import battlecode.common.ActionType;
+import battlecode.client.viewer.ActionType;
 import battlecode.common.AuraType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;

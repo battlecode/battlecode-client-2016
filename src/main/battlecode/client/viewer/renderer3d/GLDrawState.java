@@ -31,7 +31,7 @@ import battlecode.client.viewer.MatchPlayer;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
 import battlecode.client.viewer.renderer3d.GLDrawObject;
-import battlecode.common.ActionType;
+import battlecode.client.viewer.ActionType;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.Chassis;
@@ -60,13 +60,12 @@ import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
 import battlecode.world.signal.SetDirectionSignal;
 import battlecode.world.signal.SpawnSignal;
-import battlecode.world.InternalTerrainTile;
 
 
 import battlecode.world.signal.SetAuraSignal;
 import battlecode.world.signal.FluxChangeSignal;
 import com.sun.opengl.util.texture.Texture;
-import battlecode.common.TerrainTile.TerrainType;
+import battlecode.common.TerrainTile;
 
 public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
@@ -468,7 +467,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             gl.glLineWidth(4.0f);
 
             float extraDist = 0.1f;
-            float maxHeight = GLDrawMap.MAP_SCALE*TerrainTile.MAX_HEIGHT;
+            float maxHeight = GLDrawMap.MAP_SCALE*32;
             // are we flying or not
             if (obj.getType().isAirborne()){
             	
