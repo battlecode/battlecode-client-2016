@@ -26,7 +26,6 @@ class GLEnergonTransferAnim extends GLAnimation {
 	private Vector4f color;
 
 	private GLDrawObject src;
-
 	/*private static final int NUM_POINTS = 16;
 	private static Vector3f[] points = null;*/
 
@@ -66,7 +65,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 		
 		Vector3f toTarget = new Vector3f();
 		
-		float airHeight = GLDrawMap.MAP_SCALE*TerrainTile.MAX_HEIGHT;//map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY());
+		float airHeight = GLDrawMap.MAP_SCALE*32;//map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY());
 		toTarget.x = target.getX() - src.getDrawX();
 		toTarget.y = ((targetHeight == RobotLevel.IN_AIR) ? airHeight : map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY())) -
 		((targetHeight == RobotLevel.IN_AIR) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.getX(), src.getDrawY() - origin.getY()));

@@ -174,7 +174,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         this();
         this.setGameMap(map);
         this.mapMinPoints = map.getMinPoints();
-        flux = new byte [gameMap.getHeight()][gameMap.getWidth()];
     }
 
     private GLDrawState(GLDrawState clone) {
@@ -264,12 +263,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         mapMinPoints = src.mapMinPoints;
         
-        flux = new byte[src.flux.length][];
-
-		for(int i=0;i<flux.length;i++)
-			flux[i]=java.util.Arrays.copyOf(src.flux[i],src.flux[i].length);
-
-        
         if(src.gameMap != null){
         	gameMap = src.gameMap;
         }
@@ -313,31 +306,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         return null;
     }
     
-    public byte[][] getFlux() {
-    	return flux;
-    }
-
     public synchronized void apply(RoundStats stats) {
         this.stats = stats;
     }
     
     protected void mineFlux(GLDrawObject obj){
-    	  if (gameMap != null) {
-              MapLocation robotLoc = obj.getLocation();
-              int x = robotLoc.getX();
-              int y = robotLoc.getY();
-              for (int i = fluxMineOffsetsX.length - 1; i >= 0; i--) {
-              	int normalX = x + fluxMineOffsetsX[i] - origin.getX();
-                  int normalY = y + fluxMineOffsetsY[i] - origin.getY();
-                  if (normalX < 0 || normalX >= gameMap.getWidth())
-                  	continue;
-                  if (normalY < 0 || normalY >= gameMap.getHeight())
-                  	continue;
-                  flux[normalY][normalX] = 0;
-              }
-          }
-        
-    	
     }
 
 	// we explicitly call super function because it isn't synchronized
@@ -384,7 +357,198 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 	private static final OBJFile communicationsBody = new OBJFile("art/botBuildings/communications.bcm");
 	private static final OBJFile processingplantBody = new OBJFile("art/botBuildings/processingplant.bcm");
 
-    /**
+    private static final float MODEL_SCALE = 0.1f;
+    private static final float ARCHON_MODEL_SCALE = 0.07f;
+
+	public void drawArchon(GL gl, GLDrawObject obj) {
+                    String archonBodyTexPath = (obj.getTeam() == Team.A) ? archonBodyTexPathR : archonBodyTexPathB;
+                    Texture bodyTex = textureCache.getResource(archonBodyTexPath, archonBodyTexPath).tex;
+
+                    // translate up to normal level
+                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
+                    gl.glDisable(GL.GL_BLEND);
+                    // scale the model
+                    gl.glScalef(ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE);
+                   // gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+                    if (bodyTex != null)
+                        bodyTex.bind();
+                    archonBody.draw(gl);
+
+                    gl.glEnable(GL.GL_BLEND);
+	}
+
+	public void drawChainer(GL gl, GLDrawObject obj) {
+
+	  				// String channelerWingTexPath = (obj.getTeam() == Team.A) ? channelerWingTexPathR : channelerWingTexPathB;
+                    String chainerBodyTexPath = (obj.getTeam() == Team.A) ? chainerBodyTexPathR : chainerBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(chainerBodyTexPath, chainerBodyTexPath).tex;
+                   // Texture wingTex = textureCache.getResource(channelerWingTexPath, channelerWingTexPath).tex;
+
+                    // translate up to normal level
+                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
+                    gl.glDisable(GL.GL_BLEND);
+                    // scale the model
+                    gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+                   // gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+                    if (bodyTex != null)
+                        bodyTex.bind();
+                    chainerBody.draw(gl);
+/*
+                    gl.glTranslatef(5000.0f * MODEL_SCALE, 2500.0f * MODEL_SCALE, -7800.0f * MODEL_SCALE);
+                    if (wingTex != null)
+                        wingTex.bind();
+                    channelerWing.draw(gl);
+
+                    gl.glTranslatef(-10000.0f * MODEL_SCALE, 0.0f, 0.0f);
+                    gl.glScalef(-1.0f, 1.0f, 1.0f);
+                    gl.glFrontFace(GL.GL_CW);
+                    channelerWing.draw(gl);
+                    gl.glFrontFace(GL.GL_CCW);
+*/
+
+                    gl.glEnable(GL.GL_BLEND);
+
+	}
+
+	public void drawTurret(GL gl, GLDrawObject obj) {
+   		String sniperTurretTexPath = (obj.getTeam() == Team.A) ? sniperTurretTexPathR : sniperTurretTexPathB;
+                  //  String sniperBodyTexPath = (obj.getTeam() == Team.A) ? sniperBodyTexPathR : sniperBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
+                 //   Texture turretTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
+
+                    // translate up to normal level
+                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
+                    gl.glDisable(GL.GL_BLEND);
+                    // scale the model
+                    gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+                  //  gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+                    if (bodyTex != null)
+                        bodyTex.bind();
+                    turretBody.draw(gl);
+/*
+                    gl.glTranslatef(0.0f, 10000.0f * MODEL_SCALE, 10000.0f * MODEL_SCALE);
+                    if (turretTex != null)
+                        turretTex.bind();
+                    sniperTurret.draw(gl);
+                    gl.glEnable(GL.GL_BLEND);
+*/
+                    /*} else if (obj.getType() == Chassis.WOUT2XXX) {
+
+                    String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
+
+                    if (bodyTex != null)
+                    bodyTex.bind();
+                    gl.glScalef(2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE);
+                    gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+                    scoutBody.draw(gl);
+
+                    gl.glColor3f(0.0f, 0.0f, 0.0f);
+                    gl.glTranslatef(0.0f, 5500.0f * MODEL_SCALE, 0.0f);
+                    float time = (System.currentTimeMillis() % 1000) / 1000.0f * 360.0f;
+                    gl.glRotatef(time, 0.0f, 1.0f, 0.0f);
+                    gl.glScalef(0.5f, 0.5f, 0.5f);
+                    scoutRotor.draw(gl);*/
+} 
+	
+	public void drawSoldier(GL gl, GLDrawObject obj) {
+   	 				String soldierBodyTexPath = (obj.getTeam() == Team.A) ? soldierBodyTexPathR : soldierBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
+
+                    if (bodyTex != null)
+                        bodyTex.bind();
+                    gl.glTranslatef(-0.1f, 0.1f, 0.0f);
+                    gl.glScalef(MODEL_SCALE , MODEL_SCALE , MODEL_SCALE );
+                 //   gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+                   
+                    soldierBody.draw(gl);
+	} 
+	
+	public void drawWout(GL gl, GLDrawObject obj) {
+   	
+                    // now draw the worker
+                    String woutBodyTexPath = (obj.getTeam() == Team.A) ? woutBodyTexPathR : woutBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(woutBodyTexPath, woutBodyTexPath).tex;
+
+                    if (bodyTex != null)
+                        bodyTex.bind();
+                    gl.glTranslatef(0.f, 0.1f, 0.0f);
+                    gl.glScalef(MODEL_SCALE * 1.f, MODEL_SCALE * 1.f, MODEL_SCALE * 1.f);
+                    gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+                    woutBody.draw(gl);
+	}
+
+	public void scaleBuilding(GL gl, GLDrawObject obj) {
+					String buildingBodyTexPath = (obj.getTeam() == Team.A) ? buildingBodyTexPathR : buildingBodyTexPathB;
+
+                    Texture bodyTex = textureCache.getResource(buildingBodyTexPath, buildingBodyTexPath).tex;
+
+                    if (bodyTex != null){
+                        bodyTex.bind();
+                    }
+                  //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+                    
+                    gl.glDisable(GL.GL_BLEND);
+					// this model uses different a different scale because it's from 2008
+					gl.glTranslatef(0.f, 0.1f, 0.0f);
+                    gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
+                    //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+	}
+	
+	public void drawTeleporter(GL gl, GLDrawObject obj) {
+		scaleBuilding(gl,obj);
+		processingplantBody.draw(gl);
+   	} 
+	
+	public void drawAura(GL gl, GLDrawObject obj) {
+		scaleBuilding(gl,obj);
+   		towerBody.draw(gl);
+                		/*
+                    	if(obj.getCurrentAura() != null){
+                    		gl.glPushMatrix();
+                    		gl.glDisable(GL.GL_TEXTURE_2D);
+                    		switch(obj.getCurrentAura()){
+                    		case OFF:
+                    			gl.glColor4f(1.0f, 0.7f, 0.24f, 0.5f);
+                    			break;
+                    		case DEF:
+                    			gl.glColor4f(0.0f, 0.24f, 0.9f, 0.5f);
+                    			break;
+                    		case MOV:
+                    			gl.glColor4f(0.0f, 0.9f, 0.24f, 0.5f);
+                                break;
+                            default:
+                            	gl.glColor4f(0.9f, 0.75f, 0.0f, 0.5f);
+                                break;
+                    		}
+                            gl.glEnable(GL.GL_BLEND);
+                            gl.glDisable(GL.GL_DEPTH_TEST);
+                            gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+                            gl.glScalef(1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f));
+                            float diskSize = (float)Math.sqrt(obj.getType().sensorRadiusSquared());
+                            
+                            glu.gluCylinder(quadric, diskSize, 0.0f, 1.0f, 16, 1);
+                            gl.glDisable(GL.GL_BLEND);
+                            gl.glEnable(GL.GL_DEPTH_TEST);
+                            gl.glEnable(GL.GL_TEXTURE_2D);
+                            gl.glPopMatrix();
+                    		
+                    	}
+						*/
+	} 
+	
+
+	public void drawComm(GL gl, GLDrawObject obj) {
+		scaleBuilding(gl,obj);
+   		communicationsBody.draw(gl);
+   	} 
+	
+	/**
      * Draws the current game state. This method is always called from the
      * Swing event-dispatch thread, and in particular blocks calls to
      * updateRound.
@@ -456,7 +620,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 //                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
             else {
             	if(obj.getMovementAction() == ActionType.MOVING){
-            		float delay = obj.getDirection().isDiagonal() ? obj.getType().moveDelayDiagonal() : obj.getType().moveDelayOrthogonal();
+            		float delay = obj.getDirection().isDiagonal() ? obj.getType().moveDelayDiagonal : obj.getType().moveDelayOrthogonal;
             		float distFrac = (float)(obj.timeUntilIdle()+1) / delay;
             	
             		if(distFrac > 1.0f) distFrac = 1.0f;
@@ -589,6 +753,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // draw channeler drain
             gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDisable(GL.GL_LIGHTING);
+			/*
             if (obj.getAttackAction() == ActionType.DRAINING) {
                 gl.glPushMatrix();
                 gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -599,6 +764,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 glu.gluDisk(quadric, 0.0f, Math.sqrt(Chassis.CHAINER.attackRadiusMaxSquared()), 16, 1);
                 gl.glPopMatrix();
             }
+			*/
 
             // draw message broadcast
             if (obj.getBroadcast() != 0x00 && RenderConfiguration.showBroadcast()) {
@@ -608,7 +774,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             	gl.glPushMatrix();
                 gl.glTranslatef(0.0f, 0.001f, 0.0f);
                 gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                double drdR = obj.getType().broadcastRadius() * 0.05;
+                double drdR = obj.broadcastRadius() * 0.05;
                 for (int i = 0; i < 20; i++) {
                     if ((obj.getBroadcast() & (1 << i)) != 0x00) {
                         double rad = i * drdR;
@@ -632,7 +798,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING && obj.getType() != Chassis.CHAINER) {
+            if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != Chassis.CHAINER*/) {
               /*  final String crosshairRed = "art/crosshair.png";
                 final String crosshairBlue = "art/crosshair2.png";
                 String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
@@ -647,7 +813,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     float deltay = ty - y;
                     float deltaz = tz;
 
-                    if (/*obj.getType() == Chassis.WOUT2XXX ||*/obj.getType() == Chassis.ARCHON) {
+                    if (obj.getType().isAirborne()) {
                         deltaz -= maxHeight;
                         drawArch = false;
                     } else
@@ -730,7 +896,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw archon circle
-            if (obj.getType() == Chassis.ARCHON /*|| obj.getType() == Chassis.WOUT2XXX*/) {
+            if (obj.getType().isAirborne()) {
                 gl.glDisable(GL.GL_LIGHTING);
                 gl.glDisable(GL.GL_CULL_FACE);
                 gl.glEnable (GL.GL_BLEND); 
@@ -775,7 +941,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             // draw energon
             if (RenderConfiguration.showEnergon()) {
-                float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon());
+                float frac = (float) (obj.getEnergon() / obj.getType().maxHp);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
@@ -816,188 +982,18 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
 
 
-            final float MODEL_SCALE = 0.1f;
-            final float ARCHON_MODEL_SCALE = 0.07f;
             if (GLGameRenderer.USE_MODELS) {
-                if (obj.getType() == Chassis.ARCHON) {
-                    String archonBodyTexPath = (obj.getTeam() == Team.A) ? archonBodyTexPathR : archonBodyTexPathB;
-                    Texture bodyTex = textureCache.getResource(archonBodyTexPath, archonBodyTexPath).tex;
-
-                    // translate up to normal level
-                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
-                    gl.glDisable(GL.GL_BLEND);
-                    // scale the model
-                    gl.glScalef(ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE);
-                   // gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-                    if (bodyTex != null)
-                        bodyTex.bind();
-                    archonBody.draw(gl);
-
-                    gl.glEnable(GL.GL_BLEND);
-
-
-
-                } else if (obj.getType() == Chassis.CHAINER) {
-                   // String channelerWingTexPath = (obj.getTeam() == Team.A) ? channelerWingTexPathR : channelerWingTexPathB;
-                    String chainerBodyTexPath = (obj.getTeam() == Team.A) ? chainerBodyTexPathR : chainerBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(chainerBodyTexPath, chainerBodyTexPath).tex;
-                   // Texture wingTex = textureCache.getResource(channelerWingTexPath, channelerWingTexPath).tex;
-
-                    // translate up to normal level
-                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
-                    gl.glDisable(GL.GL_BLEND);
-                    // scale the model
-                    gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
-                   // gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                    if (bodyTex != null)
-                        bodyTex.bind();
-                    chainerBody.draw(gl);
-/*
-                    gl.glTranslatef(5000.0f * MODEL_SCALE, 2500.0f * MODEL_SCALE, -7800.0f * MODEL_SCALE);
-                    if (wingTex != null)
-                        wingTex.bind();
-                    channelerWing.draw(gl);
-
-                    gl.glTranslatef(-10000.0f * MODEL_SCALE, 0.0f, 0.0f);
-                    gl.glScalef(-1.0f, 1.0f, 1.0f);
-                    gl.glFrontFace(GL.GL_CW);
-                    channelerWing.draw(gl);
-                    gl.glFrontFace(GL.GL_CCW);
-*/
-
-                    gl.glEnable(GL.GL_BLEND);
-
-                } else if (obj.getType() == Chassis.TURRET) {
-                    String sniperTurretTexPath = (obj.getTeam() == Team.A) ? sniperTurretTexPathR : sniperTurretTexPathB;
-                  //  String sniperBodyTexPath = (obj.getTeam() == Team.A) ? sniperBodyTexPathR : sniperBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
-                 //   Texture turretTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
-
-                    // translate up to normal level
-                    gl.glTranslatef(0.0f, 0.1f, 0.0f);
-                    gl.glDisable(GL.GL_BLEND);
-                    // scale the model
-                    gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
-                  //  gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-                    if (bodyTex != null)
-                        bodyTex.bind();
-                    turretBody.draw(gl);
-/*
-                    gl.glTranslatef(0.0f, 10000.0f * MODEL_SCALE, 10000.0f * MODEL_SCALE);
-                    if (turretTex != null)
-                        turretTex.bind();
-                    sniperTurret.draw(gl);
-                    gl.glEnable(GL.GL_BLEND);
-*/
-                    /*} else if (obj.getType() == Chassis.WOUT2XXX) {
-
-                    String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
-
-                    if (bodyTex != null)
-                    bodyTex.bind();
-                    gl.glScalef(2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE);
-                    gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                    scoutBody.draw(gl);
-
-                    gl.glColor3f(0.0f, 0.0f, 0.0f);
-                    gl.glTranslatef(0.0f, 5500.0f * MODEL_SCALE, 0.0f);
-                    float time = (System.currentTimeMillis() % 1000) / 1000.0f * 360.0f;
-                    gl.glRotatef(time, 0.0f, 1.0f, 0.0f);
-                    gl.glScalef(0.5f, 0.5f, 0.5f);
-                    scoutRotor.draw(gl);*/
-                } else if (obj.getType() == Chassis.SOLDIER) {
-                    String soldierBodyTexPath = (obj.getTeam() == Team.A) ? soldierBodyTexPathR : soldierBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
-
-                    if (bodyTex != null)
-                        bodyTex.bind();
-                    gl.glTranslatef(-0.1f, 0.1f, 0.0f);
-                    gl.glScalef(MODEL_SCALE , MODEL_SCALE , MODEL_SCALE );
-                 //   gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                   
-                    soldierBody.draw(gl);
-
-                } else if (obj.getType() == Chassis.WOUT) {
-
-                    // now draw the worker
-                    String woutBodyTexPath = (obj.getTeam() == Team.A) ? woutBodyTexPathR : woutBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(woutBodyTexPath, woutBodyTexPath).tex;
-
-                    if (bodyTex != null)
-                        bodyTex.bind();
-                    gl.glTranslatef(0.f, 0.1f, 0.0f);
-                    gl.glScalef(MODEL_SCALE * 1.f, MODEL_SCALE * 1.f, MODEL_SCALE * 1.f);
-                    gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-                    woutBody.draw(gl);
-                } else if (obj.getType().isBuilding()) {
-					String buildingBodyTexPath = (obj.getTeam() == Team.A) ? buildingBodyTexPathR : buildingBodyTexPathB;
-
-                    Texture bodyTex = textureCache.getResource(buildingBodyTexPath, buildingBodyTexPath).tex;
-
-                    if (bodyTex != null){
-                        bodyTex.bind();
-                    }
-                  //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                    
-                    gl.glDisable(GL.GL_BLEND);
-					// this model uses different a different scale because it's from 2008
-					gl.glTranslatef(0.f, 0.1f, 0.0f);
-                    gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
-                    //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-                    
-                    switch(obj.getType()){
-                    case TELEPORTER:
-                    	processingplantBody.draw(gl);
-                    	break;
-                    case AURA:
-                    	towerBody.draw(gl);
-
-                		
-                    	if(obj.getCurrentAura() != null){
-                    		gl.glPushMatrix();
-                    		gl.glDisable(GL.GL_TEXTURE_2D);
-                    		switch(obj.getCurrentAura()){
-                    		case OFF:
-                    			gl.glColor4f(1.0f, 0.7f, 0.24f, 0.5f);
-                    			break;
-                    		case DEF:
-                    			gl.glColor4f(0.0f, 0.24f, 0.9f, 0.5f);
-                    			break;
-                    		case MOV:
-                    			gl.glColor4f(0.0f, 0.9f, 0.24f, 0.5f);
-                                break;
-                            default:
-                            	gl.glColor4f(0.9f, 0.75f, 0.0f, 0.5f);
-                                break;
-                    		}
-                            gl.glEnable(GL.GL_BLEND);
-                            gl.glDisable(GL.GL_DEPTH_TEST);
-                            gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                            gl.glScalef(1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f));
-                            float diskSize = (float)Math.sqrt(obj.getType().sensorRadiusSquared());
-                            
-                            glu.gluCylinder(quadric, diskSize, 0.0f, 1.0f, 16, 1);
-                            gl.glDisable(GL.GL_BLEND);
-                            gl.glEnable(GL.GL_DEPTH_TEST);
-                            gl.glEnable(GL.GL_TEXTURE_2D);
-                            gl.glPopMatrix();
-                    		
-                    	}
-                    	break;
-                    case COMM:
-                    	communicationsBody.draw(gl);
-                    	break;
-                    }
-                   
-                    
-                    
-				} else {
+                
+				switch(obj.getType()) {
+				case FLYING:
+					drawArchon(gl,obj);
+				case HEAVY:
+					drawTurret(gl,obj);
+				case MEDIUM:
+					drawChainer(gl,obj);
+				case LIGHT:
+					drawSoldier(gl,obj);
+				default:
                     drawRobot(gl, obj);
                 }
             } else {
@@ -1101,8 +1097,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             double rad = 0.5f;
-            if (obj.getType() == Chassis.ARCHON)
-                rad = 0.6f;
+            //if (obj.getType() == Chassis.ARCHON)
+            //    rad = 0.6f;
 
             glu.gluSphere(quadric, rad, 5, 5);
             gl.glPopMatrix();

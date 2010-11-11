@@ -112,15 +112,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	private static final double sq2 = Math.sqrt(2.);
 
 	protected int moveDelay() {
-		int baseDelay = info.type.motor.delay;
 		if(dir.isDiagonal())
-			return (int)Math.round(sq2*baseDelay);
+			return info.type.moveDelayDiagonal;
 		else
-			return baseDelay;
+			return info.type.moveDelayOrthogonal;
 	}
 
 	public long getBroadcast() {
 		return broadcast;
+	}
+
+	public int broadcastRadius() {
+		return broadcastRadius;
 	}
 
 	public Chassis getType() {
