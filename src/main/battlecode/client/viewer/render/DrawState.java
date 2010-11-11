@@ -78,7 +78,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     private DrawState(GameMap map) {
         this();
         this.setGameMap(map);
-        flux = new byte[gameMap.getHeight()][gameMap.getWidth()];
     }
 
     private DrawState(DrawState clone) {

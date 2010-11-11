@@ -132,10 +132,9 @@ public class DrawMap {
         g2.scale(1.0 / scaleSize, 1.0 / scaleSize);
 
         
-        byte[][] flux = ds.getFlux();
         for (int xi = 0; xi < mapWidth; xi++) {
             for (int yi = 0; yi < mapHeight; yi++) {
-                float fFlux = flux[yi][xi]/64.f;
+                float fFlux = 0;
 				float fHeight = ds.getGameMap().getTerrainMatrix()[xi][yi].getHeight()/32.f;
 				float green = fHeight==0.f?0.f:.25f+.75f*fHeight;
 				//lighter version that I didn't like as much

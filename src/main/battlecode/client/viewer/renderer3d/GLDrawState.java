@@ -45,25 +45,15 @@ import battlecode.world.signal.AttackSignal;
 import battlecode.world.signal.BroadcastSignal;
 import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.ControlBitsSignal;
-import battlecode.world.signal.ConvexHullSignal;
 import battlecode.world.signal.DeathSignal;
-import battlecode.world.signal.DeploySignal;
-import battlecode.world.signal.DoTeleportSignal;
 import battlecode.world.signal.EnergonChangeSignal;
-import battlecode.world.signal.EnergonTransferSignal;
-import battlecode.world.signal.FluxTransferSignal;
-import battlecode.world.signal.EvolutionSignal;
 import battlecode.world.signal.IndicatorStringSignal;
-import battlecode.world.signal.LightningShieldSignal;
 import battlecode.world.signal.MatchObservationSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
 import battlecode.world.signal.SetDirectionSignal;
 import battlecode.world.signal.SpawnSignal;
 
-
-import battlecode.world.signal.SetAuraSignal;
-import battlecode.world.signal.FluxChangeSignal;
 import com.sun.opengl.util.texture.Texture;
 import battlecode.common.TerrainTile;
 
@@ -299,16 +289,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 System.arraycopy(src.convexHullsB[i], 0, convexHullsB[i], 0, convexHullsB[i].length);
             }
         }
-    }
-
-    public Void visitConvexHullSignal(ConvexHullSignal s) {
-        if (s.getTeam() == s.getTeam().A) {
-            convexHullsA = s.getConvexHulls();
-        } else if (s.getTeam() == s.getTeam().B) {
-            convexHullsB = s.getConvexHulls();
-        }
-        //System.out.println("CH signal " + s.getConvexHulls().length);
-        return null;
     }
 
     public Void visitAwesomenessSignal(AwesomenessSignal s) {
@@ -1182,22 +1162,4 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         // unload all textures
         textureCache.unloadAll();
     }
-
-    public Void visitDeploySignal(DeploySignal s) {
-        return null; //FIXME I AM NOT SUPPOTED YET!
-    }
-
-    public Void visitLightningShieldSignal(LightningShieldSignal s) {
-        return null;//FIXME I AM NOT IMPLEMENTED!
-    }
-    
-    public Void visitSetAuraSignal(SetAuraSignal s){
-        getRobot(s.getRobotID()).setAura(s.getAura());
-        return null;
-    }
-
-    /*protected void finalize() throws Throwable {
-    System.out.println("Finalizing GLDrawState");
-    super.finalize();
-    }*/
 }

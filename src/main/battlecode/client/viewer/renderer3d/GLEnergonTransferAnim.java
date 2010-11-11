@@ -11,7 +11,6 @@ import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.RobotType;
 
 import battlecode.common.TerrainTile;
 
@@ -70,7 +69,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 		float airHeight = GLDrawMap.MAP_SCALE*TerrainTile.MAX_HEIGHT;//map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY());
 		toTarget.x = target.getX() - src.getDrawX();
 		toTarget.y = ((targetHeight == RobotLevel.IN_AIR) ? airHeight : map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY())) -
-		((src.getType() == RobotType.ARCHON) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.getX(), src.getDrawY() - origin.getY()));
+		((targetHeight == RobotLevel.IN_AIR) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.getX(), src.getDrawY() - origin.getY()));
 		toTarget.z = target.getY() - src.getDrawY();
 		float time = Math.min(roundsToLive, lifetime-roundsToLive)/lifetime;
 

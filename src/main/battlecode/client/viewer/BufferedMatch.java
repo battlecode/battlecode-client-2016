@@ -4,7 +4,6 @@ import java.io.EOFException;
 import java.util.*;
 
 import battlecode.client.*;
-import battlecode.client.viewer.render.MatchRanker;
 import battlecode.serial.*;
 import battlecode.serial.notification.*;
 import battlecode.engine.signal.Signal;
@@ -84,7 +83,6 @@ public final class BufferedMatch {
 				obj = proxy.readObject();
 			}
 			catch (EOFException e) {
-				MatchRanker.EOF = true;
 				//System.err.println("Unexpected end of line at match header");
 				return;
 			}

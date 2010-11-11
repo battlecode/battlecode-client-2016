@@ -88,6 +88,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 	protected long controlBits = 0;
 	protected int bytecodesUsed = 0;
+	protected int broadcastRadius = 0;
 
 	protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 		private static final long serialVersionUID = 0;

@@ -16,7 +16,6 @@ import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.client.viewer.ActionType;
-import battlecode.common.AuraType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
@@ -41,9 +40,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     // point list of the circle of spawn radius
     public Vector3f[] spawnCircle = null;
    
-    private AuraType currentAura = null;
-    private boolean auraActivated = false;
-
     public GLDrawObject(Chassis type, Team team) {
 	super(type, team);
     }
@@ -51,7 +47,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     public GLDrawObject(GLDrawObject copy) {
 	super(copy);
 	targetHeight = copy.targetHeight;
-	currentAura = copy.getCurrentAura();
 	if(animations.containsKey(ENERGON_TRANSFER)) {
 	    GLEnergonTransferAnim a = (GLEnergonTransferAnim)animations.get(ENERGON_TRANSFER);
 	    a.setSource(this);
@@ -98,11 +93,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     public void draw(GL gl, GLU glu, boolean focused) {
     }
 
-    public void setAura(AuraType auraType) {
-	currentAura = auraType;
-	auraActivated = true;
-    }
-    
     public GLTeleportAnim createTeleportAnim(MapLocation src, MapLocation teleportLoc){
 	return new GLTeleportAnim(this, teleportLoc);
 	
@@ -124,23 +114,9 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 		return new GLExplosionAnim(false,((GLMortarAttackAnim)mortarAttackAnim).getTargetLoc(), 1.8);
 	}
     
-    public AuraType getCurrentAura(){
-	
-	return currentAura;
-    }
-    
     public void setAttacking(MapLocation target, RobotLevel height) {
 		super.setAttacking(target, height);
 	targetHeight = height;
     }
 
-    public void updateRound() {
-	super.updateRound();
-
-	if(!auraActivated){
-		currentAura = null;
-	}
-	auraActivated = false;
-		
-    }
 }

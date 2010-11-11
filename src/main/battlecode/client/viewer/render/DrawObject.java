@@ -63,7 +63,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	public DrawObject(Chassis type, Team team) {
 		super(type, team);
 		img = preEvolve = ir.getResource(info, getAvatarPath(info));
-		maxEnergon = type.maxEnergon();
+		maxEnergon = type.maxHp;
 	}
 
 	public DrawObject(DrawObject copy) {
@@ -109,6 +109,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 			try {
 				BufferedImage sensorImg = hatchSensor.image;
 				BufferedImage attackImg = hatchAttack.image;
+				/*
 				for (int i = -11; i <= 11; i++) for (int j = -11; j <= 11; j++) {
 						int distSq = i * i + j * j;
 						if (distSq <= info.type.sensorRadiusSquared()) {
@@ -127,31 +128,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 							g2.drawImage(attackImg, trans, null);
 						}
 					}
-			} catch (NullPointerException npe) {
-			} // oh well
-		}
-		g2.setTransform(pushed);
-	}
-
-	public void drawChannelerDrain(Graphics2D g2) {
-		AffineTransform pushed = g2.getTransform();
-		{
-			g2.translate(loc.getX(), loc.getY());
-			if (getTeam() == Team.A)
-				g2.setColor(new Color(1.f, .7f, .7f, 0.2f));
-			else
-				g2.setColor(new Color(.7f, .7f, 1.f, 0.2f));
-			try {
-				BufferedImage attackImg = hatchAttack.image;
-				for (int i = -6; i <= 6; i++) for (int j = -6; j <= 6; j++) {
-						int distSq = i * i + j * j;
-						if (distSq <= info.type.attackRadiusMaxSquared()) {
-							AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
-							trans.scale(1.0 / attackImg.getWidth(), 1.0 / attackImg.getHeight());
-							g2.drawImage(attackImg, trans, null);
-							g2.fillRect(i, j, 1, 1);
-						}
-					}
+				*/
 			} catch (NullPointerException npe) {
 			} // oh well
 		}
@@ -199,7 +176,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
 			if (broadcast != 0x00 && RenderConfiguration.showBroadcast()) {
 				g2.setStroke(broadcastStroke);
-				double drdR = info.type.broadcastRadius() * 0.05; // dradius/dRound
+				double drdR = broadcastRadius * 0.05; // dradius/dRound
 				for (int i = 0; i < 20; i++) {
 					if ((broadcast & (1 << i)) != 0x00) {
 						double r = i * drdR;
@@ -331,10 +308,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 						targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
 				//}
 				break;
-			case DRAINING:
-				// if the channeler is draining, we draw the hatch
-				drawChannelerDrain(g2);
-				break;
 		}
 			   
 	}
@@ -396,11 +369,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	}
 
 	public void activateTeleporter() {
-		teleportRounds=GameConstants.TELEPORT_DELAY;
+		teleportRounds=1;
 	}
 
 	public void activateTeleport(MapLocation teleportLoc) {
-		teleportRounds=GameConstants.TELEPORT_DELAY;
+		teleportRounds=1;
 		this.teleportLoc=teleportLoc;
 	}
 }
