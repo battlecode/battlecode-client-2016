@@ -14,7 +14,7 @@ public class InfoPanel extends JPanel {
 	private JLabel energon; 
 
     public InfoPanel() {
-        setLayout(new GridLayout());
+        setLayout(new GridLayout(0,1));
         indicatorStrings = new JLabel[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
 		robotID = newLabel();
 		energon = newLabel();
