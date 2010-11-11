@@ -539,7 +539,6 @@ public class GLDrawMap {
 
 		Color4f[][] trueCols = new Color4f[mapHeight][mapWidth];
 //		InternalTerrainTile tiles[][] = ds.getGameMap().getTerrainMatrix();
-		byte[][] flux = ds.getFlux();
 		//Update colors
 		
 		for(int j = 0; j < mapHeight; j++) {
