@@ -146,7 +146,7 @@ class DrawHUD {
                         BufferedImage underImg = unitUnder.image;
                         g2.translate(-0.5, -0.5);
                         g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-                        g2.drawImage(underImg, null, null);
+                        //g2.drawImage(underImg, null, null);
                     }
                     g2.setTransform(pushed2);
                     if (i < archons.size()) {

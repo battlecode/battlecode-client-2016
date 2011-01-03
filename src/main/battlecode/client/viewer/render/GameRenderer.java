@@ -36,7 +36,7 @@ public class GameRenderer extends BaseRenderer {
     private FramerateTracker fps = new FramerateTracker(30);
     private boolean fastForward = false;
     private int targetID = -1;
-	static private boolean loadedPrefsAlready = false;
+    static private boolean loadedPrefsAlready = false;
     private final MatchListener ml = new MatchListener() {
 
         public void headerReceived(BufferedMatch m) {
@@ -51,7 +51,6 @@ public class GameRenderer extends BaseRenderer {
             processFooter(m.getFooter());
         }
     };
-
     private Runnable matchStarter = null;
 
     public GameRenderer() {
@@ -72,7 +71,7 @@ public class GameRenderer extends BaseRenderer {
         timeline.setTargetState(ds);
         match.addMatchListener(ml);
         match.addMatchPausedListener(ml);
-		loadPrefs();
+        loadPrefs();
     }
     // wins obtained by each side
     int aWins = 0, bWins = 0;
@@ -84,20 +83,21 @@ public class GameRenderer extends BaseRenderer {
     }
 
     public void addWin(Team t) {
-        if (t == Team.A)
+        if (t == Team.A) {
             aWins++;
-        else if (t == Team.B)
+        } else if (t == Team.B) {
             bWins++;
+        }
     }
 
-	public void loadPrefs() {
-		if(!loadedPrefsAlready) {
-			for (char ch: Config.getGlobalConfig().get("bc.client.renderprefs2d").toCharArray()) {
-				handleAction(ch);
-			}
-			loadedPrefsAlready=true;
-		}
-	}
+    public void loadPrefs() {
+        if (!loadedPrefsAlready) {
+            for (char ch : Config.getGlobalConfig().get("bc.client.renderprefs2d").toCharArray()) {
+                handleAction(ch);
+            }
+            loadedPrefsAlready = true;
+        }
+    }
 
     /* (non-Javadoc)
      * @see battlecode.client.viewer.render.BaseRenderer#getTimeline()
@@ -132,9 +132,9 @@ public class GameRenderer extends BaseRenderer {
         return false;
     }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private synchronized void processHeader(MatchHeader header) {
-        GameMap map = (GameMap)header.getMap();
+        GameMap map = (GameMap) header.getMap();
         drawMap = new DrawMap(map);
         origin = map.getMapOrigin();
         sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));
@@ -203,13 +203,13 @@ public class GameRenderer extends BaseRenderer {
         RenderConfiguration.getInstance().setSpriteSize(spriteSize);
     }
 
- 	public AbstractDrawObject getRobotByID(int id) {
-		return ds.getDrawObject(id);
-	}
+    public AbstractDrawObject getRobotByID(int id) {
+        return ds.getDrawObject(id);
+    }
 
-	protected void toggleFastForward() {
-		fastForward = !fastForward;
-	}
+    protected void toggleFastForward() {
+        fastForward = !fastForward;
+    }
 
     private void drawHUD(Graphics2D g2) {
         if (hudScale == null) {
@@ -219,6 +219,7 @@ public class GameRenderer extends BaseRenderer {
         // update wins
         sideA.setWins(aWins, bWins);
         sideB.setWins(aWins, bWins);
+        //sideA.setPointsText();
 
         AffineTransform pushed = g2.getTransform();
         {
@@ -236,13 +237,13 @@ public class GameRenderer extends BaseRenderer {
         g2.setTransform(pushed);
     }
 
-	public void setDebugState(DebugState dbg) {
-		this.debugState = dbg;
-	}
+    public void setDebugState(DebugState dbg) {
+        this.debugState = dbg;
+    }
 
-	public DebugState getDebugState() {
-		return debugState;
-	}
+    public DebugState getDebugState() {
+        return debugState;
+    }
 
     private void drawState(Graphics2D g2, boolean isGraphicsStable) {
         if (drawMap == null || ds == null) {
@@ -251,7 +252,7 @@ public class GameRenderer extends BaseRenderer {
         AffineTransform pushed = g2.getTransform();
         {
             g2.translate(unitHUDwidth, 0);
-            drawMap.draw(g2,  ds);
+            drawMap.draw(g2, ds);
             g2.clip(clipRect);
             g2.translate(-origin.getX(), -origin.getY());
             if (isGraphicsStable) {
@@ -265,8 +266,9 @@ public class GameRenderer extends BaseRenderer {
 
     public void draw(Graphics g) {
         // remove if anything breaks
-        if (canvasSize == null)
+        if (canvasSize == null) {
             return;
+        }
 
         Graphics2D g2 = (Graphics2D) g;
         boolean isGraphicsStable = g2.getTransform().isIdentity();
@@ -327,8 +329,7 @@ public class GameRenderer extends BaseRenderer {
         DrawObject.loadAll();
     }
 
-	public Dimension getPreferredSize() {
-		return new Dimension(Math.round(spriteSize * unitWidth), Math.round(spriteSize * unitHeight));
-	}
-
+    public Dimension getPreferredSize() {
+        return new Dimension(Math.round(spriteSize * unitWidth), Math.round(spriteSize * unitHeight));
+    }
 }
