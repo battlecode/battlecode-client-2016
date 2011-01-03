@@ -14,7 +14,7 @@ class DrawHUD {
     private static final int numArchons = 6;
     private static final float slotSize = 0.8f / numArchons;
     private static final Font footerFont = new Font(null, Font.PLAIN, 1);
-    private static final ImageFile bg = new ImageFile("art/hud_bg.png");
+    private static final ImageFile bg = new ImageFile("art/hud_bg_new.jpg");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static ImageFile numberText;
