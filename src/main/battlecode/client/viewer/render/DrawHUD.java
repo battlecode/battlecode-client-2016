@@ -17,6 +17,7 @@ class DrawHUD {
     private static final ImageFile bg = new ImageFile("art/hud_bg_new.jpg");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
+    private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
 
@@ -27,7 +28,7 @@ class DrawHUD {
             try {
                 numbers[i] = numberText.image.getSubimage(48 * i, 0, 48, 64);
             } catch (NullPointerException e) {
-               // e.printStackTrace();
+                // e.printStackTrace();
             }
         }
     }
@@ -78,7 +79,18 @@ class DrawHUD {
         BufferedImage bgImg = bg.image;
         trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
         g2.drawImage(bgImg, trans, null);
+
+
         AffineTransform pushed = g2.getTransform();
+        {
+            Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 20);
+            g2.setColor(c);
+            g2.scale(bgFill.width, bgFill.height);
+            g2.fillRect(0, 0, 1, 1);
+        }
+        g2.setTransform(pushed);
+
+        pushed = g2.getTransform();
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
@@ -86,10 +98,10 @@ class DrawHUD {
             //g2.setFont(footerFont);
             //g2.drawString(footerText, -footerText.length()/2, 0);
             battlecode.serial.RoundStats stats = ds.getRoundStats();
-            
+
             AffineTransform pushed2 = g2.getTransform();
             {
-                
+
                 if (stats != null) {
                     points = (int) stats.getPoints(team);
                 }
@@ -102,27 +114,52 @@ class DrawHUD {
             g2.setTransform(pushed2);
             //Here we draw all of the domination-style bars.
             int barHeight = 1;
-            
+
             //First, draw the bars that represent how much flux has been gathered that round
-            g2.translate(0, -.1*4.5/width);
+            g2.translate(0, -.1 * 4.5 / width);
             int gatheredPoints = 0;
             if (stats != null) {
-            	gatheredPoints = (int) stats.getGatheredPoints(team);
+                gatheredPoints = (int) stats.getGatheredPoints(team);
             }
-            g2.setColor(team == Team.A ? Color.RED : Color.BLUE);
-            
+
+
+
             //Uhhhh. The width is arbitrary. We should take the max amount of 
             //Flux mineable in a round as the max bar length, but this works for now.
-            if(team == Team.A)g2.scale(-1, 1);
+            if (team == Team.A) {
+                g2.scale(-1, 1);
+            }
             g2.translate(-2.25, 0.0);
-            g2.scale(.1, 1);
-            g2.fillRect(0, 0, (int)(((double)gatheredPoints)/20.0), barHeight);
-            
-            
-            
-            
+
+            AffineTransform pushed3 = g2.getTransform();
+            {
+                g2.setColor(Color.BLACK);
+                g2.scale(1, barHeight / 2.0);
+                g2.translate(0, -.2);
+                g2.scale(1, .1);
+                g2.fillRect(0, 0, 4, 1);
+                g2.scale(.03, 10);
+                for (int i = 0; i < 20; i++) {
+                    g2.translate(0.1 * 100 / 50 / 0.03, 0);
+                    //g2.fillRect(0, 0, 1, 1);
+                    g2.drawLine(0, 0, 0, 1);
+                }
+
+            }
+            g2.setTransform(pushed3);
+
+
+            Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 130);
+            g2.setColor(c);
+            g2.scale(0.1 * gatheredPoints / 50, barHeight);
+            g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
+            g2.fillRect(0, 0, 1, 1);
+            g2.drawLine(-1, 0, -1, 1);
+
+
+
             g2.setTransform(pushed2);
-            g2.translate(0, -.9*4.5/width);
+            g2.translate(0, -.9 * 4.5 / width);
             if (footerText.startsWith("GAME")) {
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
@@ -162,29 +199,29 @@ class DrawHUD {
                 0.5f * (slotSize - spriteScale));
         /* We don't draw the archon stuff anymore
         try {
-            java.util.List<DrawObject> archons = ds.getArchons(team);
-            for (int i = 0; i < numArchons; i++) {
-                pushed = g2.getTransform();
-                {
-                    g2.scale(spriteScale, spriteScale);
-                    AffineTransform pushed2 = g2.getTransform();
-                    {
-                        BufferedImage underImg = unitUnder.image;
-                        g2.translate(-0.5, -0.5);
-                        g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-                        //g2.drawImage(underImg, null, null);
-                    }
-                    g2.setTransform(pushed2);
-                    if (i < archons.size()) {
-                        DrawObject archon = archons.get(i);
-                        archon.drawImmediateNoScale(g2, true, false);
-                    }
-                }
-                g2.setTransform(pushed);
-                g2.translate(0, slotSize);
-            }
+        java.util.List<DrawObject> archons = ds.getArchons(team);
+        for (int i = 0; i < numArchons; i++) {
+        pushed = g2.getTransform();
+        {
+        g2.scale(spriteScale, spriteScale);
+        AffineTransform pushed2 = g2.getTransform();
+        {
+        BufferedImage underImg = unitUnder.image;
+        g2.translate(-0.5, -0.5);
+        g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+        //g2.drawImage(underImg, null, null);
+        }
+        g2.setTransform(pushed2);
+        if (i < archons.size()) {
+        DrawObject archon = archons.get(i);
+        archon.drawImmediateNoScale(g2, true, false);
+        }
+        }
+        g2.setTransform(pushed);
+        g2.translate(0, slotSize);
+        }
         } catch (ConcurrentModificationException e) {
         }
-        */
+         */
     }
 }
