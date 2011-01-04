@@ -224,16 +224,12 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
             AffineTransform pushed = g2.getTransform();
             { // push
-                try {
                 g2.translate(fd.getLocation().getX() + 0.5, fd.getLocation().getY() + 0.5);
                 g2.scale(.3, .3);
                 g2.setColor(new java.awt.Color((int)(255 * (1 - pct)), (int) (255 * pct), 0));
                 g2.fillOval(-1, -1, 2, 2);
                 g2.setColor(java.awt.Color.gray);
                 g2.drawOval(-1, -1, 2, 2);
-                }  catch ( IllegalArgumentException e){
-                    System.out.println("ERR: " + fd.getRoundsAvailable() + " " + pct);
-                }
             }
             g2.setTransform(pushed);
 
