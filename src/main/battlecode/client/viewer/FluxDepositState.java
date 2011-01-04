@@ -9,7 +9,6 @@ import battlecode.common.Team;
  */
 public class FluxDepositState {
 	private int depositID;
-	private Team team;
 	private MapLocation location;
 	private int roundsAvailable;
 	
@@ -20,9 +19,8 @@ public class FluxDepositState {
 	 * @param location the world location of the map deposit
 	 * @param roundsAvailable the number of available rounds in the flux deposit
 	 */
-	public FluxDepositState(int depositID, Team team, MapLocation location, int roundsAvailable) {
+	public FluxDepositState(int depositID,MapLocation location, int roundsAvailable) {
 		this.depositID = depositID;
-		this.team = team;
 		this.location = location;
 		this.roundsAvailable = roundsAvailable;
 	}
@@ -32,7 +30,7 @@ public class FluxDepositState {
 	 * @param src the source FluxDepositState to be copied
 	 */
 	public FluxDepositState(FluxDepositState src) {
-		this(src.getID(), src.getTeam(), src.getLocation(), src.getRoundsAvailable());
+		this(src.getID(), src.getLocation(), src.getRoundsAvailable());
 	}
 	
 	
@@ -43,12 +41,6 @@ public class FluxDepositState {
 		return depositID;
 	}
 	
-	/**
-	 * @return the team that owns the deposit
-	 */
-	public Team getTeam() {
-		return team;
-	}
 	
 	/**
 	 * @return the location of the deposit
@@ -64,14 +56,6 @@ public class FluxDepositState {
 		return roundsAvailable;
 	}
 	
-	
-	/**
-	 * Sets the new owner of the deposit.
-	 * @param team the team that owns the flux deposit
-	 */
-	public void setTeam(Team team) {
-		this.team = team;
-	}
 	
 	/**
 	 * Set the new number of rounds available from the deposit.

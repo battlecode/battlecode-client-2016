@@ -42,6 +42,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		info = new RobotInfo(type,team);
 	}
 
+
+
 	@SuppressWarnings("unchecked")
 	public AbstractDrawObject(AbstractDrawObject<Animation> copy) {
 		this(copy.info.type,copy.info.team);

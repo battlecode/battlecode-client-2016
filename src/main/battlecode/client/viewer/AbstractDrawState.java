@@ -3,10 +3,12 @@ package battlecode.client.viewer;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.MapLocation;
 import battlecode.common.Chassis;
+import battlecode.common.GameConstants;
 import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
+import java.util.HashMap;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +19,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected abstract DrawObject createDrawObject(Chassis type, Team team);
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
-    protected List<DrawObject> archonsA;
-    protected List<DrawObject> archonsB;
+    protected Map<Integer, FluxDepositState> fluxDeposits;
+    //protected List<DrawObject> archonsA;
+    //protected List<DrawObject> archonsB;
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -77,6 +80,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return obj;
     }
 
+
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
         if (previous == null) {
@@ -101,10 +105,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         //}
     }
 
-    public List<DrawObject> getArchons(Team team) {
-        return (team == Team.A ? archonsA : archonsB);
-    }
-
+    //public List<DrawObject> getArchons(Team team) {
+    //    return (team == Team.A ? archonsA : archonsB);
+    //}
     public RoundStats getRoundStats() {
         return stats;
     }
@@ -212,5 +215,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             getRobot(robotIDs[i]).setBytecodesUsed(bytecodes[i]);
         }
         return null;
+    }
+
+    public void visitMineBirthSignal(MineBirthSignal s) {
+        fluxDeposits.put(s.id, new FluxDepositState(s.id,s.location,s.roundsAvaliable));
+
+    }
+
+    public void visitMineDepletionSignal(MineDepletionSignal s) {
+        fluxDeposits.get(s.id).setRoundsAvailable(s.roundsAvaliable);
     }
 }
