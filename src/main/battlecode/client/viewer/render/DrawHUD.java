@@ -85,9 +85,11 @@ class DrawHUD {
             //g2.setColor(Color.WHITE);
             //g2.setFont(footerFont);
             //g2.drawString(footerText, -footerText.length()/2, 0);
+            battlecode.serial.RoundStats stats = ds.getRoundStats();
+            
             AffineTransform pushed2 = g2.getTransform();
             {
-                battlecode.serial.RoundStats stats = ds.getRoundStats();
+                
                 if (stats != null) {
                     points = (int) stats.getPoints(team);
                 }
@@ -98,6 +100,29 @@ class DrawHUD {
                 }
             }
             g2.setTransform(pushed2);
+            //Here we draw all of the domination-style bars.
+            int barHeight = 1;
+            
+            //First, draw the bars that represent how much flux has been gathered that round
+            g2.translate(0, -.1*4.5/width);
+            int gatheredPoints = 0;
+            if (stats != null) {
+            	gatheredPoints = (int) stats.getGatheredPoints(team);
+            }
+            g2.setColor(team == Team.A ? Color.RED : Color.BLUE);
+            
+            //Uhhhh. The width is arbitrary. We should take the max amount of 
+            //Flux mineable in a round as the max bar length, but this works for now.
+            if(team == Team.A)g2.scale(-1, 1);
+            g2.translate(-2.25, 0.0);
+            g2.scale(.1, 1);
+            g2.fillRect(0, 0, (int)(((double)gatheredPoints)/20.0), barHeight);
+            
+            
+            
+            
+            g2.setTransform(pushed2);
+            g2.translate(0, -.9*4.5/width);
             if (footerText.startsWith("GAME")) {
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
@@ -135,6 +160,7 @@ class DrawHUD {
         g2.setTransform(pushed);
         g2.translate(0.5f * (width - spriteScale),
                 0.5f * (slotSize - spriteScale));
+        /* We don't draw the archon stuff anymore
         try {
             java.util.List<DrawObject> archons = ds.getArchons(team);
             for (int i = 0; i < numArchons; i++) {
@@ -159,5 +185,6 @@ class DrawHUD {
             }
         } catch (ConcurrentModificationException e) {
         }
+        */
     }
 }
