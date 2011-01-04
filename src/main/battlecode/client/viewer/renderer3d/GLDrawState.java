@@ -566,13 +566,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             float fx = entry.getLocation().getX() - origin.getX() + 0.5f;
             float fy = entry.getLocation().getY() - origin.getY() + 0.5f;
             float scalar = (float) Math.sqrt(Math.min(1000, entry.getRoundsAvailable()) / 1000.f);
-            if (entry.getTeam() == Team.A) {
-                gl.glColor3f(scalar, 0.f, 0.f);
-            } else if (entry.getTeam() == Team.B) {
-                gl.glColor3f(0.f, 0.f, scalar);
-            } else {
+//            if (entry.getTeam() == Team.A) {
+//                gl.glColor3f(scalar, 0.f, 0.f);
+//            } else if (entry.getTeam() == Team.B) {
+//                gl.glColor3f(0.f, 0.f, scalar);
+//            } else {
                 gl.glColor3f(0.f, scalar, 0.f);
-            }
+//            }
 
             gl.glPushMatrix();
             gl.glTranslatef(fx, map.getTerrainHeight(fx, fy), fy);
