@@ -122,10 +122,11 @@ class DrawHUD {
                 gatheredPoints = (int) stats.getGatheredPoints(team);
             }
 
-
-
             //Uhhhh. The width is arbitrary. We should take the max amount of 
             //Flux mineable in a round as the max bar length, but this works for now.
+            //Why? I currently set it to 20 mines as max. I doubt any more than that can happen.
+            //Well maybe if both teams turtle. Still ppl will be like OMG HE SO GOOD HE BLOWS THE ENGINE
+
             if (team == Team.A) {
                 g2.scale(-1, 1);
             }
@@ -144,17 +145,14 @@ class DrawHUD {
                     //g2.fillRect(0, 0, 1, 1);
                     g2.drawLine(0, 0, 0, 1);
                 }
-
             }
             g2.setTransform(pushed3);
-
 
             Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 130);
             g2.setColor(c);
             g2.scale(0.1 * gatheredPoints / 50, barHeight);
             g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
             g2.fillRect(0, 0, 1, 1);
-            g2.drawLine(-1, 0, -1, 1);
 
 
 

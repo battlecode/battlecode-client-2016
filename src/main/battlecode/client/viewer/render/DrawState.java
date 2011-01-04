@@ -220,23 +220,30 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
         for (Integer id : fluxDeposits.keySet()) {
             FluxDepositState fd = fluxDeposits.get(id);
-            double pct = 1.0 * Math.max(0, fd.getRoundsAvailable()) / GameConstants.MINE_ROUNDS;
 
             AffineTransform pushed = g2.getTransform();
             { // push
                 g2.translate(fd.getLocation().getX() + 0.5, fd.getLocation().getY() + 0.5);
                 g2.scale(.3, .3);
-                g2.setColor(new java.awt.Color((int)(255 * (1 - pct)), (int) (255 * pct), 0));
+                double scalar;
+                if (fd.getRoundsAvailable() >= 0) {
+                    scalar = (float) Math.sqrt(Math.max(0, (float) fd.getRoundsAvailable()) / GameConstants.MINE_ROUNDS);
+                    g2.setColor(new Color((int) (255 * (1.f - scalar)), (int) (scalar * 255), 0));
+                } else {
+                    scalar = (float) Math.max(GameConstants.MINE_DEPLETED_RESOURCES / GameConstants.MINE_RESOURCES,
+                            (GameConstants.MINE_RESOURCES + (float) fd.getRoundsAvailable() * 0.01 / GameConstants.MINE_DEPLETION_RATE) / GameConstants.MINE_RESOURCES);
+                    g2.setColor(new Color((int) (255 * scalar), 0, 0));
+                }
                 g2.fillOval(-1, -1, 2, 2);
                 g2.setColor(java.awt.Color.gray);
                 g2.drawOval(-1, -1, 2, 2);
             }
             g2.setTransform(pushed);
 
-            }
-            if (!debug.isDragging()) {
-                debug.setTarget(hoverID, hoverLoc, controlBits);
-            }
-
         }
+        if (!debug.isDragging()) {
+            debug.setTarget(hoverID, hoverLoc, controlBits);
+        }
+
     }
+}
