@@ -88,7 +88,7 @@ public class InfoPanel extends JPanel {
     }
 
     public void setTargetID(int id) {
-        robotID.setText("Robot " + id);
+        robotID.setText(" Robot " + id + " ");
     }
 
 	public void setRobot(AbstractDrawObject robot) {
@@ -118,12 +118,12 @@ public class InfoPanel extends JPanel {
 	}
 
     private void setEnergon(double amount) {
-        energon.setText(String.format("Energon: %.1f", amount));
+        energon.setText(String.format(" Hitpoints: %.1f ", amount));
     }
 
     private void setBytecodesUsed(int bytecodesUsed) {
         if (bytecodesUsed > 0) {
-            bytecodes.setText("Bytecodes used: " + bytecodesUsed);
+            bytecodes.setText(" Bytecodes used: " + bytecodesUsed + " ");
         }
     }
 
