@@ -73,6 +73,7 @@ class DrawHUD {
     }
 
     public void draw(Graphics2D g2) {
+        g2.setFont(new Font("Arial", Font.PLAIN, 12));
         //g2.setColor(Color.BLACK);
         //g2.fill(bgFill);
         AffineTransform trans = AffineTransform.getScaleInstance(bgFill.width, bgFill.height);
@@ -106,10 +107,19 @@ class DrawHUD {
                     points = (int) stats.getPoints(team);
                 }
                 g2.translate(-1.875, -1);
-                for (int i = 10000; i > 0; i /= 10) {
-                    g2.drawImage(numbers[(points / i) % 10], textScale, null);
-                    g2.translate(0.75, 0);
-                }
+
+                g2.setColor(Color.BLACK);
+                double x = .08;
+                g2.scale(x, x);
+
+                g2.drawString(points + "", 0, 12);
+                g2.scale(1 / x, 1 / x);
+
+
+//                for (int i = 10000; i > 0; i /= 10) {
+//                    g2.drawImage(numbers[(points / i) % 10], textScale, null);
+//                    g2.translate(0.75, 0);
+//                }
             }
             g2.setTransform(pushed2);
             //Here we draw all of the domination-style bars.
@@ -158,24 +168,26 @@ class DrawHUD {
 
             g2.setTransform(pushed2);
             g2.translate(0, -.9 * 4.5 / width);
-            if (footerText.startsWith("GAME")) {
-                g2.translate(-2, 0);
-                g2.drawImage(gameText.image, textScale, null);
 
-                // if team A won more than one round, give it a red circle
+            g2.setColor(Color.BLACK);
+            g2.translate(-2, 0);
+            double x = .08;
+            g2.scale(x, x);
+
+            g2.drawString(footerText, 0, 12);
+            g2.scale(1 / x, 1 / x);
+
+
+
+            //TODO FIX THIS
+            if (team == team.A) {
                 if (aWins > 0) {
                     g2.translate(0.f, 1.25f);
                     g2.setColor(Color.RED);
                     g2.fillOval(0, 0, 1, 1);
                     g2.translate(0.f, -1.25f);
                 }
-
-                g2.translate(3, 0);
-                for (int i = 5; i < footerText.length(); i++) {
-                    g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
-                    g2.translate(0.5, 0);
-                }
-            } else if (footerText.length() == 4) {
+            } else {
                 // if team B won more than one round, give it a blue circle
                 if (bWins > 0) {
                     // damn yangs magic offsets -_-
@@ -183,12 +195,6 @@ class DrawHUD {
                     g2.setColor(Color.BLUE);
                     g2.fillOval(0, 0, 1, 1);
                     g2.translate(-0.75f, -1.25f);
-                }
-
-                g2.translate(-1.5, 0);
-                for (int i = 0; i < 4; i++) {
-                    g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
-                    g2.translate(0.75, 0);
                 }
             }
         }
