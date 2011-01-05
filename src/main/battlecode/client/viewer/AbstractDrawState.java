@@ -20,6 +20,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
+    protected double[] teamHP = new double[2];
     //protected List<DrawObject> archonsA;
     //protected List<DrawObject> archonsB;
     protected static MapLocation origin = null;
@@ -79,7 +80,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
         return obj;
     }
-
 
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
@@ -152,6 +152,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     public Void visitDeathSignal(DeathSignal s) {
+        int team = getRobot(s.getObjectID()).getTeam().ordinal();
+        if (team < 2)
+            teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
         getRobot(s.getObjectID()).destroyUnit();
         return null;
     }
@@ -160,7 +163,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         int[] robotIDs = s.getRobotIDs();
         double[] energon = s.getEnergon();
         for (int i = 0; i < robotIDs.length; i++) {
+            int team = getRobot(robotIDs[i]).getTeam().ordinal();
+            if (team < 2)
+                teamHP[team] -= getRobot(robotIDs[i]).getEnergon();
             getRobot(robotIDs[i]).setEnergon(energon[i]);
+            if (team < 2)
+                teamHP[team] += energon[i];
         }
         return null;
     }
@@ -190,12 +198,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     public Void visitEquipSignal(EquipSignal s) {
-    	//We have our robot update its components so that we can show it in the infopanel.
-    	DrawObject obj = getRobot(s.robotID);
-    	obj.addComponent(s.component);
-    	return null;
+        //We have our robot update its components so that we can show it in the infopanel.
+        DrawObject obj = getRobot(s.robotID);
+        obj.addComponent(s.component);
+        return null;
     }
-    
+
     public Void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
         return null;
@@ -207,6 +215,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         spawn.setDirection(s.getDirection());
         putRobot(s.getRobotID(), spawn);
         tryAddArchon(spawn);
+        int team = getRobot(s.getRobotID()).getTeam().ordinal();
+        if (team < 2)
+            teamHP[team] += getRobot(s.getRobotID()).getEnergon();
         return spawn;
     }
 
@@ -225,7 +236,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     public void visitMineBirthSignal(MineBirthSignal s) {
-        fluxDeposits.put(s.id, new FluxDepositState(s.id,s.location,s.roundsAvaliable));
+        fluxDeposits.put(s.id, new FluxDepositState(s.id, s.location, s.roundsAvaliable));
 
     }
 

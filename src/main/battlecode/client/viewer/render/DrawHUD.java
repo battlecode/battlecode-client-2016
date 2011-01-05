@@ -6,8 +6,8 @@ import battlecode.client.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.util.ConcurrentModificationException;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 class DrawHUD {
 
@@ -20,6 +20,7 @@ class DrawHUD {
     private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
+    private final Font fnt;
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -46,6 +47,19 @@ class DrawHUD {
         this.ds = ds;
         this.team = team;
         setRatioWidth(2.0f / 9.0f);
+
+        Font fnt2 = new Font("Default", Font.PLAIN, 12);
+        File f = new File("art/CENTURY.TTF");
+        try {
+            fnt2 = Font.createFont(Font.TRUETYPE_FONT, f);
+            fnt2 = fnt2.deriveFont(Font.BOLD, 12f);
+
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fnt = fnt2;
     }
 
     public float getRatioWidth() {
@@ -72,8 +86,15 @@ class DrawHUD {
         bWins = b;
     }
 
+    private String formatStringSize(String s, int len) {
+        while (s.length() < len)
+            s = " " + s;
+        return s;
+    }
+
     public void draw(Graphics2D g2) {
-        g2.setFont(new Font("Arial", Font.PLAIN, 12));
+
+        g2.setFont(fnt);
         //g2.setColor(Color.BLACK);
         //g2.fill(bgFill);
         AffineTransform trans = AffineTransform.getScaleInstance(bgFill.width, bgFill.height);
@@ -112,7 +133,7 @@ class DrawHUD {
                 double x = .08;
                 g2.scale(x, x);
 
-                g2.drawString(points + "", 0, 12);
+                g2.drawString(formatStringSize(points + "", 5), 0, 12);
                 g2.scale(1 / x, 1 / x);
 
 
@@ -170,14 +191,19 @@ class DrawHUD {
             g2.translate(0, -.9 * 4.5 / width);
 
             g2.setColor(Color.BLACK);
-            g2.translate(-2, 0);
+            g2.translate(-2, .5);
             double x = .08;
             g2.scale(x, x);
-
-            g2.drawString(footerText, 0, 12);
+            if (team == Team.A) {
+                g2.translate(-2, 0);
+                g2.drawString(footerText, 0, 12);
+            } else {
+                g2.translate(8, 0);
+                g2.drawString(formatStringSize(footerText, 5), 0, 12);
+            }
             g2.scale(1 / x, 1 / x);
 
-
+            g2.setTransform(pushed);
 
             //TODO FIX THIS
             if (team == team.A) {
