@@ -189,6 +189,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return null;
     }
 
+    public Void visitEquipSignal(EquipSignal s) {
+    	//We have our robot update its components so that we can show it in the infopanel.
+    	DrawObject obj = getRobot(s.robotID);
+    	obj.addComponent(s.component);
+    	return null;
+    }
+    
     public Void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
         return null;

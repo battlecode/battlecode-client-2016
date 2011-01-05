@@ -11,6 +11,7 @@ import battlecode.client.viewer.render.RenderConfiguration;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -83,6 +84,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	protected int roundsUntilMovementIdle;
 	protected ActionType attackAction;
 	protected ActionType movementAction;
+	
+	protected ArrayList<ComponentType> components = new ArrayList<ComponentType>();
 
 	protected MapLocation targetLoc = null;
 
@@ -130,6 +133,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 	public Chassis getType() {
 		return info.type;
+	}
+	
+	public ArrayList<ComponentType> getComponents() {
+		return components;
+	
 	}
 
 	public Team getTeam() {
@@ -221,6 +229,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		//roundsUntilIdle = type.wakeDelay();
 		info = new RobotInfo(type, info.team);
 		maxEnergon = type.maxHp;
+	}
+	
+	public void addComponent(ComponentType type) {
+		components.add(type);
 	}
 
 	public void setAttacking(MapLocation target, RobotLevel height, ComponentType component) {
