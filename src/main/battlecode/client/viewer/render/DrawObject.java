@@ -218,8 +218,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 g2.fill(rect);
                 float frac = Math.min((float) (energon / maxEnergon), 1);
                 rect.width = frac;
-                g2.setColor(new Color(Math.min(1 - 0.5f * frac, 1.5f - 1.5f * frac),
+				if(turnedOn) {
+                	g2.setColor(new Color(Math.min(1 - 0.5f * frac, 1.5f - 1.5f * frac),
                         Math.min(1.5f * frac, 0.5f + 0.5f * frac), 0));
+				}
+				else {
+					g2.setColor(new Color(.5f - .5f * frac, .5f - .5f * frac, .5f + .5f * frac));
+				}
                 g2.fill(rect);
             }
 

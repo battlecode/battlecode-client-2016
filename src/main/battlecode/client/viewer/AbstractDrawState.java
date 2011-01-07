@@ -243,4 +243,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     public void visitMineDepletionSignal(MineDepletionSignal s) {
         fluxDeposits.get(s.id).setRoundsAvailable(s.roundsAvaliable);
     }
+
+	public void visitTurnOnSignal(TurnOnSignal s) {
+		for(int i : s.robotIDs)
+			getRobot(i).setPower(true);
+	}
+
+	public void visitTurnOffSignal(TurnOffSignal s) {
+		getRobot(s.robotID).setPower(false);
+	}
 }

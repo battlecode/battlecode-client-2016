@@ -59,6 +59,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		bytecodesUsed = copy.bytecodesUsed;
 		System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
 						 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
+		turnedOn = copy.turnedOn;
 
 		for(Map.Entry<AbstractAnimation.AnimationType, Animation> entry: copy.animations.entrySet()) {
 			animations.put(entry.getKey(),(Animation)entry.getValue().clone());
@@ -94,6 +95,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	protected long controlBits = 0;
 	protected int bytecodesUsed = 0;
 	protected int broadcastRadius = 0;
+	protected boolean turnedOn = true;
 
 	protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 		private static final long serialVersionUID = 0;
@@ -329,6 +331,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 			  }
 			*/
 		}
+	}
+
+	public void setPower(boolean b) {
+		turnedOn = b;
 	}
 
 }
