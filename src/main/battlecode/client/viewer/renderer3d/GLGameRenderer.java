@@ -839,13 +839,13 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             // for the blue guy
             gl.glColor4f(0.7f, 0.95f, 1.0f, 1.0f);
             gl.glVertex3i(ad.getWidth() / 2, ad.getHeight() - 20, 3);
-            float bPercent = (float) Math.min(1, (1 - (timeline.getRound() - realmaxrounds + 1) * GameConstants.POINTS_DECREASE_PER_ROUND_FACTOR));
+            float bPercent = (float)1.f;
             gl.glVertex3i((int) (ad.getWidth() / 2 + bPercent * barHalfWidth), ad.getHeight() - 20, 3);
 
             // for the red guy
             gl.glColor4f(1.0f, 0.7f, 0.95f, 1.0f);
             gl.glVertex3i(ad.getWidth() / 2, ad.getHeight() - 20, 3);
-            float aPercent = (float) Math.min(1, (1 - (timeline.getRound() - realmaxrounds + 1) * GameConstants.POINTS_DECREASE_PER_ROUND_FACTOR));
+            float aPercent = 1.f;
             gl.glVertex3i((int) (ad.getWidth() / 2 - aPercent * barHalfWidth), ad.getHeight() - 20, 3);
             gl.glEnd();
 
