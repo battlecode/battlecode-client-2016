@@ -58,7 +58,7 @@ class GLDrawCutScene {
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(teamPath)));
 				String line = null;
 				while((line = br.readLine()) != null) {
-					String[] parts = line.split(",");
+					String[] parts = line.split("\t");
 					// parts[0] is team number
 					// parts[1] is team name
 					try {
