@@ -97,78 +97,81 @@ class DrawHUD {
             s = " " + s;
         return s;
     }
-    
-    public void drawPopularEquipment(Graphics2D g2, RoundStats stats){
 
-    	ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
-    	String popularWeaponString = "None";
+    public void drawPopularEquipment(Graphics2D g2, RoundStats stats) {
+
+        ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
+        String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
-       
-    	
-    	if(components != null) {
-    		
-    	            /*Get the most popular: 
-    	             * Weapon
-    	             * Armor
-    	             * Misc
-    	             */
-    	            
 
-    	Map<ComponentType, Integer> componentTypeCount = new HashMap<ComponentType, Integer>();
-    	            //Iterate through and get the counts
-    	            for(ComponentType c : components){
-    	            	if(!componentTypeCount.containsKey(c)){
-    	            		componentTypeCount.put(c, new Integer(1));
-    	            	}else{
-    	            		componentTypeCount.put(c, new Integer(componentTypeCount.get(c)+1));
-    	            	}
-    	            }
-    	            
-    	            ComponentType popularWeapon = null;
-    	            ComponentType popularArmor = null;
-    	            ComponentType popularMisc = null;
-    	            int popularWeaponCount = 0;
-    	            int popularArmorCount = 0;
-    	            int popularMiscCount = 0;
-    	            
-    	            for(ComponentType c : components){
-    	            	int popularity = componentTypeCount.get(c).intValue();
-    	            	if(c.componentClass.equals(ComponentClass.WEAPON)){
-    	            		if(popularity > popularWeaponCount){
-    	            			popularWeaponCount = popularity;
-    	            			popularWeapon = c;
-    	            		}
-    	            	}else if(c.componentClass.equals(ComponentClass.ARMOR)){
-    	            		if(popularity > popularArmorCount){
-    	            			popularArmorCount = popularity;
-    	            			popularArmor = c;
-    	            		}
-    	            	}else if(c.componentClass.equals(ComponentClass.MISC)){
-    	            		if(popularity > popularMiscCount){
-    	            			popularMiscCount = popularity;
-    	            			popularMisc = c;
-    	            		}
-    	            	}
-    	            }
-    	            
 
-    	            if(popularWeapon != null)popularWeaponString = popularWeapon.toString();
-    	            if( popularArmor != null)popularArmorString =  popularArmor.toString();
-    	            if( popularMisc != null )popularMiscString =  popularMisc.toString();
-    	}
+        if (components != null) {
 
-    	            //Here we draw all of "weapon/armor/misc of choice" labels
-    	            
-    	            g2.translate(0,  -.5 * 4.5 / width);
-    	            
-    	           
-    	            double xs = .08;
-    	            g2.scale(xs, xs);
-    	            g2.drawString(formatStringSize(popularWeaponString, 3), -20, 0);
-    	            g2.drawString(formatStringSize(popularArmorString,3), -20, 40);
-    	            g2.drawString(formatStringSize(popularMiscString,3), -20, 80);
-    	            g2.scale(1 / xs, 1 / xs);
+            /*Get the most popular:
+             * Weapon
+             * Armor
+             * Misc
+             */
+
+
+            Map<ComponentType, Integer> componentTypeCount = new HashMap<ComponentType, Integer>();
+            //Iterate through and get the counts
+            for (ComponentType c : components) {
+                if (!componentTypeCount.containsKey(c)) {
+                    componentTypeCount.put(c, new Integer(1));
+                } else {
+                    componentTypeCount.put(c, new Integer(componentTypeCount.get(c) + 1));
+                }
+            }
+
+            ComponentType popularWeapon = null;
+            ComponentType popularArmor = null;
+            ComponentType popularMisc = null;
+            int popularWeaponCount = 0;
+            int popularArmorCount = 0;
+            int popularMiscCount = 0;
+
+            for (ComponentType c : components) {
+                int popularity = componentTypeCount.get(c).intValue();
+                if (c.componentClass.equals(ComponentClass.WEAPON)) {
+                    if (popularity > popularWeaponCount) {
+                        popularWeaponCount = popularity;
+                        popularWeapon = c;
+                    }
+                } else if (c.componentClass.equals(ComponentClass.ARMOR)) {
+                    if (popularity > popularArmorCount) {
+                        popularArmorCount = popularity;
+                        popularArmor = c;
+                    }
+                } else if (c.componentClass.equals(ComponentClass.MISC)) {
+                    if (popularity > popularMiscCount) {
+                        popularMiscCount = popularity;
+                        popularMisc = c;
+                    }
+                }
+            }
+
+
+            if (popularWeapon != null)
+                popularWeaponString = popularWeapon.toString();
+            if (popularArmor != null)
+                popularArmorString = popularArmor.toString();
+            if (popularMisc != null)
+                popularMiscString = popularMisc.toString();
+        }
+
+        //Here we draw all of "weapon/armor/misc of choice" labels
+
+        g2.translate(0, -.5 * 4.5 / width);
+
+
+        double xs = .08;
+        g2.scale(xs, xs);
+        g2.drawString(formatStringSize(popularWeaponString, 3), -20, 0);
+        g2.drawString(formatStringSize(popularArmorString, 3), -20, 40);
+        g2.drawString(formatStringSize(popularMiscString, 3), -20, 80);
+        g2.scale(1 / xs, 1 / xs);
     }
 
     public void draw(Graphics2D g2) {
@@ -190,7 +193,7 @@ class DrawHUD {
             g2.fillRect(0, 0, 1, 1);
         }
         g2.setTransform(pushed);
-        
+
 
 
         pushed = g2.getTransform();
@@ -224,9 +227,9 @@ class DrawHUD {
 //                }
             }
 
-        	g2.setTransform(pushed2);
-        	drawPopularEquipment(g2, stats);
-            
+            g2.setTransform(pushed2);
+            drawPopularEquipment(g2, stats);
+
             g2.setTransform(pushed2);
             //Here we draw all of the domination-style bars.
             int barHeight = 1;
