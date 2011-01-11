@@ -98,10 +98,10 @@ class DrawHUD {
         return s;
     }
 
-    public void drawPopularEquipment(Graphics2D g2, RoundStats stats) {
-
-        ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
-        String popularWeaponString = "None";
+    public void drawPopularEquipment(Graphics2D g2, RoundStats stats){
+    	if(team == null || stats == null) return;
+    	ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
+    	String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
 
@@ -294,6 +294,9 @@ class DrawHUD {
                 g2.translate(-10, 14);
                 if (teamName != null)
                     g2.drawString(teamName, 0, 12);
+                g2.drawString("Weapons", -30, 65);
+                g2.drawString("Armors", -25, 105);
+                g2.drawString("Miscs", -20, 145);
 
             }
             //g2.scale(1 / x, 1 / x);
