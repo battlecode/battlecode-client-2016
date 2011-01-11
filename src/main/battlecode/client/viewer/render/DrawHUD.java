@@ -99,9 +99,9 @@ class DrawHUD {
         return s;
     }
 
-    public void drawPopularEquipment(Graphics2D g2, RoundStats stats){
-    	if(team == null || stats == null) return;
-    	ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
+    public void drawPopularEquipment(Graphics2D g2){
+    	if(team == null || ds == null) return;
+    	ArrayList<ComponentType> components = team.equals(Team.A) ? ds.getATeamComponents() : ds.getBTeamComponents();
     	String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
@@ -229,7 +229,7 @@ class DrawHUD {
             }
 
             g2.setTransform(pushed2);
-            drawPopularEquipment(g2, stats);
+            drawPopularEquipment(g2);
 
             g2.setTransform(pushed2);
             //Here we draw all of the domination-style bars.

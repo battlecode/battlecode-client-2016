@@ -106,7 +106,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
         }
         stats = src.stats;
-
+        aTeamComponents = src.aTeamComponents;
+        bTeamComponents = src.bTeamComponents;
 
         // HACK: from DrawMap update hack
 		/*
