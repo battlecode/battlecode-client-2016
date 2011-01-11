@@ -205,30 +205,29 @@ class DrawHUD {
             } else {
                 g2.translate(8, 0);
                 g2.drawString(formatStringSize(footerText, 5), 0, 12);
-                g2.translate(0, 14);
+                g2.translate(-10, 14);
                 if (teamName != null)
                     g2.drawString(teamName, 0, 12);
-            }
-            g2.scale(1 / x, 1 / x);
 
-            g2.setTransform(pushed);
+            }
+            //g2.scale(1 / x, 1 / x);
+
+            //g2.setTransform(pushed);
 
             //TODO FIX THIS
             if (team == team.A) {
                 if (aWins > 0) {
-                    g2.translate(0.f, 1.25f);
+                    g2.translate(0.f, 14);
                     g2.setColor(Color.RED);
-                    g2.fillOval(0, 0, 1, 1);
-                    g2.translate(0.f, -1.25f);
+                    g2.fillOval(0, 0, 12, 12);
                 }
             } else {
                 // if team B won more than one round, give it a blue circle
                 if (bWins > 0) {
                     // damn yangs magic offsets -_-
-                    g2.translate(0.75f, 1.25f);
+                    g2.translate(0, 14);
                     g2.setColor(Color.BLUE);
-                    g2.fillOval(0, 0, 1, 1);
-                    g2.translate(-0.75f, -1.25f);
+                    g2.fillOval(0, 0, 12, 12);
                 }
             }
         }
