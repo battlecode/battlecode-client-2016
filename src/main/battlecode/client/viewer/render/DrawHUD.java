@@ -101,7 +101,13 @@ class DrawHUD {
     public void drawPopularEquipment(Graphics2D g2, RoundStats stats){
 
     	ArrayList<ComponentType> components = team.equals(Team.A) ? stats.getATeamComponents() : stats.getBTeamComponents();
-
+    	String popularWeaponString = "None";
+        String popularArmorString = "None";
+        String popularMiscString = "None";
+       
+    	
+    	if(components != null) {
+    		
     	            /*Get the most popular: 
     	             * Weapon
     	             * Armor
@@ -145,15 +151,17 @@ class DrawHUD {
     	            		}
     	            	}
     	            }
+    	            
 
+    	            if(popularWeapon != null)popularWeaponString = popularWeapon.toString();
+    	            if( popularArmor != null)popularArmorString =  popularArmor.toString();
+    	            if( popularMisc != null )popularMiscString =  popularMisc.toString();
+    	}
 
     	            //Here we draw all of "weapon/armor/misc of choice" labels
     	            
     	            g2.translate(0,  -.5 * 4.5 / width);
     	            
-    	            String popularWeaponString = popularWeapon == null ? "None" : popularWeapon.toString();
-    	            String popularArmorString = popularArmor == null ? "None" : popularArmor.toString();
-    	            String popularMiscString = popularMisc == null ? "None" : popularMisc.toString();
     	           
     	            double xs = .08;
     	            g2.scale(xs, xs);

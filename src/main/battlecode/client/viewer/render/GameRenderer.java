@@ -236,10 +236,12 @@ public class GameRenderer extends BaseRenderer {
         }
         g2.setTransform(pushed);
         {
-        	g2.translate(/*unitWidth - */unitHUDwidth/4.0, 20);
+        	g2.translate(/*unitWidth - */unitHUDwidth/4.0, 10);
         	g2.scale(0.08, 0.08);
            // g2.transform(hudScale);
-            g2.drawString("Weapon of Choice", 0, 0);
+            g2.drawString("Weapon of Choice", 5, 0);
+            g2.drawString("Armor of Choice", 5, 14);
+            g2.drawString("Misc of Choice", 5, 28);
         }
         g2.setTransform(pushed);
         
