@@ -295,6 +295,8 @@ class DrawHUD {
                 g2.translate(-10, 14);
                 if (teamName != null)
                     g2.drawString(teamName, 0, 12);
+                
+                AffineTransform pushed4 = g2.getTransform();
                 g2.drawString("Weapons", -30, 65);
                 g2.drawString("Armors", -25, 105);
                 g2.drawString("Miscs", -20, 145);
@@ -309,6 +311,7 @@ class DrawHUD {
                 g2.setColor(ballColor);
                 g2.drawImage(ballGradient.image, 0, 0, 36, 36, null);
                 g2.fillOval(0, 0, 36, 36);
+                g2.setTransform(pushed4);
 
             }
             //g2.scale(1 / x, 1 / x);
