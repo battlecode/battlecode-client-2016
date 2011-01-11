@@ -22,6 +22,7 @@ class DrawHUD {
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
+    private static final ImageFile ballGradient = new ImageFile("art/winball.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
     private final Font fnt;
@@ -273,8 +274,6 @@ class DrawHUD {
             g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
             g2.fillRect(0, 0, 1, 1);
 
-
-
             g2.setTransform(pushed2);
             g2.translate(0, -.9 * 4.5 / width);
 
@@ -307,7 +306,8 @@ class DrawHUD {
             if (team == team.A) {
                 if (aWins > 0) {
                     g2.translate(0.f, 14);
-                    g2.setColor(Color.RED);
+                    g2.setColor(new Color(255, 0, 0, 150));
+                    g2.drawImage(ballGradient.image, 0, 0, 12, 12, null);
                     g2.fillOval(0, 0, 12, 12);
                 }
             } else {
@@ -315,7 +315,8 @@ class DrawHUD {
                 if (bWins > 0) {
                     // damn yangs magic offsets -_-
                     g2.translate(0, 14);
-                    g2.setColor(Color.BLUE);
+                    g2.setColor(new Color(0, 0, 255, 150));
+                    g2.drawImage(ballGradient.image, 0, 0, 12, 12, null);
                     g2.fillOval(0, 0, 12, 12);
                 }
             }
