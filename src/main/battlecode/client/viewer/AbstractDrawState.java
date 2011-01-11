@@ -1,6 +1,9 @@
 package battlecode.client.viewer;
 
 import battlecode.client.viewer.render.RenderConfiguration;
+
+import battlecode.client.viewer.render.*;
+import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
 import battlecode.common.Chassis;
 import battlecode.common.GameConstants;
@@ -10,6 +13,7 @@ import battlecode.world.GameMap;
 import battlecode.world.signal.*;
 import java.util.HashMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -192,8 +196,15 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
     public Void visitMovementSignal(MovementSignal s) {
         DrawObject obj = getRobot(s.getRobotID());
+        boolean teleported = !obj.loc.isAdjacentTo(s.getNewLoc());
+        //TODO: this should probably be from a teleported signal
         obj.setLocation(s.getNewLoc());
-        obj.setMoving(s.isMovingForward());
+        if(teleported){
+        	obj.setTeleport(obj.loc, s.getNewLoc());
+        }else{
+        	
+        	obj.setMoving(s.isMovingForward());
+        }
         return null;
     }
 
@@ -201,6 +212,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         //We have our robot update its components so that we can show it in the infopanel.
         DrawObject obj = getRobot(s.robotID);
         obj.addComponent(s.component);
+       
         return null;
     }
 

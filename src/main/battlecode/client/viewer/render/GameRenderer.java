@@ -235,6 +235,14 @@ public class GameRenderer extends BaseRenderer {
             sideB.draw(g2);
         }
         g2.setTransform(pushed);
+        {
+        	g2.translate(/*unitWidth - */unitHUDwidth/4.0, 20);
+        	g2.scale(0.08, 0.08);
+           // g2.transform(hudScale);
+            g2.drawString("Weapon of Choice", 0, 0);
+        }
+        g2.setTransform(pushed);
+        
     }
 
     public void setDebugState(DebugState dbg) {
