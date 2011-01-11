@@ -25,7 +25,7 @@ class DrawHUD {
     private static final ImageFile ballGradient = new ImageFile("art/winball.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
-    private final Font fnt;
+    private final Font fnt, smallfnt;
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -67,6 +67,7 @@ class DrawHUD {
             e.printStackTrace();
         }
         fnt = fnt2;
+        smallfnt = fnt2.deriveFont(8f);
     }
 
     public float getRatioWidth() {
@@ -166,13 +167,14 @@ class DrawHUD {
 
         g2.translate(0, -.5 * 4.5 / width);
 
-
+        g2.setFont(smallfnt);
         double xs = .08;
         g2.scale(xs, xs);
-        g2.drawString(formatStringSize(popularWeaponString, 3), -20, 0);
-        g2.drawString(formatStringSize(popularArmorString, 3), -20, 40);
-        g2.drawString(formatStringSize(popularMiscString, 3), -20, 80);
+        g2.drawString(formatStringSize(popularWeaponString, 3), -25, 0);
+        g2.drawString(formatStringSize(popularArmorString, 3), -25, 40);
+        g2.drawString(formatStringSize(popularMiscString, 3), -25, 80);
         g2.scale(1 / xs, 1 / xs);
+        g2.setFont(fnt);
     }
 
     public void draw(Graphics2D g2) {
