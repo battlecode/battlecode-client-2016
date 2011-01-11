@@ -33,6 +33,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final double diagonalFactor = Math.sqrt(2);
     private static final Stroke thinStroke = new BasicStroke(0.05f);
     private static final Stroke mediumStroke = new BasicStroke(0.075f);
+    private static final Stroke thickStroke = new BasicStroke(0.1f);
     private static final Stroke broadcastStroke = thinStroke;
     private static final Stroke attackStroke = mediumStroke;
     private static final Color tintTeamA = new Color(1, 0, 0, 0.125f);
@@ -305,12 +306,35 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     // it's easier to see what is being attacked if we draw
                     // the crosshair in addition to the cannonball
                     //if (info.type != Chassis.CHAINER) {
-                    if (getTeam() == Team.A) {
+//                    if (getTeam() == Team.A) {
+//                        g2.setColor(Color.RED);
+//                    } else {
+//                        g2.setColor(Color.BLUE);
+//                    }
+                    if (componentType == componentType.SMG) {
+                        g2.setColor(Color.GRAY);
+                        g2.setStroke(thinStroke);
+                    } else if (componentType == componentType.BEAM) {
+                        g2.setColor(Color.MAGENTA);
+                        g2.setStroke(mediumStroke);
+                    } else if (componentType == componentType.BLASTER) {
+                        g2.setColor(Color.GREEN);
+                        g2.setStroke(mediumStroke);
+                    } else if (componentType == componentType.HAMMER) {
+                        g2.setStroke(thickStroke);
+                        g2.setColor(Color.ORANGE);
+                    } else if (componentType == componentType.MEDIC) {
                         g2.setColor(Color.RED);
-                    } else {
-                        g2.setColor(Color.BLUE);
+                        g2.setStroke(mediumStroke);
+                    } else if (componentType == componentType.RAILGUN) {
+                        g2.setColor(Color.YELLOW);
+                        g2.setStroke(thinStroke);
                     }
-                    g2.setStroke(mediumStroke);
+
+
+
+
+                    //g2.setStroke(mediumStroke);
                     g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                             targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
                     //}
