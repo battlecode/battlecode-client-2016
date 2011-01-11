@@ -27,6 +27,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected double[] teamHP = new double[2];
     //protected List<DrawObject> archonsA;
     //protected List<DrawObject> archonsB;
+
+    protected ArrayList<ComponentType> aTeamComponents = new ArrayList<ComponentType>();
+    protected ArrayList<ComponentType> bTeamComponents = new ArrayList<ComponentType>();
+    
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -85,6 +89,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return obj;
     }
 
+    public ArrayList<ComponentType> getATeamComponents(){
+    	return aTeamComponents;
+    }
+    public ArrayList<ComponentType> getBTeamComponents(){
+    	return bTeamComponents;
+    }
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
         if (previous == null) {
@@ -212,7 +222,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         //We have our robot update its components so that we can show it in the infopanel.
         DrawObject obj = getRobot(s.robotID);
         obj.addComponent(s.component);
-       
+        Team objTeam = obj.getTeam();
+        if(objTeam.equals(Team.A)){
+        	aTeamComponents.add(s.component);
+        }else{
+        	bTeamComponents.add(s.component);
+        }
         return null;
     }
 
