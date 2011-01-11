@@ -300,8 +300,9 @@ class DrawHUD {
                 g2.drawString("Miscs", -20, 145);
                 
                 g2.translate(-20, 220);
-                double aGPoints = stats.getGatheredPoints(Team.A);
-                double bGPoints = stats.getGatheredPoints(Team.B);
+                
+                double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
+                double bGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.B);
                 Color ballColor = null;
                 if(aGPoints == bGPoints)ballColor = new Color(100, 100, 100, 100);
                 else ballColor = (aGPoints > bGPoints) ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 100);
