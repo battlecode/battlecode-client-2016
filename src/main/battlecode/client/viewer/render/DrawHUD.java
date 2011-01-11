@@ -296,6 +296,16 @@ class DrawHUD {
                 g2.drawString("Weapons", -30, 65);
                 g2.drawString("Armors", -25, 105);
                 g2.drawString("Miscs", -20, 145);
+                
+                g2.translate(-20, 220);
+                double aGPoints = stats.getGatheredPoints(Team.A);
+                double bGPoints = stats.getGatheredPoints(Team.B);
+                Color ballColor = null;
+                if(aGPoints == bGPoints)ballColor = new Color(100, 100, 100, 100);
+                else ballColor = (aGPoints > bGPoints) ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 100);
+                g2.setColor(ballColor);
+                g2.drawImage(ballGradient.image, 0, 0, 36, 36, null);
+                g2.fillOval(0, 0, 36, 36);
 
             }
             //g2.scale(1 / x, 1 / x);
