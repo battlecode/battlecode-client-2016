@@ -35,6 +35,7 @@ class DrawHUD {
     }
     private final DrawState ds;
     private final Team team;
+    private final String teamName;
     private final Rectangle2D.Float bgFill = new Rectangle2D.Float(0, 0, 1, 1);
     private float width;
     private float spriteScale;
@@ -43,9 +44,10 @@ class DrawHUD {
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
 
-    public DrawHUD(DrawState ds, Team team) {
+    public DrawHUD(DrawState ds, Team team, String teamName) {
         this.ds = ds;
         this.team = team;
+        this.teamName = teamName;
         setRatioWidth(2.0f / 9.0f);
 
         Font fnt2 = new Font("Default", Font.PLAIN, 12);
@@ -197,9 +199,15 @@ class DrawHUD {
             if (team == Team.A) {
                 g2.translate(-2, 0);
                 g2.drawString(footerText, 0, 12);
+                g2.translate(0, 14);
+                if (teamName != null)
+                    g2.drawString(teamName, 0, 12);
             } else {
                 g2.translate(8, 0);
                 g2.drawString(formatStringSize(footerText, 5), 0, 12);
+                g2.translate(0, 14);
+                if (teamName != null)
+                    g2.drawString(teamName, 0, 12);
             }
             g2.scale(1 / x, 1 / x);
 

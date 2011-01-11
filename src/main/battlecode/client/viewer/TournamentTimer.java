@@ -43,11 +43,11 @@ public class TournamentTimer {
 							//loop.start();
 							if (minimap != null) { 
 								minimap.resetMatches();
-								minimap.setBracket();
+								//minimap.setBracket();
 								aWins = bWins = 0;
 							}
 						}
-						else if (minimap != null) { minimap.setNull(); }
+						//else if (minimap != null) { minimap.setNull(); }
 					}
 					
 					public void footerReceived(BufferedMatch match) {

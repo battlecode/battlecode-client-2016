@@ -61,8 +61,8 @@ public class GameRenderer extends BaseRenderer {
         debugFont = new Font(null, Font.PLAIN, 2);
         ds = new DrawState();
         try {
-            sideA = new DrawHUD(ds, Team.A);
-            sideB = new DrawHUD(ds, Team.B);
+            sideA = new DrawHUD(ds, Team.A, match.getTeamA());
+            sideB = new DrawHUD(ds, Team.B, match.getTeamB());
         } catch (Error e) {
             e.printStackTrace();
         }
