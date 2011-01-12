@@ -113,6 +113,7 @@ public class InfoPanel extends JPanel {
 			JLabel componentLabel = componentLabels.get(labelCount);
 			componentLabel.setText(" " + component.toString() + " ");
 			labelCount++;
+			if(labelCount > 9)break;
 		}//It would probably be more efficient to set up the labels, then just change their texts.
 	
 	}
