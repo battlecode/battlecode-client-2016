@@ -59,8 +59,7 @@ import battlecode.common.TerrainTile;
 
 public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
-    private int mapMinPoints = 0;
-
+    //private int mapMinPoints = 0;
     private static class Factory implements GameStateFactory<GLDrawState> {
 
         public GLDrawState createState(GameMap map) {
@@ -168,7 +167,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         this();
         this.setGameMap(map);
-        this.mapMinPoints = map.getMinPoints();
+        //this.mapMinPoints = map.getMinPoints();
     }
 
     private GLDrawState(GLDrawState clone) {
@@ -258,7 +257,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
         }*/
 
-        mapMinPoints = src.mapMinPoints;
+        // mapMinPoints = src.mapMinPoints;
 
         if (src.gameMap != null) {
             gameMap = src.gameMap;
@@ -324,10 +323,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
     }
 
-    public int getMapMinPoints() {
-        return mapMinPoints;
-    }
-
+    //public int getMapMinPoints() {
+    //     return mapMinPoints;
+    // }
     private String getAvatarPath(RobotInfo ri) {
         String type = ri.type.toString().toLowerCase();
         return "art/" + type + (ri.team == Team.NEUTRAL ? "0" : (ri.team == Team.A ? "1" : "2")) + ".png";

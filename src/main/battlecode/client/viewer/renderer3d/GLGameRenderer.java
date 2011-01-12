@@ -134,7 +134,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     }
     }
     };*/
-
     private Runnable matchStarter = null;
 
     public GLGameRenderer(BufferedMatch match, Graphics canvas) {
@@ -142,9 +141,9 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         this.canvas = canvas;
         debugFont = new Font(null, Font.PLAIN, 2);
         ds = new GLDrawState();
-		cam = new Camera();
+        cam = new Camera();
 
-		//fullscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow();
+        //fullscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow();
 
         // enumerate all graphisc devices
 		/*GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
@@ -210,9 +209,9 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         }
     }
 
-	protected void toggleFastForward() {
-		fastForward = !fastForward;
-	}
+    protected void toggleFastForward() {
+        fastForward = !fastForward;
+    }
 
     protected boolean trySkipRounds(int rounds) {
         int targetRound = timeline.getRound() + rounds;
@@ -224,10 +223,10 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     }
     public static int BRACKET_INDEX = 0;
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private void processHeader(MatchHeader header) {
         System.out.println("PROCESS HEADER: " + header);
-        GameMap map = new GameMap((GameMap)header.getMap());
+        GameMap map = new GameMap((GameMap) header.getMap());
         drawMap = new GLDrawMap(map);
         //ds.clearBlockNumberDeltas();
         origin = map.getMapOrigin();
@@ -251,7 +250,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         unitWidth = drawMap.getMapWidth() + 2 * unitHUDwidth;
         clipRect.width = drawMap.getMapWidth();
         clipRect.height = drawMap.getMapHeight();
-	
+
         Vector3f eye = new Vector3f(drawMap.getMapWidth() / 2, 50.0f, drawMap.getMapHeight());
         Vector3f target = new Vector3f(drawMap.getMapWidth() / 2, 0.0f, drawMap.getMapHeight() / 2);
         eye.sub(eye, target);
@@ -261,7 +260,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         eye.scale(zoom); // bring us to 75% of the distance
         eye.add(eye, target);
-        cam.setParameters(eye,target,new Vector3f(0.0f, 1.0f, 0.0f), 45.0, 0.1, 100.0);
+        cam.setParameters(eye, target, new Vector3f(0.0f, 1.0f, 0.0f), 45.0, 0.1, 100.0);
 
         // select buffer size (2 * mapWidth * mapHeight) squares
         //selectCapacity = 2 * drawMap.getMapHeight() * drawMap.getMapWidth() * SELECT_STACK_DEPTH * 4;
@@ -325,11 +324,11 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         }
     }
 
-	public void setDebugState(battlecode.client.viewer.DebugState dbg) {
-		this.debugState = dbg;
-	}
+    public void setDebugState(battlecode.client.viewer.DebugState dbg) {
+        this.debugState = dbg;
+    }
 
-	private void processFooter(MatchFooter footer) {
+    private void processFooter(MatchFooter footer) {
         if (cutScene != null) {
             cutScene.setWinner(footer.getWinner());
         }
@@ -353,9 +352,9 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         RenderConfiguration.getInstance().setSpriteSize(spriteSize);
     }
 
-	public AbstractDrawObject getRobotByID(int id) {
-		return ds.getDrawObject(id);
-	}
+    public AbstractDrawObject getRobotByID(int id) {
+        return ds.getDrawObject(id);
+    }
 
     /*private void drawHUD(Graphics2D g2) {
     AffineTransform pushed = g2.getTransform(); {
@@ -460,33 +459,32 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         return cam;
     }
 
-	public void setupProjection(GL gl, GLU glu) {
-		if (cam.isOrtho()) {
-			gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-			
-			float heightScale = (float) canvasSize.height / (float) drawMap.getMapHeight();
-			float widthScale = (float) canvasSize.width / (float) drawMap.getMapWidth();
-			float scale = 0.0f;
-			
-			scale = Math.min(heightScale, widthScale);
-			float zScale = scale;
-			float xScale = zScale;
-			
-			float xTrans = (canvasSize.width - drawMap.getMapWidth() * xScale) / 2.0f;
-			float zTrans = (canvasSize.height - drawMap.getMapHeight() * zScale) / 2.0f;
-			
-			//gl.glTranslatef(0.0f, 0.0f, canvasSize.height);
-			gl.glTranslatef(xTrans, 0.0f, zTrans);
-			gl.glTranslatef(0.0f, 0.0f, -(canvasSize.height - drawMap.getMapHeight() * zScale));
-			gl.glScalef(xScale, 0.0f, zScale);
-			gl.glTranslatef(0.0f, 0.0f, -drawMap.getMapHeight());
-		} else {
-			gl.glScalef(0.1f, 0.1f, 0.1f);
-			cam.setTransform(gl, glu);
-		}
-	}
+    public void setupProjection(GL gl, GLU glu) {
+        if (cam.isOrtho()) {
+            gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 
-	final battlecode.client.util.SettableObservable displayObservable = new battlecode.client.util.SettableObservable();
+            float heightScale = (float) canvasSize.height / (float) drawMap.getMapHeight();
+            float widthScale = (float) canvasSize.width / (float) drawMap.getMapWidth();
+            float scale = 0.0f;
+
+            scale = Math.min(heightScale, widthScale);
+            float zScale = scale;
+            float xScale = zScale;
+
+            float xTrans = (canvasSize.width - drawMap.getMapWidth() * xScale) / 2.0f;
+            float zTrans = (canvasSize.height - drawMap.getMapHeight() * zScale) / 2.0f;
+
+            //gl.glTranslatef(0.0f, 0.0f, canvasSize.height);
+            gl.glTranslatef(xTrans, 0.0f, zTrans);
+            gl.glTranslatef(0.0f, 0.0f, -(canvasSize.height - drawMap.getMapHeight() * zScale));
+            gl.glScalef(xScale, 0.0f, zScale);
+            gl.glTranslatef(0.0f, 0.0f, -drawMap.getMapHeight());
+        } else {
+            gl.glScalef(0.1f, 0.1f, 0.1f);
+            cam.setTransform(gl, glu);
+        }
+    }
+    final battlecode.client.util.SettableObservable displayObservable = new battlecode.client.util.SettableObservable();
 
     /**
      * This method is called to render the contents of each frame.
@@ -552,8 +550,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         if (/*timeline.getRound() % 10 == 0 &&*/awesomePoint != null) {
             float ax = awesomePoint.x - origin.getX() + 0.5f;
             float ay = awesomePoint.y - origin.getY() + 0.5f;
-			cam.setAutocamTarget(ax, 3.2f, ay, ds.getAwesomeRadius());
-			// using getTerrainHeight causes excessive jitter
+            cam.setAutocamTarget(ax, 3.2f, ay, ds.getAwesomeRadius());
+            // using getTerrainHeight causes excessive jitter
             //cam.setAutocamTarget(ax, drawMap.getTerrainHeight(ax, ay), ay, ds.getAwesomeRadius());
         }
 
@@ -565,7 +563,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         // TODO draw the scene in here
         GL gl = ad.getGL();
-		gl.glLoadIdentity();
+        gl.glLoadIdentity();
 
         // make nice blue color
         gl.glClearColor(0.35f * 0.5f, 0.61f * 0.5f, 0.9f * 0.5f, 0.0f);
@@ -700,7 +698,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
                 gl.glMatrixMode(GL.GL_MODELVIEW);
                 gl.glLoadIdentity();
-				setupProjection(gl,glu);
+                setupProjection(gl, glu);
 
                 // this is where we do selection
                 ds.doSelection(gl, glu, this, drawMap, origin);
@@ -727,7 +725,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
 
-        if (cam != null) cam.setProjection(gl, glu);
+        if (cam != null)
+            cam.setProjection(gl, glu);
 
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -735,7 +734,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
 
         if (cam != null) {
-			setupProjection(gl,glu);
+            setupProjection(gl, glu);
         }
 
         gl.glEnable(GL.GL_LIGHTING);
@@ -766,7 +765,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         // draw the text
         if (txtRenderer != null) {
             // get points of the teams
-            int minPoints = ds.getMapMinPoints();
+            //int minPoints = ds.getMapMinPoints();
             int aPoints = (int) Math.round(ds.getRoundStats().getPoints(Team.A));
             int bPoints = (int) Math.round(ds.getRoundStats().getPoints(Team.B));
 
@@ -805,9 +804,11 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             gl.glLineWidth(16.0f);
             float barDir = 0;
             //if (aPoints > minPoints || bPoints > minPoints)
-            barDir = (bPoints - aPoints) / (minPoints / 1.0f);
-            if (barDir < -1.0f) barDir = -1.0f;
-            if (barDir > 1.0f) barDir = 1.0f;
+            barDir = (bPoints - aPoints) / (1 / 1.0f);
+            if (barDir < -1.0f)
+                barDir = -1.0f;
+            if (barDir > 1.0f)
+                barDir = 1.0f;
             // if barDir > 0 then B is winning, < 0 then A is winning, else tie
 
             gl.glBegin(GL.GL_LINES);
@@ -839,7 +840,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             // for the blue guy
             gl.glColor4f(0.7f, 0.95f, 1.0f, 1.0f);
             gl.glVertex3i(ad.getWidth() / 2, ad.getHeight() - 20, 3);
-            float bPercent = (float)1.f;
+            float bPercent = (float) 1.f;
             gl.glVertex3i((int) (ad.getWidth() / 2 + bPercent * barHalfWidth), ad.getHeight() - 20, 3);
 
             // for the red guy
@@ -886,7 +887,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 //            txtRenderer.draw(s, ad.getWidth() - metric.stringWidth(s) - 2 - 4, ad.getHeight() - metric.getAscent());
 //            txtRenderer.draw(archons, ad.getWidth() - metric.stringWidth(archons) - 2 - 4, ad.getHeight() - metric.getAscent() * 2);
 
-            String round = "MIN: " + minPoints + "    RND: " + String.valueOf(maxRounds - timeline.getRound());
+            String round = "RND: " + String.valueOf(maxRounds - timeline.getRound());
             if (roundStringWidth == -1)
                 roundStringWidth = metric.stringWidth(round);
 
@@ -941,8 +942,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "HELLLLLOOOOO, WOOOORLD");
 
         gl.glDisable(GL.GL_TEXTURE_2D);*/
-		displayObservable.setChanged();
-		displayObservable.notifyObservers();
+        displayObservable.setChanged();
+        displayObservable.notifyObservers();
     }
 
     /**
@@ -1021,12 +1022,14 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         GL gl = ad.getGL();
 
-		canvasSize = new Dimension(width,height);
-        if (cam != null) cam.updateWindowSize(width, height);
+        canvasSize = new Dimension(width, height);
+        if (cam != null)
+            cam.updateWindowSize(width, height);
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        if (cam != null) cam.setProjection(gl, glu);
+        if (cam != null)
+            cam.setProjection(gl, glu);
     }
 
     public void removeCanvasReference() {
