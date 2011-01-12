@@ -59,6 +59,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
                 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
         turnedOn = copy.turnedOn;
+		broadcastRadius = copy.broadcastRadius;
+		broadcastRadiusSq = copy.broadcastRadiusSq;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
