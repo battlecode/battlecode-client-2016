@@ -102,7 +102,7 @@ class DrawHUD {
 
     public void drawPopularEquipment(Graphics2D g2){
     	if(team == null || ds == null) return;
-    	ArrayList<ComponentType> components = team.equals(Team.A) ? ds.getATeamComponents() : ds.getBTeamComponents();
+    	ArrayList<ComponentType> components = team.equals(Team.A) ? new ArrayList<ComponentType>(ds.getATeamComponents()) : new ArrayList<ComponentType>(ds.getBTeamComponents());
     	String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
