@@ -47,7 +47,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public AbstractDrawObject(AbstractDrawObject<Animation> copy) {
         this(copy.info.type, copy.info.team);
 
-        components = copy.components;
+        components = new ArrayList<ComponentType>(copy.components);
         loc = copy.loc;
         dir = copy.dir;
         energon = copy.energon;

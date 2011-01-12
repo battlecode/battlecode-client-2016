@@ -32,6 +32,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected ArrayList<ComponentType> aTeamComponents = new ArrayList<ComponentType>();
     protected ArrayList<ComponentType> bTeamComponents = new ArrayList<ComponentType>();
     
+    protected ComponentType[] topWeapons = new ComponentType[2];
+    protected ComponentType[] topArmors = new ComponentType[2];
+    protected ComponentType[] topMiscs = new ComponentType[2];
+    
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -219,19 +223,89 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return null;
     }
 
-    public Void visitEquipSignal(EquipSignal s) {
+    //synchronized to make sure we don't get concurrency issues.
+    public synchronized Void visitEquipSignal(EquipSignal s) {
         //We have our robot update its components so that we can show it in the infopanel.
         DrawObject obj = getRobot(s.robotID);
         obj.addComponent(s.component);
         Team objTeam = obj.getTeam();
         if(objTeam.equals(Team.A)){
         	aTeamComponents.add(s.component);
+        	calculateEquipPopularity(aTeamComponents, Team.A);
         }else{
         	bTeamComponents.add(s.component);
+        	calculateEquipPopularity(bTeamComponents, Team.B);
         }
 		if(s.component.componentClass == ComponentClass.COMM)
 			obj.updateBroadcastRadius(s.component.range);
         return null;
+    }
+    
+    protected void calculateEquipPopularity(ArrayList<ComponentType> components, Team team){
+        
+    		
+            /*Get the most popular:
+             * Weapon
+             * Armor
+             * Misc
+             */
+
+
+            Map<ComponentType, Integer> componentTypeCount = new HashMap<ComponentType, Integer>();
+            //Iterate through and get the counts
+            for (ComponentType c : components) {
+                if (!componentTypeCount.containsKey(c)) {
+                    componentTypeCount.put(c, new Integer(1));
+                } else {
+                    componentTypeCount.put(c, new Integer(componentTypeCount.get(c) + 1));
+                }
+            }
+
+            ComponentType popularWeapon = null;
+            ComponentType popularArmor = null;
+            ComponentType popularMisc = null;
+            int popularWeaponCount = 0;
+            int popularArmorCount = 0;
+            int popularMiscCount = 0;
+
+            for (ComponentType c : components) {
+                int popularity = componentTypeCount.get(c).intValue();
+                if (c.componentClass.equals(ComponentClass.WEAPON)) {
+                    if (popularity > popularWeaponCount) {
+                        popularWeaponCount = popularity;
+                        popularWeapon = c;
+                    }
+                } else if (c.componentClass.equals(ComponentClass.ARMOR)) {
+                    if (popularity > popularArmorCount) {
+                        popularArmorCount = popularity;
+                        popularArmor = c;
+                    }
+                } else if (c.componentClass.equals(ComponentClass.MISC)) {
+                    if (popularity > popularMiscCount) {
+                        popularMiscCount = popularity;
+                        popularMisc = c;
+                    }
+                }
+            }
+            
+            topWeapons[team.ordinal()] = popularWeapon;
+            topArmors[team.ordinal()] = popularArmor;
+            topMiscs[team.ordinal()] = popularMisc;
+
+
+            
+        
+        
+    }
+    
+    public ComponentType[] getTopWeapons(){
+    	return topWeapons;
+    }
+    public ComponentType[] getTopArmors(){
+    	return topArmors;
+    }
+    public ComponentType[] getTopMiscs(){
+    	return topMiscs;
     }
 
     public Void visitSetDirectionSignal(SetDirectionSignal s) {

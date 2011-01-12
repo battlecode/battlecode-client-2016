@@ -103,67 +103,22 @@ class DrawHUD {
 
 
     public void drawPopularEquipment(Graphics2D g2){
-    	if(team == null || ds == null) return;
-    	ArrayList<ComponentType> components = team.equals(Team.A) ? new ArrayList<ComponentType>(ds.getATeamComponents()) : new ArrayList<ComponentType>(ds.getBTeamComponents());
+    	if(team == null || ds == null)return;
     	String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
+        
+        ComponentType popularWeapon = ds.getTopWeapons()[team.ordinal()];
+        ComponentType popularArmor = ds.getTopArmors()[team.ordinal()];
+        ComponentType popularMisc = ds.getTopMiscs()[team.ordinal()];
 
-
-        if (components != null) {
-
-            /*Get the most popular:
-             * Weapon
-             * Armor
-             * Misc
-             */
-
-
-            Map<ComponentType, Integer> componentTypeCount = new HashMap<ComponentType, Integer>();
-            //Iterate through and get the counts
-            for (ComponentType c : components) {
-                if (!componentTypeCount.containsKey(c)) {
-                    componentTypeCount.put(c, new Integer(1));
-                } else {
-                    componentTypeCount.put(c, new Integer(componentTypeCount.get(c) + 1));
-                }
-            }
-
-            ComponentType popularWeapon = null;
-            ComponentType popularArmor = null;
-            ComponentType popularMisc = null;
-            int popularWeaponCount = 0;
-            int popularArmorCount = 0;
-            int popularMiscCount = 0;
-
-            for (ComponentType c : components) {
-                int popularity = componentTypeCount.get(c).intValue();
-                if (c.componentClass.equals(ComponentClass.WEAPON)) {
-                    if (popularity > popularWeaponCount) {
-                        popularWeaponCount = popularity;
-                        popularWeapon = c;
-                    }
-                } else if (c.componentClass.equals(ComponentClass.ARMOR)) {
-                    if (popularity > popularArmorCount) {
-                        popularArmorCount = popularity;
-                        popularArmor = c;
-                    }
-                } else if (c.componentClass.equals(ComponentClass.MISC)) {
-                    if (popularity > popularMiscCount) {
-                        popularMiscCount = popularity;
-                        popularMisc = c;
-                    }
-                }
-            }
-
-
-            if (popularWeapon != null)
-                popularWeaponString = popularWeapon.toString();
-            if (popularArmor != null)
-                popularArmorString = popularArmor.toString();
-            if (popularMisc != null)
-                popularMiscString = popularMisc.toString();
-        }
+        if (popularWeapon != null)
+            popularWeaponString = popularWeapon.toString();
+        if (popularArmor != null)
+            popularArmorString = popularArmor.toString();
+        if (popularMisc != null)
+            popularMiscString = popularMisc.toString();
+        
 
         //Here we draw all of "weapon/armor/misc of choice" labels
 

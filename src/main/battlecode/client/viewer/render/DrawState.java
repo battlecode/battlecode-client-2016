@@ -1,6 +1,7 @@
 package battlecode.client.viewer.render;
 
 import java.awt.Color;
+
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.Chassis;
 import battlecode.common.GameConstants;
 import battlecode.common.Team;
+import battlecode.common.ComponentType;
 
 import battlecode.world.GameMap;
 import battlecode.serial.RoundStats;
@@ -106,8 +108,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
         }
         stats = src.stats;
-        aTeamComponents = src.aTeamComponents;
-        bTeamComponents = src.bTeamComponents;
+        aTeamComponents = new ArrayList<ComponentType>(src.aTeamComponents);
+        bTeamComponents = new ArrayList<ComponentType>(src.bTeamComponents);
+        calculateEquipPopularity(aTeamComponents, Team.A);
+        calculateEquipPopularity(bTeamComponents, Team.B);
 
         // HACK: from DrawMap update hack
 		/*
