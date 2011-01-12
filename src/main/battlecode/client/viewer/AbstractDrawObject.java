@@ -91,6 +91,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
     protected int broadcastRadius = 0;
+	protected int broadcastRadiusSq = 0;
     protected boolean turnedOn = true;
     protected ComponentType componentType;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
@@ -128,6 +129,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public int broadcastRadius() {
         return broadcastRadius;
     }
+
+	public void updateBroadcastRadius(int radiusSq) {
+		if(radiusSq>broadcastRadiusSq) {
+			broadcastRadiusSq = radiusSq;
+			broadcastRadius = (int)Math.round(Math.sqrt(broadcastRadiusSq));
+		}
+	}
 
     public Chassis getType() {
         return info.type;

@@ -3,6 +3,7 @@ package battlecode.client.viewer;
 import battlecode.client.viewer.render.RenderConfiguration;
 
 import battlecode.client.viewer.render.*;
+import battlecode.common.ComponentClass;
 import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
 import battlecode.common.Chassis;
@@ -228,6 +229,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }else{
         	bTeamComponents.add(s.component);
         }
+		if(s.component.componentClass == ComponentClass.COMM)
+			obj.updateBroadcastRadius(s.component.range);
         return null;
     }
 
