@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
 
 class DrawHUD {
@@ -100,10 +101,11 @@ class DrawHUD {
         return s;
     }
 
-    public void drawPopularEquipment(Graphics2D g2){
-    	if(team == null || ds == null) return;
-    	ArrayList<ComponentType> components = team.equals(Team.A) ? ds.getATeamComponents() : ds.getBTeamComponents();
-    	String popularWeaponString = "None";
+    public void drawPopularEquipment(Graphics2D g2) {
+        if (team == null || ds == null)
+            return;
+        ArrayList<ComponentType> components = team.equals(Team.A) ? ds.getATeamComponents() : ds.getBTeamComponents();
+        String popularWeaponString = "None";
         String popularArmorString = "None";
         String popularMiscString = "None";
 
@@ -295,19 +297,21 @@ class DrawHUD {
                 g2.translate(-10, 14);
                 if (teamName != null)
                     g2.drawString(teamName, 0, 12);
-                
+
                 AffineTransform pushed4 = g2.getTransform();
                 g2.drawString("Weapons", -30, 65);
                 g2.drawString("Armors", -25, 105);
                 g2.drawString("Miscs", -20, 145);
-                
+
                 g2.translate(-20, 220);
-                
+
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
                 double bGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.B);
                 Color ballColor = null;
-                if(aGPoints == bGPoints)ballColor = new Color(100, 100, 100, 100);
-                else ballColor = (aGPoints > bGPoints) ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 100);
+                if (aGPoints == bGPoints)
+                    ballColor = new Color(100, 100, 100, 100);
+                else
+                    ballColor = (aGPoints > bGPoints) ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 100);
                 g2.setColor(ballColor);
                 g2.drawImage(ballGradient.image, 0, 0, 36, 36, null);
                 g2.fillOval(0, 0, 36, 36);
