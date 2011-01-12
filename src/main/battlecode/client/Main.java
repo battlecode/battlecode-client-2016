@@ -39,7 +39,7 @@ public class Main {
 		// on monitor one, else run only viewer
 	   
 		final GraphicsDevice gd = (viewer.isTournamentMode()
-								   ? (devices.length > 1 ? devices[1] : devices[0]) : devices[0]);
+								   ? (devices.length > 1 ? devices[0] : devices[1]) : devices[0]);
 
 		SwingUtilities.invokeLater(new Runnable() {
 

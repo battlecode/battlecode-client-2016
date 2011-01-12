@@ -30,7 +30,7 @@ public class MinimapViewer {
 		
 		if(fullscreen) {
 			frame.setUndecorated(true);
-			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
 			Rectangle secondWindow = gd.getDefaultConfiguration().getBounds();
 			frame.setBounds(secondWindow); 
 		} else {

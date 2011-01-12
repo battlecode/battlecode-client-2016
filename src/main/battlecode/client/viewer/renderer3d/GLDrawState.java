@@ -168,7 +168,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         this();
         this.setGameMap(map);
-        this.mapMinPoints = map.getMinPoints();
+        //this.mapMinPoints = map.getMinPoints();
     }
 
     private GLDrawState(GLDrawState clone) {
