@@ -4,10 +4,10 @@ import java.util.*;
 
 public class ImageResource<E> {
 
-	private Hashtable<E, ImageFile> cache;
+	private Map<E, ImageFile> cache;
 
 	public ImageResource() {
-		cache = new Hashtable<E, ImageFile>();
+		cache = new HashMap<E, ImageFile>();
 	}
 
 	public ImageFile getResource(E key, String path) {

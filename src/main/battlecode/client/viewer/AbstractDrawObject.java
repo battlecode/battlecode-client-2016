@@ -242,9 +242,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         maxEnergon = type.maxHp;
     }
 
-    public void addComponent(ComponentType type) {
-        components.add(type);
-    }
+    public abstract void addComponent(ComponentType type);
 
     public void setAttacking(MapLocation target, RobotLevel height, ComponentType component) {
         attackAction = ActionType.ATTACKING;

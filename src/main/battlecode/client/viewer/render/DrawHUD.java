@@ -116,8 +116,9 @@ class DrawHUD {
         g2.translate(-2, -.53 * 4.5 / width);
 
         g2.setFont(smallfnt);
+        g2.setColor(Color.GREEN);
 
-        ComponentClass classes[] = {ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
+        ComponentClass classes[] = {ComponentClass.BUILDER, ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
         for (ComponentClass cmpcl : classes) {
             int cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
@@ -244,9 +245,11 @@ class DrawHUD {
                     g2.drawString(teamName, 0, 12);
 
                 AffineTransform pushed4 = g2.getTransform();
-                g2.drawString("Weapons", -30, 65);
-                g2.drawString("Armors", -25, 95);
-                g2.drawString("Miscs", -20, 125);
+                String categories[] = {"Macro", "Weapons", "Armor", "Misc"};
+                for (int i = 0; i < categories.length; i++) {
+                    g2.drawString(categories[i], -5 * categories[i].length(), 65 + 30 * i);
+                }
+
 
                 g2.translate(-20, 220);
 

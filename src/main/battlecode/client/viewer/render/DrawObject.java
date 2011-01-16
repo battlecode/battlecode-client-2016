@@ -11,23 +11,17 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
-import java.util.Map;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
-import battlecode.client.viewer.ActionType;
-import battlecode.common.Direction;
-import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.Chassis;
 import battlecode.common.ComponentType;
 import battlecode.common.Team;
-import battlecode.world.GameMap;
 import java.util.ArrayList;
-import java.util.List;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
@@ -45,6 +39,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final Shape outline = new Rectangle2D.Float(0, 0, 1, 1);
     private static final RescaleOp oneHalf = new RescaleOp(new float[]{1f, 1f, 1f, .5f}, new float[4], null);
     private static final ImageResource<RobotInfo> ir = new ImageResource<RobotInfo>();
+    private static final ImageResource<ComponentType> cir = new ImageResource<ComponentType>();
     private static final ImageFile crosshair = new ImageFile("art/crosshair.png");
     private static final ImageFile crosshairBlue = new ImageFile("art/crosshair2.png");
     private static final ImageFile hatchSensor = new ImageFile("art/hatch_sensor.png");
@@ -96,8 +91,19 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     private static String getAvatarPath(RobotInfo ri) {
-        String type = ri.type.toString().toLowerCase();
-        return "art/" + type + (ri.team == Team.NEUTRAL ? "0" : (ri.team == Team.A ? "1" : "2")) + ".png";
+        return getAvatarPath(ri.type.toString().toLowerCase(), ri.team);
+
+    }
+
+    private static String getAvatarPath(String type, Team team) {
+        return "art/" + type + (team == Team.NEUTRAL ? "0" : (team == Team.A ? "1" : "2")) + ".png";
+    }
+
+    public void addComponent(ComponentType type) {
+        components.add(type);
+        if (type == ComponentType.RECYCLER || type == ComponentType.FACTORY || type == ComponentType.ARMORY) {
+            img = cir.getResource(type, getAvatarPath(type.toString().toLowerCase(), getTeam()));
+        }
     }
 
     public double getRelativeSize() {

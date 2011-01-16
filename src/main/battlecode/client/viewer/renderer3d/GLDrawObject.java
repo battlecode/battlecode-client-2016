@@ -120,4 +120,9 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 		targetHeight = height;
     }
 
+    @Override
+    public void addComponent(ComponentType type) {
+        components.add(type);
+    }
+
 }
