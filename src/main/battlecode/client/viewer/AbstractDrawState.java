@@ -1,13 +1,10 @@
 package battlecode.client.viewer;
 
-import battlecode.client.viewer.render.RenderConfiguration;
-
 import battlecode.client.viewer.render.*;
 import battlecode.common.ComponentClass;
 import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
 import battlecode.common.Chassis;
-import battlecode.common.GameConstants;
 import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
@@ -15,8 +12,8 @@ import battlecode.world.signal.*;
 import java.util.HashMap;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
@@ -28,14 +25,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected double[] teamHP = new double[2];
     //protected List<DrawObject> archonsA;
     //protected List<DrawObject> archonsB;
-
-    protected ArrayList<ComponentType> aTeamComponents = new ArrayList<ComponentType>();
-    protected ArrayList<ComponentType> bTeamComponents = new ArrayList<ComponentType>();
-    
-    protected ComponentType[] topWeapons = new ComponentType[2];
-    protected ComponentType[] topArmors = new ComponentType[2];
-    protected ComponentType[] topMiscs = new ComponentType[2];
-    
+    //protected ArrayList<ComponentType> aTeamComponents = new ArrayList<ComponentType>();
+    //protected ArrayList<ComponentType> bTeamComponents = new ArrayList<ComponentType>();
+    //protected ComponentType[] topWeapons = new ComponentType[2];
+    //protected ComponentType[] topArmors = new ComponentType[2];
+    //protected ComponentType[] topMiscs = new ComponentType[2];
+    protected Map<ComponentType, Integer> componentTypeCountA = new EnumMap<ComponentType, Integer>(ComponentType.class);
+    protected Map<ComponentType, Integer> componentTypeCountB = new EnumMap<ComponentType, Integer>(ComponentType.class);
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -94,12 +90,22 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return obj;
     }
 
-    public ArrayList<ComponentType> getATeamComponents(){
-    	return aTeamComponents;
+    public Map<ComponentType, Integer> getComponentTypeCount(Team t) {
+        return (t == Team.A) ? componentTypeCountA : componentTypeCountB;
     }
-    public ArrayList<ComponentType> getBTeamComponents(){
-    	return bTeamComponents;
+
+    public Map<ComponentType, Integer> getComponentTypeCount(Team t, ComponentClass c) {
+        Map<ComponentType, Integer> orig = (t == Team.A) ? componentTypeCountA : componentTypeCountB;
+        Map<ComponentType, Integer> byclass = new EnumMap<ComponentType, Integer>(ComponentType.class);
+        for (ComponentType ct : orig.keySet()) {
+            if (ct.componentClass == c) {
+                byclass.put(ct, orig.get(ct));
+            }
+        }
+        return byclass;
     }
+
+
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
         if (previous == null) {
@@ -214,11 +220,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         boolean teleported = !obj.loc.isAdjacentTo(s.getNewLoc());
         //TODO: this should probably be from a teleported signal
         obj.setLocation(s.getNewLoc());
-        if(teleported){
-        	obj.setTeleport(obj.loc, s.getNewLoc());
-        }else{
-        	
-        	obj.setMoving(s.isMovingForward());
+        if (teleported) {
+            obj.setTeleport(obj.loc, s.getNewLoc());
+        } else {
+
+            obj.setMoving(s.isMovingForward());
         }
         return null;
     }
@@ -229,84 +235,23 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         DrawObject obj = getRobot(s.robotID);
         obj.addComponent(s.component);
         Team objTeam = obj.getTeam();
-        if(objTeam.equals(Team.A)){
-        	aTeamComponents.add(s.component);
-        	calculateEquipPopularity(aTeamComponents, Team.A);
-        }else{
-        	bTeamComponents.add(s.component);
-        	calculateEquipPopularity(bTeamComponents, Team.B);
+
+
+        Map<ComponentType, Integer> componentTypeCount = (objTeam == Team.A) ? componentTypeCountA : componentTypeCountB;
+        //Iterate through and get the counts
+        if (!componentTypeCount.containsKey(s.component)) {
+            componentTypeCount.put(s.component, 1);
+        } else {
+            componentTypeCount.put(s.component, componentTypeCount.get(s.component) + 1);
         }
-		if(s.component.componentClass == ComponentClass.COMM)
-			obj.updateBroadcastRadius(s.component.range);
+
+        if (s.component.componentClass == ComponentClass.COMM)
+            obj.updateBroadcastRadius(s.component.range);
         return null;
     }
-    
-    protected void calculateEquipPopularity(ArrayList<ComponentType> components, Team team){
-        
-    		
-            /*Get the most popular:
-             * Weapon
-             * Armor
-             * Misc
-             */
 
 
-            Map<ComponentType, Integer> componentTypeCount = new HashMap<ComponentType, Integer>();
-            //Iterate through and get the counts
-            for (ComponentType c : components) {
-                if (!componentTypeCount.containsKey(c)) {
-                    componentTypeCount.put(c, new Integer(1));
-                } else {
-                    componentTypeCount.put(c, new Integer(componentTypeCount.get(c) + 1));
-                }
-            }
 
-            ComponentType popularWeapon = null;
-            ComponentType popularArmor = null;
-            ComponentType popularMisc = null;
-            int popularWeaponCount = 0;
-            int popularArmorCount = 0;
-            int popularMiscCount = 0;
-
-            for (ComponentType c : components) {
-                int popularity = componentTypeCount.get(c).intValue();
-                if (c.componentClass.equals(ComponentClass.WEAPON)) {
-                    if (popularity > popularWeaponCount) {
-                        popularWeaponCount = popularity;
-                        popularWeapon = c;
-                    }
-                } else if (c.componentClass.equals(ComponentClass.ARMOR)) {
-                    if (popularity > popularArmorCount) {
-                        popularArmorCount = popularity;
-                        popularArmor = c;
-                    }
-                } else if (c.componentClass.equals(ComponentClass.MISC)) {
-                    if (popularity > popularMiscCount) {
-                        popularMiscCount = popularity;
-                        popularMisc = c;
-                    }
-                }
-            }
-            
-            topWeapons[team.ordinal()] = popularWeapon;
-            topArmors[team.ordinal()] = popularArmor;
-            topMiscs[team.ordinal()] = popularMisc;
-
-
-            
-        
-        
-    }
-    
-    public ComponentType[] getTopWeapons(){
-    	return topWeapons;
-    }
-    public ComponentType[] getTopArmors(){
-    	return topArmors;
-    }
-    public ComponentType[] getTopMiscs(){
-    	return topMiscs;
-    }
 
     public Void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
@@ -348,12 +293,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         fluxDeposits.get(s.id).setRoundsAvailable(s.roundsAvaliable);
     }
 
-	public void visitTurnOnSignal(TurnOnSignal s) {
-		for(int i : s.robotIDs)
-			getRobot(i).setPower(true);
-	}
+    public void visitTurnOnSignal(TurnOnSignal s) {
+        for (int i : s.robotIDs)
+            getRobot(i).setPower(true);
+    }
 
-	public void visitTurnOffSignal(TurnOffSignal s) {
-		getRobot(s.robotID).setPower(false);
-	}
+    public void visitTurnOffSignal(TurnOffSignal s) {
+        getRobot(s.robotID).setPower(false);
+    }
 }

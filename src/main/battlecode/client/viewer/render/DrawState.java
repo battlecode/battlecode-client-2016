@@ -23,6 +23,7 @@ import battlecode.common.ComponentType;
 import battlecode.world.GameMap;
 import battlecode.serial.RoundStats;
 import java.awt.geom.AffineTransform;
+import java.util.EnumMap;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
 
@@ -56,8 +57,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     public DrawState() {
         groundUnits = new LinkedHashMap<Integer, DrawObject>();
         airUnits = new LinkedHashMap<Integer, DrawObject>();
-        //archonsA = new ArrayList<DrawObject>(6);
-        //archonsB = new ArrayList<DrawObject>(6);
         towers = new LinkedList<DrawObject>();
         fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
         currentRound = -1;
@@ -108,20 +107,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
         }
         stats = src.stats;
-        aTeamComponents = new ArrayList<ComponentType>(src.aTeamComponents);
-        bTeamComponents = new ArrayList<ComponentType>(src.bTeamComponents);
-        calculateEquipPopularity(aTeamComponents, Team.A);
-        calculateEquipPopularity(bTeamComponents, Team.B);
-
-        // HACK: from DrawMap update hack
-		/*
-        blockNumber = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++) {
-        blockNumber[i][j] = src.blockNumber[i][j];
-        }
-        }
-         */
+        componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
+        componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
+        
 
         if (src.gameMap != null) {
             gameMap = src.gameMap;

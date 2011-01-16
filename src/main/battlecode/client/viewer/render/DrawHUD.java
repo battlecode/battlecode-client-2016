@@ -2,16 +2,13 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
-import battlecode.serial.RoundStats;
 
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
+import java.util.EnumMap;
 import java.util.Map;
 
 class DrawHUD {
@@ -24,6 +21,7 @@ class DrawHUD {
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
     private static final ImageFile ballGradient = new ImageFile("art/winball.png");
+    private static final Map<ComponentType, ImageFile> componentImages = new EnumMap<ComponentType, ImageFile>(ComponentType.class);
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
     private final Font fnt, smallfnt;
@@ -38,6 +36,16 @@ class DrawHUD {
                 // e.printStackTrace();
             }
         }
+    }
+
+    //load this lazily
+    private static ImageFile getComponentIcon(ComponentType t) {
+        if (componentImages.get(t) != null)
+            return componentImages.get(t);
+        //System.out.println("art/components/" + t.toString().toLowerCase() + ".png");
+        ImageFile img = new ImageFile("art/components/" + t.toString().toLowerCase() + ".png");
+        componentImages.put(t, img);
+        return img;
     }
     private final DrawState ds;
     private final Team team;
@@ -68,7 +76,7 @@ class DrawHUD {
             e.printStackTrace();
         }
         fnt = fnt2;
-        smallfnt = fnt2.deriveFont(8f);
+        smallfnt = fnt2.deriveFont(.4f);
     }
 
     public float getRatioWidth() {
@@ -101,36 +109,26 @@ class DrawHUD {
         return s;
     }
 
+    public void drawPopularEquipment(Graphics2D g2) {
+        if (team == null || ds == null)
+            return;
 
-    public void drawPopularEquipment(Graphics2D g2){
-    	if(team == null || ds == null)return;
-    	String popularWeaponString = "None";
-        String popularArmorString = "None";
-        String popularMiscString = "None";
-        
-        ComponentType popularWeapon = ds.getTopWeapons()[team.ordinal()];
-        ComponentType popularArmor = ds.getTopArmors()[team.ordinal()];
-        ComponentType popularMisc = ds.getTopMiscs()[team.ordinal()];
-
-        if (popularWeapon != null)
-            popularWeaponString = popularWeapon.toString();
-        if (popularArmor != null)
-            popularArmorString = popularArmor.toString();
-        if (popularMisc != null)
-            popularMiscString = popularMisc.toString();
-        
-
-        //Here we draw all of "weapon/armor/misc of choice" labels
-
-        g2.translate(0, -.5 * 4.5 / width);
+        g2.translate(-2, -.53 * 4.5 / width);
 
         g2.setFont(smallfnt);
-        double xs = .08;
-        g2.scale(xs, xs);
-        g2.drawString(formatStringSize(popularWeaponString, 3), -25, 0);
-        g2.drawString(formatStringSize(popularArmorString, 3), -25, 40);
-        g2.drawString(formatStringSize(popularMiscString, 3), -25, 80);
-        g2.scale(1 / xs, 1 / xs);
+
+        ComponentClass classes[] = {ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
+        for (ComponentClass cmpcl : classes) {
+            int cnt = 0;
+            Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
+            for (ComponentType ct : clist.keySet()) {
+                g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
+                g2.drawString("" + clist.get(ct), 1f * cnt + .3f, 1f);
+                cnt++;
+            }
+            g2.translate(0, 2.2);
+        }
+
         g2.setFont(fnt);
     }
 
@@ -160,9 +158,6 @@ class DrawHUD {
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
-            //g2.setColor(Color.WHITE);
-            //g2.setFont(footerFont);
-            //g2.drawString(footerText, -footerText.length()/2, 0);
             battlecode.serial.RoundStats stats = ds.getRoundStats();
 
             AffineTransform pushed2 = g2.getTransform();
@@ -180,11 +175,6 @@ class DrawHUD {
                 g2.drawString(formatStringSize(points + "", 5), 0, 12);
                 g2.scale(1 / x, 1 / x);
 
-
-//                for (int i = 10000; i > 0; i /= 10) {
-//                    g2.drawImage(numbers[(points / i) % 10], textScale, null);
-//                    g2.translate(0.75, 0);
-//                }
             }
 
             g2.setTransform(pushed2);
@@ -255,8 +245,8 @@ class DrawHUD {
 
                 AffineTransform pushed4 = g2.getTransform();
                 g2.drawString("Weapons", -30, 65);
-                g2.drawString("Armors", -25, 105);
-                g2.drawString("Miscs", -20, 145);
+                g2.drawString("Armors", -25, 95);
+                g2.drawString("Miscs", -20, 125);
 
                 g2.translate(-20, 220);
 
@@ -277,7 +267,7 @@ class DrawHUD {
 
             //g2.setTransform(pushed);
 
-            //TODO FIX THIS
+
             if (team == team.A) {
                 if (aWins > 0) {
                     g2.translate(0.f, 14);
