@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.viewer.AbstractAnimation;
 import java.awt.Color;
 
 import java.awt.Graphics2D;

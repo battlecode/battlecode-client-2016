@@ -91,7 +91,7 @@ public class InfoPanel extends JPanel {
         robotID.setText(" Robot " + id + " ");
     }
 
-	public void setRobot(AbstractDrawObject robot) {
+	public void setRobot(AbstractDrawObject<AbstractAnimation> robot) {
 		if(robot==null) clear();
 		else {
 			setEnergon(robot.getEnergon());

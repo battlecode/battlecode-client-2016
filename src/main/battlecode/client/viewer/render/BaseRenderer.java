@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.viewer.AbstractAnimation;
 import java.awt.Dimension;
 
 import battlecode.client.viewer.AbstractDrawObject;
@@ -29,7 +30,7 @@ public abstract class BaseRenderer {
 	
 	public abstract void addWin(Team t);
 
-	public abstract AbstractDrawObject getRobotByID(int id);
+	public abstract AbstractDrawObject<AbstractAnimation> getRobotByID(int id);
 
 	public abstract void setDebugState(battlecode.client.viewer.DebugState dbg);
 
