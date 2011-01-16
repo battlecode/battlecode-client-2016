@@ -23,8 +23,11 @@ import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.Chassis;
+import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import battlecode.world.GameMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
@@ -62,6 +65,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         super(type, team);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
         maxEnergon = type.maxHp;
+        components = new ArrayList<ComponentType>();
     }
 
     public DrawObject(DrawObject copy) {
@@ -72,6 +76,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         preEvolve = copy.preEvolve;
         teleportRounds = copy.teleportRounds;
         teleportLoc = copy.teleportLoc;
+        components = new ArrayList<ComponentType>(copy.components);
         if (animations.containsKey(ENERGON_TRANSFER)) {
             EnergonTransferAnim a = (EnergonTransferAnim) animations.get(ENERGON_TRANSFER);
             a.setSource(this);

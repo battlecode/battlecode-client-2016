@@ -103,7 +103,7 @@ public class InfoPanel extends JPanel {
 		}
 	}
 	
-	private void setComponentTypes(ArrayList<ComponentType> components){
+	private void setComponentTypes(java.util.List<ComponentType> components){
 		for(JLabel label : componentLabels){
 			label.setText("");
 		}

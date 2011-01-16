@@ -14,6 +14,7 @@ import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
@@ -28,12 +29,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
             this.team = team;
         }
 
+        @Override
         public boolean equals(Object obj) {
             return (obj instanceof RobotInfo
                     && ((RobotInfo) obj).type == this.type
                     && ((RobotInfo) obj).team == this.team);
         }
 
+        @Override
         public int hashCode() {
             return type.ordinal() + 561 * team.ordinal();
         }
@@ -59,8 +62,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
                 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
         turnedOn = copy.turnedOn;
-		broadcastRadius = copy.broadcastRadius;
-		broadcastRadiusSq = copy.broadcastRadiusSq;
+        broadcastRadius = copy.broadcastRadius;
+        broadcastRadiusSq = copy.broadcastRadiusSq;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
@@ -87,13 +90,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int roundsUntilMovementIdle;
     protected ActionType attackAction;
     protected ActionType movementAction;
-    protected ArrayList<ComponentType> components = new ArrayList<ComponentType>();
+    protected List<ComponentType> components = new ArrayList<ComponentType>();
     protected MapLocation targetLoc = null;
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
     protected int broadcastRadius = 0;
-	protected int broadcastRadiusSq = 0;
+    protected int broadcastRadiusSq = 0;
     protected boolean turnedOn = true;
     protected ComponentType componentType;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
@@ -102,6 +105,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         // if we've written an animation for one client but not the other, we don't
         // want to be putting null values in the animations list
 
+        @Override
         public Animation put(AbstractAnimation.AnimationType key, Animation value) {
             if (value != null)
                 return super.put(key, value);
@@ -132,20 +136,19 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return broadcastRadius;
     }
 
-	public void updateBroadcastRadius(int radiusSq) {
-		if(radiusSq>broadcastRadiusSq) {
-			broadcastRadiusSq = radiusSq;
-			broadcastRadius = (int)Math.round(Math.sqrt(broadcastRadiusSq));
-		}
-	}
+    public void updateBroadcastRadius(int radiusSq) {
+        if (radiusSq > broadcastRadiusSq) {
+            broadcastRadiusSq = radiusSq;
+            broadcastRadius = (int) Math.round(Math.sqrt(broadcastRadiusSq));
+        }
+    }
 
     public Chassis getType() {
         return info.type;
     }
 
-    public ArrayList<ComponentType> getComponents() {
-        return components;
-
+    public List<ComponentType> getComponents() {
+         return components;
     }
 
     public Team getTeam() {
@@ -319,7 +322,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     }
 
-    public void updateDrawLoc() {
+    private void updateDrawLoc() {
         if (RenderConfiguration.showDiscrete()
                 || movementAction != ActionType.MOVING) {
             drawX = drawY = 0;

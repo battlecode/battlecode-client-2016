@@ -9,9 +9,7 @@ import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
-import java.util.HashMap;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -98,13 +96,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         Map<ComponentType, Integer> orig = (t == Team.A) ? componentTypeCountA : componentTypeCountB;
         Map<ComponentType, Integer> byclass = new EnumMap<ComponentType, Integer>(ComponentType.class);
         for (ComponentType ct : orig.keySet()) {
-            if (ct.componentClass == c) {
+            if (ct.componentClass == c && orig.get(ct) > 0) {
                 byclass.put(ct, orig.get(ct));
             }
         }
         return byclass;
     }
-
 
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
@@ -180,7 +177,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         int team = getRobot(s.getObjectID()).getTeam().ordinal();
         if (team < 2)
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
-        getRobot(s.getObjectID()).destroyUnit();
+        AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
+        for (ComponentType cmp : robot.getComponents()) {
+            Map<ComponentType, Integer> comps = getComponentTypeCount(robot.getTeam());
+            comps.put(cmp, comps.get(cmp) - 1);
+        }
+        robot.destroyUnit();
         return null;
     }
 
@@ -249,9 +251,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             obj.updateBroadcastRadius(s.component.range);
         return null;
     }
-
-
-
 
     public Void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
