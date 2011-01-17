@@ -1,5 +1,6 @@
 package battlecode.client.viewer;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -92,6 +93,7 @@ public class ControlPanel extends JPanel
         stepSizeField = new JFormattedTextField(stepSizeFmt);
         stepSizeField.setValue(1);
         stepSizeField.setColumns(5);
+        stepSizeField.setMinimumSize(new Dimension(50, stepSizeField.getHeight()));
 
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
@@ -153,6 +155,8 @@ public class ControlPanel extends JPanel
                 removeComponentListener(this);
             }
         });
+
+        
     }
 
     private JButton createButton(String iconPath, String cmd) {

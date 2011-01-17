@@ -14,10 +14,12 @@ import java.util.*;
 public class MatchPlayer implements Observer, ActionListener {
 
 	private MatchListener ml = new MatchListener() {
+        @Override
 		public void headerReceived(BufferedMatch match) {
 			battlecode.serial.MatchHeader h = match.getHeader();
 			label = "Game "+(h.getMatchNumber() + 1)+" of "+h.getMatchCount()+": ";
 		}
+        @Override
 		public void footerReceived(BufferedMatch m) {
 			label += "Team " + m.getFooter().getWinner() + " Wins! ";
 			MatchHeader h = m.getHeader();
@@ -28,6 +30,7 @@ public class MatchPlayer implements Observer, ActionListener {
 				else { controller.enableNext(); }
 			}
 		}
+        @Override
 		public void breakReceived(BufferedMatch m) {
 			breakRound = m.getRoundsAvailable();
 			roundsRequested = breakRound;

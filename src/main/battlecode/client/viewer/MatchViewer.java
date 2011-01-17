@@ -23,6 +23,7 @@ import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.serial.notification.StartNotification;
 import battlecode.server.Config;
 import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -83,7 +84,7 @@ public class MatchViewer {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy = 1;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.weighty = 1;
         panel.add(bc, gbc);
 

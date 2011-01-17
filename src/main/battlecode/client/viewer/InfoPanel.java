@@ -44,7 +44,7 @@ public class InfoPanel extends JPanel {
         layoutConstraints.gridx = 0;
         for (int i = 0; i < indicatorStrings.length; i++) {
             layoutConstraints.gridy = i + 1;
-            layoutConstraints.gridwidth = 3;
+            layoutConstraints.gridwidth = 4;
             indicatorStrings[i] = newLabel();
         }
         componentPanel = new JPanel();
@@ -58,7 +58,8 @@ public class InfoPanel extends JPanel {
 
         for (int i = 0; i < 10; i++) {
             JLabel componentLabel = new JLabel();
-            componentLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
+            
+            componentLabel.setFont(new Font("Dialog", Font.PLAIN,8));
             componentLabels.add(componentLabel);
             componentPanel.add(componentLabel);
         }
@@ -68,6 +69,7 @@ public class InfoPanel extends JPanel {
 
     private JLabel newLabel() {
         JLabel l = new JLabel();
+        l.setFont(l.getFont().deriveFont(8f));
         add(l, layoutConstraints);
         return l;
     }
@@ -104,7 +106,10 @@ public class InfoPanel extends JPanel {
             setBytecodesUsed(robot.getBytecodesUsed());
             direction.setText(robot.getDirection().toString());
             for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
-                setIndicatorString(i, robot.getIndicatorString(i));
+                String ids = robot.getIndicatorString(i);
+                if (ids == null)
+                    ids = " ";
+                setIndicatorString(i, ids);
             }
             setComponentTypes(robot.getComponents());
         }
