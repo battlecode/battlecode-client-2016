@@ -76,7 +76,7 @@ class DrawHUD {
             e.printStackTrace();
         }
         fnt = fnt2;
-        smallfnt = fnt2.deriveFont(.4f);
+        smallfnt = fnt2.deriveFont(.6f);
     }
 
     public float getRatioWidth() {
@@ -124,7 +124,9 @@ class DrawHUD {
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
             for (ComponentType ct : clist.keySet()) {
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
-                g2.drawString("" + clist.get(ct), 1f * cnt + .3f, 1f);
+                String count = "" + clist.get(ct);
+                float width = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
+                g2.drawString(count, 1f * cnt + 1 - width, 1f);
                 cnt++;
             }
             g2.translate(0, 2.2);
@@ -220,10 +222,23 @@ class DrawHUD {
 
             Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 130);
             g2.setColor(c);
-            g2.scale(0.1 * gatheredPoints / 50, barHeight);
+            g2.scale(0.1 * Math.min(gatheredPoints, 2000) / 50, barHeight);
             g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
             g2.fillRect(0, 0, 1, 1);
 
+
+            if (gatheredPoints > 2000) {
+                g2.setTransform(pushed3);
+                g2.setColor(new Color(0,255,100,180));
+                g2.translate(0, barHeight / 3.0);
+                g2.scale(0.1 * Math.min(gatheredPoints - 2000, 2000) / 50, barHeight / 3.0);
+                g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
+                g2.fillRect(0, 0, 1, 1);
+            }
+
+
+
+            //END OF BAR STUFF
             g2.setTransform(pushed2);
             g2.translate(0, -.9 * 4.5 / width);
 
@@ -290,33 +305,5 @@ class DrawHUD {
             }
         }
         g2.setTransform(pushed);
-        g2.translate(0.5f * (width - spriteScale),
-                0.5f * (slotSize - spriteScale));
-        /* We don't draw the archon stuff anymore
-        try {
-        java.util.List<DrawObject> archons = ds.getArchons(team);
-        for (int i = 0; i < numArchons; i++) {
-        pushed = g2.getTransform();
-        {
-        g2.scale(spriteScale, spriteScale);
-        AffineTransform pushed2 = g2.getTransform();
-        {
-        BufferedImage underImg = unitUnder.image;
-        g2.translate(-0.5, -0.5);
-        g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-        //g2.drawImage(underImg, null, null);
-        }
-        g2.setTransform(pushed2);
-        if (i < archons.size()) {
-        DrawObject archon = archons.get(i);
-        archon.drawImmediateNoScale(g2, true, false);
-        }
-        }
-        g2.setTransform(pushed);
-        g2.translate(0, slotSize);
-        }
-        } catch (ConcurrentModificationException e) {
-        }
-         */
     }
 }
