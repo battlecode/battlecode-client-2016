@@ -125,8 +125,8 @@ class DrawHUD {
             for (ComponentType ct : clist.keySet()) {
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
                 String count = "" + clist.get(ct);
-                float width = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-                g2.drawString(count, 1f * cnt + 1 - width, 1f);
+                float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
+                g2.drawString(count, 1f * cnt + 1 - wx, 1f);
                 cnt++;
             }
             g2.translate(0, 2.2);
@@ -179,9 +179,14 @@ class DrawHUD {
                 String pointsLow = "" + (points - points / 100 * 100);
 
                 float wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
-                if (!pointsHigh.equals("0"))
+                if (pointsHigh.equals("0")) {
+                    if (pointsLow.length() == 1)
+                        pointsLow = " " + pointsLow;
+                } else {
                     g2.drawString(pointsHigh, 35 - wx, 12);
-                wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
+                    if (pointsLow.length() == 1)
+                        pointsLow = "0" + pointsLow;
+                }
                 g2.setColor(Color.GRAY);
                 g2.drawString(pointsLow, 35, 12);
 
