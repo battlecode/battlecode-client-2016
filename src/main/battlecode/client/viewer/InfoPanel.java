@@ -52,7 +52,7 @@ public class InfoPanel extends JPanel {
 
         layoutConstraints.gridx = 0;
         layoutConstraints.gridy = indicatorStrings.length + 3;
-        layoutConstraints.gridwidth = 3;
+        layoutConstraints.gridwidth = 4;
         layoutConstraints.gridheight = 2;
         add(componentPanel, layoutConstraints);
 

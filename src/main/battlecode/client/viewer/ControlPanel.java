@@ -53,6 +53,7 @@ public class ControlPanel extends JPanel
 
     public ControlPanel() {
         label = new JLabel(matchCount + "Round 0 of 0");
+        label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         if (battlecode.server.Config.getGlobalConfig().getBoolean("bc.client.applet")) {
             ImageIcon playIconSwap = null, pauseIconSwap = null;
@@ -123,7 +124,7 @@ public class ControlPanel extends JPanel
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 0, 10);
         gbc.weightx = 0;
         gbc.weighty = 0;
