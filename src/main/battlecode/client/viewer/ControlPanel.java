@@ -1,6 +1,9 @@
 package battlecode.client.viewer;
 
 import info.clearthought.layout.TableLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import java.awt.event.*;
 import java.net.MalformedURLException;
@@ -108,13 +111,44 @@ public class ControlPanel extends JPanel
         infoPanel = new InfoPanel();
 
         setAlignmentX(CENTER_ALIGNMENT);
+
+        /*
         setLayout(new TableLayout(LAYOUT));
         add(label, "0, 0, 0, 0, c, f");
         add(panel, "0, 1, 0, 1, f, t");
         add(slider, "0, 2, 0, 2, f, f");
         add(infoPanel, "2, 0, 2, 2, c, f");
+         */
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(label, gbc);
+        gbc.gridy = 1;
+        add(panel, gbc);
+        gbc.gridy = 2;
+        add(slider, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
+        add(infoPanel,gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.gridheight = 1;
+        add(new JPanel());
+
+
+
         addComponentListener(new ComponentAdapter() {
 
+            @Override
             public void componentResized(ComponentEvent e) {
                 setMaximumSize(getSize());
                 removeComponentListener(this);

@@ -3,6 +3,7 @@ package battlecode.client.viewer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.HierarchyEvent;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -21,6 +22,11 @@ import battlecode.client.viewer.renderer3d.GLGameRenderer;
 import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.serial.notification.StartNotification;
 import battlecode.server.Config;
+import java.awt.ComponentOrientation;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.HierarchyBoundsListener;
 
 public class MatchViewer {
 
@@ -40,10 +46,10 @@ public class MatchViewer {
     private final AudioPlayer audio = new AudioPlayer();
     private InfoPanel info;
     private MinimapViewer minimap = null;
-	private DebugState dbg;
+    private DebugState dbg;
 
     public MatchViewer() {
-    	
+
         proxy = null;
         controller = null;
         bc = null;
@@ -57,13 +63,33 @@ public class MatchViewer {
         System.out.println("Matchviewer 2");
         this.proxy = proxy;
         this.lockstepChoice = lockstepChoice;
-        ControlPanel cpanel = new ControlPanel();
+        final ControlPanel cpanel = new ControlPanel();
         info = cpanel.getInfoPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        panel.add(cpanel);
-        //panel.add(gc);
-        panel.add(bc);
-        cpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        GridBagLayout l = new GridBagLayout();
+        panel.setLayout(l);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        panel.add(cpanel,gbc);
+
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        panel.add(new JPanel());
+        
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.weighty = 1;
+        panel.add(bc, gbc);
+
+
+
+        cpanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         controller = cpanel;
 
         if (cfg.getBoolean("bc.client.opengl") && cfg.getBoolean("bc.client.minimap")) {
@@ -108,29 +134,28 @@ public class MatchViewer {
             br = new GameRenderer(bufferedMatch);
         }
 
-		dbg = new DebugState(bufferedMatch.getDebugProxy(), bc.getParent());
-		br.setDebugState(dbg);
+        dbg = new DebugState(bufferedMatch.getDebugProxy(), bc.getParent());
+        br.setDebugState(dbg);
         bc.setRenderer(br);
-	
-		if(info!=null) {
-			Observer paintObserver = new Observer() {
-					public void update(Observable o, Object arg) {
-						dbg.setEnabled(bufferedMatch.isPaused());
-						info.setTargetID(dbg.getFocusID());
-						info.setRobot(br.getRobotByID(dbg.getFocusID()));
-					}
-				};
-			bc.addPaintObserver(paintObserver);	
-		}
-        
-        if(cfg.getBoolean("bc.client.sound-on")){
-        	 audio.setTimeline(br.getTimeline());
-             battlecode.client.viewer.sound.GameSoundBank.preload();
+
+        if (info != null) {
+            Observer paintObserver = new Observer() {
+
+                public void update(Observable o, Object arg) {
+                    dbg.setEnabled(bufferedMatch.isPaused());
+                    info.setTargetID(dbg.getFocusID());
+                    info.setRobot(br.getRobotByID(dbg.getFocusID()));
+                }
+            };
+            bc.addPaintObserver(paintObserver);
         }
-        
+
+        if (cfg.getBoolean("bc.client.sound-on")) {
+            audio.setTimeline(br.getTimeline());
+            battlecode.client.viewer.sound.GameSoundBank.preload();
+        }
+
         if (tournamentMode) {
-           
-         
         } else {
             setupDevelViewer();
         }

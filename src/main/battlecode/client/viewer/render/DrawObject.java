@@ -242,6 +242,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
             }
 
             AffineTransform trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
+            if (info.type == Chassis.BUILDING) {
+                trans = new AffineTransform();
+            }
+
             assert preEvolve != null;
             BufferedImage image = getTypeSprite();
             if (image != null) {
@@ -275,8 +279,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 } else {
                     g2.drawImage(image, trans, null);
                 }
-
-
             } else {
                 //System.out.println("null image in DrawObject.drawImmediate");
             }
