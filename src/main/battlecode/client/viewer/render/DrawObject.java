@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -62,6 +63,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         maxEnergon = type.maxHp;
         components = new ArrayList<ComponentType>();
     }
+
 
     public DrawObject(DrawObject copy) {
         super(copy);

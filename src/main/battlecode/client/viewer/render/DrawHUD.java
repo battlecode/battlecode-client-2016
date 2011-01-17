@@ -22,6 +22,7 @@ class DrawHUD {
     private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
     private static final ImageFile ballGradient = new ImageFile("art/winball.png");
     private static final Map<ComponentType, ImageFile> componentImages = new EnumMap<ComponentType, ImageFile>(ComponentType.class);
+    private static final ImageResource<String> cir = new ImageResource<String>();
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
     private final Font fnt, smallfnt;
@@ -109,6 +110,10 @@ class DrawHUD {
         return s;
     }
 
+    private static String getAvatarPath(String type, Team team) {
+        return "art/" + type + (team == Team.NEUTRAL ? "0" : (team == Team.A ? "1" : "2")) + ".png";
+    }
+
     public void drawPopularEquipment(Graphics2D g2) {
         if (team == null || ds == null)
             return;
@@ -118,9 +123,22 @@ class DrawHUD {
         g2.setFont(smallfnt);
         g2.setColor(Color.GREEN);
 
+        g2.translate(0, -2.6);
+        int cnt = 0;
+        Map<Chassis, Integer> chlist = ds.getChassisTypeCount(team);
+        for (Chassis ct : chlist.keySet()) {
+            String path = getAvatarPath(ct.toString().toLowerCase(), team);
+            g2.drawImage(cir.getResource(path, path).image, 1 * cnt, 0, 1, 1, null);
+            String count = "" + chlist.get(ct);
+            float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
+            g2.drawString(count, 1f * cnt + 1 - wx, 1f);
+            cnt++;
+        }
+        g2.translate(0, 2.4);
+
         ComponentClass classes[] = {ComponentClass.BUILDER, ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
         for (ComponentClass cmpcl : classes) {
-            int cnt = 0;
+            cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
             for (ComponentType ct : clist.keySet()) {
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
@@ -129,7 +147,7 @@ class DrawHUD {
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
                 cnt++;
             }
-            g2.translate(0, 2.2);
+            g2.translate(0, 2.4);
         }
 
         g2.setFont(fnt);
@@ -269,9 +287,9 @@ class DrawHUD {
                     g2.drawString(teamName, 0, 12);
 
                 AffineTransform pushed4 = g2.getTransform();
-                String categories[] = {"Macro", "Weapons", "Armor", "Misc"};
+                String categories[] = {"Units", "Macro", "Weapons", "Armor", "Misc"};
                 for (int i = 0; i < categories.length; i++) {
-                    g2.drawString(categories[i], -5 * categories[i].length(), 65 + 30 * i);
+                    g2.drawString(categories[i], -5 * categories[i].length(), 35 + 30 * i);
                 }
 
 

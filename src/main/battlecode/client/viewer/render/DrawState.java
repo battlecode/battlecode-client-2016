@@ -110,7 +110,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         stats = src.stats;
         componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
         componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
-        
+        chassisTypeCountA = new EnumMap<Chassis, Integer>(src.chassisTypeCountA);
+        chassisTypeCountB = new EnumMap<Chassis, Integer>(src.chassisTypeCountB);
 
         if (src.gameMap != null) {
             gameMap = src.gameMap;
@@ -219,7 +220,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             AffineTransform pushed = g2.getTransform();
             { // push
                 g2.translate(fd.getLocation().getX() + 0.5, fd.getLocation().getY() + 0.5);
-                g2.scale(.3, .3);
+                g2.scale(.25, .25);
                 double scalar;
                 if (fd.getRoundsAvailable() >= 0) {
                     scalar = (float) Math.sqrt(Math.max(0, (float) fd.getRoundsAvailable()) / GameConstants.MINE_ROUNDS);
