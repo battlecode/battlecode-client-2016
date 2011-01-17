@@ -5,13 +5,10 @@ import battlecode.client.DebugProxy;
 import battlecode.serial.*;
 import battlecode.serial.notification.*;
 
-import info.clearthought.layout.TableLayout;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-import battlecode.client.util.OBJFile;
 
 
 public class MatchPlayer implements Observer, ActionListener {
