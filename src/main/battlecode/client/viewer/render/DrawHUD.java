@@ -175,11 +175,19 @@ class DrawHUD {
                 double x = .08;
                 g2.scale(x, x);
 
-                g2.drawString(formatStringSize(points + "", 5), 0, 12);
+                String pointsHigh = "" + (points / 100);
+                String pointsLow = "" + (points - points / 100 * 100);
+
+                float wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
+                if (!pointsHigh.equals("0"))
+                    g2.drawString(pointsHigh, 35 - wx, 12);
+                wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
+                g2.setColor(Color.GRAY);
+                g2.drawString(pointsLow, 35, 12);
+
                 g2.scale(1 / x, 1 / x);
 
             }
-
             g2.setTransform(pushed2);
             drawPopularEquipment(g2);
 
