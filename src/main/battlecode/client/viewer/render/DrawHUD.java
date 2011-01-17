@@ -226,7 +226,6 @@ class DrawHUD {
             g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
             g2.fillRect(0, 0, 1, 1);
 
-
             if (gatheredPoints > 2000) {
                 g2.setTransform(pushed3);
                 g2.setColor(new Color(0,255,100,180));
@@ -235,9 +234,6 @@ class DrawHUD {
                 g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
                 g2.fillRect(0, 0, 1, 1);
             }
-
-
-
             //END OF BAR STUFF
             g2.setTransform(pushed2);
             g2.translate(0, -.9 * 4.5 / width);
