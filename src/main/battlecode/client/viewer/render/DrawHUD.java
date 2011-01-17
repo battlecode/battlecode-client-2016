@@ -228,7 +228,7 @@ class DrawHUD {
 
             if (gatheredPoints > 2000) {
                 g2.setTransform(pushed3);
-                g2.setColor(new Color(0,255,100,180));
+                g2.setColor(new Color(0, 255, 100, 180));
                 g2.translate(0, barHeight / 3.0);
                 g2.scale(0.1 * Math.min(gatheredPoints - 2000, 2000) / 50, barHeight / 3.0);
                 g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
@@ -266,14 +266,20 @@ class DrawHUD {
 
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
                 double bGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.B);
-                Color ballColor = null;
-                if (aGPoints == bGPoints)
+                Color ballColor;
+                Color outline;
+                if (aGPoints == bGPoints) {
                     ballColor = new Color(100, 100, 100, 100);
-                else
+                    outline = Color.DARK_GRAY;
+                } else {
                     ballColor = (aGPoints > bGPoints) ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 100);
+                    outline = (aGPoints > bGPoints) ? Color.RED : Color.BLUE;
+                }
                 g2.setColor(ballColor);
                 g2.drawImage(ballGradient.image, 0, 0, 36, 36, null);
-                g2.fillOval(0, 0, 36, 36);
+                g2.fillOval(1, 1, 34, 34);
+                g2.setColor(outline);
+                g2.drawOval(1, 1, 34, 34);
                 g2.setTransform(pushed4);
 
             }
