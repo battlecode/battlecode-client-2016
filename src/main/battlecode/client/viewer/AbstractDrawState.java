@@ -190,7 +190,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
             Map<Chassis, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
-            ctc.put(robot.getType(), ctc.get(robot.getType()) + 1);
+            ctc.put(robot.getType(), ctc.get(robot.getType()) - 1);
         }
         
         for (ComponentType cmp : robot.getComponents()) {
