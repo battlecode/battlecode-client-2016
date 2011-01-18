@@ -27,154 +27,155 @@ import battlecode.server.State;
 
 public class Main {
 
-	public static JFrame createFrame() {
-		final JFrame frame = new JFrame("battlecode");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		return frame;
-	}
+    public static JFrame createFrame() {
+        final JFrame frame = new JFrame("battlecode");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        return frame;
+    }
 
-	public static void showViewer(final JFrame frame, final MatchViewer viewer) {
-		final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		// if tournament mode and 2 monitors run viewer on monitor 2 and minimap
-		// on monitor one, else run only viewer
-	   
-		final GraphicsDevice gd = (viewer.isTournamentMode()
-								   ? (devices.length > 1 ? devices[0] : devices[1]) : devices[0]);
+    public static void showViewer(final JFrame frame, final MatchViewer viewer) {
+        final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        // if tournament mode and 2 monitors run viewer on monitor 2 and minimap
+        // on monitor one, else run only viewer
 
-		SwingUtilities.invokeLater(new Runnable() {
+        final GraphicsDevice gd = (viewer.isTournamentMode()
+                ? (devices.length > 1 ? devices[0] : devices[1]) : devices[0]);
 
-				public void run() {
-					frame.getContentPane().add(viewer.getComponent());
-					if (viewer.isTournamentMode() && gd.isFullScreenSupported()) {
-						//frame.setIgnoreRepaint(true);
-						frame.setResizable(false);
-						frame.setUndecorated(true);
-						gd.setFullScreenWindow(frame);
-						/*
-						// TESTING!!
-						frame.setResizable(true);
-						frame.setUndecorated(false);
-						*/
+        SwingUtilities.invokeLater(new Runnable() {
 
-						viewer.getCanvas().setVisible(true);
-					} else {
-						viewer.getCanvas().addComponentListener(new ComponentAdapter() {
+            public void run() {
+                frame.getContentPane().add(viewer.getComponent());
+                if (viewer.isTournamentMode() && gd.isFullScreenSupported()) {
+                    //frame.setIgnoreRepaint(true);
+                    frame.setResizable(false);
+                    frame.setUndecorated(true);
+                    gd.setFullScreenWindow(frame);
+                    /*
+                    // TESTING!!
+                    frame.setResizable(true);
+                    frame.setUndecorated(false);
+                     */
 
-								public void componentShown(ComponentEvent e) {
-									frame.pack();
-								}
-							});
-						frame.pack();
-						frame.setVisible(true);
-					}
-				}
-			});
-	}
+                    viewer.getCanvas().setVisible(true);
+                } else {
+                    viewer.getCanvas().addComponentListener(new ComponentAdapter() {
 
-	private static void runLocal(Config options) {
+                        public void componentShown(ComponentEvent e) {
+                            frame.pack();
+                        }
+                    });
+                    frame.pack();
+                    frame.setVisible(true);
+                }
+            }
+        });
+    }
 
-		MatchDialog md = new MatchDialog(null);
-		if (!options.getBoolean("bc.dialog.skip"))
-			md.setVisible(true);
-		Choice choice = md.getChoice();
-		md.dispose();
+    private static void runLocal(Config options) {
 
-		if (!options.getBoolean("bc.dialog.skip") && md.wasCancelPressed())
-			return;
+        MatchDialog md = new MatchDialog(null);
+        if (!options.getBoolean("bc.dialog.skip"))
+            md.setVisible(true);
+        Choice choice = md.getChoice();
+        md.dispose();
 
-		String saveFile = (md.getSaveChoice() ? md.getSavePath() : null);
+        if (!options.getBoolean("bc.dialog.skip") && md.wasCancelPressed())
+            return;
 
-		ClientProxy theProxy = null;
-		Thread serverThread = null;
+        String saveFile = (md.getSaveChoice() ? md.getSavePath() : null);
 
-		switch (choice) {
+        ClientProxy theProxy = null;
+        Thread serverThread = null;
 
-		case FILE:
-			try {
-				String filePath = md.getSource();
+        switch (choice) {
 
-				if (md.getAnalyzeChoice()) {
-					AwesomenessAnalyzer.analyze(md.getSource());
-					if (new File(filePath + ".analyzed").exists()) {
-						filePath = filePath + ".analyzed";
-					}
-				}
+            case FILE:
+                try {
+                    String filePath = md.getSource();
 
-				theProxy = new StreamClientProxy(filePath);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-			break;
+                    if (md.getAnalyzeChoice()) {
+                        AwesomenessAnalyzer.analyze(md.getSource());
+                        if (new File(filePath + ".analyzed").exists()) {
+                            filePath = filePath + ".analyzed";
+                        }
+                    }
 
-		case LOCAL:
+                    theProxy = new StreamClientProxy(filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                break;
 
-			theProxy = LocalProxy.INSTANCE;
+            case LOCAL:
 
-			Server server = null;
+                theProxy = LocalProxy.INSTANCE;
 
-			try {
-				server = ServerFactory.createLocalServer(options,
-														 (LocalProxy) theProxy, saveFile);
-			} catch (IOException e) {
-				return;
-			}
-			LocalProxy.INSTANCE.addObserver(server);
-			serverThread = new Thread(server);
+                Server server = null;
 
-			server.update(null, new MatchInfo(
-											  md.getParameter(Parameter.TEAM_A), md.getParameter(Parameter.TEAM_B), md.getAllMaps().toArray(new String[md.getAllMaps().size()])));
+                try {
+                    server = ServerFactory.createLocalServer(options,
+                            (LocalProxy) theProxy, saveFile);
+                } catch (IOException e) {
+                    return;
+                }
+                LocalProxy.INSTANCE.addObserver(server);
+                serverThread = new Thread(server);
 
-			break;
+                server.update(null, new MatchInfo(
+                        md.getParameter(Parameter.TEAM_A), md.getParameter(Parameter.TEAM_B), md.getAllMaps().toArray(new String[md.getAllMaps().size()])));
 
-		case REMOTE:
-			try {
-				Socket socket = new Socket(md.getSource(), 6370);
+                break;
 
-				ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-				String teamA = md.getParameter(Parameter.TEAM_A), teamB = md.getParameter(Parameter.TEAM_B);
-				String[] maps = md.getAllMaps().toArray(new String[0]);
-				out.writeObject(new MatchInfo(teamA, teamB, maps));
-				out.flush();
+            case REMOTE:
+                try {
+                    Socket socket = new Socket(md.getSource(), 6370);
 
-				Thread.sleep(1000);
+                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                    String teamA = md.getParameter(Parameter.TEAM_A), teamB = md.getParameter(Parameter.TEAM_B);
+                    String[] maps = md.getAllMaps().toArray(new String[0]);
+                    out.writeObject(new MatchInfo(teamA, teamB, maps));
+                    out.flush();
 
-				theProxy = new StreamClientProxy(socket.getInputStream(), out);
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+                    Thread.sleep(1000);
 
-			break;
+                    theProxy = new StreamClientProxy(socket.getInputStream(), out);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-		}
+                break;
 
-		options.setBoolean("bc.client.opengl", md.getGlClientChoice());
-		options.setBoolean("bc.client.minimap", md.getMinimapChoice());
-		Main.showViewer(createFrame(), new MatchViewer(theProxy, md.getLockstepChoice()));
-		if (serverThread != null)
-			serverThread.start();
-	}
+        }
 
-	public static boolean run(Config options) {
-		if(options.get("bc.server.mode").equalsIgnoreCase("LOCAL")) {
-			runLocal(options);
-			return true;
-		}
-		if(battlecode.server.Main.run(options)) return true;	   
-		return false;
-	}
+        options.setBoolean("bc.client.opengl", md.getGlClientChoice());
+        options.setBoolean("bc.client.minimap", md.getMinimapChoice());
+        Main.showViewer(createFrame(), new MatchViewer(theProxy, md.getLockstepChoice()));
+        if (serverThread != null)
+            serverThread.start();
+    }
 
-	public static void main(String[] args) {
+    public static boolean run(Config options) {
+        if (options.get("bc.server.mode").equalsIgnoreCase("LOCAL")) {
+            runLocal(options);
+            return true;
+        }
+        if (battlecode.server.Main.run(options))
+            return true;
+        return false;
+    }
 
-		final Config options = battlecode.server.Main.setupConfig(args);
+    public static void main(String[] args) {
 
-		if(!run(options)) {
-			System.err.println("invalid bc.server.mode");
-			System.exit(64);
-		}
-	}
+        final Config options = battlecode.server.Main.setupConfig(args);
+
+        if (!run(options)) {
+            System.err.println("invalid bc.server.mode");
+            System.exit(64);
+        }
+    }
 }

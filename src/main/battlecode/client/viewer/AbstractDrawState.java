@@ -186,12 +186,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
     public Void visitDeathSignal(DeathSignal s) {
         int team = getRobot(s.getObjectID()).getTeam().ordinal();
+        AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
-            Map<Chassis, Integer> ctc = getChassisTypeCount(getRobot(s.getObjectID()).getTeam());
-            ctc.put(getRobot(s.getObjectID()).getType(), ctc.get(getRobot(s.getObjectID()).getType()) + 1);
+            Map<Chassis, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
+            ctc.put(robot.getType(), ctc.get(robot.getType()) + 1);
         }
-        AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
+        
         for (ComponentType cmp : robot.getComponents()) {
             Map<ComponentType, Integer> comps = getComponentTypeCount(robot.getTeam());
             comps.put(cmp, comps.get(cmp) - 1);
