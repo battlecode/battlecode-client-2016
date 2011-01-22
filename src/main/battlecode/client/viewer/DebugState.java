@@ -77,6 +77,11 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
 		this.controlBits = controlBits;
 	}
 
+	public void setFocusAndUpdate(int id) {
+		focusID = id;
+		forceUpdate();
+	}
+
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}

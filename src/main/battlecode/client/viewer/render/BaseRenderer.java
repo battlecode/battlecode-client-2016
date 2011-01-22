@@ -4,6 +4,7 @@ import battlecode.client.viewer.AbstractAnimation;
 import java.awt.Dimension;
 
 import battlecode.client.viewer.AbstractDrawObject;
+import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.GameStateTimeline;
 import battlecode.client.viewer.InfoPanel;
 import battlecode.common.Team;
@@ -32,7 +33,9 @@ public abstract class BaseRenderer {
 
 	public abstract AbstractDrawObject<AbstractAnimation> getRobotByID(int id);
 
-	public abstract void setDebugState(battlecode.client.viewer.DebugState dbg);
+	public abstract void setDebugState(DebugState dbg);
+
+	public abstract DebugState getDebugState();
 
 	protected abstract boolean trySkipRounds(int rounds);
 
@@ -40,6 +43,9 @@ public abstract class BaseRenderer {
 
 	@SuppressWarnings("empty")
 	public void handleAction(char actionCommand) {
+
+		System.out.println(actionCommand);
+		System.out.println((int)actionCommand);
 
         switch (actionCommand) {
 		case 'A':

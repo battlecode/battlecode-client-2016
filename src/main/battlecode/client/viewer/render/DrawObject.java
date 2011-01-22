@@ -287,7 +287,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         }
 
         if (drawOutline) {
-            g2.setColor(Color.WHITE);
+            g2.setColor(Color.MAGENTA);
             g2.setStroke(outlineStroke);
             g2.draw(outline);
         }
