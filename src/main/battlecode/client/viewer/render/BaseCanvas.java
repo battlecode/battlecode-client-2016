@@ -91,14 +91,12 @@ public abstract class BaseCanvas extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if(getRenderer() != null) {
 					String strID = JOptionPane.showInputDialog("Find robot by ID:");
-					System.out.println(strID);
 					int robotID;
 					try {
 						robotID = Integer.parseInt(strID); 
 					} catch(NumberFormatException ex) {
 						return;
 					}
-					System.out.println(robotID);
 					getRenderer().getDebugState().setFocusAndUpdate(robotID);	
 				}
             }
