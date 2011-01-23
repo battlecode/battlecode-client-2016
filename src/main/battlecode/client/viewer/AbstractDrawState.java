@@ -304,6 +304,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return null;
     }
 
+	public void visitLoadSignal(LoadSignal s) {
+		getRobot(s.passengerID).load();
+	}
+
+	public void visitUnloadSignal(UnloadSignal s) {
+		getRobot(s.passengerID).unload(s.unloadLoc);
+	}
+
     public void visitMineBirthSignal(MineBirthSignal s) {
         fluxDeposits.put(s.id, new FluxDepositState(s.id, s.location, s.roundsAvaliable));
 

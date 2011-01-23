@@ -201,6 +201,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
             int id = entry.getKey();
             DrawObject obj = entry.getValue();
+			if(obj.inTransport()) continue;
 
             if (id == dragID) {
                 drawDragged(g2, debug, obj);

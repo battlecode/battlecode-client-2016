@@ -98,6 +98,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int broadcastRadius = 0;
     protected int broadcastRadiusSq = 0;
     protected boolean turnedOn = true;
+	protected boolean loaded = false;
     protected ComponentType componentType;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
@@ -198,6 +199,19 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public ActionType getMovementAction() {
         return movementAction;
     }
+
+	public void load() {
+		loaded = true;
+	}
+
+	public void unload(MapLocation loc) {
+		loaded = false;
+		setLocation(loc);
+	}
+
+	public boolean inTransport() {
+		return loaded;
+	}
 
     public void setLocation(MapLocation loc) {
         this.loc = loc;
