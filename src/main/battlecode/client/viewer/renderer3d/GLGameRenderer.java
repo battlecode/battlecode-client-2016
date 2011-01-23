@@ -209,6 +209,10 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         }
     }
 
+	public DebugState getDebugState() {
+		return debugState;
+	}
+
     protected void toggleFastForward() {
         fastForward = !fastForward;
     }
