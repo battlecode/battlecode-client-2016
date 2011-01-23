@@ -44,9 +44,6 @@ public abstract class BaseRenderer {
 	@SuppressWarnings("empty")
 	public void handleAction(char actionCommand) {
 
-		System.out.println(actionCommand);
-		System.out.println((int)actionCommand);
-
         switch (actionCommand) {
 		case 'A':
 		case 'a':
