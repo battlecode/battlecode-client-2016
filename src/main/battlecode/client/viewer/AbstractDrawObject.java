@@ -64,6 +64,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         turnedOn = copy.turnedOn;
         broadcastRadius = copy.broadcastRadius;
         broadcastRadiusSq = copy.broadcastRadiusSq;
+		loaded = copy.loaded;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
