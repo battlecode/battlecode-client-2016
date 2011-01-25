@@ -6,10 +6,14 @@ import battlecode.client.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 class DrawHUD {
 
@@ -24,6 +28,7 @@ class DrawHUD {
     private static final Map<ComponentType, ImageFile> componentImages = new EnumMap<ComponentType, ImageFile>(ComponentType.class);
     private static final ImageResource<String> cir = new ImageResource<String>();
     private static ImageFile numberText;
+    private static final Map<Integer, String> teams = new HashMap<Integer, String>();
     private static BufferedImage[] numbers;
     private final Font fnt, smallfnt;
 
@@ -37,12 +42,24 @@ class DrawHUD {
                 // e.printStackTrace();
             }
         }
+        try {
+            File f = new File("teams.txt");
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = br.readLine()) != null) {
+                StringTokenizer st = new StringTokenizer(line, "\t");
+                teams.put(Integer.parseInt(st.nextToken()), st.nextToken());
+            }
+        } catch (IOException e) {
+        }
+
     }
 
     //load this lazily
     private static ImageFile getComponentIcon(ComponentType t) {
-        if (componentImages.get(t) != null)
+        if (componentImages.get(t) != null) {
             return componentImages.get(t);
+        }
         //System.out.println("art/components/" + t.toString().toLowerCase() + ".png");
         ImageFile img = new ImageFile("art/components/" + t.toString().toLowerCase() + ".png");
         componentImages.put(t, img);
@@ -105,8 +122,9 @@ class DrawHUD {
     }
 
     private String formatStringSize(String s, int len) {
-        while (s.length() < len)
+        while (s.length() < len) {
             s = " " + s;
+        }
         return s;
     }
 
@@ -115,8 +133,9 @@ class DrawHUD {
     }
 
     public void drawPopularEquipment(Graphics2D g2) {
-        if (team == null || ds == null)
+        if (team == null || ds == null) {
             return;
+        }
 
         g2.translate(-2, -.53 * 4.5 / width);
 
@@ -198,12 +217,14 @@ class DrawHUD {
 
                 float wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
                 if (pointsHigh.equals("0")) {
-                    if (pointsLow.length() == 1)
+                    if (pointsLow.length() == 1) {
                         pointsLow = " " + pointsLow;
+                    }
                 } else {
                     g2.drawString(pointsHigh, 35 - wx, 12);
-                    if (pointsLow.length() == 1)
+                    if (pointsLow.length() == 1) {
                         pointsLow = "0" + pointsLow;
+                    }
                 }
                 g2.setColor(Color.GRAY);
                 g2.drawString(pointsLow, 35, 12);
@@ -277,14 +298,24 @@ class DrawHUD {
                 g2.translate(-2, 0);
                 g2.drawString(footerText, 0, 12);
                 g2.translate(0, 14);
-                if (teamName != null)
-                    g2.drawString(teamName, 0, 12);
+                if (teamName != null) {
+                    String teamst = teamName;
+                    try {
+                        int tn = Integer.parseInt(teamName.substring(4));
+                        if (teams.containsKey(tn)) {
+                            teamst = tn + " " + teams.get(tn);
+                        }
+                    } catch (NumberFormatException ex) {
+                    }
+                    g2.drawString(teamst, 0, 12);
+                }
             } else {
                 g2.translate(8, 0);
                 g2.drawString(formatStringSize(footerText, 5), 0, 12);
                 g2.translate(-10, 14);
-                if (teamName != null)
+                if (teamName != null) {
                     g2.drawString(teamName, 0, 12);
+                }
 
                 AffineTransform pushed4 = g2.getTransform();
                 String categories[] = {"Units", "Macro", "Weapons", "Armor", "Misc"};
