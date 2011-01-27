@@ -6,10 +6,14 @@ import battlecode.client.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 class DrawHUD {
 
@@ -25,6 +29,7 @@ class DrawHUD {
     private static final Map<ComponentType, ImageFile> componentImages = new EnumMap<ComponentType, ImageFile>(ComponentType.class);
     private static final ImageResource<String> cir = new ImageResource<String>();
     private static ImageFile numberText;
+    private static final Map<Integer, String> teams = new HashMap<Integer, String>();
     private static BufferedImage[] numbers;
     private final Font fnt, smallfnt, sfnt;
 
@@ -38,12 +43,24 @@ class DrawHUD {
                 // e.printStackTrace();
             }
         }
+        try {
+            File f = new File("teams.txt");
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = br.readLine()) != null) {
+                StringTokenizer st = new StringTokenizer(line, "\t");
+                teams.put(Integer.parseInt(st.nextToken()), st.nextToken());
+            }
+        } catch (IOException e) {
+        }
+
     }
 
     //load this lazily
     private static ImageFile getComponentIcon(ComponentType t) {
-        if (componentImages.get(t) != null)
+        if (componentImages.get(t) != null) {
             return componentImages.get(t);
+        }
         //System.out.println("art/components/" + t.toString().toLowerCase() + ".png");
         ImageFile img = new ImageFile("art/components/" + t.toString().toLowerCase() + ".png");
         componentImages.put(t, img);
@@ -120,8 +137,9 @@ class DrawHUD {
     }
 
     private String formatStringSize(String s, int len) {
-        while (s.length() < len)
+        while (s.length() < len) {
             s = " " + s;
+        }
         return s;
     }
 
@@ -130,8 +148,9 @@ class DrawHUD {
     }
 
     public void drawPopularEquipment(Graphics2D g2) {
-        if (team == null || ds == null)
+        if (team == null || ds == null) {
             return;
+        }
 
         g2.translate(-2, -.53 * 4.5 / width);
 
@@ -166,6 +185,18 @@ class DrawHUD {
         }
 
         g2.setFont(fnt);
+    }
+
+    private String getTeamString(String teamName) {
+        String teamst = teamName;
+        try {
+            int tn = Integer.parseInt(teamName.substring(4));
+            if (teams.containsKey(tn)) {
+                teamst = tn + " " + teams.get(tn);
+            }
+        } catch (NumberFormatException ex) {
+        }
+        return teamst;
     }
 
     public void draw(Graphics2D g2) {
@@ -209,7 +240,7 @@ class DrawHUD {
                 }
                 g2.translate(-1.875, -1);
 
-                
+
                 double x = .08;
                 g2.scale(x, x);
 
@@ -218,13 +249,15 @@ class DrawHUD {
 
                 float wx = (float) g2.getFontMetrics(fnt).getStringBounds(pointsHigh, g2).getWidth();
                 if (pointsHigh.equals("0")) {
-                    if (pointsLow.length() == 1)
+                    if (pointsLow.length() == 1) {
                         pointsLow = " " + pointsLow;
+                    }
                 } else {
                     g2.setColor(new Color(150, 200, 150));
                     g2.drawString(pointsHigh, 35 - wx, 12);
-                    if (pointsLow.length() == 1)
+                    if (pointsLow.length() == 1) {
                         pointsLow = "0" + pointsLow;
+                    }
                 }
                 g2.setColor(new Color(50, 100, 50));
                 g2.drawString(pointsLow, 35, 12);
@@ -298,31 +331,32 @@ class DrawHUD {
             g2.scale(x, x);
             if (team == Team.A) {
                 g2.translate(-2, 0);
-                g2.setColor(new Color(250,250,50));
+                g2.setColor(new Color(250, 250, 50));
                 g2.setFont(g2.getFont().deriveFont(10f));
                 g2.drawString(footerText, 0, 15);
                 g2.setColor(Color.GREEN);
                 g2.translate(0, 14);
 
                 g2.setFont(g2.getFont().deriveFont(6f));
-                if (teamName != null)
-                    g2.drawString(teamName, 0, 12);
+                if (teamName != null) {
+                    g2.drawString(getTeamString(teamName), 0, 12);
+                }
             } else {
                 g2.translate(8, 0);
-                g2.setColor(new Color(250,250,50));
+                g2.setColor(new Color(250, 250, 50));
                 g2.setFont(g2.getFont().deriveFont(10f));
                 g2.drawString(formatStringSize(footerText, 5), 0, 15);
                 g2.setColor(Color.GREEN);
                 g2.translate(-10, 14);
-
                 g2.setFont(g2.getFont().deriveFont(6f));
-                if (teamName != null)
-                    g2.drawString(teamName, 0, 12);
+                if (teamName != null) {
+                    g2.drawString(getTeamString(teamName), 0, 12);
+                }
 
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
                 double bGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.B);
 
-                g2.setColor( (aGPoints == bGPoints) ? Color.DARK_GRAY : ( (aGPoints > bGPoints)? Color.RED: Color.BLUE ));
+                g2.setColor((aGPoints == bGPoints) ? Color.DARK_GRAY : ((aGPoints > bGPoints) ? Color.RED : Color.BLUE));
                 g2.setFont(sfnt);
                 g2.drawString("BattleCode", -52, -9);
                 g2.translate(-1, -1);
@@ -348,7 +382,7 @@ class DrawHUD {
 
                 g2.translate(-20, 220);
 
-                
+
                 Color ballColor;
                 Color outline;
                 if (aGPoints == bGPoints) {
