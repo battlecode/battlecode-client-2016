@@ -129,6 +129,7 @@ public class MatchViewer {
             proxy.writeNotification(StartNotification.INSTANCE);
         }
         final BufferedMatch bufferedMatch = new BufferedMatch(proxy);
+        
         if (cfg.getBoolean("bc.client.opengl")) {
             br = new GLGameRenderer(bufferedMatch, bc.getGraphics());
         } else {

@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
+import battlecode.client.viewer.BufferedMatch;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -20,7 +21,7 @@ class DrawHUD {
     private static final int numArchons = 6;
     private static final float slotSize = 0.8f / numArchons;
     private static final Font footerFont = new Font(null, Font.PLAIN, 1);
-    private static final ImageFile bg = new ImageFile("art/hud_bg_new.jpg");
+    private static final ImageFile bg = new ImageFile("art/darkBg.bmp");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static final ImageFile barGradient = new ImageFile("art/BarGradient.png");
@@ -31,6 +32,7 @@ class DrawHUD {
     private static final Map<Integer, String> teams = new HashMap<Integer, String>();
     private static BufferedImage[] numbers;
     private final Font fnt, smallfnt;
+    private static BufferedMatch match=null;
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -47,8 +49,12 @@ class DrawHUD {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String line;
             while ((line = br.readLine()) != null) {
+            	
                 StringTokenizer st = new StringTokenizer(line, "\t");
-                teams.put(Integer.parseInt(st.nextToken()), st.nextToken());
+                int team_id = Integer.parseInt(st.nextToken());
+                String team_name = st.nextToken();
+               
+                teams.put(team_id, team_name);
             }
         } catch (IOException e) {
         }
@@ -76,18 +82,26 @@ class DrawHUD {
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
 
-    public DrawHUD(DrawState ds, Team team, String teamName) {
+    public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
         this.team = team;
-        this.teamName = teamName;
+        this.match = match;
+        this.teamName="";
+        /*if(team == Team.A)
+        	this.teamName = match.teamA;
+        else
+        	this.teamName = match.teamB;*/
+        
+        
+        
         setRatioWidth(2.0f / 9.0f);
 
         Font fnt2 = new Font("Default", Font.PLAIN, 12);
-        File f = new File("art/CENTURY.TTF");
+        File f = new File("art/Starcraft Normal.TTF");
         try {
             fnt2 = Font.createFont(Font.TRUETYPE_FONT, f);
-            fnt2 = fnt2.deriveFont(Font.BOLD, 12f);
-
+            fnt2 = fnt2.deriveFont(Font.PLAIN, 12f);
+            
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -188,7 +202,7 @@ class DrawHUD {
             Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 20);
             g2.setColor(c);
             g2.scale(bgFill.width, bgFill.height);
-            g2.fillRect(0, 0, 1, 1);
+            //g2.fillRect(0, 0, 1, 1);
         }
         g2.setTransform(pushed);
 
@@ -199,16 +213,18 @@ class DrawHUD {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
             battlecode.serial.RoundStats stats = ds.getRoundStats();
-
+            
             AffineTransform pushed2 = g2.getTransform();
             {
+            	
+            	
 
                 if (stats != null) {
                     points = (int) stats.getPoints(team);
                 }
                 g2.translate(-1.875, -1);
 
-                g2.setColor(Color.BLACK);
+                g2.setColor(Color.GREEN);
                 double x = .08;
                 g2.scale(x, x);
 
@@ -226,7 +242,7 @@ class DrawHUD {
                         pointsLow = "0" + pointsLow;
                     }
                 }
-                g2.setColor(Color.GRAY);
+                g2.setColor(Color.GREEN);
                 g2.drawString(pointsLow, 35, 12);
 
                 g2.scale(1 / x, 1 / x);
@@ -258,7 +274,7 @@ class DrawHUD {
 
             AffineTransform pushed3 = g2.getTransform();
             {
-                g2.setColor(Color.BLACK);
+                g2.setColor(Color.GREEN);
                 g2.scale(1, barHeight / 2.0);
                 g2.translate(0, -.2);
                 g2.scale(1, .1);
@@ -273,15 +289,18 @@ class DrawHUD {
             g2.setTransform(pushed3);
 
             Color c = team == Team.A ? new Color(255, 0, 0, 100) : new Color(0, 0, 255, 130);
+            //TODO: move translateToTop to some place useful
+            double translateToTop = -16.5;
             g2.setColor(c);
             g2.scale(0.1 * Math.min(gatheredPoints, 2000) / 50, barHeight);
+            g2.translate(0, -16.15);
             g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
             g2.fillRect(0, 0, 1, 1);
-
+            
             if (gatheredPoints > 2000) {
                 g2.setTransform(pushed3);
                 g2.setColor(new Color(0, 255, 100, 180));
-                g2.translate(0, barHeight / 3.0);
+                g2.translate(0, translateToTop + barHeight / 3.0);
                 g2.scale(0.1 * Math.min(gatheredPoints - 2000, 2000) / 50, barHeight / 3.0);
                 g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
                 g2.fillRect(0, 0, 1, 1);
@@ -290,7 +309,7 @@ class DrawHUD {
             g2.setTransform(pushed2);
             g2.translate(0, -.9 * 4.5 / width);
 
-            g2.setColor(Color.BLACK);
+            g2.setColor(Color.GREEN);
             g2.translate(-2, .5);
             double x = .08;
             g2.scale(x, x);
@@ -298,15 +317,21 @@ class DrawHUD {
                 g2.translate(-2, 0);
                 g2.drawString(footerText, 0, 12);
                 g2.translate(0, 14);
-                if (teamName != null) {
-                    String teamst = teamName;
-                    try {
+                String currentTeamName="";
+                if(team == Team.A)
+                	currentTeamName = match.getTeamA();
+                if(team == Team.B)
+                	currentTeamName = match.getTeamB();
+                if (currentTeamName != null) {
+                	
+                    String teamst = currentTeamName;
+                    /*try {
                         int tn = Integer.parseInt(teamName.substring(4));
                         if (teams.containsKey(tn)) {
                             teamst = tn + " " + teams.get(tn);
                         }
                     } catch (NumberFormatException ex) {
-                    }
+                    }*/
                     g2.drawString(teamst, 0, 12);
                 }
             } else {
