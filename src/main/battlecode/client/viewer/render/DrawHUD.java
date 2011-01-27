@@ -201,6 +201,8 @@ class DrawHUD {
 
     public void draw(Graphics2D g2) {
 
+        
+
         g2.setFont(fnt);
         //g2.setColor(Color.BLACK);
         //g2.fill(bgFill);
@@ -291,12 +293,13 @@ class DrawHUD {
 
             AffineTransform pushed3 = g2.getTransform();
             {
-                g2.setColor(Color.BLACK);
+                g2.setColor(Color.DARK_GRAY);
                 g2.scale(1, barHeight / 2.0);
                 g2.translate(0, -.2);
-                g2.scale(1, .1);
+                g2.scale(1, .2);
                 g2.fillRect(0, 0, 4, 1);
-                g2.scale(.03, 10);
+                g2.scale(.03, 5);
+                g2.translate(0, .1);
                 for (int i = 0; i < 20; i++) {
                     g2.translate(0.1 * 100 / 50 / 0.03, 0);
                     //g2.fillRect(0, 0, 1, 1);
