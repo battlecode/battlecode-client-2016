@@ -56,6 +56,10 @@ public class MatchViewer {
         bc = null;
     }
 
+    public ClientProxy getProxy() {
+        return proxy;
+    }
+
     public MatchViewer(ClientProxy proxy, boolean lockstepChoice) {
         if (cfg.getBoolean("bc.client.opengl"))
             bc = new GLGameCanvas();

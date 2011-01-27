@@ -235,8 +235,8 @@ public class GameRenderer extends BaseRenderer {
             sideB.draw(g2);
         }
         g2.setTransform(pushed);
-      
-        
+
+
     }
 
     public void setDebugState(DebugState dbg) {
@@ -276,12 +276,16 @@ public class GameRenderer extends BaseRenderer {
         boolean isGraphicsStable = g2.getTransform().isIdentity();
         g2.setColor(Color.BLACK);
         g2.fill(new Rectangle(0, 0, canvasSize.width, canvasSize.height));
+        AffineTransform pushed = g2.getTransform();
         g2.scale(spriteSize, spriteSize);
         g2.translate(unitOffX, unitOffY);
         if (timeline.getRound() >= 0) {
             drawHUD(g2);
             drawState(g2, isGraphicsStable);
         }
+        g2.setTransform(pushed);
+        //g2.scale(spriteSize, spriteSize);
+        //g2.translate(unitOffX, unitOffY);
         if (cutScene != null) {
             cutScene.draw(g2);
         }
