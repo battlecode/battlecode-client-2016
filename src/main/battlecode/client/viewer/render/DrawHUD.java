@@ -334,7 +334,7 @@ class DrawHUD {
                 }
             }*/
             g2.setTransform(pushed3);
-            double translateToTop = -14.3;
+            double translateToTop = -14.335;
             Color c = team == Team.A ? teamA : teamB;
             
             g2.setColor(c);
