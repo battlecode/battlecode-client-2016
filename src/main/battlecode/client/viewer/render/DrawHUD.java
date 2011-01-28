@@ -148,6 +148,7 @@ class DrawHUD {
     }
 
     public void drawPopularEquipment(Graphics2D g2) {
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         if (team == null || ds == null) {
             return;
         }
@@ -155,7 +156,6 @@ class DrawHUD {
         g2.translate(-2, -.53 * 4.5 / width);
 
         g2.setFont(smallfnt);
-        g2.setColor(Color.GREEN);
 
         g2.translate(0, -2.6);
         int cnt = 0;
@@ -165,6 +165,9 @@ class DrawHUD {
             g2.drawImage(cir.getResource(path, path).image, 1 * cnt, 0, 1, 1, null);
             String count = "" + chlist.get(ct);
             float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
+        	g2.setColor(Color.BLACK);
+            g2.drawString(count, 1f * cnt + .98f - wx, .98f);
+        	g2.setColor(Color.GREEN);
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
             cnt++;
         }
@@ -181,6 +184,9 @@ class DrawHUD {
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
                 String count = "" + clist.get(ct);
                 float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
+        		g2.setColor(Color.BLACK);
+                g2.drawString(count, 1f * cnt + .98f - wx, .98f);
+        		g2.setColor(Color.GREEN);
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
                 cnt++;
             }
@@ -188,6 +194,7 @@ class DrawHUD {
         }
 
         g2.setFont(fnt);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
     }
 
     private String getTeamString(String teamName) {
