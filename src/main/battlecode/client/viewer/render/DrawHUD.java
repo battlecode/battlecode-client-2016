@@ -174,6 +174,9 @@ class DrawHUD {
         for (ComponentClass cmpcl : classes) {
             cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
+			// we don't have enough space for a separate row for comm, so put them with misc
+			if(cmpcl==ComponentClass.MISC)
+				clist.putAll(ds.getComponentTypeCount(team,ComponentClass.COMM));
             for (ComponentType ct : clist.keySet()) {
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
                 String count = "" + clist.get(ct);
