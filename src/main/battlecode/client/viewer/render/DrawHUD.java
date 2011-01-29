@@ -77,8 +77,8 @@ class DrawHUD {
             return componentImages.get(type);
         }
         
-        String fileName = "art/components/" + type + ".png";
-        
+        String fileName = ("art/components/" + type + ".png").toLowerCase();
+
         ImageFile img = new ImageFile(fileName);
         componentImages.put(type, img);
         return img;
