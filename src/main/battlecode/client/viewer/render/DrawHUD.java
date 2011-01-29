@@ -36,7 +36,7 @@ class DrawHUD {
     private final Font fnt, smallfnt, sfnt;
     private static final Color teamA = new Color(255,0,0,255);
     private static final Color teamB = new Color(0,153,255,255);
-    private static final double resizingFactor = .99;
+    private static final double resizingFactor = .9999;
     private static final int resizeTrigger=3;
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -206,7 +206,7 @@ class DrawHUD {
             String path = getAvatarPath(ct.toString().toLowerCase(), team);
             g2.translate(cnt*tightness,0);
             // System.out.println("resizeFactor: " + resizeFactor);
-            g2.scale(resizeFactor, 1.0);
+            //g2.scale(resizeFactor, 1.0);
             g2.drawImage(cir.getResource(path, path).image, 1 * cnt, 0, 1, 1, null);
             g2.translate(-cnt*tightness,0);
             String count = "" + chlist.get(ct);
@@ -215,10 +215,12 @@ class DrawHUD {
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
             g2.translate(-cnt*tightness+.2,-.5);
             cnt++;
+            if(cnt>4)
+            	break;
         }
         g2.translate(0, 2.4+.3);
         
-        g2.scale(1/resizeFactor,1.0);
+        //g2.scale(1/resizeFactor,1.0);
         
         ComponentClass classes[] = {ComponentClass.BUILDER, ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
         for (ComponentClass cmpcl : classes) {
@@ -243,7 +245,7 @@ class DrawHUD {
                 	resizeFactor = 1;
                 }
                 
-                g2.scale(resizeFactor, 1.0);
+                //g2.scale(resizeFactor, 1.0);
             	g2.drawImage(getComponentIcon(ct,team).image, 1 * cnt, 0, 1, 1, null);
             	g2.translate(-cnt*tightness,0);
             	String count = "" + clist.get(ct);
@@ -252,7 +254,9 @@ class DrawHUD {
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
                 g2.translate(-cnt*tightness+.2,-.5);
                 cnt++;
-                g2.scale(1/resizeFactor, 1.0);
+                //g2.scale(1/resizeFactor, 1.0);
+                if(cnt>4)
+                	break;
             }
             g2.translate(0, 2.4+.5);
         }
