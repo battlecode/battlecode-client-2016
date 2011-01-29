@@ -424,9 +424,9 @@ class DrawHUD {
                 teamName = match.getTeamA();
                 if (teamName != null) {
                 	String fullTeamName = getTeamString(teamName);
-                	if(fullTeamName.length()>12)
-                		fullTeamName = fullTeamName.substring(0,12);
-                    g2.drawString(getTeamString(teamName), 0, 12);
+                	if(fullTeamName.length()>14)
+                		fullTeamName = fullTeamName.substring(0,14);
+                    g2.drawString(fullTeamName, 0, 12);
                 }
                 g2.translate(24, 0);
             } else {
@@ -441,9 +441,9 @@ class DrawHUD {
                 teamName = match.getTeamB();
                 if (teamName != null) {
                 	String fullTeamName = getTeamString(teamName);
-                	if(fullTeamName.length()>12)
-                		fullTeamName = fullTeamName.substring(0,12);
-                    g2.drawString(getTeamString(teamName), 0, 12);
+                	if(fullTeamName.length()>14)
+                		fullTeamName = fullTeamName.substring(0,14);
+                    g2.drawString(fullTeamName, 0, 12);
                 }
 
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
