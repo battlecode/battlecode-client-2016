@@ -215,7 +215,7 @@ class DrawHUD {
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
             g2.translate(-cnt*tightness+.2,-.5);
             cnt++;
-            if(cnt>4)
+            if(cnt>3)
             	break;
         }
         g2.translate(0, 2.4+.3);
@@ -255,7 +255,7 @@ class DrawHUD {
                 g2.translate(-cnt*tightness+.2,-.5);
                 cnt++;
                 //g2.scale(1/resizeFactor, 1.0);
-                if(cnt>4)
+                if(cnt>3)
                 	break;
             }
             g2.translate(0, 2.4+.5);
