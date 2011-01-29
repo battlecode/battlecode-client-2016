@@ -157,8 +157,8 @@ public class MatchViewer {
         }
 
         if (cfg.getBoolean("bc.client.sound-on")) {
-            audio.setTimeline(br.getTimeline());
             battlecode.client.viewer.sound.GameSoundBank.preload();
+            audio.setTimeline(br.getTimeline());
         }
 
         if (tournamentMode) {
