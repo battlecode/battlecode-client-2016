@@ -165,9 +165,9 @@ class DrawHUD {
             g2.drawImage(cir.getResource(path, path).image, 1 * cnt, 0, 1, 1, null);
             String count = "" + chlist.get(ct);
             float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-        	g2.setColor(Color.BLACK);
+            g2.setColor(Color.BLACK);
             g2.drawString(count, 1f * cnt + .98f - wx, .98f);
-        	g2.setColor(Color.GREEN);
+            g2.setColor(Color.GREEN);
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
             cnt++;
             if (cnt > 3) {
@@ -180,21 +180,29 @@ class DrawHUD {
         for (ComponentClass cmpcl : classes) {
             cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
-			// we don't have enough space for a separate row for comm, so put them with misc
-			if(cmpcl==ComponentClass.MISC)
-				clist.putAll(ds.getComponentTypeCount(team,ComponentClass.COMM));
+            // we don't have enough space for a separate row for comm, so put them with misc
+            if (cmpcl == ComponentClass.MISC)
+                clist.putAll(ds.getComponentTypeCount(team, ComponentClass.COMM));
             for (ComponentType ct : clist.keySet()) {
+                double scale = 1;
+                double ty = 0;
+                if (clist.keySet().size() > 4) {
+                    scale = 4.0 / clist.keySet().size();
+                    ty = (1 - scale) / 2 * 2.4;
+                    g2.translate(0, ty);
+                    g2.scale(scale, scale);
+                }
                 g2.drawImage(getComponentIcon(ct).image, 1 * cnt, 0, 1, 1, null);
                 String count = "" + clist.get(ct);
                 float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-        		g2.setColor(Color.BLACK);
+                g2.setColor(Color.BLACK);
                 g2.drawString(count, 1f * cnt + .98f - wx, .98f);
-        		g2.setColor(Color.GREEN);
+                g2.setColor(Color.GREEN);
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
+                g2.scale(1 / scale, 1 / scale);
+                g2.translate(0, -ty);
+
                 cnt++;
-                if (cnt > 3) {
-                    break;
-                }
             }
             g2.translate(0, 2.4);
         }
@@ -221,7 +229,7 @@ class DrawHUD {
 
     public void draw(Graphics2D g2) {
 
-        
+
 
         g2.setFont(fnt);
         //g2.setColor(Color.BLACK);
