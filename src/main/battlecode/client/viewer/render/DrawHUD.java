@@ -35,6 +35,8 @@ class DrawHUD {
     private final Font fnt, smallfnt, sfnt;
     private static final Color teamA = new Color(255,0,0,255);
     private static final Color teamB = new Color(0,153,255,255);
+    private static final double resizingFactor = .99;
+    private static final int resizeTrigger=3;
     static {
         numberText = new ImageFile("art/numbers.png");
         numbers = new BufferedImage[10];
@@ -177,37 +179,75 @@ class DrawHUD {
         	g2.setColor(this.teamB);
         g2.translate(0, -2.6);
         int cnt = 0;
+        double tightness=.05;
         Map<Chassis, Integer> chlist = ds.getChassisTypeCount(team);
+        int chassisCount = chlist.size();
+        
+        double resizeFactor=1; 
+        
+        if(chassisCount>this.resizeTrigger)
+        {
+        	int delta = chassisCount-this.resizeTrigger;
+        	//System.out.println("before:"+ delta + " " + resizeFactor + " " + this.resizingFactor);
+        	resizeFactor = (1.0/delta)*resizingFactor;
+        	//System.out.println("after:"+ delta+ " " + resizeFactor);
+        }
+        else	
+        {
+        	resizeFactor = 1;
+        }
+        
         for (Chassis ct : chlist.keySet()) {
             String path = getAvatarPath(ct.toString().toLowerCase(), team);
-            g2.translate(cnt*.25,0);
+            g2.translate(cnt*tightness,0);
+            // System.out.println("resizeFactor: " + resizeFactor);
+            g2.scale(resizeFactor, 1.0);
             g2.drawImage(cir.getResource(path, path).image, 1 * cnt, 0, 1, 1, null);
-            g2.translate(-cnt*.25,0);
+            g2.translate(-cnt*tightness,0);
             String count = "" + chlist.get(ct);
             float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-            g2.translate(cnt*.25-.2,.5);
+            g2.translate(cnt*tightness-.2,.5);
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
-            g2.translate(-cnt*.25+.2,-.5);
+            g2.translate(-cnt*tightness+.2,-.5);
             cnt++;
         }
         g2.translate(0, 2.4+.3);
-
+        
+        g2.scale(1/resizeFactor,1.0);
+        
         ComponentClass classes[] = {ComponentClass.BUILDER, ComponentClass.WEAPON, ComponentClass.ARMOR, ComponentClass.MISC};
         for (ComponentClass cmpcl : classes) {
             cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
             for (ComponentType ct : clist.keySet()) {
-            	g2.translate(cnt*.25,0);
-            	System.out.println("just before drawImage line 192: " + team);
+            	g2.translate(cnt*tightness,0);
+            	//System.out.println("just before drawImage line 192: " + team);
+            	chassisCount = clist.size();
+                
+                resizeFactor=1; 
+                
+                if(chassisCount>this.resizeTrigger)
+                {
+                	int delta = chassisCount-this.resizeTrigger;
+                	//System.out.println("before:"+ delta + " " + resizeFactor + " " + this.resizingFactor);
+                	resizeFactor = (1.0/delta)*resizingFactor;
+                	//System.out.println("after:"+ delta+ " " + resizeFactor);
+                }
+                else	
+                {
+                	resizeFactor = 1;
+                }
+                
+                g2.scale(resizeFactor, 1.0);
             	g2.drawImage(getComponentIcon(ct,team).image, 1 * cnt, 0, 1, 1, null);
-            	g2.translate(-cnt*.25,0);
+            	g2.translate(-cnt*tightness,0);
             	String count = "" + clist.get(ct);
                 float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-                g2.translate(cnt*.25-.2,.5);
+                g2.translate(cnt*tightness-.2,.5);
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
-                g2.translate(-cnt*.25+.2,-.5);
+                g2.translate(-cnt*tightness+.2,-.5);
                 cnt++;
-                
+                g2.scale(1/resizeFactor, 1.0);
             }
             g2.translate(0, 2.4+.5);
         }
@@ -372,19 +412,19 @@ class DrawHUD {
 
                 g2.setFont(g2.getFont().deriveFont(6f));
                 if (teamName != null) {
-                    g2.drawString(getTeamString(teamName), 0, 12);
+                    g2.drawString(getTeamString(teamName).substring(0,2), 0, 12);
                 }
             } else {
-            	g2.translate(-2, 0);
+            	g2.translate(-1, 0);
                 g2.setColor(Color.WHITE);
-                g2.setFont(g2.getFont().deriveFont(7f));
+                g2.setFont(g2.getFont().deriveFont(8f));
                 g2.drawString(formatStringSize(footerText, 5), 0, 15);
                 g2.translate(10, 0);
                 g2.setColor(Color.GREEN);
                 g2.translate(-10, 14);
                 g2.setFont(g2.getFont().deriveFont(6f));
                 if (teamName != null) {
-                    g2.drawString(getTeamString(teamName), 0, 12);
+                    g2.drawString(getTeamString(teamName).substring(0, 3), 0, 12);
                 }
 
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
