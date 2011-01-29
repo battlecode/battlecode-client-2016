@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
+import battlecode.client.viewer.BufferedMatch;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -84,19 +85,22 @@ class DrawHUD {
     }
     private final DrawState ds;
     private final Team team;
-    private final String teamName;
+    private String teamName;
     private final Rectangle2D.Float bgFill = new Rectangle2D.Float(0, 0, 1, 1);
     private float width;
     private float spriteScale;
     private String footerText = "";
     private int points = 0;
+	private BufferedMatch match;
+	
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
 
-    public DrawHUD(DrawState ds, Team team, String teamName) {
+    public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
         this.team = team;
-        this.teamName = teamName;
+        this.match = match;
+        System.out.println("DrawHUD team: " + team +  " teamName:" + teamName);
         setRatioWidth(2.0f / 9.0f);
         
         Font fnt2 = new Font("Default", Font.PLAIN, 12);
@@ -164,7 +168,8 @@ class DrawHUD {
     }
 
     public void drawPopularEquipment(Graphics2D g2) {
-        if (team == null || ds == null) {
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    	if (team == null || ds == null) {
             return;
         }
 
@@ -253,6 +258,7 @@ class DrawHUD {
         }
 
         g2.setFont(fnt);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
     }
 
     private String getTeamString(String teamName) {
@@ -386,7 +392,7 @@ class DrawHUD {
             if (gatheredPoints > 2000) {
                 g2.setTransform(pushed3);
                 g2.setColor(new Color(0, 255, 100, 180));
-                g2.translate(0, translateToTop + barHeight / 3.0);
+                g2.translate(0, -.3 + translateToTop + barHeight / 3.0);
                 g2.scale(0.1 * Math.min(gatheredPoints - 2000, 2000) / 50, barHeight / 3.0);
                 g2.drawImage(barGradient.image, 0, 0, 1, 1, null);
                 g2.fillRect(0, 0, 1, 1);
@@ -408,12 +414,14 @@ class DrawHUD {
                 //System.out.println(footerText);
                 g2.drawString(footerText+":", 0, 15);
                 g2.setColor(Color.GREEN);
-                g2.translate(0, 14);
-
-                g2.setFont(g2.getFont().deriveFont(6f));
+                g2.translate(-24, 14);
+                
+                g2.setFont(g2.getFont().deriveFont(4f));
+                teamName = match.getTeamA();
                 if (teamName != null) {
-                    g2.drawString(getTeamString(teamName).substring(0,2), 0, 12);
+                    g2.drawString(getTeamString(teamName), 0, 12);
                 }
+                g2.translate(24, 0);
             } else {
             	g2.translate(-1, 0);
                 g2.setColor(Color.WHITE);
@@ -422,9 +430,10 @@ class DrawHUD {
                 g2.translate(10, 0);
                 g2.setColor(Color.GREEN);
                 g2.translate(-10, 14);
-                g2.setFont(g2.getFont().deriveFont(6f));
+                g2.setFont(g2.getFont().deriveFont(4f));
+                teamName = match.getTeamB();
                 if (teamName != null) {
-                    g2.drawString(getTeamString(teamName).substring(0, 3), 0, 12);
+                    g2.drawString(getTeamString(teamName), 0, 12);
                 }
 
                 double aGPoints = stats == null ? 1 : stats.getGatheredPoints(Team.A);
