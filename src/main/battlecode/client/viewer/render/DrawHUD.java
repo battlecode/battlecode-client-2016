@@ -167,6 +167,9 @@ class DrawHUD {
             float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
             g2.drawString(count, 1f * cnt + 1 - wx, 1f);
             cnt++;
+            if (cnt > 3) {
+                break;
+            }
         }
         g2.translate(0, 2.4);
 
@@ -180,6 +183,9 @@ class DrawHUD {
                 float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
                 g2.drawString(count, 1f * cnt + 1 - wx, 1f);
                 cnt++;
+                if (cnt > 3) {
+                    break;
+                }
             }
             g2.translate(0, 2.4);
         }
@@ -196,6 +202,10 @@ class DrawHUD {
             }
         } catch (NumberFormatException ex) {
         }
+        if (teamst.length() > 14) {
+            teamst = teamst.substring(0, 14) + "...";
+        }
+
         return teamst;
     }
 
