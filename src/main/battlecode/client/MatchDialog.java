@@ -592,7 +592,11 @@ public class MatchDialog extends JDialog implements ActionListener {
 		
 		if (matchInputs != null) {
 
-			
+
+			for(String [] s : matchInputs) {
+				java.util.Arrays.sort(s);
+			}
+
 			// Clear dropdowns.
 			for (Map.Entry<Parameter, JComboBox> entries : parameters.entrySet())
 				entries.getValue().removeAllItems();
