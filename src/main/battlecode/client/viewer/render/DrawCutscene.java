@@ -71,8 +71,10 @@ class DrawCutScene {
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
-        this.teamA = teamA;
-        this.teamB = teamB;
+        int aid = Integer.parseInt(teamA.substring(4,7));
+		this.teamA = teamNames.get(aid);
+        int bid = Integer.parseInt(teamB.substring(4,7));
+        this.teamB = teamNames.get(bid);
         //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
         //imgTeamB = new ImageFile("team-names/b/" + teamB + "-l.png");
     }
