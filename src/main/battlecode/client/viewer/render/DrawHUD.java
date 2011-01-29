@@ -423,6 +423,9 @@ class DrawHUD {
                 g2.setFont(g2.getFont().deriveFont(4f));
                 teamName = match.getTeamA();
                 if (teamName != null) {
+                	String fullTeamName = getTeamString(teamName);
+                	if(fullTeamName.length()>14)
+                		fullTeamName = fullTeamName.substring(0,14);
                     g2.drawString(getTeamString(teamName), 0, 12);
                 }
                 g2.translate(24, 0);
@@ -437,6 +440,9 @@ class DrawHUD {
                 g2.setFont(g2.getFont().deriveFont(4f));
                 teamName = match.getTeamB();
                 if (teamName != null) {
+                	String fullTeamName = getTeamString(teamName);
+                	if(fullTeamName.length()>14)
+                		fullTeamName = fullTeamName.substring(0,14);
                     g2.drawString(getTeamString(teamName), 0, 12);
                 }
 
