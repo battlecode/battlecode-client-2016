@@ -91,19 +91,19 @@ class DrawCutScene {
     }
 
     public void draw(Graphics2D g2) {
-        System.out.println("Cutscene Drawing");
+        //System.out.println("Cutscene Drawing");
         if (visible) {
             switch (step) {
                 case INTRO:
-                    System.out.println("Drawing Intro");
+                    //System.out.println("Drawing Intro");
                     drawIntro(g2);
                     break;
                 case OUTRO:
-                    System.out.println("Drawing Outro");
+                    //System.out.println("Drawing Outro");
                     drawOutro(g2);
                     break;
                 default:
-                    System.out.println("Buh WHa?");
+                    //System.out.println("Buh WHa?");
                     break;
             }
         }
