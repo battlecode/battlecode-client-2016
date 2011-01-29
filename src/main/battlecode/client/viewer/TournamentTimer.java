@@ -46,7 +46,7 @@ public class TournamentTimer {
                             //loop.start();
                             if (minimap != null) {
                                 minimap.resetMatches();
-                                //minimap.setBracket();
+                                minimap.setBracket();
                                 aWins = bWins = 0;
                             }
                         }
