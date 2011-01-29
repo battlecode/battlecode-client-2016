@@ -17,59 +17,60 @@ import battlecode.client.viewer.render.GameRenderer;
 import battlecode.common.Team;
 
 public class MinimapViewer {
-	private JFrame frame;
-	private BaseCanvas canvas;
-	private BaseRenderer bracket;
-	private BaseRenderer renderer;
 
-	public MinimapViewer(boolean fullscreen) {
-		frame = new JFrame("Minimap");
-		GameCanvas gc = new GameCanvas();
-		canvas = gc;
-		bracket = gc.bracketRenderer;
-		
-		if(fullscreen) {
-			frame.setUndecorated(true);
-			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
-			Rectangle secondWindow = gd.getDefaultConfiguration().getBounds();
-			frame.setBounds(secondWindow); 
-		} else {
-			frame.setUndecorated(false);
-			frame.setBounds(new Rectangle(500, 340));
-			frame.setAlwaysOnTop(true);
-		}
-		
-		frame.getContentPane().add(canvas);
-		frame.setVisible(true);
-		frame.toFront();
-	}
+    private JFrame frame;
+    private BaseCanvas canvas;
+    private BaseRenderer bracket;
+    private BaseRenderer renderer;
 
-	public void setNull() {
-		canvas.setRenderer(null);
-	}
+    public MinimapViewer(boolean fullscreen) {
+        frame = new JFrame("Minimap");
+        GameCanvas gc = new GameCanvas();
+        canvas = gc;
+        bracket = gc.bracketRenderer;
 
-	public void setBracket() {
-		canvas.setRenderer(bracket);
-	}
+        if (fullscreen) {
+            frame.setUndecorated(true);
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
+            Rectangle secondWindow = gd.getDefaultConfiguration().getBounds();
+            frame.setBounds(secondWindow);
+        } else {
+            frame.setUndecorated(false);
+            frame.setBounds(new Rectangle(500, 340));
+            frame.setAlwaysOnTop(true);
+        }
 
-	public void resetMatches() {
-		if(renderer != null)
-			renderer.resetMatches();
-	}
-	
-	public void addWin(Team t) {
-		if(renderer != null)
-			renderer.addWin(t);
-	}
-	
-	public void setTimeline(GameStateTimeline master) {
-		renderer = new GameRenderer(master.getMatch());
-		renderer.getTimeline().setMasterTimeline(master);
-		renderer.setDebugState(new DebugState(master.getMatch().getDebugProxy(),canvas));
-		canvas.setRenderer(renderer);
-	}
+        frame.getContentPane().add(canvas);
+        frame.setVisible(true);
+        frame.toFront();
+    }
 
-	public void repaint() {
-		canvas.repaint();
-	}
+    public void setNull() {
+        canvas.setRenderer(null);
+    }
+
+    public void setBracket() {
+        canvas.setRenderer(bracket);
+    }
+
+    public void resetMatches() {
+        if (renderer != null)
+            renderer.resetMatches();
+    }
+
+    public void addWin(Team t) {
+        if (renderer != null)
+            renderer.addWin(t);
+    }
+
+    public void setTimeline(GameStateTimeline master) {
+        renderer = new GameRenderer(master.getMatch());
+        renderer.getTimeline().setMasterTimeline(master);
+        renderer.setDebugState(new DebugState(master.getMatch().getDebugProxy(), canvas));
+        canvas.setRenderer(renderer);
+    }
+
+    public void repaint() {
+        canvas.repaint();
+    }
 }

@@ -17,7 +17,6 @@ public abstract class BaseCanvas extends JPanel {
 
     public BaseCanvas() {
         super();
-
         setVisible(false);
         addHierarchyListener(new HierarchyListener() {
 
@@ -55,7 +54,7 @@ public abstract class BaseCanvas extends JPanel {
             im.put(KeyStroke.getKeyStroke("SPACE"), "space");
             //im.put(KeyStroke.getKeyStroke("S"), "toggle");
         }
-		im.put(KeyStroke.getKeyStroke("SLASH"),"find");
+        im.put(KeyStroke.getKeyStroke("SLASH"), "find");
         getActionMap().put("toggle", new AbstractAction() {
 
             private static final long serialVersionUID = 0; // don't serialize
@@ -85,22 +84,23 @@ public abstract class BaseCanvas extends JPanel {
                 System.exit(0);
             }
         });
-		getActionMap().put("find", new AbstractAction() {
+        getActionMap().put("find", new AbstractAction() {
+
             private static final long serialVersionUID = 0; // don't serialize
 
             public void actionPerformed(ActionEvent e) {
-                if(getRenderer() != null) {
-					String strID = JOptionPane.showInputDialog("Find robot by ID:");
-					int robotID;
-					try {
-						robotID = Integer.parseInt(strID); 
-					} catch(NumberFormatException ex) {
-						return;
-					}
-					getRenderer().getDebugState().setFocusAndUpdate(robotID);	
-				}
+                if (getRenderer() != null) {
+                    String strID = JOptionPane.showInputDialog("Find robot by ID:");
+                    int robotID;
+                    try {
+                        robotID = Integer.parseInt(strID);
+                    } catch (NumberFormatException ex) {
+                        return;
+                    }
+                    getRenderer().getDebugState().setFocusAndUpdate(robotID);
+                }
             }
-		});
+        });
     }
 
     protected abstract BaseRenderer getRenderer();

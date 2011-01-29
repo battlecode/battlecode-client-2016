@@ -50,17 +50,20 @@ public final class GameCanvas extends BaseCanvas {
         Observer observer = new Observer() {
 
             public void update(Observable o, Object arg) {
-                if (renderer.getTimeline().isActive()) {
+                if (renderer.getTimeline()!=null&&renderer.getTimeline().isActive()) {
                     forceRepaint();
                 }
             }
         };
-        renderer.getTimeline().addObserver(observer);
+		if(renderer.getTimeline()!=null)
+	        renderer.getTimeline().addObserver(observer);
 
         battlecode.client.viewer.DebugState dbg = renderer.getDebugState();
-        addMouseListener(dbg);
-        addMouseMotionListener(dbg);
-        dbg.addObserver(observer);
+		if(dbg!=null) {
+        	addMouseListener(dbg);
+        	addMouseMotionListener(dbg);
+        	dbg.addObserver(observer);
+		}
 
         repaint();
     }

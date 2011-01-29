@@ -239,8 +239,8 @@ public class GameRenderer extends BaseRenderer {
             sideB.draw(g2);
         }
         g2.setTransform(pushed);
-      
-        
+
+
     }
 
     public void setDebugState(DebugState dbg) {
@@ -272,20 +272,30 @@ public class GameRenderer extends BaseRenderer {
 
     public void draw(Graphics g) {
         // remove if anything breaks
+
         if (canvasSize == null) {
             return;
         }
 
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+
+
         boolean isGraphicsStable = g2.getTransform().isIdentity();
         g2.setColor(Color.BLACK);
         g2.fill(new Rectangle(0, 0, canvasSize.width, canvasSize.height));
+        AffineTransform pushed = g2.getTransform();
         g2.scale(spriteSize, spriteSize);
         g2.translate(unitOffX, unitOffY);
         if (timeline.getRound() >= 0) {
             drawHUD(g2);
             drawState(g2, isGraphicsStable);
         }
+        g2.setTransform(pushed);
+        //g2.scale(spriteSize, spriteSize);
+        //g2.translate(unitOffX, unitOffY);
         if (cutScene != null) {
             cutScene.draw(g2);
         }
