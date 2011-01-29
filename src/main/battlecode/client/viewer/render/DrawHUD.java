@@ -227,36 +227,27 @@ class DrawHUD {
             cnt = 0;
             Map<ComponentType, Integer> clist = ds.getComponentTypeCount(team, cmpcl);
             for (ComponentType ct : clist.keySet()) {
-            	g2.translate(cnt*tightness,0);
-            	//System.out.println("just before drawImage line 192: " + team);
-            	chassisCount = clist.size();
                 
-                resizeFactor=1; 
-                
-                if(chassisCount>this.resizeTrigger)
-                {
-                	int delta = chassisCount-this.resizeTrigger;
-                	//System.out.println("before:"+ delta + " " + resizeFactor + " " + this.resizingFactor);
-                	resizeFactor = (1.0/delta)*resizingFactor;
-                	//System.out.println("after:"+ delta+ " " + resizeFactor);
-                }
-                else	
-                {
-                	resizeFactor = 1;
+                double scale = 1;
+                double ty = 0;
+                if (clist.keySet().size() > 4) {
+                    scale = 4.0 / clist.keySet().size();
+                    ty = (1 - scale) / 2 * 2.9;
+                    g2.translate(0, ty);
+                    g2.scale(scale, scale);
                 }
                 
-                //g2.scale(resizeFactor, 1.0);
             	g2.drawImage(getComponentIcon(ct,team).image, 1 * cnt, 0, 1, 1, null);
-            	g2.translate(-cnt*tightness,0);
+            	//g2.translate(-cnt*tightness,0);
             	String count = "" + clist.get(ct);
                 float wx = (float) g2.getFontMetrics(smallfnt).getStringBounds(count, g2).getWidth();
-                g2.translate(cnt*tightness-.2,.5);
-                g2.drawString(count, 1f * cnt + 1 - wx, 1f);
-                g2.translate(-cnt*tightness+.2,-.5);
+                //g2.translate(cnt*tightness-.2,.5);
+                g2.drawString(count, 1f * cnt + 1 - wx, 1f + .5f);
+                //g2.translate(-cnt*tightness+.2,-.5);
+                g2.scale(1/scale, 1/scale);
+                g2.translate(0, -ty);
                 cnt++;
-                //g2.scale(1/resizeFactor, 1.0);
-                if(cnt>3)
-                	break;
+
             }
             g2.translate(0, 2.4+.5);
         }
