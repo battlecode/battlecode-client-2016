@@ -30,9 +30,9 @@ class DrawCutScene {
     private volatile Timer fadeTimer;
     private static final ImageFile imgVersus = new ImageFile("art/overlay_vs.png");
     private static final ImageFile imgWinnerLabel = new ImageFile("art/overlay_win.png");
-    //private final ImageFile imgTeamA, imgTeamB;
+    private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
-    //private ImageFile imgWinner;
+    private ImageFile imgWinner;
     private String winner;
     private volatile long targetEnd;
     private volatile boolean visible = false;
@@ -75,6 +75,8 @@ class DrawCutScene {
 		this.teamA = teamNames.get(aid);
         int bid = Integer.parseInt(teamB.substring(4,7));
         this.teamB = teamNames.get(bid);
+		imgTeamA = new ImageFile(teamA+".png");
+		imgTeamB = new ImageFile(teamB+".png");
         //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
         //imgTeamB = new ImageFile("team-names/b/" + teamB + "-l.png");
     }
@@ -88,7 +90,7 @@ class DrawCutScene {
     }
 
     public void setWinner(Team team) {
-        //imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
+        imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
         winner = (team == Team.A ? teamA : teamB);
     }
 
@@ -128,7 +130,11 @@ class DrawCutScene {
             float avatarOffset = rect.width / 4;
         	g2.scale(.5,.5);
 			g2.translate(rect.width / 2 - horizontalOffset - avatarOffset, rect.height / 3);
-            //drawImage(imgTeamA.image, g2);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgTeamA.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.setColor(Color.RED);
             g2.drawString(teamA, 0, 0);
             g2.translate(horizontalOffset + avatarOffset, rect.height / 6);
@@ -138,7 +144,11 @@ class DrawCutScene {
                 g2.scale(10, 10);
             }
             g2.translate(-(horizontalOffset + avatarOffset), rect.height / 6);
-            //drawImage(imgTeamB.image, g2);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgTeamB.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.setColor(Color.BLUE);
             g2.drawString(teamB, 0, 0);
         }
@@ -170,7 +180,11 @@ class DrawCutScene {
             //g2.drawImage(imgWinnerLabel.image,
             //g2.drawString("WINNER:", (int) rect.width/2 - 3, (int) rect.height/2 - 2);
             //g2.translate(0, rect.height/3);
-            //drawImage(imgWinner.image, g2);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgWinner.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.drawString(winner, 0, 0);
 			g2.scale(2,2);
         }
