@@ -297,7 +297,10 @@ public class GameRenderer extends BaseRenderer {
         //g2.scale(spriteSize, spriteSize);
         //g2.translate(unitOffX, unitOffY);
         if (cutScene != null) {
+        	g2.scale(spriteSize, spriteSize);
+        	g2.translate(unitOffX, unitOffY);
             cutScene.draw(g2);
+			g2.setTransform(pushed);
         }
         //fps.updateFramerate(); renderFramerate();
         if (fastForward) {
