@@ -133,6 +133,7 @@ public class MatchViewer {
             proxy.writeNotification(StartNotification.INSTANCE);
         }
         final BufferedMatch bufferedMatch = new BufferedMatch(proxy);
+        
         if (cfg.getBoolean("bc.client.opengl")) {
             br = new GLGameRenderer(bufferedMatch, bc.getGraphics());
         } else {
@@ -156,8 +157,8 @@ public class MatchViewer {
         }
 
         if (cfg.getBoolean("bc.client.sound-on")) {
-            audio.setTimeline(br.getTimeline());
             battlecode.client.viewer.sound.GameSoundBank.preload();
+            audio.setTimeline(br.getTimeline());
         }
 
         if (tournamentMode) {

@@ -60,9 +60,13 @@ public class GameRenderer extends BaseRenderer {
         this.match = match;
         debugFont = new Font(null, Font.PLAIN, 2);
         ds = new DrawState();
+    
         try {
-            sideA = new DrawHUD(ds, Team.A, match.getTeamA());
-            sideB = new DrawHUD(ds, Team.B, match.getTeamB());
+        	System.out.println(match.getTeamA() + " " +  match.getTeamB() + " " + Team.A + " " +  Team.B + " " + match.getHeader());
+        	sideA = new DrawHUD(ds, Team.A, match);
+            sideB = new DrawHUD(ds, Team.B, match);
+        	//sideA = new DrawHUD(ds,Team.A,match.getTeamA());
+        	//sideB = new DrawHUD(ds,Team.B,match.getTeamB());
         } catch (Error e) {
             e.printStackTrace();
         }
@@ -293,7 +297,10 @@ public class GameRenderer extends BaseRenderer {
         //g2.scale(spriteSize, spriteSize);
         //g2.translate(unitOffX, unitOffY);
         if (cutScene != null) {
+        	g2.scale(spriteSize, spriteSize);
+        	g2.translate(unitOffX, unitOffY);
             cutScene.draw(g2);
+			g2.setTransform(pushed);
         }
         //fps.updateFramerate(); renderFramerate();
         if (fastForward) {

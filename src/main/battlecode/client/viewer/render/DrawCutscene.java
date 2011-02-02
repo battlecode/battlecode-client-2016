@@ -26,16 +26,16 @@ class DrawCutScene {
     public Step step = Step.INTRO;
     private final Rectangle2D.Float rect = new Rectangle2D.Float();
     private Color darkMask = new Color(0, 0, 0, 0.75f);
-    private float fade = 0.75f;
-    private Timer fadeTimer;
+    private volatile float fade = 0.75f;
+    private volatile Timer fadeTimer;
     private static final ImageFile imgVersus = new ImageFile("art/overlay_vs.png");
     private static final ImageFile imgWinnerLabel = new ImageFile("art/overlay_win.png");
-    //private final ImageFile imgTeamA, imgTeamB;
+    private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
-    //private ImageFile imgWinner;
+    private ImageFile imgWinner;
     private String winner;
-    private long targetEnd;
-    private boolean visible = false;
+    private volatile long targetEnd;
+    private volatile boolean visible = false;
     private static String teamPath = null;
     private static Map<Integer, String> teamNames = null;
 
@@ -71,8 +71,12 @@ class DrawCutScene {
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
-        this.teamA = teamA;
-        this.teamB = teamB;
+        int aid = Integer.parseInt(teamA.substring(4,7));
+		this.teamA = teamNames.get(aid);
+        int bid = Integer.parseInt(teamB.substring(4,7));
+        this.teamB = teamNames.get(bid);
+		imgTeamA = new ImageFile(teamA+".png");
+		imgTeamB = new ImageFile(teamB+".png");
         //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
         //imgTeamB = new ImageFile("team-names/b/" + teamB + "-l.png");
     }
@@ -86,7 +90,7 @@ class DrawCutScene {
     }
 
     public void setWinner(Team team) {
-        //imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
+        imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
         winner = (team == Team.A ? teamA : teamB);
     }
 
@@ -124,8 +128,13 @@ class DrawCutScene {
             float until = Math.max((targetEnd - System.currentTimeMillis()) / 1000.0f, 0);
             float horizontalOffset = 2 * rect.width * until;
             float avatarOffset = rect.width / 4;
-            g2.translate(rect.width / 2 - horizontalOffset - avatarOffset, rect.height / 3);
-            //drawImage(imgTeamA.image, g2);
+        	g2.scale(.5,.5);
+			g2.translate(rect.width / 2 - horizontalOffset - avatarOffset, rect.height / 3);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgTeamA.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.setColor(Color.RED);
             g2.drawString(teamA, 0, 0);
             g2.translate(horizontalOffset + avatarOffset, rect.height / 6);
@@ -134,8 +143,12 @@ class DrawCutScene {
                 drawImage(imgVersus.image, g2);
                 g2.scale(10, 10);
             }
-            g2.translate(horizontalOffset + avatarOffset, rect.height / 6);
-            //drawImage(imgTeamB.image, g2);
+            g2.translate(-(horizontalOffset + avatarOffset), rect.height / 6);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgTeamB.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.setColor(Color.BLUE);
             g2.drawString(teamB, 0, 0);
         }
@@ -145,36 +158,49 @@ class DrawCutScene {
     private void drawOutro(Graphics2D g2) {
         AffineTransform pushed = g2.getTransform();
         {
-            g2.setColor(new Color(0, 0, 0, fade));
+            fade+=1./60.;
+			if(fade>=1) fade=1;
+			g2.setColor(new Color(0, 0, 0, fade));
             g2.fill(rect);
             //g2.setColor(Color.WHITE);
-            g2.translate(rect.width / 2, rect.height / 3);
+            g2.scale(0.5,0.5);
+			g2.translate(rect.width / 2, rect.height / 3);
             g2.scale(0.5, 0.5);
             drawImage(imgWinnerLabel.image, g2);
             g2.scale(2, 2);
             if (winner.equals(teamA)){//(imgWinner == imgTeamA) {
                 g2.setColor(Color.RED);
-                g2.translate(-rect.width / 5, rect.height / 4);
+				g2.translate(0,rect.height/4);
+                //g2.translate(-rect.width / 5, rect.height / 4);
             } else {
                 g2.setColor(Color.BLUE);
-                g2.translate(rect.width / 5, rect.height / 4);
+				g2.translate(0,rect.height/4);
+                //g2.translate(rect.width / 5, rect.height / 4);
             }
             //g2.drawImage(imgWinnerLabel.image,
             //g2.drawString("WINNER:", (int) rect.width/2 - 3, (int) rect.height/2 - 2);
             //g2.translate(0, rect.height/3);
-            //drawImage(imgWinner.image, g2);
+			g2.scale(.2,.2);
+			g2.translate(-64,-16);
+            drawImage(imgWinner.image, g2);
+			g2.translate(64,16);
+			g2.scale(5.,5.);
             g2.drawString(winner, 0, 0);
+			g2.scale(2,2);
         }
         g2.setTransform(pushed);
     }
 
     public void fadeOut() {
+		fade = 0.f;
+		/*
         final long startTime = System.currentTimeMillis();
         final float startFade = fade;
-        fadeTimer = new Timer(3000, new ActionListener() {
+        fadeTimer = new Timer(40, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                fade = startFade + (System.currentTimeMillis() - startTime) / 5000.0f;
+                System.out.println("timer "+Thread.currentThread());
+				fade = startFade + (System.currentTimeMillis() - startTime) / 5000.0f;
                 if (fade >= 1) {
                     fade = 1;
                     fadeTimer.stop();
@@ -183,6 +209,7 @@ class DrawCutScene {
             }
         });
         fadeTimer.start();
+		*/
     }
 
     protected void finalize() throws Throwable {

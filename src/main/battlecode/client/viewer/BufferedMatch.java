@@ -18,8 +18,8 @@ public final class BufferedMatch {
 	private MatchHeader header = null;
 	private MatchFooter footer = null;
 
-	private String teamA = null;
-	private String teamB = null;
+	public String teamA = null;
+	public String teamB = null;
 	private String[] mapNames = null;
 
 	private RoundDelta[] deltas;
@@ -189,11 +189,13 @@ public final class BufferedMatch {
 	}
 
 	private void handleExtensibleMetadata(ExtensibleMetadata metadata) {
+		
 		if ("header".equals(metadata.get("type", null))) {
 			teamA = (String) metadata.get("team-a", null);
 			teamB = (String) metadata.get("team-b", null);
 			mapNames = (String[]) metadata.get("maps", null);
 		}
+		System.out.println("metadata: " + teamA + " " + teamB);
 	}
 
 	public String getTeamA() { return teamA; }

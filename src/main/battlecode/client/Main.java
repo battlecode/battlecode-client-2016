@@ -124,7 +124,7 @@ public class Main {
 
                 server.update(null, new MatchInfo(
                         md.getParameter(Parameter.TEAM_A), md.getParameter(Parameter.TEAM_B), md.getAllMaps().toArray(new String[md.getAllMaps().size()])));
-
+                
                 break;
 
             case REMOTE:

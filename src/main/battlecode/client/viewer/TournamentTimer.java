@@ -76,6 +76,7 @@ public class TournamentTimer {
                 br.beginIntroCutScene(loop.stop());
                 while (loop.isPlaying()) {
                     doSleep(100);
+					mv.getCanvas().repaint();
                 }
                 doSleep(2000);
                 br.setCutSceneVisible(false);
@@ -86,7 +87,11 @@ public class TournamentTimer {
                 doSleep(1000);
                 br.setCutSceneVisible(true);
                 br.fadeOutCutScene();
-                doSleep(3000);
+				System.out.println("sleep "+Thread.currentThread());
+				for(int i=0;i<60;i++) {
+	                doSleep(50);
+					mv.getCanvas().repaint();
+				}
                 if (minimap != null) {
                     minimap.addWin(winner);
                     if (winner == Team.A)
