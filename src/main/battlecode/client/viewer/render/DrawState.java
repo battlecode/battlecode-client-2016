@@ -16,7 +16,7 @@ import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.FluxDepositState;
 import battlecode.client.viewer.GameStateFactory;
 import battlecode.common.MapLocation;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.GameConstants;
 import battlecode.common.Team;
 import battlecode.common.ComponentType;
@@ -76,7 +76,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         copyStateFrom(clone);
     }
 
-    protected DrawObject createDrawObject(Chassis type, Team team) {
+    protected DrawObject createDrawObject(RobotType type, Team team) {
         return new DrawObject(type, team);
     }
 
@@ -110,8 +110,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         stats = src.stats;
         componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
         componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
-        chassisTypeCountA = new EnumMap<Chassis, Integer>(src.chassisTypeCountA);
-        chassisTypeCountB = new EnumMap<Chassis, Integer>(src.chassisTypeCountB);
+        chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
+        chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
         if (src.gameMap != null) {
             gameMap = src.gameMap;

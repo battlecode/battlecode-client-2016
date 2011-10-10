@@ -4,7 +4,7 @@ import battlecode.client.viewer.render.*;
 import battlecode.common.ComponentClass;
 import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
-    protected abstract DrawObject createDrawObject(Chassis type, Team team);
+    protected abstract DrawObject createDrawObject(RobotType type, Team team);
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
@@ -30,8 +30,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     //protected ComponentType[] topMiscs = new ComponentType[2];
     protected Map<ComponentType, Integer> componentTypeCountA = new EnumMap<ComponentType, Integer>(ComponentType.class);
     protected Map<ComponentType, Integer> componentTypeCountB = new EnumMap<ComponentType, Integer>(ComponentType.class);
-    protected Map<Chassis, Integer> chassisTypeCountA = new EnumMap<Chassis, Integer>(Chassis.class);
-    protected Map<Chassis, Integer> chassisTypeCountB = new EnumMap<Chassis, Integer>(Chassis.class);
+    protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
+    protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -90,10 +90,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return obj;
     }
 
-    public Map<Chassis, Integer> getChassisTypeCount(Team t) {
-        Map<Chassis, Integer> orig = (t == Team.A) ? chassisTypeCountA : chassisTypeCountB;
-        Map<Chassis, Integer> byclass = new EnumMap<Chassis, Integer>(Chassis.class);
-        for (Chassis ct : orig.keySet())
+    public Map<RobotType, Integer> getRobotTypeTypeCount(Team t) {
+        Map<RobotType, Integer> orig = (t == Team.A) ? chassisTypeCountA : chassisTypeCountB;
+        Map<RobotType, Integer> byclass = new EnumMap<RobotType, Integer>(RobotType.class);
+        for (RobotType ct : orig.keySet())
             if (orig.get(ct) > 0)
                 byclass.put(ct, orig.get(ct));
         return byclass;
@@ -133,7 +133,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     protected void tryAddArchon(DrawObject archon) {
-        //if (archon.getType() == Chassis.ARCHON) {
+        //if (archon.getType() == RobotType.ARCHON) {
         //	(archon.getTeam() == Team.A ? archonsA : archonsB).add(archon);
         //}
     }
@@ -164,18 +164,18 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             obj.updateRound();
             if (!obj.isAlive()) {
                 it.remove();
-                //if (obj.getType() == Chassis.ARCHON) {
+                //if (obj.getType() == RobotType.ARCHON) {
                 //	(obj.getTeam() == Team.A ? archonsA : archonsB).remove(obj);
                 //}
             }
-            //if (obj.getType() == Chassis.WOUT) {
+            //if (obj.getType() == RobotType.WOUT) {
             //	mineFlux(obj);
             //}
         }
     }
 
     public Void visitAttackSignal(AttackSignal s) {
-        getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight(), s.weaponType);
+        getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
         return null;
     }
 
@@ -189,7 +189,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
-            Map<Chassis, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
+            Map<RobotType, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
             ctc.put(robot.getType(), ctc.get(robot.getType()) - 1);
         }
         
@@ -281,7 +281,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
             teamHP[team] += getRobot(s.getRobotID()).getEnergon();
-            Map<Chassis, Integer> ctc = (s.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
+            Map<RobotType, Integer> ctc = (s.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
             if (ctc.containsKey(s.getType()))
                 ctc.put(s.getType(), ctc.get(s.getType()) + 1);
             else

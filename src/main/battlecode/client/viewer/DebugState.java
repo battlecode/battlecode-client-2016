@@ -88,7 +88,7 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
 
 	private JMenu createTeamSpawnMenu(Team team) {
 		JMenu menu = new JMenu(team == Team.A ? "Spawn red" : "Spawn blue");
-		for (Chassis type: Chassis.values()) {
+		for (RobotType type: RobotType.values()) {
 			menu.add(createMenuItem(team, type));
 		}
 		return menu;
@@ -101,7 +101,7 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
 		return menuItem;
 	}
 
-	private JMenuItem createMenuItem(Team team, Chassis type) {
+	private JMenuItem createMenuItem(Team team, RobotType type) {
 		JMenuItem menuItem = new JMenuItem(type.toString().toLowerCase());
 		menuItem.addActionListener(menuListener);
 		menuItem.setActionCommand(team.toString() + type.toString());
@@ -143,7 +143,7 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
 		}
 		else {
 			Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
-			Chassis type = Enum.valueOf(Chassis.class, cmd.substring(1));
+			RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
 			proxy.writeSignal(new SpawnSignal(spawnLoc, type, team, null));
 		}
 	}

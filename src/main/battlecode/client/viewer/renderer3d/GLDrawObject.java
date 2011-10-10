@@ -21,7 +21,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
@@ -41,7 +41,7 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     // point list of the circle of spawn radius
     public Vector3f[] spawnCircle = null;
    
-    public GLDrawObject(Chassis type, Team team) {
+    public GLDrawObject(RobotType type, Team team) {
 	super(type, team);
     }
 
@@ -115,8 +115,8 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 		return new GLExplosionAnim(false,((GLMortarAttackAnim)mortarAttackAnim).getTargetLoc(), 1.8);
 	}
     
-    public void setAttacking(MapLocation target, RobotLevel height, ComponentType weapon) {
-		super.setAttacking(target, height, weapon);
+    public void setAttacking(MapLocation target, RobotLevel height) {
+		super.setAttacking(target, height);
 		targetHeight = height;
     }
 

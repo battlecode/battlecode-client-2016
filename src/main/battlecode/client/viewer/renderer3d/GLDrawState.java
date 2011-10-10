@@ -34,7 +34,7 @@ import battlecode.client.viewer.renderer3d.GLDrawObject;
 import battlecode.client.viewer.ActionType;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
 import battlecode.common.TerrainTile;
@@ -175,7 +175,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         copyStateFrom(clone);
     }
 
-    protected GLDrawObject createDrawObject(Chassis type, Team team) {
+    protected GLDrawObject createDrawObject(RobotType type, Team team) {
         return new GLDrawObject(type, team);
     }
 
@@ -205,17 +205,17 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     }
 
     private void addAcceleratorUnit(GLDrawObject o) {
-        /*if(o.getType() == Chassis.SNIPER) {
+        /*if(o.getType() == RobotType.SNIPER) {
         snipers.add(o);
-        } else if(o.getType() == Chassis.SOLDIER) {
+        } else if(o.getType() == RobotType.SOLDIER) {
         soldiers.add(o);
-        } else if(o.getType() == Chassis.MORTAR) {
+        } else if(o.getType() == RobotType.MORTAR) {
         mortars.add(o);
-        } else if(o.getType() == Chassis.SCOUT) {
+        } else if(o.getType() == RobotType.SCOUT) {
         scouts.add(o);
-        } else if(o.getType() == Chassis.BOMBER) {
+        } else if(o.getType() == RobotType.BOMBER) {
         bombers.add(o);
-        } else if(o.getType() == Chassis.ARCHON) {
+        } else if(o.getType() == RobotType.ARCHON) {
         archons.add(o);
         }*/
     }
@@ -430,7 +430,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         sniperTurret.draw(gl);
         gl.glEnable(GL.GL_BLEND);
          */
-        /*} else if (obj.getType() == Chassis.WOUT2XXX) {
+        /*} else if (obj.getType() == RobotType.WOUT2XXX) {
 
         String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
 
@@ -769,7 +769,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             gl.glColor4f(0.75f, 0.0f, 0.0f, 0.2f);
             else
             gl.glColor4f(0.0f, 0.0f, 0.75f, 0.2f);
-            glu.gluDisk(quadric, 0.0f, Math.sqrt(Chassis.CHAINER.attackRadiusMaxSquared()), 16, 1);
+            glu.gluDisk(quadric, 0.0f, Math.sqrt(RobotType.CHAINER.attackRadiusMaxSquared()), 16, 1);
             gl.glPopMatrix();
             }
              */
@@ -806,7 +806,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != Chassis.CHAINER*/) {
+            if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != RobotType.CHAINER*/) {
                 /*  final String crosshairRed = "art/crosshair.png";
                 final String crosshairBlue = "art/crosshair2.png";
                 String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
@@ -882,7 +882,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
                 gl.glLineWidth(4.0f);
                 gl.glBegin(GL.GL_LINES);
-                //if (obj.getType() == Chassis.WOUT2XXX)
+                //if (obj.getType() == RobotType.WOUT2XXX)
                 //    gl.glVertex3f(0.0f, 0.0f, 0.0f);
                 //else
                 gl.glVertex3f(0.0f, 0.5f, 0.0f);
@@ -954,7 +954,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             // draw energon
             if (RenderConfiguration.showEnergon()) {
-                float frac = (float) (obj.getEnergon() / obj.getType().maxHp);
+                float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
@@ -998,13 +998,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             if (GLGameRenderer.USE_MODELS) {
 
                 switch (obj.getType()) {
-                    case FLYING:
+                    case ARCHON:
                         drawArchon(gl, obj);
-                    case HEAVY:
-                        drawTurret(gl, obj);
-                    case MEDIUM:
                         drawChainer(gl, obj);
-                    case LIGHT:
+                    case SOLDIER:
                         drawSoldier(gl, obj);
                     default:
                         drawRobot(gl, obj);
@@ -1111,7 +1108,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             double rad = 0.5f;
-            //if (obj.getType() == Chassis.ARCHON)
+            //if (obj.getType() == RobotType.ARCHON)
             //    rad = 0.6f;
 
             glu.gluSphere(quadric, rad, 5, 5);

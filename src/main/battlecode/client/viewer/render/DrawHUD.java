@@ -185,7 +185,7 @@ class DrawHUD {
         g2.translate(0, -2.6);
         int cnt = 0;
         double tightness=.05;
-        Map<Chassis, Integer> chlist = ds.getChassisTypeCount(team);
+        Map<RobotType, Integer> chlist = ds.getRobotTypeTypeCount(team);
         int chassisCount = chlist.size();
         
         double resizeFactor=1; 
@@ -202,7 +202,7 @@ class DrawHUD {
         	resizeFactor = 1;
         }
         
-        for (Chassis ct : chlist.keySet()) {
+        for (RobotType ct : chlist.keySet()) {
             String path = getAvatarPath(ct.toString().toLowerCase(), team);
             g2.translate(cnt*tightness,0);
             // System.out.println("resizeFactor: " + resizeFactor);

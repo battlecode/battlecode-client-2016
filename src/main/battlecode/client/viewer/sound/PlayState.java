@@ -34,14 +34,14 @@ public class PlayState extends GameState {
     }
     private Set<GameSoundBank.ClipGroup> activeClips;
     private Set<GameSoundBank.ClipGroup> futureClips;
-    private Map<Integer, Chassis> robotTypes;
+    private Map<Integer, RobotType> robotTypes;
     private int intensityLevel = 0;
     
 
     public PlayState() {
         activeClips = new HashSet<GameSoundBank.ClipGroup>();
         futureClips = new HashSet<GameSoundBank.ClipGroup>();
-        robotTypes = new HashMap<Integer, Chassis>();
+        robotTypes = new HashMap<Integer, RobotType>();
       
     }
 
@@ -87,9 +87,9 @@ public class PlayState extends GameState {
 
     public Void visitDeathSignal(DeathSignal s) {
         scheduleClip(GameSoundBank.DEATH);
-    	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + Chassis.ARCHON);
+    	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + RobotType.ARCHON);
     
-    	//if(robotTypes.get(s.getObjectID()) == Chassis.ARCHON){
+    	//if(robotTypes.get(s.getObjectID()) == RobotType.ARCHON){
     	//	intensityLevel += 100;
     	//}
         return null;

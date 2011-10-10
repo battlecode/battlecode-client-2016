@@ -19,7 +19,7 @@ import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import java.util.ArrayList;
@@ -57,10 +57,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private int teleportRounds;
     private MapLocation teleportLoc;
 
-    public DrawObject(Chassis type, Team team) {
+    public DrawObject(RobotType type, Team team) {
         super(type, team);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
-        maxEnergon = type.maxHp;
+        maxEnergon = type.maxEnergon;
         components = new ArrayList<ComponentType>();
     }
 
@@ -81,7 +81,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     public static void loadAll() {
-        for (Chassis type : Chassis.values()) {
+        for (RobotType type : RobotType.values()) {
             for (Team team : Team.values()) {
                 /*if (team == Team.NEUTRAL) {
                 continue;
@@ -244,9 +244,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
             }
 
             AffineTransform trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
-            if (info.type == Chassis.BUILDING) {
-                trans = new AffineTransform();
-            }
 
             assert preEvolve != null;
             BufferedImage image = getTypeSprite();
@@ -320,7 +317,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     }
                     // it's easier to see what is being attacked if we draw
                     // the crosshair in addition to the cannonball
-                    //if (info.type != Chassis.CHAINER) {
+                    //if (info.type != RobotType.CHAINER) {
 //                    if (getTeam() == Team.A) {
 //                        g2.setColor(Color.RED);
 //                    } else {
@@ -369,7 +366,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         return img.image;
     }
 
-    public void evolve(Chassis type) {
+    public void evolve(RobotType type) {
         super.evolve(type);
         img = ir.getResource(info, getAvatarPath(info));
     }

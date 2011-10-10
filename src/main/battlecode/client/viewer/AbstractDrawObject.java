@@ -4,7 +4,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
-import battlecode.common.Chassis;
+import battlecode.common.RobotType;
 import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import battlecode.client.viewer.render.RenderConfiguration;
@@ -21,10 +21,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public static class RobotInfo {
 
-        public final Chassis type;
+        public final RobotType type;
         public final Team team;
 
-        public RobotInfo(Chassis type, Team team) {
+        public RobotInfo(RobotType type, Team team) {
             this.type = type;
             this.team = team;
         }
@@ -42,7 +42,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         }
     }
 
-    public AbstractDrawObject(Chassis type, Team team) {
+    public AbstractDrawObject(RobotType type, Team team) {
         info = new RobotInfo(type, team);
     }
 
@@ -145,7 +145,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         }
     }
 
-    public Chassis getType() {
+    public RobotType getType() {
         return info.type;
     }
 
@@ -249,22 +249,22 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
                 || animations.get(AbstractAnimation.AnimationType.MORTAR_EXPLOSION) != null;
     }
 
-    public void evolve(Chassis type) {
+    public void evolve(RobotType type) {
         movementAction = ActionType.TRANSFORMING;
         attackAction = ActionType.TRANSFORMING;
         //roundsUntilIdle = type.wakeDelay();
         info = new RobotInfo(type, info.team);
-        maxEnergon = type.maxHp;
+        maxEnergon = type.maxEnergon;
     }
 
     public abstract void addComponent(ComponentType type);
 
-    public void setAttacking(MapLocation target, RobotLevel height, ComponentType component) {
+    public void setAttacking(MapLocation target, RobotLevel height) {
         attackAction = ActionType.ATTACKING;
-        roundsUntilAttackIdle = component.delay;
+        roundsUntilAttackIdle = info.type.attackDelay;
         targetLoc = target;
-        componentType = component;
-        //if (info.type == Chassis.CHAINER) {
+        //componentType = component;
+        //if (info.type == RobotType.CHAINER) {
         //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
         //}
     }
