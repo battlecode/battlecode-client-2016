@@ -6,7 +6,7 @@ import battlecode.serial.RoundStats;
 import battlecode.engine.signal.Signal;
 import battlecode.engine.signal.AutoSignalHandler;
 
-public abstract class GameState extends AutoSignalHandler<Void> {
+public abstract class GameState extends AutoSignalHandler {
 
 	public synchronized void apply(RoundDelta rd) {
 		for (Signal signal: rd.getSignals()) {
