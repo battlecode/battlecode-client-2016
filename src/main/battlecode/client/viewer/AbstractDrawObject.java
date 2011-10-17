@@ -86,7 +86,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected float drawX = 0, drawY = 0;
     protected int moving = 0;
     protected double energon = 0;
-    protected double maxEnergon;
+	protected double flux = 0;
+	protected double maxEnergon;
     protected int roundsUntilAttackIdle;
     protected int roundsUntilMovementIdle;
     protected ActionType attackAction;
@@ -181,6 +182,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return energon;
     }
 
+	public double getFlux() {
+		return flux;
+	}
+
     public String getIndicatorString(int index) {
         return indicatorStrings[index];
     }
@@ -225,6 +230,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public void setEnergon(double energon) {
         this.energon = energon;
     }
+
+	public void setFlux(double f) {
+		flux = f;
+	}
 
     public void setTeam(Team team) {
         info = new RobotInfo(info.type, team);

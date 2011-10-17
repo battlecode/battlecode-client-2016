@@ -176,7 +176,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         AffineTransform pushed = g2.getTransform();
         { // push
             g2.translate(getDrawX(), getDrawY());
-            drawImmediate(g2, focused || RenderConfiguration.showEnergon(), focused);
+            drawImmediate(g2, focused);
 
             /*
             if (auraAnimation != null && RenderConfiguration.showSpawnRadii()) {
@@ -207,7 +207,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         drawAction(g2);
     }
 
-    public void drawImmediate(Graphics2D g2, boolean drawEnergon, boolean drawOutline, boolean isHUD) {
+    public void drawImmediate(Graphics2D g2, boolean drawOutline, boolean isHUD) {
 
         // these animations should be drawn in the HUD, and they expect
         // the origin of the Grpahics2D to be this robot's position
@@ -226,8 +226,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
             }
         } else {
 
-            if (drawEnergon) {
-                Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.2f);
+			boolean showEnergon = RenderConfiguration.showEnergon() || drawOutline;
+			boolean showFlux = RenderConfiguration.showFlux() || drawOutline;
+
+            if (showEnergon) {
+                Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
                 g2.setColor(Color.BLACK);
                 g2.fill(rect);
                 float frac = Math.min((float) (energon / maxEnergon), 1);
@@ -242,6 +245,22 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 }
                 g2.fill(rect);
             }
+
+			if(showFlux) {
+			    Rectangle2D.Float rect;
+				if(showEnergon)
+					rect = new Rectangle2D.Float(0, 1.15f, 1, 0.15f);
+				else
+					rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+                g2.setColor(Color.BLACK);
+                g2.fill(rect);
+                float frac = Math.min((float) (flux / info.type.maxFlux), 1);
+                rect.width = frac;
+                if (frac < 0)
+                    frac = 0;
+                g2.setColor(new Color(frac,0,.5f+.5f*frac));
+                g2.fill(rect);
+			}
 
             AffineTransform trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
 
@@ -291,13 +310,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     }
 
-    public void drawImmediate(Graphics2D g2, boolean drawEnergon, boolean drawOutline) {
-        drawImmediate(g2, drawEnergon, drawOutline, false);
+    public void drawImmediate(Graphics2D g2, boolean drawOutline) {
+        drawImmediate(g2, drawOutline, false);
     }
 
     // used by the HUD
-    public void drawImmediateNoScale(Graphics2D g2, boolean drawEnergon, boolean drawOutline) {
-        drawImmediate(g2, drawEnergon, drawOutline, true);
+    public void drawImmediateNoScale(Graphics2D g2, boolean drawOutline) {
+        drawImmediate(g2, drawOutline, true);
     }
 
     private void drawAction(Graphics2D g2) {

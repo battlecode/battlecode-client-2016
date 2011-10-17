@@ -11,6 +11,7 @@ public class RenderConfiguration {
 	private static boolean broadcast = true;
 	private static boolean discrete = false;
 	private static boolean energon = true;
+	private static boolean flux = true;
 	private static boolean gridlines = true;
 	private static boolean blocks = true;
 	private static boolean detonates = true;
@@ -63,6 +64,7 @@ public class RenderConfiguration {
 	public static void toggleAmbientMusic(){ambientMusic = !ambientMusic;}
 	public static void toggleTeleport() { teleport = !teleport; }
 	public static void toggleTeleportGhosts() { teleportGhosts = !teleportGhosts; }
+	public static void toggleFlux() { flux = !flux; }
 
 	public static void toggleDrawHeight() {
 		if(!air && !ground) {
@@ -96,6 +98,7 @@ public class RenderConfiguration {
 	public static boolean showSpawnRadii() { return spawnRadii; }
 	public static boolean showTeleport() { return teleport; }
 	public static boolean showTeleportGhosts() { return teleportGhosts; }
+	public static boolean showFlux() { return flux; }
 
 	public static boolean showGround() { return ground; }
 	public static boolean showAir   () { return air;    }

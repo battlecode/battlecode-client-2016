@@ -174,17 +174,17 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
     }
 
-    public Void visitAttackSignal(AttackSignal s) {
+    public void visitAttackSignal(AttackSignal s) {
         getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
-        return null;
+        
     }
 
-    public Void visitBroadcastSignal(BroadcastSignal s) {
+    public void visitBroadcastSignal(BroadcastSignal s) {
         getRobot(s.getRobotID()).setBroadcast();
-        return null;
+        
     }
 
-    public Void visitDeathSignal(DeathSignal s) {
+    public void visitDeathSignal(DeathSignal s) {
         int team = getRobot(s.getObjectID()).getTeam().ordinal();
         AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
         if (team < 2) {
@@ -198,10 +198,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             comps.put(cmp, comps.get(cmp) - 1);
         }
         robot.destroyUnit();
-        return null;
+        
     }
 
-    public Void visitEnergonChangeSignal(EnergonChangeSignal s) {
+    public void visitEnergonChangeSignal(EnergonChangeSignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] energon = s.getEnergon();
         for (int i = 0; i < robotIDs.length; i++) {
@@ -212,27 +212,36 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             if (team < 2)
                 teamHP[team] += energon[i];
         }
-        return null;
+        
     }
 
-    public Void visitIndicatorStringSignal(IndicatorStringSignal s) {
+    public void visitFluxChangeSignal(FluxChangeSignal s) {
+        int[] robotIDs = s.getRobotIDs();
+        double[] flux = s.flux;
+        for (int i = 0; i < robotIDs.length; i++) {
+            getRobot(robotIDs[i]).setFlux(flux[i]);
+        }
+        
+    }
+
+	public void visitIndicatorStringSignal(IndicatorStringSignal s) {
         if (!RenderConfiguration.isTournamentMode()) {
             getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());
         }
-        return null;
+        
     }
 
-    public Void visitControlBitsSignal(ControlBitsSignal s) {
+    public void visitControlBitsSignal(ControlBitsSignal s) {
         getRobot(s.getRobotID()).setControlBits(s.getControlBits());
-        return null;
+        
     }
 
-    public Void visitMovementOverrideSignal(MovementOverrideSignal s) {
+    public void visitMovementOverrideSignal(MovementOverrideSignal s) {
         getRobot(s.getRobotID()).setLocation(s.getNewLoc());
-        return null;
+        
     }
 
-    public Void visitMovementSignal(MovementSignal s) {
+    public void visitMovementSignal(MovementSignal s) {
         DrawObject obj = getRobot(s.getRobotID());
         boolean teleported = !obj.loc.isAdjacentTo(s.getNewLoc());
         //TODO: this should probably be from a teleported signal
@@ -243,11 +252,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
             obj.setMoving(s.isMovingForward());
         }
-        return null;
+        
     }
 
     //synchronized to make sure we don't get concurrency issues.
-    public synchronized Void visitEquipSignal(EquipSignal s) {
+    public synchronized void visitEquipSignal(EquipSignal s) {
         //We have our robot update its components so that we can show it in the infopanel.
         DrawObject obj = getRobot(s.robotID);
         obj.addComponent(s.component);
@@ -264,12 +273,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
         if (s.component.componentClass == ComponentClass.COMM)
             obj.updateBroadcastRadius(s.component.range);
-        return null;
+        
     }
 
-    public Void visitSetDirectionSignal(SetDirectionSignal s) {
+    public void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
-        return null;
+        
     }
 
     public DrawObject spawnRobot(SpawnSignal s) {
@@ -290,18 +299,18 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return spawn;
     }
 
-    public Void visitSpawnSignal(SpawnSignal s) {
+    public void visitSpawnSignal(SpawnSignal s) {
         spawnRobot(s);
-        return null;
+        
     }
 
-    public Void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
+    public void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
         int[] robotIDs = s.getRobotIDs();
         int[] bytecodes = s.getNumBytecodes();
         for (int i = 0; i < robotIDs.length; i++) {
             getRobot(robotIDs[i]).setBytecodesUsed(bytecodes[i]);
         }
-        return null;
+        
     }
 
 	public void visitLoadSignal(LoadSignal s) {
