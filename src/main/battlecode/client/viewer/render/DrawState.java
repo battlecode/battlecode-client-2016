@@ -80,6 +80,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         return new DrawObject(type, team);
     }
 
+	protected DrawObject createDrawObject(DrawObject o) {
+		return new DrawObject(o);
+	}
+
     public MapLocation[][] getConvexHullsA() {
         return convexHullsA;
     }
@@ -88,56 +92,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         return convexHullsB;
     }
 
-    private synchronized void copyStateFrom(DrawState src) {
-        groundUnits.clear();
-        //archonsA.clear();
-        //archonsB.clear();
-        towers.clear();
-        for (Map.Entry<Integer, DrawObject> entry : src.groundUnits.entrySet()) {
-            DrawObject copy = new DrawObject(entry.getValue());
-            groundUnits.put(entry.getKey(), copy);
-        }
-        airUnits.clear();
-        for (Map.Entry<Integer, DrawObject> entry : src.airUnits.entrySet()) {
-            DrawObject copy = new DrawObject(entry.getValue());
-            airUnits.put(entry.getKey(), copy);
-            tryAddArchon(copy);
-        }
-        fluxDeposits.clear();
-        for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
-            fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
-        }
-        stats = src.stats;
-        componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
-        componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
-        chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
-        chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
-
-        if (src.gameMap != null) {
-            gameMap = src.gameMap;
-        }
-
-        currentRound = src.currentRound;
-        convexHullsA = new MapLocation[src.convexHullsA.length][];
-        if (convexHullsA.length > 0) {
-            for (int i = 0; i < convexHullsA.length; i++) {
-                convexHullsA[i] = new MapLocation[src.convexHullsA[i].length];
-                System.arraycopy(src.convexHullsA[i], 0, convexHullsA[i], 0, convexHullsA[i].length);
-            }
-        }
-
-        convexHullsB = new MapLocation[src.convexHullsB.length][];
-        if (convexHullsB.length > 0) {
-            for (int i = 0; i < convexHullsB.length; i++) {
-                convexHullsB[i] = new MapLocation[src.convexHullsB[i].length];
-                System.arraycopy(src.convexHullsB[i], 0, convexHullsB[i], 0, convexHullsB[i].length);
-            }
-        }
-
-
-    }
-
-    protected void mineFlux(DrawObject obj) {
+	protected void mineFlux(DrawObject obj) {
     }
 
     // return the set of all flux deposits to be drawn in proper order by GameRenderer

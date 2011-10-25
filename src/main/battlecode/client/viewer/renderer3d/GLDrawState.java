@@ -179,6 +179,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         return new GLDrawObject(type, team);
     }
 
+	protected GLDrawObject createDrawObject(GLDrawObject obj) {
+		return new GLDrawObject(obj);
+	}
+
     public Vector2f getAwesomePoint() {
         return awesomePoint;
     }

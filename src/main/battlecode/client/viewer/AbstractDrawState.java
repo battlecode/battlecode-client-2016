@@ -1,6 +1,6 @@
 package battlecode.client.viewer;
 
-import battlecode.client.viewer.render.*;
+import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.ComponentClass;
 import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
@@ -10,13 +10,17 @@ import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
     protected abstract DrawObject createDrawObject(RobotType type, Team team);
+	protected abstract DrawObject createDrawObject(DrawObject o);
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
@@ -32,6 +36,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<ComponentType, Integer> componentTypeCountB = new EnumMap<ComponentType, Integer>(ComponentType.class);
     protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
     protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
+	protected Map<Team, List<DrawObject>> archons;
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -66,6 +71,50 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             it.remove();
         }
     };
+
+	public AbstractDrawState() {
+		archons = new EnumMap<Team, List<DrawObject>>(Team.class);
+		archons.put(Team.A,new ArrayList<DrawObject>());
+		archons.put(Team.B,new ArrayList<DrawObject>());
+	}
+
+	@SuppressWarnings("unchecked")
+	protected synchronized void copyStateFrom(AbstractDrawState src) {
+        groundUnits.clear();
+        archons.get(Team.A).clear();
+        archons.get(Team.B).clear();
+		// Seriously, Java, you can't figure out that Map.entrySet() returns a
+		// Set of Map.Entry as opposed to a Set of Object?
+        for (Map.Entry<Integer, DrawObject> entry : (Set<Map.Entry<Integer,DrawObject>>)src.groundUnits.entrySet()) {
+            DrawObject copy = createDrawObject(entry.getValue());
+            groundUnits.put(entry.getKey(), copy);
+            tryAddArchon(copy);
+        }
+        airUnits.clear();
+        for (Map.Entry<Integer, DrawObject> entry : (Set<Map.Entry<Integer,DrawObject>>)src.airUnits.entrySet()) {
+            DrawObject copy = createDrawObject(entry.getValue());
+            airUnits.put(entry.getKey(), copy);
+        }
+        fluxDeposits.clear();
+        for (Map.Entry<Integer, FluxDepositState> entry : (Set<Map.Entry<Integer,FluxDepositState>>)src.fluxDeposits.entrySet()) {
+            fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
+        }
+        stats = src.stats;
+        componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
+        componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
+        chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
+        chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
+
+        if (src.gameMap != null) {
+            gameMap = src.gameMap;
+        }
+
+        currentRound = src.currentRound;
+    }
+
+	public List<DrawObject> getArchons(Team t) {
+		return archons.get(t);
+	}
 
     protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
         if (!RenderConfiguration.showGround() && !RenderConfiguration.showAir()) {
@@ -133,9 +182,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     protected void tryAddArchon(DrawObject archon) {
-        //if (archon.getType() == RobotType.ARCHON) {
-        //	(archon.getTeam() == Team.A ? archonsA : archonsB).add(archon);
-        //}
+        if (archon.getType() == RobotType.ARCHON)
+			archons.get(archon.getTeam()).add(archon);
     }
 
     //public List<DrawObject> getArchons(Team team) {
@@ -184,6 +232,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
     }
 
+	@SuppressWarnings("unchecked")
     public void visitDeathSignal(DeathSignal s) {
         int team = getRobot(s.getObjectID()).getTeam().ordinal();
         AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());

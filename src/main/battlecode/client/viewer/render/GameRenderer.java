@@ -63,8 +63,8 @@ public class GameRenderer extends BaseRenderer {
     
         try {
         	System.out.println(match.getTeamA() + " " +  match.getTeamB() + " " + Team.A + " " +  Team.B + " " + match.getHeader());
-        	sideA = new DrawHUD(ds, Team.A, match);
-            sideB = new DrawHUD(ds, Team.B, match);
+        	sideA = new DrawHUD(ds, Team.A);
+            sideB = new DrawHUD(ds, Team.B);
         	//sideA = new DrawHUD(ds,Team.A,match.getTeamA());
         	//sideB = new DrawHUD(ds,Team.B,match.getTeamB());
         } catch (Error e) {
