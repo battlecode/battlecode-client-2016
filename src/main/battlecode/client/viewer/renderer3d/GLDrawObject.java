@@ -16,7 +16,6 @@ import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.client.viewer.ActionType;
-import battlecode.common.ComponentType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
@@ -118,11 +117,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     public void setAttacking(MapLocation target, RobotLevel height) {
 		super.setAttacking(target, height);
 		targetHeight = height;
-    }
-
-    @Override
-    public void addComponent(ComponentType type) {
-        components.add(type);
     }
 
 }

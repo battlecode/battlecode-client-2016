@@ -1,6 +1,5 @@
 package battlecode.client.viewer;
 
-import battlecode.common.ComponentType;
 import battlecode.common.GameConstants;
 
 

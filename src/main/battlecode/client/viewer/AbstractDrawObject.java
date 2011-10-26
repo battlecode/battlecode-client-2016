@@ -5,7 +5,6 @@ import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
-import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import battlecode.client.viewer.render.RenderConfiguration;
 
@@ -51,7 +50,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public AbstractDrawObject(AbstractDrawObject<Animation> copy) {
         this(copy.info.type, copy.info.team, copy.getID());
 
-        components = new ArrayList<ComponentType>(copy.components);
         loc = copy.loc;
         dir = copy.dir;
         energon = copy.energon;
@@ -93,7 +91,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int roundsUntilMovementIdle;
     protected ActionType attackAction;
     protected ActionType movementAction;
-    protected List<ComponentType> components = new ArrayList<ComponentType>();
     protected MapLocation targetLoc = null;
     protected int broadcast = 0;
     protected long controlBits = 0;
@@ -103,7 +100,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
 	protected int robotID;
-    protected ComponentType componentType;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
         private static final long serialVersionUID = 0;
@@ -154,10 +150,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public RobotType getType() {
         return info.type;
-    }
-
-    public List<ComponentType> getComponents() {
-         return components;
     }
 
     public Team getTeam() {
@@ -271,8 +263,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         info = new RobotInfo(type, info.team);
         maxEnergon = type.maxEnergon;
     }
-
-    public abstract void addComponent(ComponentType type);
 
     public void setAttacking(MapLocation target, RobotLevel height) {
         attackAction = ActionType.ATTACKING;

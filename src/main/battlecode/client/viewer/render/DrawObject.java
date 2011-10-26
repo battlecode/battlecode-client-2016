@@ -20,7 +20,6 @@ import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
-import battlecode.common.ComponentType;
 import battlecode.common.Team;
 import java.util.ArrayList;
 
@@ -61,7 +60,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
         super(type, team, id);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
         maxEnergon = type.maxEnergon;
-        components = new ArrayList<ComponentType>();
     }
 
 
@@ -73,7 +71,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
         preEvolve = copy.preEvolve;
         teleportRounds = copy.teleportRounds;
         teleportLoc = copy.teleportLoc;
-        components = new ArrayList<ComponentType>(copy.components);
         if (animations.containsKey(ENERGON_TRANSFER)) {
             EnergonTransferAnim a = (EnergonTransferAnim) animations.get(ENERGON_TRANSFER);
             a.setSource(this);
@@ -99,13 +96,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     private static String getAvatarPath(String type, Team team) {
         return "art/" + type + (team == Team.NEUTRAL ? "0" : (team == Team.A ? "1" : "2")) + ".png";
-    }
-
-    public void addComponent(ComponentType type) {
-        components.add(type);
-        if (type == ComponentType.RECYCLER || type == ComponentType.FACTORY || type == ComponentType.ARMORY) {
-            img = cir.getResource(type.toString() + getTeam().toString(), getAvatarPath(type.toString().toLowerCase(), getTeam()));
-        }
     }
 
     public double getRelativeSize() {
@@ -337,32 +327,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     // it's easier to see what is being attacked if we draw
                     // the crosshair in addition to the cannonball
                     //if (info.type != RobotType.CHAINER) {
-//                    if (getTeam() == Team.A) {
-//                        g2.setColor(Color.RED);
-//                    } else {
-//                        g2.setColor(Color.BLUE);
-//                    }
-                    if (componentType == componentType.SMG) {
-                        g2.setColor(Color.GRAY);
-                        g2.setStroke(thinStroke);
-                    } else if (componentType == componentType.BEAM) {
-                        g2.setColor(Color.MAGENTA);
-                        g2.setStroke(mediumStroke);
-                    } else if (componentType == componentType.BLASTER) {
-                        g2.setColor(Color.GREEN);
-                        g2.setStroke(mediumStroke);
-                    } else if (componentType == componentType.HAMMER) {
-                        g2.setStroke(thickStroke);
-                        g2.setColor(Color.ORANGE);
-                    } else if (componentType == componentType.MEDIC) {
+                    if (getTeam() == Team.A) {
                         g2.setColor(Color.RED);
-                        g2.setStroke(mediumStroke);
-                    } else if (componentType == componentType.RAILGUN) {
-                        g2.setColor(Color.YELLOW);
-                        g2.setStroke(thinStroke);
+                    } else {
+                        g2.setColor(Color.BLUE);
                     }
-
-
 
 
                     //g2.setStroke(mediumStroke);

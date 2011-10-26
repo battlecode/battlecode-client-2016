@@ -1,8 +1,6 @@
 package battlecode.client.viewer;
 
 import battlecode.client.viewer.render.RenderConfiguration;
-import battlecode.common.ComponentClass;
-import battlecode.common.ComponentType;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
@@ -25,15 +23,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
     protected double[] teamHP = new double[2];
-    //protected List<DrawObject> archonsA;
-    //protected List<DrawObject> archonsB;
-    //protected ArrayList<ComponentType> aTeamComponents = new ArrayList<ComponentType>();
-    //protected ArrayList<ComponentType> bTeamComponents = new ArrayList<ComponentType>();
-    //protected ComponentType[] topWeapons = new ComponentType[2];
-    //protected ComponentType[] topArmors = new ComponentType[2];
-    //protected ComponentType[] topMiscs = new ComponentType[2];
-    protected Map<ComponentType, Integer> componentTypeCountA = new EnumMap<ComponentType, Integer>(ComponentType.class);
-    protected Map<ComponentType, Integer> componentTypeCountB = new EnumMap<ComponentType, Integer>(ComponentType.class);
     protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
     protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
@@ -106,8 +95,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		else
 			cores.remove(Team.B);
         stats = src.stats;
-        componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
-        componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
         chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
         chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
@@ -155,21 +142,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         for (RobotType ct : orig.keySet())
             if (orig.get(ct) > 0)
                 byclass.put(ct, orig.get(ct));
-        return byclass;
-    }
-
-    public Map<ComponentType, Integer> getComponentTypeCount(Team t) {
-        return (t == Team.A) ? componentTypeCountA : componentTypeCountB;
-    }
-
-    public Map<ComponentType, Integer> getComponentTypeCount(Team t, ComponentClass c) {
-        Map<ComponentType, Integer> orig = (t == Team.A) ? componentTypeCountA : componentTypeCountB;
-        Map<ComponentType, Integer> byclass = new EnumMap<ComponentType, Integer>(ComponentType.class);
-        for (ComponentType ct : orig.keySet()) {
-            if (ct.componentClass == c && orig.get(ct) > 0) {
-                byclass.put(ct, orig.get(ct));
-            }
-        }
         return byclass;
     }
 
@@ -309,27 +281,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
     }
 
-    //synchronized to make sure we don't get concurrency issues.
-    public synchronized void visitEquipSignal(EquipSignal s) {
-        //We have our robot update its components so that we can show it in the infopanel.
-        DrawObject obj = getRobot(s.robotID);
-        obj.addComponent(s.component);
-        Team objTeam = obj.getTeam();
-
-
-        Map<ComponentType, Integer> componentTypeCount = (objTeam == Team.A) ? componentTypeCountA : componentTypeCountB;
-        //Iterate through and get the counts
-        if (!componentTypeCount.containsKey(s.component)) {
-            componentTypeCount.put(s.component, 1);
-        } else {
-            componentTypeCount.put(s.component, componentTypeCount.get(s.component) + 1);
-        }
-
-        if (s.component.componentClass == ComponentClass.COMM)
-            obj.updateBroadcastRadius(s.component.range);
-        
-    }
-
     public void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
         
@@ -376,15 +327,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	public void visitUnloadSignal(UnloadSignal s) {
 		getRobot(s.passengerID).unload(s.unloadLoc);
 	}
-
-    public void visitMineBirthSignal(MineBirthSignal s) {
-        fluxDeposits.put(s.id, new FluxDepositState(s.id, s.location, s.roundsAvaliable));
-
-    }
-
-    public void visitMineDepletionSignal(MineDepletionSignal s) {
-        fluxDeposits.get(s.id).setRoundsAvailable(s.roundsAvaliable);
-    }
 
 	public void visitNodeCaptureSignal(NodeCaptureSignal s) {
 		getRobot(s.robotID).setTeam(s.newTeam);

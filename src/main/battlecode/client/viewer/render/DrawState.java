@@ -19,7 +19,6 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.GameConstants;
 import battlecode.common.Team;
-import battlecode.common.ComponentType;
 
 import battlecode.world.GameMap;
 import battlecode.serial.RoundStats;
