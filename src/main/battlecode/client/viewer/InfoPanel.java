@@ -13,11 +13,10 @@ public class InfoPanel extends JPanel {
 
     private static final long serialVersionUID = 0; // don't serialize
     private JLabel[] indicatorStrings;
-    private JPanel componentPanel;
-    private ArrayList<JLabel> componentLabels = new ArrayList<JLabel>();
     private JLabel robotID;
     private JLabel bytecodes;
     private JLabel energon;
+	private JLabel flux;
     private JLabel direction;
     private GridBagConstraints layoutConstraints;
 
@@ -31,37 +30,20 @@ public class InfoPanel extends JPanel {
         layoutConstraints.gridy = 0;
         layoutConstraints.weightx = 0.33;
         robotID = newLabel();
-
-        layoutConstraints.gridx = 1;
+		layoutConstraints.gridx++;
         energon = newLabel();
-
-        layoutConstraints.gridx = 2;
-        bytecodes = newLabel();
-
-        layoutConstraints.gridx = 3;
+		layoutConstraints.gridx++;
+        flux = newLabel();
+		layoutConstraints.gridx++;
+		bytecodes = newLabel();
+		layoutConstraints.gridx++;
         direction = newLabel();
 
         layoutConstraints.gridx = 0;
         for (int i = 0; i < indicatorStrings.length; i++) {
             layoutConstraints.gridy = i + 1;
-            layoutConstraints.gridwidth = 4;
+            layoutConstraints.gridwidth = GridBagConstraints.REMAINDER;
             indicatorStrings[i] = newLabel();
-        }
-        componentPanel = new JPanel();
-        componentPanel.setLayout(new GridLayout(2, 0));
-
-        layoutConstraints.gridx = 0;
-        layoutConstraints.gridy = indicatorStrings.length + 3;
-        layoutConstraints.gridwidth = 4;
-        layoutConstraints.gridheight = 2;
-        add(componentPanel, layoutConstraints);
-
-        for (int i = 0; i < 10; i++) {
-            JLabel componentLabel = new JLabel();
-            
-            componentLabel.setFont(new Font("Dialog", Font.PLAIN,8));
-            componentLabels.add(componentLabel);
-            componentPanel.add(componentLabel);
         }
 
         clear();
@@ -83,14 +65,6 @@ public class InfoPanel extends JPanel {
             }
         }
 
-        for (Component c : componentPanel.getComponents()) {
-            if (c instanceof JLabel) {
-                JLabel l = (JLabel) c;
-                l.setText(null);
-                l.setToolTipText(null);
-            }
-        }
-
         robotID.setText("No robot selected");
     }
 
@@ -103,6 +77,7 @@ public class InfoPanel extends JPanel {
             clear();
         else {
             setEnergon(robot.getEnergon());
+			setFlux(robot.getFlux());
             setBytecodesUsed(robot.getBytecodesUsed());
             direction.setText(robot.getDirection().toString());
             for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
@@ -111,29 +86,16 @@ public class InfoPanel extends JPanel {
                     ids = " ";
                 setIndicatorString(i, ids);
             }
-            setComponentTypes(robot.getComponents());
         }
-    }
-
-    private void setComponentTypes(java.util.List<ComponentType> components) {
-        for (JLabel label : componentLabels) {
-            label.setText("");
-        }
-        int labelCount = 0;
-        for (ComponentType component : components) {
-
-            JLabel componentLabel = componentLabels.get(labelCount);
-            componentLabel.setText(" " + component.toString() + " ");
-            labelCount++;
-            if (labelCount > 9)
-                break;
-        }//It would probably be more efficient to set up the labels, then just change their texts.
-
     }
 
     private void setEnergon(double amount) {
-        energon.setText(String.format(" Hitpoints: %.1f ", amount));
+        energon.setText(String.format(" Energon: %.1f ", amount));
     }
+
+	private void setFlux(double amount) {
+		flux.setText(String.format(" Flux: %.1f ", amount));
+	}
 
     private void setBytecodesUsed(int bytecodesUsed) {
         if (bytecodesUsed > 0) {
