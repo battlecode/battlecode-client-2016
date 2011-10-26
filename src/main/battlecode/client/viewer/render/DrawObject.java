@@ -103,38 +103,37 @@ class DrawObject extends AbstractDrawObject<Animation> {
         //return this.getType().relativeSize();
     }
 
-    public void drawRangeHatch(Graphics2D g2) {
-        AffineTransform pushed = g2.getTransform();
-        {
-            g2.translate(loc.getX(), loc.getY());
-            try {
-                BufferedImage sensorImg = hatchSensor.image;
-                BufferedImage attackImg = hatchAttack.image;
-                /*
-                for (int i = -11; i <= 11; i++) for (int j = -11; j <= 11; j++) {
-                int distSq = i * i + j * j;
-                if (distSq <= info.type.sensorRadiusSquared()) {
-                if (inAngleRange(i, j, info.type.sensorCosHalfTheta())) {
-                AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
-                trans.scale(1.0 / sensorImg.getWidth(), 1.0 / sensorImg.getHeight());
-                g2.drawImage(sensorImg, trans, null);
-                }
-                }
-                if ((info.type.canAttackGround() || info.type.canAttackAir())
-                && info.type.attackRadiusMinSquared() <= distSq
-                && distSq <= info.type.attackRadiusMaxSquared()
-                && inAngleRange(i, j, info.type.attackCosHalfTheta())) {
-                AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
-                trans.scale(1.0 / attackImg.getWidth(), 1.0 / attackImg.getHeight());
-                g2.drawImage(attackImg, trans, null);
-                }
-                }
-                 */
-            } catch (NullPointerException npe) {
-            } // oh well
-        }
-        g2.setTransform(pushed);
-    }
+	public void drawRangeHatch(Graphics2D g2) {
+		AffineTransform pushed = g2.getTransform();
+		{
+			g2.translate(loc.getX(), loc.getY());
+			try {
+				BufferedImage sensorImg = hatchSensor.image;
+				BufferedImage attackImg = hatchAttack.image;
+				for (int i = -11; i <= 11; i++) for (int j = -11; j <= 11; j++) {
+						int distSq = i * i + j * j;
+						if (distSq <= info.type.sensorRadiusSquared) {
+							if (inAngleRange(i, j, info.type.sensorCosHalfTheta)) {
+								AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
+								trans.scale(1.0 / sensorImg.getWidth(), 1.0 / sensorImg.getHeight());
+								g2.drawImage(sensorImg, trans, null);
+							}
+						}
+						if ((info.type.canAttackGround || info.type.canAttackAir)
+								&& info.type.attackRadiusMinSquared <= distSq
+								&& distSq <= info.type.attackRadiusMaxSquared
+								&& inAngleRange(i, j, info.type.attackCosHalfTheta)) {
+							AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
+							trans.scale(1.0 / attackImg.getWidth(), 1.0 / attackImg.getHeight());
+							g2.drawImage(attackImg, trans, null);
+						}
+					}
+			} catch (NullPointerException npe) {
+			} // oh well
+		}
+		g2.setTransform(pushed);
+	}
+
     private static MapLocation origin = new MapLocation(0, 0);
 
     private boolean inAngleRange(int dx, int dy, double cosHalfTheta) {
