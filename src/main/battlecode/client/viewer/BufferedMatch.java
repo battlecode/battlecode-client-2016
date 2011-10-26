@@ -22,8 +22,8 @@ public final class BufferedMatch {
 	public String teamB = null;
 	private String[] mapNames = null;
 
-	private RoundDelta[] deltas;
-	private RoundStats[] stats;
+	private List<RoundDelta> deltas;
+	private List<RoundStats> stats;
 	private int roundsAvailable = 0;
 	private List<Signal> currentBreak = null;
 	private boolean paused = false;
@@ -53,14 +53,13 @@ public final class BufferedMatch {
   
 	public RoundDelta getRound(int round) {
 		if (deltas != null && round < roundsAvailable) {
-			assert deltas[round] != null: "Null delta at round " + round;
-			return deltas[round];
+			return deltas.get(round);
 		}
 		return null;
 	}
 
 	public RoundStats getRoundStats(int round) {
-		return stats[round];
+		return stats.get(round);
 	}
 
 	public List<Signal> getDebugSignals(int round) {
@@ -93,8 +92,8 @@ public final class BufferedMatch {
 				listener.headerReceived(this);
 			}
 		}
-		deltas = new RoundDelta[header.getMap().getMaxRounds() + 1];
-		stats  = new RoundStats[header.getMap().getMaxRounds() + 1];
+		deltas = new ArrayList<RoundDelta>();
+		stats  = new ArrayList<RoundStats>();
 		while (true) {
 			try {
 				obj = proxy.readObject();
@@ -155,7 +154,7 @@ public final class BufferedMatch {
 		assert roundDelta != null: "Null delta at round " + roundsAvailable;
 		paused = false;
 		if (currentBreak == null) {
-			deltas[roundsAvailable] = roundDelta;
+			deltas.add(roundDelta);
 			roundsAvailable++;
 		}
 		else {
@@ -169,14 +168,14 @@ public final class BufferedMatch {
 			}
 			synchronized(deltas) {
 				currentBreak = null;
-				deltas[roundsAvailable] = new RoundDelta(merged);
+				deltas.add(new RoundDelta(merged));
 				roundsAvailable++;
 			}
 		}
 	}
 
 	private void handleRoundStats(RoundStats roundStats) {
-		stats[roundsAvailable - 1] = roundStats;
+		stats.add(roundStats);
 	}
 
 	private void handleSignals(Signal[] signals) {

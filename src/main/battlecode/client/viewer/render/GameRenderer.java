@@ -235,7 +235,7 @@ public class GameRenderer extends BaseRenderer {
             g2.translate(/*unitWidth - */unitHUDwidth, 0);
             g2.transform(hudScale);
             sideB.setFooterText(String.format("%04d",
-                    maxRounds - timeline.getRound()));
+                    Math.max(maxRounds - timeline.getRound(),0)));
             sideB.draw(g2);
         }
         g2.setTransform(pushed);

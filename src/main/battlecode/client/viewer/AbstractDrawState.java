@@ -379,6 +379,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         fluxDeposits.get(s.id).setRoundsAvailable(s.roundsAvaliable);
     }
 
+	public void visitNodeCaptureSignal(NodeCaptureSignal s) {
+		getRobot(s.robotID).setTeam(s.newTeam);
+	}
+
     public void visitTurnOnSignal(TurnOnSignal s) {
         for (int i : s.robotIDs)
             getRobot(i).setPower(true);

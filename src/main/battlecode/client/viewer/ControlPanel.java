@@ -217,6 +217,9 @@ public class ControlPanel extends JPanel
         if (round >= 0) {
             label.setText("Round " + round + " of " + max);
         }
+		if (max >= slider.getMaximum()) {
+			slider.setMaximum(max);
+		}
     }
 
     public void updateRoundLabel(GameStateTimeline gst) {
