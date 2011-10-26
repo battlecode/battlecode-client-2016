@@ -41,8 +41,8 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     // point list of the circle of spawn radius
     public Vector3f[] spawnCircle = null;
    
-    public GLDrawObject(RobotType type, Team team) {
-	super(type, team);
+    public GLDrawObject(RobotType type, Team team, int id) {
+		super(type, team, id);
     }
 
     public GLDrawObject(GLDrawObject copy) {

@@ -12,7 +12,7 @@ import java.util.List;
 class DrawHUD {
 
     private static final int numArchons = GameConstants.NUMBER_OF_ARCHONS;
-    private static final float slotSize = 0.8f / numArchons;
+    private static final float slotSize = 0.8f / (numArchons + 1);
     private static final Font footerFont = new Font(null, Font.PLAIN, 1);
     private static final ImageFile bg = new ImageFile("art/hud_bg.png");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
@@ -139,27 +139,34 @@ class DrawHUD {
         try {
             java.util.List<DrawObject> archons = ds.getArchons(team);
             for (int i = 0; i < numArchons; i++) {
-                pushed = g2.getTransform();
-                {
-                    g2.scale(spriteScale, spriteScale);
-                    AffineTransform pushed2 = g2.getTransform();
-                    {
-                        BufferedImage underImg = unitUnder.image;
-                        g2.translate(-0.5, -0.5);
-                        g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-                        g2.drawImage(underImg, null, null);
-                    }
-                    g2.setTransform(pushed2);
-                    if (i < archons.size()) {
-                        DrawObject archon = archons.get(i);
-                        archon.drawImmediate(g2, false, true);
-                    }
-                }
-                g2.setTransform(pushed);
-                g2.translate(0, slotSize);
+				if(i < archons.size())
+					drawRobot(g2,archons.get(i));
+				else
+					drawRobot(g2,null);
             }
+			drawRobot(g2,ds.getPowerCore(team));
         } catch (ConcurrentModificationException e) {
 			e.printStackTrace();
         }
     }
+
+	public void drawRobot(Graphics2D g2, DrawObject r) {
+    	AffineTransform pushed = g2.getTransform();
+        {
+        	g2.scale(spriteScale, spriteScale);
+            AffineTransform pushed2 = g2.getTransform();
+                {
+                    BufferedImage underImg = unitUnder.image;
+                    g2.translate(-0.5, -0.5);
+                    g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+                    g2.drawImage(underImg, null, null);
+                }
+                g2.setTransform(pushed2);
+                if (r!=null)
+                    r.drawImmediate(g2, false, true);
+        }
+        g2.setTransform(pushed);
+        g2.translate(0, slotSize);
+	}
+	
 }

@@ -76,8 +76,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         copyStateFrom(clone);
     }
 
-    protected DrawObject createDrawObject(RobotType type, Team team) {
-        return new DrawObject(type, team);
+    protected DrawObject createDrawObject(RobotType type, Team team, int id) {
+        return new DrawObject(type, team, id);
     }
 
 	protected DrawObject createDrawObject(DrawObject o) {

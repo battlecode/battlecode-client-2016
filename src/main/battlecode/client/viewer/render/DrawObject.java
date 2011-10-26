@@ -57,8 +57,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private int teleportRounds;
     private MapLocation teleportLoc;
 
-    public DrawObject(RobotType type, Team team) {
-        super(type, team);
+    public DrawObject(RobotType type, Team team, int id) {
+        super(type, team, id);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
         maxEnergon = type.maxEnergon;
         components = new ArrayList<ComponentType>();
@@ -227,7 +227,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         } else {
 
 			boolean showEnergon = RenderConfiguration.showEnergon() || drawOutline;
-			boolean showFlux = RenderConfiguration.showFlux() || drawOutline;
+			boolean showFlux = (RenderConfiguration.showFlux() || drawOutline) && getType()!=RobotType.POWER_NODE;
 
             if (showEnergon) {
                 Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);

@@ -175,8 +175,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         copyStateFrom(clone);
     }
 
-    protected GLDrawObject createDrawObject(RobotType type, Team team) {
-        return new GLDrawObject(type, team);
+    protected GLDrawObject createDrawObject(RobotType type, Team team, int id) {
+        return new GLDrawObject(type, team, id);
     }
 
 	protected GLDrawObject createDrawObject(GLDrawObject obj) {

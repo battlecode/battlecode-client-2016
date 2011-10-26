@@ -42,13 +42,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         }
     }
 
-    public AbstractDrawObject(RobotType type, Team team) {
+    public AbstractDrawObject(RobotType type, Team team, int id) {
         info = new RobotInfo(type, team);
+		robotID = id;
     }
 
     @SuppressWarnings("unchecked")
     public AbstractDrawObject(AbstractDrawObject<Animation> copy) {
-        this(copy.info.type, copy.info.team);
+        this(copy.info.type, copy.info.team, copy.getID());
 
         components = new ArrayList<ComponentType>(copy.components);
         loc = copy.loc;
@@ -101,6 +102,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int broadcastRadiusSq = 0;
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
+	protected int robotID;
     protected ComponentType componentType;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
@@ -130,6 +132,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         else
             return info.type.moveDelayOrthogonal;
     }
+
+	public int getID() {
+		return robotID;
+	}
 
     public long getBroadcast() {
         return broadcast;

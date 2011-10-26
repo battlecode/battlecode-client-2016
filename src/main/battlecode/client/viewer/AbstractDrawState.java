@@ -19,7 +19,7 @@ import java.util.Set;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
-    protected abstract DrawObject createDrawObject(RobotType type, Team team);
+    protected abstract DrawObject createDrawObject(RobotType type, Team team, int id);
 	protected abstract DrawObject createDrawObject(DrawObject o);
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
@@ -37,6 +37,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
     protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
+	protected Map<Team,DrawObject> cores = new EnumMap<Team,DrawObject>(Team.class);
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -78,27 +79,32 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		archons.put(Team.B,new ArrayList<DrawObject>());
 	}
 
-	@SuppressWarnings("unchecked")
-	protected synchronized void copyStateFrom(AbstractDrawState src) {
+	protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
         groundUnits.clear();
         archons.get(Team.A).clear();
         archons.get(Team.B).clear();
-		// Seriously, Java, you can't figure out that Map.entrySet() returns a
-		// Set of Map.Entry as opposed to a Set of Object?
-        for (Map.Entry<Integer, DrawObject> entry : (Set<Map.Entry<Integer,DrawObject>>)src.groundUnits.entrySet()) {
+        for (Map.Entry<Integer, DrawObject> entry : src.groundUnits.entrySet()) {
             DrawObject copy = createDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
             tryAddArchon(copy);
         }
         airUnits.clear();
-        for (Map.Entry<Integer, DrawObject> entry : (Set<Map.Entry<Integer,DrawObject>>)src.airUnits.entrySet()) {
+        for (Map.Entry<Integer, DrawObject> entry : src.airUnits.entrySet()) {
             DrawObject copy = createDrawObject(entry.getValue());
             airUnits.put(entry.getKey(), copy);
         }
         fluxDeposits.clear();
-        for (Map.Entry<Integer, FluxDepositState> entry : (Set<Map.Entry<Integer,FluxDepositState>>)src.fluxDeposits.entrySet()) {
+        for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
         }
+		if(src.cores.get(Team.A)!=null)
+			cores.put(Team.A,airUnits.get(src.cores.get(Team.A).getID()));
+		else
+			cores.remove(Team.A);
+		if(src.cores.get(Team.B)!=null)
+			cores.put(Team.B,airUnits.get(src.cores.get(Team.B).getID()));
+		else
+			cores.remove(Team.B);
         stats = src.stats;
         componentTypeCountA = new EnumMap<ComponentType, Integer>(src.componentTypeCountA);
         componentTypeCountB = new EnumMap<ComponentType, Integer>(src.componentTypeCountB);
@@ -114,6 +120,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
 	public List<DrawObject> getArchons(Team t) {
 		return archons.get(t);
+	}
+
+	public DrawObject getPowerCore(Team t) {
+		return cores.get(t);
 	}
 
     protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
@@ -232,20 +242,15 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
     }
 
-	@SuppressWarnings("unchecked")
     public void visitDeathSignal(DeathSignal s) {
         int team = getRobot(s.getObjectID()).getTeam().ordinal();
-        AbstractDrawObject<AbstractAnimation> robot = getRobot(s.getObjectID());
+        DrawObject robot = getRobot(s.getObjectID());
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
             Map<RobotType, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
             ctc.put(robot.getType(), ctc.get(robot.getType()) - 1);
         }
         
-        for (ComponentType cmp : robot.getComponents()) {
-            Map<ComponentType, Integer> comps = getComponentTypeCount(robot.getTeam());
-            comps.put(cmp, comps.get(cmp) - 1);
-        }
         robot.destroyUnit();
         
     }
@@ -331,10 +336,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     public DrawObject spawnRobot(SpawnSignal s) {
-        DrawObject spawn = createDrawObject(s.getType(), s.getTeam());
+        DrawObject spawn = createDrawObject(s.getType(), s.getTeam(), s.getRobotID());
         spawn.setLocation(s.getLoc());
         spawn.setDirection(s.getDirection());
         putRobot(s.getRobotID(), spawn);
+		if(s.getType()==RobotType.POWER_NODE&&s.getTeam()!=Team.NEUTRAL)
+			cores.put(s.getTeam(),spawn);
         tryAddArchon(spawn);
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
