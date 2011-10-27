@@ -1,6 +1,7 @@
 package battlecode.client.viewer.render;
 
 import battlecode.client.viewer.AbstractAnimation;
+import java.awt.BasicStroke;
 import java.awt.Color;
 
 import java.awt.Graphics2D;
@@ -28,6 +29,10 @@ import java.util.EnumMap;
 public class DrawState extends AbstractDrawState<DrawObject> {
 
     protected static final Color dragShadow = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+	protected static final Color linkNone = new Color(0.f,0.f,0.f);
+	protected static final Color linkA = new Color(1.f,0.f,0.f);
+	protected static final Color linkB = new Color(0.f,0.f,1.f);
+	protected static final Color linkBoth = new Color(.75f,0.f,.75f);
 
     private static class Factory implements GameStateFactory<DrawState> {
 
@@ -151,6 +156,24 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             return;
         }
 
+		AffineTransform pushed2 = g2.getTransform();
+		g2.setStroke(new BasicStroke(.15f));
+		g2.translate(.5,.5);
+		for (Link l : links) {
+			if(l.connected[0])
+				if(l.connected[1])
+					g2.setColor(linkBoth);
+				else
+					g2.setColor(linkA);
+			else
+				if(l.connected[1])
+					g2.setColor(linkB);
+				else
+					g2.setColor(linkNone);
+			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
+		}
+		g2.setTransform(pushed2);
+
         for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
 
             int id = entry.getKey();
@@ -169,6 +192,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
                 obj.draw(g2, id == focusID || id == hoverID);
             }
         }
+        
         for (Integer id : fluxDeposits.keySet()) {
             FluxDepositState fd = fluxDeposits.get(id);
 

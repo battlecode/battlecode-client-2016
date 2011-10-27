@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,6 +64,67 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
     };
 
+	protected class Link {
+		public MapLocation from;
+		public MapLocation to;
+		public boolean [] connected;
+
+		public Link(MapLocation from, MapLocation to) {
+			this.from = from;
+			this.to = to;
+			connected = new boolean [2];
+		}
+
+		public Link(Link l) {
+			this.from = l.from;
+			this.to = l.to;
+			this.connected = new boolean [2];
+			System.arraycopy(l.connected,0,this.connected,0,2);
+		}
+	}
+
+	private Map<MapLocation, List<MapLocation>> neighbors = new HashMap<MapLocation,List<MapLocation>>();
+	protected List<Link> links = new ArrayList<Link>();
+	private Map<Team, MapLocation> baseNodes = new EnumMap<Team, MapLocation>(Team.class);
+
+	private class Graph implements battlecode.world.GameWorld.Graph {
+
+		private Set<MapLocation> [] connected;
+		private Map<MapLocation, Team> teams = new HashMap<MapLocation,Team>();
+
+		public Graph() {
+			connected = new Set [] { new HashSet<MapLocation>(), new HashSet<MapLocation>() };
+			for(DrawObject o : airUnits.values()) {
+				if(o.getType()==RobotType.POWER_NODE)
+					teams.put(o.getLocation(),o.getTeam());
+			}
+		}
+
+		public List<MapLocation> neighbors(MapLocation loc) {
+			return neighbors.get(loc);
+		}
+
+		public MapLocation baseNode(Team t) {
+			return baseNodes.get(t);
+		}
+
+		public Team team(MapLocation loc) {
+			return teams.get(loc);
+		}
+
+		public void setConnected(MapLocation loc, Team t) {
+			connected[t.ordinal()].add(loc);
+		}
+
+		public void colorLinks() {
+			for(Link l: links) {
+				for(int i=0;i<2;i++)
+					l.connected[i] = connected[i].contains(l.to) && connected[i].contains(l.from);
+			}
+		}
+
+	}
+
 	public AbstractDrawState() {
 		archons = new EnumMap<Team, List<DrawObject>>(Team.class);
 		archons.put(Team.A,new ArrayList<DrawObject>());
@@ -98,12 +161,26 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
         chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
+		neighbors = src.neighbors;
+
+		links.clear();
+		for(Link l : src.links) {
+			links.add(new Link(l));
+		}
+	
         if (src.gameMap != null) {
             gameMap = src.gameMap;
         }
 
         currentRound = src.currentRound;
     }
+
+	public void recomputeConnected() {
+		Graph g = new Graph();
+		new battlecode.world.GameWorld.Connections(g,Team.A).findAll();
+		new battlecode.world.GameWorld.Connections(g,Team.B).findAll();
+		g.colorLinks();
+	}
 
 	public List<DrawObject> getArchons(Team t) {
 		return archons.get(t);
@@ -281,6 +358,22 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
     }
 
+	public void connectNode(MapLocation l1, MapLocation l2) {
+		if(!neighbors.containsKey(l1))
+			neighbors.put(l1,new ArrayList<MapLocation>());
+		neighbors.get(l1).add(l2);
+
+	}
+
+	public void visitNodeConnectionSignal(NodeConnectionSignal s) {
+		for(MapLocation [] l : s.connections) {
+			links.add(new Link(l[0],l[1]));
+			connectNode(l[0],l[1]);
+			connectNode(l[1],l[0]);
+		}
+		recomputeConnected();
+	}
+
     public void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
         
@@ -303,6 +396,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             else
                 ctc.put(s.getType(), 1);
         }
+		if(spawn.getType()==RobotType.POWER_NODE) {
+			if(spawn.getTeam()!=Team.NEUTRAL) {
+				baseNodes.put(spawn.getTeam(),spawn.getLocation());
+			}
+		}
         return spawn;
     }
 
@@ -330,6 +428,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
 	public void visitNodeCaptureSignal(NodeCaptureSignal s) {
 		getRobot(s.robotID).setTeam(s.newTeam);
+		recomputeConnected();
 	}
 
     public void visitTurnOnSignal(TurnOnSignal s) {
