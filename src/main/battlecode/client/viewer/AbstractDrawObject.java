@@ -53,6 +53,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         loc = copy.loc;
         dir = copy.dir;
         energon = copy.energon;
+		flux = copy.flux;
         moving = copy.moving;
         targetLoc = copy.targetLoc;
         broadcast = copy.broadcast;
