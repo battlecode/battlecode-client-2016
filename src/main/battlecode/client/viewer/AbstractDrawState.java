@@ -29,6 +29,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
 	protected Map<Team,DrawObject> cores = new EnumMap<Team,DrawObject>(Team.class);
+	// We need coreLocs so we don't get a NullPointerException on the last turn
+	// when one of the cores has died
+	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -100,7 +103,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		}
 
 		public MapLocation baseNode(Team t) {
-			return cores.get(t).getLocation();
+			return coreLocs.get(t);
 		}
 
 		public Team team(MapLocation loc) {
@@ -160,6 +163,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
 		neighbors = src.neighbors;
+		coreLocs = src.coreLocs;
 
 		links.clear();
 		for(Link l : src.links) {
@@ -402,8 +406,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
 		if(spawn.getType()==RobotType.TOWER) {
 			nodeTeams.put(spawn.getLocation(),spawn.getTeam());
-			if(!cores.containsKey(spawn.getTeam()))
+			if(!cores.containsKey(spawn.getTeam())) {
 				cores.put(spawn.getTeam(),spawn);
+				coreLocs.put(spawn.getTeam(),spawn.getLocation());
+			}
 			recomputeConnected();
 		}
         return spawn;

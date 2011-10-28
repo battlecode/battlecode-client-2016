@@ -92,8 +92,8 @@ public final class BufferedMatch {
 				listener.headerReceived(this);
 			}
 		}
-		deltas = new ArrayList<RoundDelta>();
-		stats  = new ArrayList<RoundStats>();
+		deltas = new Vector<RoundDelta>();
+		stats  = new Vector<RoundStats>();
 		while (true) {
 			try {
 				obj = proxy.readObject();
