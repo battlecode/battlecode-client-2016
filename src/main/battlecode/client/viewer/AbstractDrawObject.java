@@ -62,8 +62,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
                 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
         turnedOn = copy.turnedOn;
-        broadcastRadius = copy.broadcastRadius;
-        broadcastRadiusSq = copy.broadcastRadiusSq;
 		loaded = copy.loaded;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
@@ -96,8 +94,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
-    protected int broadcastRadius = 0;
-    protected int broadcastRadiusSq = 0;
+    protected final int broadcastRadius = (int)Math.round(Math.sqrt(GameConstants.BROADCAST_RADIUS_SQUARED));
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
 	protected int robotID;
@@ -140,13 +137,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public int broadcastRadius() {
         return broadcastRadius;
-    }
-
-    public void updateBroadcastRadius(int radiusSq) {
-        if (radiusSq > broadcastRadiusSq) {
-            broadcastRadiusSq = radiusSq;
-            broadcastRadius = (int) Math.round(Math.sqrt(broadcastRadiusSq));
-        }
     }
 
     public RobotType getType() {

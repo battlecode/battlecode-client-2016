@@ -292,7 +292,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
     public void visitBroadcastSignal(BroadcastSignal s) {
         getRobot(s.getRobotID()).setBroadcast();
-        
     }
 
     public void visitDeathSignal(DeathSignal s) {
