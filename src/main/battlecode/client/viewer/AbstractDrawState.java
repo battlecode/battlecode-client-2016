@@ -116,9 +116,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		}
 
 		public void colorLinks() {
-			for(Link l: links) {
-				for(int i=0;i<2;i++)
-					l.connected[i] = connected[i].contains(l.to) && connected[i].contains(l.from);
+			
+			for(int i=0;i<2;i++) {
+				Team tm = Team.values()[i];
+				for(Link l: links) {
+					boolean tConn = team(l.to)==tm && connected[i].contains(l.to);
+					boolean fConn = team(l.from)==tm && connected[i].contains(l.from);
+					l.connected[i] = tConn || fConn; 
+				}
 			}
 		}
 
@@ -153,6 +158,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
         chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
+		nodeTeams = new HashMap<MapLocation,Team>(src.nodeTeams);
+	
 		neighbors = src.neighbors;
 		coreLocs = src.coreLocs;
 

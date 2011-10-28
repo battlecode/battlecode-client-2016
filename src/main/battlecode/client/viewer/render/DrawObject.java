@@ -333,7 +333,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     }
 
 
-                    //g2.setStroke(mediumStroke);
+                    g2.setStroke(mediumStroke);
                     g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                             targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
                     //}
