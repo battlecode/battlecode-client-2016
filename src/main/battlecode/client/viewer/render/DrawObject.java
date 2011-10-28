@@ -216,7 +216,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         } else {
 
 			boolean showEnergon = RenderConfiguration.showEnergon() || drawOutline;
-			boolean showFlux = (RenderConfiguration.showFlux() || drawOutline) && getType()!=RobotType.POWER_NODE;
+			boolean showFlux = (RenderConfiguration.showFlux() || drawOutline) && getType()!=RobotType.TOWER;
 
             if (showEnergon) {
                 Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
