@@ -28,9 +28,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
     protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
-	protected Map<Team,DrawObject> cores = new EnumMap<Team,DrawObject>(Team.class);
-	// We need coreLocs so we don't get a NullPointerException on the last turn
-	// when one of the cores has died
+	protected int [] coreIDs = new int [2];
 	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
     protected static MapLocation origin = null;
     protected GameMap gameMap;
@@ -150,15 +148,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
         }
-		if(src.cores.get(Team.A)!=null)
-			cores.put(Team.A,airUnits.get(src.cores.get(Team.A).getID()));
-		else
-			cores.remove(Team.A);
-		if(src.cores.get(Team.B)!=null)
-			cores.put(Team.B,airUnits.get(src.cores.get(Team.B).getID()));
-		else
-			cores.remove(Team.B);
-        stats = src.stats;
+        coreIDs = src.coreIDs;
+		stats = src.stats;
         chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
         chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
@@ -191,7 +182,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	}
 
 	public DrawObject getPowerCore(Team t) {
-		return cores.get(t);
+		int id = coreIDs[t.ordinal()];
+		if(id!=0)
+			return getRobot(id);
+		else
+			return null;
 	}
 
     protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
@@ -405,8 +400,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
 		if(spawn.getType()==RobotType.TOWER) {
 			nodeTeams.put(spawn.getLocation(),spawn.getTeam());
-			if(!cores.containsKey(spawn.getTeam())) {
-				cores.put(spawn.getTeam(),spawn);
+			if(!coreLocs.containsKey(spawn.getTeam())) {
+				coreIDs[spawn.getTeam().ordinal()]=spawn.getID();
 				coreLocs.put(spawn.getTeam(),spawn.getLocation());
 			}
 			recomputeConnected();
