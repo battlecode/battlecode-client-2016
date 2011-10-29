@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -55,6 +56,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public static final AbstractAnimation.AnimationType[] postDrawOrder = new AbstractAnimation.AnimationType[]{MORTAR_ATTACK, MORTAR_EXPLOSION, ENERGON_TRANSFER};
     private int teleportRounds;
     private MapLocation teleportLoc;
+	private final double scorcherRadius = Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
 
     public DrawObject(RobotType type, Team team, int id) {
         super(type, team, id);
@@ -309,35 +311,32 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     private void drawAction(Graphics2D g2) {
-        if (attackAction != null) {
-            switch (attackAction) {
-                case ATTACKING:
-                    BufferedImage target;
-                    if (getTeam() == Team.A) {
-                        target = crosshair.image;
-                    } else {
-                        target = crosshairBlue.image;
-                    }
-                    if (target != null) {
-                        AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.getX(), targetLoc.getY());
-                        trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
-                        g2.drawImage(target, trans, null);
-                    }
-                    // it's easier to see what is being attacked if we draw
-                    // the crosshair in addition to the cannonball
-                    //if (info.type != RobotType.CHAINER) {
-                    if (getTeam() == Team.A) {
-                        g2.setColor(Color.RED);
-                    } else {
-                        g2.setColor(Color.BLUE);
-                    }
+        if (roundsUntilAttackIdle>0) {
+			if (getTeam() == Team.A) {
+            	g2.setColor(Color.RED);
+            } else {
+            	g2.setColor(Color.BLUE);
+            }
+            g2.setStroke(mediumStroke);
+			if(targetLoc==null) {
+				// scorcher
+				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,dir.ordinal()*(-45),180,Arc2D.PIE));
+			}
+			else {
+                BufferedImage target;
+                if (getTeam() == Team.A) {
+                    target = crosshair.image;
+                } else {
+                    target = crosshairBlue.image;
+                }
+                if (target != null) {
+                    AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.getX(), targetLoc.getY());
+                    trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+                    g2.drawImage(target, trans, null);
+                }
 
-
-                    g2.setStroke(mediumStroke);
-                    g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
-                            targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
-                    //}
-                    break;
+                g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
+                        targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
             }
         }
 
