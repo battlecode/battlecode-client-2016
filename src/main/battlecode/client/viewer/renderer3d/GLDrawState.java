@@ -564,32 +564,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         // draw the flux deposits
         gl.glDisable(GL.GL_TEXTURE_2D);
-        for (FluxDepositState entry : fluxDeposits.values()) {
-            float fx = entry.getLocation().getX() - origin.getX() + 0.5f;
-            float fy = entry.getLocation().getY() - origin.getY() + 0.5f;
-            float scalar = 0;
-            if (entry.getRoundsAvailable() >= 0) {
-                scalar = (float) Math.sqrt(Math.max(0, (float) entry.getRoundsAvailable()) / GameConstants.MINE_ROUNDS);
-                gl.glColor3f((1.f - scalar), scalar, 0.f);
-            } else {
-                scalar = (float) Math.max(GameConstants.MINE_DEPLETED_RESOURCES / GameConstants.MINE_RESOURCES,
-                        (GameConstants.MINE_RESOURCES + (float) entry.getRoundsAvailable() * 0.01 / GameConstants.MINE_DEPLETION_RATE) / GameConstants.MINE_RESOURCES);
-                gl.glColor3f(scalar, 0.f, 0.f);
-            }
-//            if (entry.getTeam() == Team.A) {
-//                gl.glColor3f(scalar, 0.f, 0.f);
-//            } else if (entry.getTeam() == Team.B) {
-//                gl.glColor3f(0.f, 0.f, scalar);
-//            } else {
-//            gl.glColor3f((1.f - scalar) * 0.5f, scalar, 0.f);
-//            }
-
-            gl.glPushMatrix();
-            gl.glTranslatef(fx, map.getTerrainHeight(fx, fy), fy);
-            glu.gluSphere(quadric, 0.5, 5, 5);
-            gl.glPopMatrix();
-        }
-
+        
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glEnable(GL.GL_BLEND);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
