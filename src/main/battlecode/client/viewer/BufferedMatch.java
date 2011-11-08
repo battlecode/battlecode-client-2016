@@ -22,9 +22,8 @@ public final class BufferedMatch {
 	public String teamB = null;
 	private String[] mapNames = null;
 
-	private List<RoundDelta> deltas;
-	private List<RoundStats> stats;
-	private int roundsAvailable = 0;
+	private List<RoundDelta> deltas = new Vector<RoundDelta>();
+	private List<RoundStats> stats = new Vector<RoundStats>();
 	private List<Signal> currentBreak = null;
 	private boolean paused = false;
 
@@ -48,13 +47,12 @@ public final class BufferedMatch {
 	}
 
 	public int getRoundsAvailable() {
-		return roundsAvailable;
+		return Math.min(deltas.size(),stats.size()); 
 	}
   
 	public RoundDelta getRound(int round) {
-		if (deltas != null && round < roundsAvailable) {
+		if(round < deltas.size())
 			return deltas.get(round);
-		}
 		return null;
 	}
 
@@ -65,7 +63,7 @@ public final class BufferedMatch {
 	public List<Signal> getDebugSignals(int round) {
 		if (deltas != null) {
 			synchronized(deltas) {
-				if (round == roundsAvailable) return currentBreak;
+				if (round == deltas.size()) return currentBreak;
 			}
 		}
 		return null;
@@ -92,14 +90,14 @@ public final class BufferedMatch {
 				listener.headerReceived(this);
 			}
 		}
-		deltas = new Vector<RoundDelta>();
-		stats  = new Vector<RoundStats>();
+		deltas.clear();
+		stats.clear();
 		while (true) {
 			try {
 				obj = proxy.readObject();
 			}
 			catch (EOFException e) {
-				System.err.println("Unexpected end of line at round " + roundsAvailable);
+				System.err.println("Unexpected end of line at round " + deltas.size());
 				return;
 			}
 			if (obj instanceof Notification) {
@@ -151,11 +149,10 @@ public final class BufferedMatch {
 	}
 
 	private void handleRoundDelta(RoundDelta roundDelta) {
-		assert roundDelta != null: "Null delta at round " + roundsAvailable;
+		assert roundDelta != null: "Null delta at round " + deltas.size();
 		paused = false;
 		if (currentBreak == null) {
 			deltas.add(roundDelta);
-			roundsAvailable++;
 		}
 		else {
 			Signal[] signals = roundDelta.getSignals();
@@ -169,7 +166,6 @@ public final class BufferedMatch {
 			synchronized(deltas) {
 				currentBreak = null;
 				deltas.add(new RoundDelta(merged));
-				roundsAvailable++;
 			}
 		}
 	}
