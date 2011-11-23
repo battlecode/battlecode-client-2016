@@ -443,6 +443,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             getRobot(i).setPower(true);
     }
 
+	public void visitRegenSignal(RegenSignal s) {
+		getRobot(s.robotID).setRegen();
+	}
+
     public void visitTurnOffSignal(TurnOffSignal s) {
         getRobot(s.robotID).setPower(false);
     }

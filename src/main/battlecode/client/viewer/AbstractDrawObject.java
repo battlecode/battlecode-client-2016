@@ -63,6 +63,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
                 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
         turnedOn = copy.turnedOn;
 		loaded = copy.loaded;
+		regen = copy.regen;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
@@ -97,6 +98,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected final int broadcastRadius = (int)Math.round(Math.sqrt(GameConstants.BROADCAST_RADIUS_SQUARED));
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
+	protected int regen = 0;
 	protected int robotID;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
@@ -240,6 +242,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         bytecodesUsed = used;
     }
 
+	public void setRegen() { regen = 2; }
+
     public boolean isAlive() {
         Animation deathAnim = animations.get(AbstractAnimation.AnimationType.DEATH_EXPLOSION);
         return deathAnim == null || deathAnim.isAlive()
@@ -305,6 +309,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         updateDrawLoc();
 
         broadcast = (broadcast << 1) & 0x000FFFFF;
+		if(regen>0) regen--;
         //objectTenure++;
         //if (burnAmount > 0) burnAmount--;
         if (roundsUntilMovementIdle > 0)

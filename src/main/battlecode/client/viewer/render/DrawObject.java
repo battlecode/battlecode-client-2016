@@ -36,6 +36,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final Stroke attackStroke = mediumStroke;
     private static final Color tintTeamA = new Color(1, 0, 0, 0.125f);
     private static final Color tintTeamB = new Color(0, 0, 1, 0.125f);
+	private static final Color regenColor = new Color(0.f,.6f,0.f);
     private static final Stroke outlineStroke = new BasicStroke(0.05f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[]{0.5f, 0.5f}, 0.25f);
     private static final Shape outline = new Rectangle2D.Float(0, 0, 1, 1);
     private static final RescaleOp oneHalf = new RescaleOp(new float[]{1f, 1f, 1f, .5f}, new float[4], null);
@@ -56,7 +57,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public static final AbstractAnimation.AnimationType[] postDrawOrder = new AbstractAnimation.AnimationType[]{MORTAR_ATTACK, MORTAR_EXPLOSION, ENERGON_TRANSFER};
     private int teleportRounds;
     private MapLocation teleportLoc;
-	private final double scorcherRadius = Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+	private static final double scorcherRadius = Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+	private static final double regenRadius = Math.sqrt(RobotType.SCOUT.attackRadiusMaxSquared);
 
     public DrawObject(RobotType type, Team team, int id) {
         super(type, team, id);
@@ -186,6 +188,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     }
                 }
             }
+
+			if(regen > 0 && RenderConfiguration.showSpawnRadii()) {
+				g2.setStroke(broadcastStroke);
+				g2.setColor(regenColor);
+				g2.draw(new Ellipse2D.Double(.5-regenRadius,.5-regenRadius,2*regenRadius,2*regenRadius));
+			}
         }
         g2.setTransform(pushed); // pop
         // these animations shouldn't be drawn in the HUD, and they expect
@@ -204,6 +212,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         // the origin of the Grpahics2D to be this robot's position
         for (AbstractAnimation.AnimationType type : preDrawOrder) {
             if (type.shown() && animations.containsKey(type)) {
+
                 animations.get(type).draw(g2);
             }
         }
