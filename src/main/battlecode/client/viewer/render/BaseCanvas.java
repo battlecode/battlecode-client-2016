@@ -11,6 +11,11 @@ import java.util.Observer;
 
 import javax.swing.*;
 
+import battlecode.client.viewer.BufferedMatch;
+import battlecode.client.viewer.GameStateTimeline;
+import battlecode.engine.signal.Signal;
+import battlecode.world.signal.DeathSignal;
+
 public abstract class BaseCanvas extends JPanel {
 
     protected Runnable spaceBarListener = null;
@@ -52,9 +57,10 @@ public abstract class BaseCanvas extends JPanel {
         }
         if (RenderConfiguration.isTournamentMode()) {
             im.put(KeyStroke.getKeyStroke("SPACE"), "space");
-            //im.put(KeyStroke.getKeyStroke("S"), "toggle");
         }
         im.put(KeyStroke.getKeyStroke("SLASH"), "find");
+		im.put(KeyStroke.getKeyStroke("shift PERIOD"), "searcharchon");
+		im.put(KeyStroke.getKeyStroke("shift COMMA"), "searcharchon");
         getActionMap().put("toggle", new AbstractAction() {
 
             private static final long serialVersionUID = 0; // don't serialize
@@ -101,6 +107,33 @@ public abstract class BaseCanvas extends JPanel {
                 }
             }
         });
+		getActionMap().put("searcharchon", new AbstractAction() {
+
+			private static final long serialVersionUID = 0;
+
+			public void actionPerformed(ActionEvent e) {
+				BaseRenderer renderer = getRenderer();
+				if (renderer != null) {
+					int dt = "<".equals(e.getActionCommand()) ? -1 : 1;
+					GameStateTimeline timeline = renderer.getTimeline();
+					BufferedMatch match = timeline.getMatch();
+					int t;
+					for(t=timeline.getRound()+dt;t>0&&t<=timeline.getNumRounds();t+=dt) {
+						for(Signal s : match.getRound(t-1).getSignals()) {
+							if((s instanceof DeathSignal)) {
+								int id = ((DeathSignal)s).getObjectID();
+								if(id<=100) {
+									timeline.setRound(t);
+									renderer.getDebugState().setFocusAndUpdate(id);
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		});
     }
 
     protected abstract BaseRenderer getRenderer();

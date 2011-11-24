@@ -106,7 +106,7 @@ public class GameRenderer extends BaseRenderer {
     /* (non-Javadoc)
      * @see battlecode.client.viewer.render.BaseRenderer#getTimeline()
      */
-    public GameStateTimeline getTimeline() {
+    public GameStateTimeline<DrawState> getTimeline() {
         return timeline;
     }
 
@@ -127,14 +127,9 @@ public class GameRenderer extends BaseRenderer {
         }
     }
 
-    protected boolean trySkipRounds(int rounds) {
-        int targetRound = timeline.getRound() + rounds;
-        if (targetRound < timeline.getNumRounds()) {
-            timeline.setRound(targetRound);
-            return true;
-        }
-        return false;
-    }
+	public BufferedMatch getMatch() {
+		return match;
+	}
 
     @SuppressWarnings("unchecked")
     private synchronized void processHeader(MatchHeader header) {

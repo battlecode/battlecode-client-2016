@@ -4,6 +4,8 @@ import battlecode.client.viewer.AbstractAnimation;
 import java.awt.Dimension;
 
 import battlecode.client.viewer.AbstractDrawObject;
+import battlecode.client.viewer.AbstractDrawState;
+import battlecode.client.viewer.BufferedMatch;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.GameStateTimeline;
 import battlecode.client.viewer.InfoPanel;
@@ -11,21 +13,17 @@ import battlecode.common.Team;
 
 public abstract class BaseRenderer {
 
-	public abstract GameStateTimeline getTimeline();
+	public abstract GameStateTimeline<? extends AbstractDrawState> getTimeline();
 
 	public abstract void setMatchStarter(Runnable starter);
 
 	public abstract void setCanvasSize(Dimension dim);
-
-	//public abstract void setInfoPanel(InfoPanel panel);
 
 	public abstract void beginIntroCutScene(long targetMillis);
 
 	public abstract void setCutSceneVisible(boolean visible);
 
 	public abstract void fadeOutCutScene();
-
-	//public abstract void doRepaint();
 	
 	public abstract void resetMatches();
 	
@@ -36,6 +34,8 @@ public abstract class BaseRenderer {
 	public abstract void setDebugState(DebugState dbg);
 
 	public abstract DebugState getDebugState();
+
+	//public abstract BufferedMatch getMatch();
 
 	protected void skipRounds(int rounds) {
 		GameStateTimeline timeline = getTimeline();

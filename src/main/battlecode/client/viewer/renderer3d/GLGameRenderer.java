@@ -191,7 +191,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         return fastForward;
     }
 
-    public GameStateTimeline getTimeline() {
+    public GameStateTimeline<GLDrawState> getTimeline() {
         return timeline;
     }
 
