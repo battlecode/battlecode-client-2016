@@ -37,7 +37,10 @@ public abstract class BaseRenderer {
 
 	public abstract DebugState getDebugState();
 
-	protected abstract boolean trySkipRounds(int rounds);
+	protected void skipRounds(int rounds) {
+		GameStateTimeline timeline = getTimeline();
+		timeline.setRound(Math.min(timeline.getRound()+rounds,timeline.getNumRounds()));
+	}
 
 	protected abstract void toggleFastForward();
 
@@ -93,8 +96,7 @@ public abstract class BaseRenderer {
 			toggleFastForward();
 		break;
 		case 'S':
-			// stupid Java compiler gives me a "not a statement" error if I take the if() out
-			if(trySkipRounds(100)||trySkipRounds(50)||trySkipRounds(25));
+			skipRounds(100);
 		break;
 		case 'M':
 			RenderConfiguration.toggleAmbientMusic();
