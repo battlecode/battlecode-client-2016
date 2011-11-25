@@ -81,19 +81,20 @@ public class DrawMap {
         for (int i = 0; i <= mapWidth; i++) for (int j = 0; j <= mapHeight; j++) {
                 byte index = indices[i][j];
                 assert 0 <= index && index < 16;
-                //g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
+                g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
             }
         // find max height
 
+		/*
         for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
                 if (map[i][j].getType() == TerrainTile.VOID)
                     continue;
 
                 float height = 0;
-                g2.setColor(new Color(height, height, height, 0.5f));
+                g2.setColor(new Color(height, height, height, 1.f));
                 g2.fill(new Rectangle(imgSize * i, imgSize * j, imgSize, imgSize));
             }
-
+		*/
 
         // prerender the flux deposits
         // TODO: GET RID OF THIS
@@ -131,126 +132,9 @@ public class DrawMap {
         AffineTransform pushed = g2.getTransform();
         g2.scale(1.0 / scaleSize, 1.0 / scaleSize);
 
+        g2.drawImage(prerender, null, null);
         
-        for (int xi = 0; xi < mapWidth; xi++) {
-            for (int yi = 0; yi < mapHeight; yi++) {
-                float fFlux = 0;
-				float fHeight = ds.getGameMap().getTerrainMatrix()[xi][yi].getHeight()/32.f;
-				float green = fHeight==0.f?0.f:.25f+.75f*fHeight;
-				//lighter version that I didn't like as much
-				//float green = 1.f-(1.f-fHeight)*(1.f-fFlux*fFlux/2.f);
-				float red = green * (1.f - fFlux);
-				//Flash client uses these colors
-				//float green = fHeight * (1.f-fFlux/2.f) + fFlux/2.f;
-				//float red = fHeight * (1.f-fFlux/2.f) + (1.f-fFlux) * fFlux/2.f;
-                g2.setColor(new Color(red, green, red, 1.0f));
-                //g2.setStroke(noStroke);
-                int shift = 0;
-                g2.fill(new Rectangle(imgSize * xi + shift / 2, imgSize * yi + shift / 2, imgSize - shift, imgSize - shift));
-            }
-        }
-        /*
-        // display block heights if needed
-        if (RenderConfiguration.showBlocks() && blockNumberDeltas != null) {
-        renderHeights(g2, blockNumberDeltas);
-        }
-         */
-
-
-
-
-
-
-        //g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, (float) 0.8));
-        //g2.drawImage(prerender, null, null);
-        Polygon hullPoly = new Polygon();
-        MapLocation[][] hulls = ds.getConvexHullsA();
-        g2.setStroke(new BasicStroke(5.0f));
-        for (int i = 0; i < hulls.length; i++) {
-        	hullPoly.reset();
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
-                hullPoly.addPoint(sx* 32 + 16, sy* 32 + 16);
-                
-       //         g2.setColor(new java.awt.Color(100, 0, 0));
-         //       g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            g2.setColor(new java.awt.Color(255,150,0, 180));
-            g2.fill(hullPoly);
-            
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                       ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
-              //  hullPoly.addPoint(sx* 32 + 16, sy* 32 + 16);
-                
-                g2.setColor(new java.awt.Color(100, 0, 0));
-                g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-
-        }
-        
-        
-        
-        hulls = ds.getConvexHullsB();
-        for (int i = 0; i < hulls.length; i++) {
-        	hullPoly.reset();
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
-                hullPoly.addPoint(sx* 32 + 16, sy* 32 + 16);
-                
-            //    g2.setColor(new java.awt.Color(0, 0, 100));
-              //  g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            g2.setColor(new java.awt.Color(0,150,255, 180));
-            g2.fill(hullPoly);
-            
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
-                hullPoly.addPoint(sx* 32 + 16, sy* 32 + 16);
-                
-                g2.setColor(new java.awt.Color(0, 0, 100));
-                g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-
-        }
-
-
-
-
-
-
-        g2.setTransform(pushed);
+		g2.setTransform(pushed);
         if (RenderConfiguration.showGridlines()) {
             g2.setColor(new Color(0.4f, 0.4f, 0.4f, 1.0f));
             g2.setStroke(gridStroke);
