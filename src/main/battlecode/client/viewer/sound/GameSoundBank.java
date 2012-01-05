@@ -19,7 +19,7 @@ public class GameSoundBank {
 		private int fadeTime = 200000;
 		private long repeat;
 		private boolean active = true;
-		
+		private boolean gainSupported = true;		
 		
 
 		private long lastPlayed = Long.MIN_VALUE;
@@ -60,13 +60,19 @@ public class GameSoundBank {
 					
 				}
 				else *///if(){//fade
-					FloatControl level;
-					level = getGainControl(clip);
-					float currentValue = level.getValue();
-					float delta = currentValue-gain;
-					delta /= 2.0f;
+					if(gainSupported) {
+						try {
+							FloatControl level;
+							level = getGainControl(clip);
+							float currentValue = level.getValue();
+							float delta = currentValue-gain;
+							delta /= 2.0f;
 					
-					level.shift(currentValue, currentValue-delta, fadeTime); // linshift
+							level.shift(currentValue, currentValue-delta, fadeTime); // linshift
+						} catch(IllegalArgumentException e) {
+							gainSupported = false;
+						}
+					}
 					
 				
 				//}
@@ -77,9 +83,15 @@ public class GameSoundBank {
 			
 //			if(!active) return;
 			clip.setFramePosition(0);
-			FloatControl level = getGainControl(clip);
-			if(gain <= level.getMinimum()) return;
-			level.setValue(gain);
+			if(gainSupported) {
+				try {
+					FloatControl level = getGainControl(clip);
+					if(gain <= level.getMinimum()) return;
+					level.setValue(gain);
+				} catch(IllegalArgumentException e) {
+					gainSupported = false;
+				}
+			}
 			
 			clip.start();
 			lastPlayed = now;/*
