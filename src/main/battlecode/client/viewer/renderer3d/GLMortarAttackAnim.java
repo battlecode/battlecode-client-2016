@@ -21,8 +21,8 @@ class GLMortarAttackAnim extends GLAnimation {
 		super( 5 );
 		this.src = src;
 		this.dst = dst;
-		dx = dst.getX() - src.getX();
-		dy = dst.getY() - src.getY();
+		dx = dst.x - src.x;
+		dy = dst.y - src.y;
 		ballPos = new Vector3f();
 		counter = 0;
 	}
@@ -30,8 +30,8 @@ class GLMortarAttackAnim extends GLAnimation {
 	/*
 	 * public void draw(Graphics2D g2) { AffineTransform pushed =
 	 * g2.getTransform(); { double frac = (double) roundAge() /
-	 * GameConstants.MORTAR_DELAY_ROUNDS; g2.translate(src.getX() + dx*frac,
-	 * src.getY() + dy*frac - (1 - (2*frac-1)*(2*frac-1)));
+	 * GameConstants.MORTAR_DELAY_ROUNDS; g2.translate(src.x + dx*frac,
+	 * src.y + dy*frac - (1 - (2*frac-1)*(2*frac-1)));
 	 * java.awt.image.BufferedImage shell = mortarShell.image;
 	 * g2.scale(1.0/shell.getWidth(), 1.0/shell.getHeight());
 	 * g2.drawImage(shell, null, null); } g2.setTransform(pushed); }
@@ -57,13 +57,13 @@ class GLMortarAttackAnim extends GLAnimation {
 			q = glu.gluNewQuadric();
 
 		float frac = (float) roundAge() / 5;
-		float srcHeight = map.getMapHeight(src.getX() - origin.getX() + 0.5f,
-				src.getY() - origin.getY() + 0.5f);
-		float dstHeight = map.getMapHeight(dst.getX() - origin.getX() + 0.5f,
-				dst.getY() - origin.getY() + 0.5f);
+		float srcHeight = map.getMapHeight(src.x - origin.x + 0.5f,
+				src.y - origin.y + 0.5f);
+		float dstHeight = map.getMapHeight(dst.x - origin.x + 0.5f,
+				dst.y - origin.y + 0.5f);
 		
-		ballPos.x = (1.0f - frac) * (src.getX()) + frac * (dst.getX()) + 0.5f;
-		ballPos.z = (1.0f - frac) * (src.getY()) + frac * (dst.getY()) + 0.5f;
+		ballPos.x = (1.0f - frac) * (src.x) + frac * (dst.x) + 0.5f;
+		ballPos.z = (1.0f - frac) * (src.y) + frac * (dst.y) + 0.5f;
 		final float m = Math.max(srcHeight, dstHeight) + 4;
 		final float a = 2 * dstHeight + 2 * srcHeight - 2 * m;
 		final float b = 2 * m - dstHeight - 3 * srcHeight;

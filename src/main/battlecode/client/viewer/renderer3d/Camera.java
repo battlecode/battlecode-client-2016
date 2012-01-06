@@ -435,7 +435,7 @@ public class Camera implements MouseMotionListener, MouseInputListener, MouseWhe
 			delta.sub(position, target);
 			
 			// if we move down zoom out
-			if(me.getY() > lastPos.y)
+			if(me.getY() > lastPos.getY())
 				delta.scale(1.05f);
 			else if(me.getY() < lastPos.y)
 				delta.scale(0.95f);
@@ -502,10 +502,10 @@ public class Camera implements MouseMotionListener, MouseInputListener, MouseWhe
 	 */
 	private Pair<Vector3f, Float> arcballRotate(Point s, Point e) {
 		// compute offsets from center of drawing area
-		double sx = s.getX() - windowWidth / 2.0;
-		double sy = s.getY() - windowHeight / 2.0;
-		double ex = e.getX() - windowWidth / 2.0;
-		double ey = e.getY() - windowHeight / 2.0;
+		double sx = s.x - windowWidth / 2.0;
+		double sy = s.y - windowHeight / 2.0;
+		double ex = e.x - windowWidth / 2.0;
+		double ey = e.y - windowHeight / 2.0;
 
 		// y axis should point the other way
 		sy = -sy;

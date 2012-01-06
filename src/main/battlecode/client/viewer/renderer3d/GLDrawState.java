@@ -582,8 +582,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             int id = entry.getKey();
             GLDrawObject obj = entry.getValue();
 
-            float oriX = origin.getX();
-            float oriY = origin.getY();
+            float oriX = origin.x;
+            float oriY = origin.y;
 
             float x = obj.getDrawX() - oriX;
             float y = obj.getDrawY() - oriY;
@@ -625,7 +625,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
                     float srcZ = map.getTerrainHeight(x, y);
 
-                    float destZ = map.getTerrainHeight((frontSquare.getX() - oriX), (frontSquare.getY() - oriY));
+                    float destZ = map.getTerrainHeight((frontSquare.x - oriX), (frontSquare.y - oriY));
                     float deltaZ = (destZ - srcZ);
 
                     actualZ = srcZ + distFrac * deltaZ;
@@ -669,9 +669,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 //float distToTarget = (float)Math.sqrt(obj.getLocation().distanceSquaredTo(dstSquare));
 
                 // direction delta
-                float squareDeltaX = dstSquare.getX() - obj.getLocation().getX();
+                float squareDeltaX = dstSquare.x - obj.getLocation().x;
                 //squareDeltaX /= 4;
-                float squareDeltaY = dstSquare.getY() - obj.getLocation().getY();
+                float squareDeltaY = dstSquare.y - obj.getLocation().y;
                 //squareDeltaY /= 4;
 
                 
@@ -793,8 +793,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 if (tex != null) {*/
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
-                float tx = target.getX() - origin.getX();
-                float ty = target.getY() - origin.getY();
+                float tx = target.x - origin.x;
+                float ty = target.y - origin.y;
                 float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
                 float deltax = tx - x;
                 float deltay = ty - y;
@@ -997,7 +997,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glPushMatrix();
         gl.glColor4f(1.0f, 1.0f, 1.0f, 0.6f);
         gl.glTranslatef(0.0f, 2.0f, 0.0f);
-        gl.glTranslatef(awesomePoint.x - origin.getX(), 0.0f, awesomePoint.y - origin.getY());
+        gl.glTranslatef(awesomePoint.x - origin.x, 0.0f, awesomePoint.y - origin.y);
         gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
         glu.gluDisk(quadric, 0, this.radius, 16, 1);
         gl.glPopMatrix();
@@ -1006,13 +1006,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glDisable(GL.GL_TEXTURE_2D);
 
         // draw explosions
-        gl.glTranslatef(-origin.getX(), 0.0f, -origin.getY());
+        gl.glTranslatef(-origin.x, 0.0f, -origin.y);
         for (Map.Entry<Integer, GLDrawObject> entry : getDrawableSet()) {
             int id = entry.getKey();
             GLDrawObject obj = entry.getValue();
 
-            float x = obj.getDrawX() - origin.getX();
-            float y = obj.getDrawY() - origin.getY();
+            float x = obj.getDrawX() - origin.x;
+            float y = obj.getDrawY() - origin.y;
 
             gl.glPushMatrix();
             // are we flying or not
@@ -1036,9 +1036,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             if (obj.getMortarExplosionAnim() != null && obj.getMortarAttackTarget() != null) {
                 MapLocation tar = obj.getMortarAttackTarget();
                 gl.glPushMatrix();
-                float tx = tar.getX() - origin.getX() + 0.5f;
-                float ty = tar.getY() - origin.getY() + 0.5f;
-                gl.glTranslatef(tar.getX(), map.getTerrainHeight(tx, ty), tar.getY());
+                float tx = tar.x - origin.x + 0.5f;
+                float ty = tar.y - origin.y + 0.5f;
+                gl.glTranslatef(tar.x, map.getTerrainHeight(tx, ty), tar.y);
                 obj.getMortarExplosionAnim().draw(gl, glu);
                 gl.glPopMatrix();
             }
@@ -1074,8 +1074,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // set the object id as the gl name
             gl.glLoadName(id);
 
-            float x = obj.getDrawX() - origin.getX();
-            float y = obj.getDrawY() - origin.getY();
+            float x = obj.getDrawX() - origin.x;
+            float y = obj.getDrawY() - origin.y;
 
             gl.glPushMatrix();
             gl.glTranslatef(x + 0.5f, 0.0f, y + 0.5f);

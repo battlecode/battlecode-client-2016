@@ -150,11 +150,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     public float getDrawX() {
-        return loc.getX() + drawX;
+        return loc.x + drawX;
     }
 
     public float getDrawY() {
-        return loc.getY() + drawY;
+        return loc.y + drawY;
     }
 
     public MapLocation getLocation() {

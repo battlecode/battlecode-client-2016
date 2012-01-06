@@ -18,16 +18,16 @@ class MortarAttackAnim extends Animation {
         super(5);
         this.src = src;
         this.dst = dst;
-        dx = dst.getX() - src.getX();
-        dy = dst.getY() - src.getY();
+        dx = dst.x - src.x;
+        dy = dst.y - src.y;
     }
 
     public void draw(Graphics2D g2) {
         AffineTransform pushed = g2.getTransform();
         {
             double frac = (double) roundAge() / 5;
-            g2.translate(src.getX() + dx * frac,
-                    src.getY() + dy * frac - (1 - (2 * frac - 1) * (2 * frac - 1)));
+            g2.translate(src.x + dx * frac,
+                    src.y + dy * frac - (1 - (2 * frac - 1) * (2 * frac - 1)));
             java.awt.image.BufferedImage shell = mortarShell.image;
             g2.scale(1.0 / shell.getWidth(), 1.0 / shell.getHeight());
             g2.drawImage(shell, null, null);

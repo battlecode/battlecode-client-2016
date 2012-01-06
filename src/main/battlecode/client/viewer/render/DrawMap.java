@@ -103,8 +103,8 @@ public class DrawMap {
         MapLocation origin = m.getMapOrigin();
         for(int i = 0; i < deposits.length; ++i) {
         MapLocation l = deposits[i].getLocation();
-        int x = l.getX() - origin.getX();
-        int y = l.getY() - origin.getY();
+        int x = l.x - origin.x;
+        int y = l.y - origin.y;
         g2.setColor(new Color(0.f, 1.0f, 0.f, 1.0f));
         g2.fillOval(x * imgSize, y * imgSize, imgSize, imgSize);
         }*/

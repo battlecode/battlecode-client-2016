@@ -52,7 +52,7 @@ class ExplosionAnim extends Animation {
 			java.awt.image.BufferedImage img = ir.getResource(frame, path).image;
 			AffineTransform pushed = g2.getTransform(); {
 				if (loc != null) {
-					g2.translate(loc.getX(), loc.getY());
+					g2.translate(loc.x, loc.y);
 				}
 				g2.translate(-0.5*(size - 1), -0.5*(size - 1));
 				g2.scale(size/img.getWidth(), size/img.getHeight());

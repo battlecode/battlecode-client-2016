@@ -788,10 +788,10 @@ public class GLDrawMap {
             for (int j = 0; j < hulls[i].length; j++) {
                 MapLocation start = hulls[i][j];
                 MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
+                int sx = start.x - ds.getGameMap().getMapOrigin().x,
+                        sy = start.y - ds.getGameMap().getMapOrigin().y,
+                        ex = end.x - ds.getGameMap().getMapOrigin().x,
+                        ey = end.y - ds.getGameMap().getMapOrigin().y;
 
                 gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
                 //  g2.setColor(new java.awt.Color(255, 150, 0));
@@ -810,10 +810,10 @@ public class GLDrawMap {
             for (int j = 0; j < hulls[i].length; j++) {
                 MapLocation start = hulls[i][j];
                 MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        sy = start.getY() - ds.getGameMap().getMapOrigin().getY(),
-                        ex = end.getX() - ds.getGameMap().getMapOrigin().getX(),
-                        ey = end.getY() - ds.getGameMap().getMapOrigin().getY();
+                int sx = start.x - ds.getGameMap().getMapOrigin().x,
+                        sy = start.y - ds.getGameMap().getMapOrigin().y,
+                        ex = end.x - ds.getGameMap().getMapOrigin().x,
+                        ey = end.y - ds.getGameMap().getMapOrigin().y;
 
                 gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
                 //  g2.setColor(new java.awt.Color(255, 150, 0));

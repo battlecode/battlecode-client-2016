@@ -23,8 +23,8 @@ class EnergonTransferAnim extends Animation {
         this.target = target;
         this.amount = amount;
         float maxWidth = 0.75f * amount / (amount + 20) + 0.25f;
-        float Dx = (target.getX() - src.getDrawX());
-        float Dy = (target.getY() - src.getDrawY());
+        float Dx = (target.x - src.getDrawX());
+        float Dy = (target.y - src.getDrawY());
         float len = (float) (Math.hypot(Dx, Dy));
         if (len < 0.001f) len = 1;
         dx = Dx / len * maxWidth;
@@ -42,8 +42,8 @@ class EnergonTransferAnim extends Animation {
         polygon.moveTo(src.getDrawX() + 0.5f, src.getDrawY() + 0.5f);
         float width =  Math.min(roundsToLive, lifetime - roundsToLive) / (float)lifetime;
         
-        float drawX = target.getX();
-        float drawY = target.getY();
+        float drawX = target.x;
+        float drawY = target.y;
         polygon.lineTo(drawX + 0.5f - dx * width,
                 drawY + 0.5f - dy * width);
         polygon.lineTo(drawX + 0.5f + dx * width,

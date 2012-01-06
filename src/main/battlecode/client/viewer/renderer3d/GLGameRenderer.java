@@ -379,7 +379,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     g2.translate(unitHUDwidth, 0);
     //drawMap.draw(g2);
     g2.clip(clipRect);
-    g2.translate(-origin.getX(), -origin.getY());
+    g2.translate(-origin.x, -origin.y);
     if (isGraphicsStable) {
     RenderConfiguration.getInstance()
     .updateMapTransform(g2.getTransform());
@@ -552,8 +552,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         // look at awesome point
         Vector2f awesomePoint = ds.getAwesomePoint();
         if (/*timeline.getRound() % 10 == 0 &&*/awesomePoint != null) {
-            float ax = awesomePoint.x - origin.getX() + 0.5f;
-            float ay = awesomePoint.y - origin.getY() + 0.5f;
+            float ax = awesomePoint.x - origin.x + 0.5f;
+            float ay = awesomePoint.y - origin.y + 0.5f;
             cam.setAutocamTarget(ax, 3.2f, ay, ds.getAwesomeRadius());
             // using getTerrainHeight causes excessive jitter
             //cam.setAutocamTarget(ax, drawMap.getTerrainHeight(ax, ay), ay, ds.getAwesomeRadius());

@@ -167,8 +167,8 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
 			tryPopupMenu(e);
 		}
 		if (dragID != -1) {
-			MapLocation loc = new MapLocation(Math.round(targetLoc.getX()+getDX()),
-			                                  Math.round(targetLoc.getY()+getDY()));
+			MapLocation loc = new MapLocation(Math.round(targetLoc.x+getDX()),
+			                                  Math.round(targetLoc.y+getDY()));
 			if (!loc.equals(targetLoc)) {
 				proxy.writeSignal(new MovementOverrideSignal(targetID, loc));
 			}

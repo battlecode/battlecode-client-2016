@@ -121,8 +121,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         MapLocation loc = obj.getLocation();
         float dx = debug.getDX(), dy = debug.getDY();
         g2.setColor(dragShadow);
-        g2.fill(new Rectangle2D.Float(Math.round(loc.getX() + dx),
-        Math.round(loc.getY() + dy), 1, 1));
+        g2.fill(new Rectangle2D.Float(Math.round(loc.x + dx),
+        Math.round(loc.y + dy), 1, 1));
         AffineTransform pushed = g2.getTransform(); // push
         g2.translate(dx, dy);
         obj.draw(g2, true);

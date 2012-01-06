@@ -43,8 +43,8 @@ class GLEnergonTransferAnim extends GLAnimation {
 		this.src = src;
 		this.target = target;
 		this.amount = amount;
-		float Dx  = target.getX() - src.getDrawX();
-		float Dy  = target.getY() - src.getDrawY();
+		float Dx  = target.x - src.getDrawX();
+		float Dy  = target.y - src.getDrawY();
 		float len = (float)Math.hypot(Dx, Dy);
 		this.distance = len;
 		color = isFlux?fluxColor:energonColor;
@@ -65,11 +65,11 @@ class GLEnergonTransferAnim extends GLAnimation {
 		
 		Vector3f toTarget = new Vector3f();
 		
-		float airHeight = GLDrawMap.MAP_SCALE*32;//map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY());
-		toTarget.x = target.getX() - src.getDrawX();
-		toTarget.y = ((targetHeight == RobotLevel.IN_AIR) ? airHeight : map.getTerrainHeight(target.getX() + 0.5f - origin.getX(), target.getY() + 0.5f - origin.getY())) -
-		((targetHeight == RobotLevel.IN_AIR) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.getX(), src.getDrawY() - origin.getY()));
-		toTarget.z = target.getY() - src.getDrawY();
+		float airHeight = GLDrawMap.MAP_SCALE*32;//map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y);
+		toTarget.x = target.x - src.getDrawX();
+		toTarget.y = ((targetHeight == RobotLevel.IN_AIR) ? airHeight : map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y)) -
+		((targetHeight == RobotLevel.IN_AIR) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.x, src.getDrawY() - origin.y));
+		toTarget.z = target.y - src.getDrawY();
 		float time = Math.min(roundsToLive, lifetime-roundsToLive)/lifetime;
 
 		gl.glLineWidth(8.0f * time);

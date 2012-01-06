@@ -255,7 +255,7 @@ public class GameRenderer extends BaseRenderer {
             g2.translate(unitHUDwidth * 2, 0);
             drawMap.draw(g2, ds);
             g2.clip(clipRect);
-            g2.translate(-origin.getX(), -origin.getY());
+            g2.translate(-origin.x, -origin.y);
             if (isGraphicsStable) {
                 RenderConfiguration.getInstance().updateMapTransform(g2.getTransform());
             }

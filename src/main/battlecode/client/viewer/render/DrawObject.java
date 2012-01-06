@@ -110,7 +110,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	public void drawRangeHatch(Graphics2D g2) {
 		AffineTransform pushed = g2.getTransform();
 		{
-			g2.translate(loc.getX(), loc.getY());
+			g2.translate(loc.x, loc.y);
 			try {
 				BufferedImage sensorImg = hatchSensor.image;
 				BufferedImage attackImg = hatchAttack.image;
@@ -142,8 +142,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     private boolean inAngleRange(int dx, int dy, double cosHalfTheta) {
         MapLocation dirVec = origin.add(dir);
-        int a = dirVec.getX();
-        int b = dirVec.getY();
+        int a = dirVec.x;
+        int b = dirVec.y;
         int dotProd = a * dx + b * dy;
         if (dotProd < 0) {
             if (cosHalfTheta > 0) {
@@ -286,9 +286,9 @@ class DrawObject extends AbstractDrawObject<Animation> {
                             BufferedImage im2 = oneHalf.filter(image, null);
                             g2.drawImage(im2, trans, null);
                             if (RenderConfiguration.showTeleportGhosts() && !isHUD) {
-                                g2.translate(teleportLoc.getX() - loc.getX(), teleportLoc.getY() - loc.getY());
+                                g2.translate(teleportLoc.x - loc.x, teleportLoc.y - loc.y);
                                 g2.drawImage(im2, trans, null);
-                                g2.translate(loc.getX() - teleportLoc.getX(), loc.getY() - teleportLoc.getY());
+                                g2.translate(loc.x - teleportLoc.x, loc.y - teleportLoc.y);
                             }
                         } else {
                             g2.drawImage(image, trans, null);
@@ -339,13 +339,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     target = crosshairBlue.image;
                 }
                 if (target != null) {
-                    AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.getX(), targetLoc.getY());
+                    AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.x, targetLoc.y);
                     trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
                     g2.drawImage(target, trans, null);
                 }
 
                 g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
-                        targetLoc.getX() + 0.5, targetLoc.getY() + 0.5));
+                        targetLoc.x + 0.5, targetLoc.y + 0.5));
             }
         }
 
