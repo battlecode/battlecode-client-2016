@@ -159,16 +159,16 @@ public class GLDrawMap {
 
 
                 int numLand = 0;
-                if (tiles[i / DENSITY][j / DENSITY].getType() == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY].getType() == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY].getType() == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY].getType() == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
                 }
 
@@ -194,7 +194,7 @@ public class GLDrawMap {
         for(int i = 0; i < mapWidth; i++) {
 
 
-        if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.VOID) {
+        if(tiles[i/DENSITY][j/DENSITY] == TerrainType.VOID) {
         Vector3f wall = new Vector3f();
         wall.x = i + 0.5f;
         wall.z = j + 0.5f;
@@ -367,7 +367,7 @@ public class GLDrawMap {
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 pointHeight = getMapHeight(j, i) * MAP_SCALE;
-                if (map[j / DENSITY][i / DENSITY].getType() == TerrainTile.VOID) {
+                if (map[j / DENSITY][i / DENSITY] == TerrainTile.VOID) {
                 }
                 pts[i][j] = new Vector3f(((float) j + .5f) / DENSITY, pointHeight,
                         ((float) i + .5f) / DENSITY);
@@ -554,7 +554,7 @@ public class GLDrawMap {
 
 
                 //If void, see through to the background.
-				/*if(tiles[i/DENSITY][j/DENSITY].getType() == TerrainType.VOID){
+				/*if(tiles[i/DENSITY][j/DENSITY] == TerrainType.VOID){
                 trueCols[j][i].w = 0.0f;
                 }*/
 
