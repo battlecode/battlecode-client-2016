@@ -9,6 +9,7 @@ import battlecode.client.viewer.BufferedMatch;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.GameStateTimeline;
 import battlecode.client.viewer.InfoPanel;
+import battlecode.client.viewer.MatchPlayer;
 import battlecode.common.Team;
 
 public abstract class BaseRenderer {
@@ -42,7 +43,9 @@ public abstract class BaseRenderer {
 		timeline.setRound(Math.min(timeline.getRound()+rounds,timeline.getNumRounds()));
 	}
 
-	protected abstract void toggleFastForward();
+	protected final void toggleFastForward() {
+		MatchPlayer.getCurrent().toggleFastForward();
+	}
 
 	@SuppressWarnings("empty")
 	public void handleAction(char actionCommand) {

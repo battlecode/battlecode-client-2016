@@ -55,8 +55,10 @@ public class MatchPlayer implements Observer, ActionListener {
     private int stepSize = 1;
     // value that determines the delay in ticks between timer ticks
     private volatile static MatchPlayer currentPlayer = null;
-    public static final int DEFAULT_TIME_DELTA = 15000000;
-    private int timeDeltaMax = DEFAULT_TIME_DELTA;
+    public static final int DEFAULT_TIME_DELTA = 15;
+
+	private int delta = DEFAULT_TIME_DELTA;
+	private boolean fastForward = false; 
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
             DebugProxy dp, boolean lockstepChoice) {
@@ -82,7 +84,8 @@ public class MatchPlayer implements Observer, ActionListener {
             doStep(Integer.MAX_VALUE);
             runSpeed = 1;
         }
-        timer = new javax.swing.Timer(DEFAULT_TIME_DELTA / 1000000, new ActionListener() {
+
+        timer = new javax.swing.Timer(delta, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 timerTick();
@@ -93,6 +96,17 @@ public class MatchPlayer implements Observer, ActionListener {
         // set as the current latest player
         currentPlayer = this;
     }
+
+	public void toggleFastForward() {
+		if(fastForward) {
+			fastForward=false;
+			timer.setDelay(delta);
+		}
+		else {
+			fastForward=true;
+			timer.setDelay(0);
+		}
+	}
 
     // get the latest match player
     public static MatchPlayer getCurrent() {
@@ -114,8 +128,9 @@ public class MatchPlayer implements Observer, ActionListener {
 
     // set the number of ticks before a round switches
     public void setTimeDelta(int max) {
-        timer.setDelay(max / 1000000);
-        //timeDeltaMax = max;
+		delta = max;
+		if(!fastForward)
+        	timer.setDelay(delta);
     }
 
     private void requestRounds() {

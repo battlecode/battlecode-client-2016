@@ -134,8 +134,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     private TextureFile soldierR, soldierB;*/
     // texture cache
     public static TextureResource<String> textureCache = GLGameRenderer.textureCache; //new TextureResource<String>();
-    // fast forwarding
-    private boolean fastforward = false;
     // map origin and block deltas
 
     public GLDrawState() {
@@ -292,15 +290,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         radius = s.radius;
 
         if (mp != null) {
-            final int defaultDelta = 20000000;
+            final int defaultDelta = 20;
             //final int range = defaultDelta * 2 - defaultDelta / 2;
             //int delta = defaultDelta / 2 + (int)(range * Math.log(s.relativeAwesomeness + 1));
 
             float stretchedAwesomeness = (s.relativeAwesomeness - 0.5f) * 4;
             int delta = (int) (defaultDelta * Math.pow(2, stretchedAwesomeness));
-            if (!fastforward) {
-                mp.setTimeDelta(delta);
-            }
+            mp.setTimeDelta(delta);
             /*System.out.println("awesomeness - rel:" + s.relativeAwesomeness +
             " abs: " + s.totalAwesomeness);*/
         }
@@ -558,9 +554,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
      */
     public synchronized void draw(GL gl, GLU glu, GLGameRenderer r, DebugState debug, GLDrawMap map, MapLocation origin) {
         final GLUquadric quadric = glu.gluNewQuadric();
-
-        // are we fast forwarding
-        fastforward = r.isFastForwarding();
 
         // draw the flux deposits
         gl.glDisable(GL.GL_TEXTURE_2D);

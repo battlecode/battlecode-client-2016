@@ -100,7 +100,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     private AffineTransform hudScale;
     private ImageFile teamA, teamB, winnerImage;
     private FramerateTracker fps = new FramerateTracker(30);
-    private boolean fastForward = false;
     private int targetID = -1;
     static private boolean loadedPrefsAlready = false;
     // texture cache
@@ -187,10 +186,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         }
     }
 
-    public boolean isFastForwarding() {
-        return fastForward;
-    }
-
     public GameStateTimeline<GLDrawState> getTimeline() {
         return timeline;
     }
@@ -213,10 +208,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 		return debugState;
 	}
 
-    protected void toggleFastForward() {
-        fastForward = !fastForward;
-    }
-
     protected boolean trySkipRounds(int rounds) {
         int targetRound = timeline.getRound() + rounds;
         if (targetRound < timeline.getNumRounds()) {
@@ -238,12 +229,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         maxRounds = map.getMaxRounds();
         realmaxrounds = map.getStraightMaxRounds();
         ds.setGameMap(map);
-
-        // set default playback speed
-        MatchPlayer mp = MatchPlayer.getCurrent();
-        if (mp != null) {
-            mp.setTimeDelta(MatchPlayer.DEFAULT_TIME_DELTA * 3);
-        }
 
         // create minimap
         //miniMapWindow = new MiniMap(map);
@@ -405,9 +390,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     cutScene.draw(g2);
     }
     //fps.updateFramerate(); renderFramerate();
-    if (fastForward) {
-    timeline.setRound(timeline.getRound() + 1);
-    }
     }*/
     public void beginIntroCutScene(long targetMillis) {
         if (cutScene != null)
@@ -909,9 +891,6 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
 
         //fps.updateFramerate(); renderFramerate();
-        if (fastForward) {
-            timeline.setRound(timeline.getRound() + 1);
-        }
 
         // draw light
 		/*gl.glPointSize(8.0f);

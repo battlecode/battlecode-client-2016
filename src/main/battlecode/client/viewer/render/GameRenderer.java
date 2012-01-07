@@ -34,7 +34,6 @@ public class GameRenderer extends BaseRenderer {
     private AffineTransform hudScale;
     private ImageFile teamA, teamB, winnerImage;
     private FramerateTracker fps = new FramerateTracker(30);
-    private boolean fastForward = false;
     private int targetID = -1;
     static private boolean loadedPrefsAlready = false;
     private final MatchListener ml = new MatchListener() {
@@ -206,10 +205,6 @@ public class GameRenderer extends BaseRenderer {
         return ds.getDrawObject(id);
     }
 
-    protected void toggleFastForward() {
-        fastForward = !fastForward;
-    }
-
     private void drawHUD(Graphics2D g2) {
         if (hudScale == null) {
             return;
@@ -298,9 +293,6 @@ public class GameRenderer extends BaseRenderer {
 			g2.setTransform(pushed);
         }
         //fps.updateFramerate(); renderFramerate();
-        if (fastForward) {
-            timeline.setRound(timeline.getRound() + 1);
-        }
     }
 
     /* (non-Javadoc)
