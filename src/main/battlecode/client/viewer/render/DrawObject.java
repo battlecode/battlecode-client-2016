@@ -37,7 +37,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final Color tintTeamA = new Color(1, 0, 0, 0.125f);
     private static final Color tintTeamB = new Color(0, 0, 1, 0.125f);
 	private static final Color regenColor = new Color(0.f,.6f,0.f);
-    private static final Stroke outlineStroke = new BasicStroke(0.05f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[]{0.5f, 0.5f}, 0.25f);
+    private static final Stroke outlineStroke = new BasicStroke(0.10f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[]{0.5f, 0.5f}, 0.25f);
     private static final Shape outline = new Rectangle2D.Float(0, 0, 1, 1);
     private static final RescaleOp oneHalf = new RescaleOp(new float[]{1f, 1f, 1f, .5f}, new float[4], null);
     private static final ImageResource<RobotInfo> ir = new ImageResource<RobotInfo>();
@@ -303,7 +303,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         }
 
         if (drawOutline) {
-            g2.setColor(Color.MAGENTA);
+            g2.setColor(Color.YELLOW);
             g2.setStroke(outlineStroke);
             g2.draw(outline);
         }
