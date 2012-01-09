@@ -97,9 +97,7 @@ public class InfoPanel extends JPanel {
 	}
 
     private void setBytecodesUsed(int bytecodesUsed) {
-        if (bytecodesUsed > 0) {
-            bytecodes.setText(" Bytecodes used: " + bytecodesUsed + " ");
-        }
+        bytecodes.setText(" Bytecodes used: " + bytecodesUsed + " ");
     }
 
     private void setIndicatorString(int index, String str) {
