@@ -60,7 +60,8 @@ public class MatchDialog extends JDialog implements ActionListener {
 	
 	private final MatchInputFinder finder;
 	
-	
+	private final String version;
+
 	/**
 	 * Represents a user's match type choice.
 	 */
@@ -97,13 +98,13 @@ public class MatchDialog extends JDialog implements ActionListener {
 	private class UpdateTask extends TimerTask {
 		public void run() {
 			try {
-				URL versionURL = new URL("http://battlecode.mit.edu/2010/version");
+				URL versionURL = new URL("http://battlecode.org/contestants/latest/");
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(versionURL.openStream()));
 
 				currentVersion = reader.readLine();
 
-				if (!currentVersion.equals(Config.VERSION)) {
+				if (version!=null&&!currentVersion.equals(version)) {
 					lblVersion.setIcon(new ImageIcon("art/icons/important.png"));
 					lblVersion.setToolTipText(
 							"A new version of BattleCode is available.");
@@ -134,7 +135,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 		
 		// Modal JDialog.
 		super(owner, true);
-		
+	
+		version = Config.version();
+
 		// Initialize stuff.
 		choices = new EnumMap<Choice, JRadioButton>(Choice.class);
 		parameters = new EnumMap<Parameter, JComboBox>(Parameter.class);
@@ -320,8 +323,12 @@ public class MatchDialog extends JDialog implements ActionListener {
 		btnCancel.setActionCommand("cancel");
 		btnCancel.addActionListener(this);
 		add(btnCancel, "6, 22, 8, 22, f, c");
-				
-		lblVersion = new JLabel("v" + Config.VERSION);
+		
+		int idx;
+		if(version==null||(idx=version.indexOf('.'))<0)
+			lblVersion = new JLabel("");
+		else
+			lblVersion = new JLabel("v" + version.substring(idx+1));
 		lblVersion.setFont(lblVersion.getFont().deriveFont(Font.ITALIC));
 		lblVersion.setHorizontalAlignment(JLabel.LEFT);
 		add(lblVersion, "1, 22, 2, 22, f, c");
@@ -329,8 +336,10 @@ public class MatchDialog extends JDialog implements ActionListener {
 		// Restore saved prefs, if any.
 		loadFields();
 	
-		Timer t = new Timer(true);
-		t.schedule(new UpdateTask(), 1000);
+		if(Config.getGlobalConfig().getBoolean("bc.client.check-updates")) {
+			Timer t = new Timer(true);
+			t.schedule(new UpdateTask(), 1000);
+		}
 	}
 	
 	/**
@@ -574,7 +583,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 		// Restore consistent field state.
 		enableFields();
 		
-		this.popupVersion = p.getProperty("lastVersion", "1.1.12");
+		this.popupVersion = p.getProperty("lastVersion", "");
 	}
 	
 	/**
