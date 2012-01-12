@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Timer;
 
-class DrawCutScene {
+import java.util.Collections;
+
+public class DrawCutScene {
 
     public enum Step {
 
@@ -37,10 +39,11 @@ class DrawCutScene {
     private volatile long targetEnd;
     private volatile boolean visible = false;
     private static String teamPath = null;
-    private static final Map<Integer, String> teamNames = new HashMap<Integer,String>();
+    private static Map<Integer, String> teamNames = Collections.emptyMap();
 
-	public static void putTeamName(int n, String s) {
-		teamNames.put(n,s);
+	public static void setTeamNames(Map<Integer,String> names) {
+		System.out.println(names.entrySet().size());
+		teamNames = names;
 	}
 
     public DrawCutScene(float width, float height, String teamA, String teamB) {
