@@ -5,6 +5,8 @@ import battlecode.client.util.ImageFile;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -36,10 +38,16 @@ public class DrawCutScene {
     private final String teamA, teamB;
     private ImageFile imgWinner;
     private String winner;
-    private volatile long targetEnd;
+    private Color winnerColor;
+	private static final Color neutralColor = Color.WHITE;
+	private static final Color backgroundColor = Color.BLACK;
+	private static final Color teamAColor = Color.RED;
+	private static final Color teamBColor = Color.BLUE;
+	private volatile long targetEnd;
     private volatile boolean visible = false;
     private static String teamPath = null;
     private static Map<Integer, String> teamNames = Collections.emptyMap();
+	private Font font;
 
 	public static void setTeamNames(Map<Integer,String> names) {
 		System.out.println(names.entrySet().size());
@@ -61,6 +69,11 @@ public class DrawCutScene {
         	this.teamB = teamNames.get(bid);
 		else
 			this.teamB = teamB;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(48.f);
+		} catch(Exception e) {
+			throw new RuntimeException("Failed to load font",e);
+		}
 		//imgTeamA = new ImageFile(teamA+".png");
 		//imgTeamB = new ImageFile(teamB+".png");
         //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
@@ -76,8 +89,16 @@ public class DrawCutScene {
     }
 
     public void setWinner(Team team) {
-        //imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
-        winner = (team == Team.A ? teamA : teamB);
+		if(team==Team.A) {
+			//imgWinner = imgTeamA
+			winner = teamA;
+			winnerColor = teamAColor;
+		}
+		else {
+			//imgWinner = imgTeamB
+			winner = teamB;
+			winnerColor = teamBColor;
+		}
     }
 
     public void draw(Graphics2D g2) {
@@ -109,7 +130,8 @@ public class DrawCutScene {
     }
 
     private void drawIntro(Graphics2D g2) {
-        AffineTransform pushed = g2.getTransform();
+    	/*
+		AffineTransform pushed = g2.getTransform();
         {
             float until = Math.max((targetEnd - System.currentTimeMillis()) / 1000.0f, 0);
             float horizontalOffset = 2 * rect.width * until;
@@ -139,9 +161,82 @@ public class DrawCutScene {
             g2.drawString(teamB, 0, 0);
         }
         g2.setTransform(pushed);
+		*/
+		AffineTransform pushed = g2.getTransform();
+		g2.setTransform(new AffineTransform());
+		int textHeight = g2.getFontMetrics(font).getHeight();
+		Rectangle rect = g2.getDeviceConfiguration().getBounds();
+		g2.setColor(backgroundColor);
+		g2.fill(rect);
+		DrawText drawText = new DrawText(g2, font);
+		g2.setColor(teamAColor);
+		drawText.drawTwoLine(teamA,rect.getCenterX(),rect.getCenterY()-textHeight,true);
+		g2.setColor(neutralColor);
+		drawText.draw("VS",rect.getCenterX(),rect.getCenterY());
+		g2.setColor(teamBColor);
+		drawText.drawTwoLine(teamB,rect.getCenterX(),rect.getCenterY()+textHeight,false);
+		g2.setTransform(pushed);
     }
 
+	private static class DrawText {
+
+		private final Graphics2D g2;
+		private final Font font;
+		private final FontMetrics metrics;
+		private final FontRenderContext renderContext;
+		private final Rectangle boundingRect;
+
+		public static int findSpaceInMiddle(String s) {
+			int before = s.lastIndexOf(' ',s.length()/2);
+			int after = s.indexOf(' ',s.length()/2);
+			if(before==-1) return after;
+			if(after==-1) return before;
+			return before+after<s.length()?after:before;
+		}
+
+		public DrawText(Graphics2D g2, Font font) {
+			this.g2 = g2;
+			this.font = font;
+			metrics = g2.getFontMetrics(font);
+			renderContext = g2.getFontRenderContext();
+			boundingRect = g2.getDeviceConfiguration().getBounds();
+		}
+
+		public void draw(String s, double centerx, double centery) {
+			draw(s,(float)centerx,(float)centery);
+		}
+		
+		public void draw(String s, float centerx, float centery) {
+			GlyphVector glyphs = font.createGlyphVector(renderContext,s);
+			g2.drawGlyphVector(glyphs,centerx-metrics.stringWidth(s)/2,centery-metrics.getHeight()/2);
+		}
+
+		public void drawTwoLine(String s, double centerx, double centery, boolean up) {
+			drawTwoLine(s,(float)centerx,(float)centery,up);
+		}
+
+		public void drawTwoLine(String s, float centerx, float centery, boolean up) {
+			int twidth = metrics.stringWidth(s), split;
+			if(twidth<boundingRect.getWidth()||(split=findSpaceInMiddle(s))==-1)
+				draw(s,centerx,centery);
+			else {
+				String part1 = s.substring(0,split);
+				String part2 = s.substring(split+1);
+				int height = metrics.getHeight();
+				if(up) {
+					draw(part1,centerx,centery-height);
+					draw(part2,centerx,centery);
+				}
+				else {
+					draw(part1,centerx,centery);
+					draw(part2,centerx,centery+height);
+				}	
+			}
+		}
+	}
+
     private void drawOutro(Graphics2D g2) {
+		/*
         AffineTransform pushed = g2.getTransform();
         {
             fade+=1./60.;
@@ -175,6 +270,19 @@ public class DrawCutScene {
 			g2.scale(2,2);
         }
         g2.setTransform(pushed);
+		*/
+		AffineTransform pushed = g2.getTransform();
+		g2.setTransform(new AffineTransform());
+		int textHeight = g2.getFontMetrics(font).getHeight();
+		Rectangle rect = g2.getDeviceConfiguration().getBounds();
+		g2.setColor(backgroundColor);
+		g2.fill(rect);
+		DrawText drawText = new DrawText(g2, font);
+		g2.setColor(winnerColor);
+		drawText.drawTwoLine(winner,rect.getCenterX(),rect.getCenterY()-textHeight/2,true);
+		g2.setColor(neutralColor);
+		drawText.draw("WINS!",rect.getCenterX(),rect.getCenterY()+textHeight/2);
+		g2.setTransform(pushed);
     }
 
     public void fadeOut() {
