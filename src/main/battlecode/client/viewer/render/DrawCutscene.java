@@ -30,53 +30,36 @@ class DrawCutScene {
     private volatile Timer fadeTimer;
     private static final ImageFile imgVersus = new ImageFile("art/overlay_vs.png");
     private static final ImageFile imgWinnerLabel = new ImageFile("art/overlay_win.png");
-    private final ImageFile imgTeamA, imgTeamB;
+    //private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
     private ImageFile imgWinner;
     private String winner;
     private volatile long targetEnd;
     private volatile boolean visible = false;
     private static String teamPath = null;
-    private static Map<Integer, String> teamNames = null;
+    private static final Map<Integer, String> teamNames = new HashMap<Integer,String>();
+
+	public static void putTeamName(int n, String s) {
+		teamNames.put(n,s);
+	}
 
     public DrawCutScene(float width, float height, String teamA, String teamB) {
-
-        if (teamPath == null)
-            teamPath = System.getProperty("tv.matches") + File.separator + "teams.txt";
-        if (teamNames == null) {
-            System.out.println("Loading team names");
-            teamNames = new HashMap<Integer, String>();
-            try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(teamPath)));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    String[] parts = line.split("\t");
-                    // parts[0] is team number
-                    // parts[1] is team name
-                    try {
-                        teamNames.put(Integer.parseInt(parts[0]), parts[1]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Can't parse team number: " + parts[0]);
-                    }
-                }
-                System.out.println(teamNames);
-            } catch (FileNotFoundException e) {
-                System.out.println("Can't open: " + teamPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
 
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
         int aid = Integer.parseInt(teamA.substring(4,7));
-		this.teamA = teamNames.get(aid);
+		if(teamNames.containsKey(aid))
+			this.teamA = teamNames.get(aid);
+		else
+			this.teamA = teamA;
         int bid = Integer.parseInt(teamB.substring(4,7));
-        this.teamB = teamNames.get(bid);
-		imgTeamA = new ImageFile(teamA+".png");
-		imgTeamB = new ImageFile(teamB+".png");
+		if(teamNames.containsKey(bid))
+        	this.teamB = teamNames.get(bid);
+		else
+			this.teamB = teamB;
+		//imgTeamA = new ImageFile(teamA+".png");
+		//imgTeamB = new ImageFile(teamB+".png");
         //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
         //imgTeamB = new ImageFile("team-names/b/" + teamB + "-l.png");
     }
@@ -90,7 +73,7 @@ class DrawCutScene {
     }
 
     public void setWinner(Team team) {
-        imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
+        //imgWinner = (team == Team.A ? imgTeamA : imgTeamB);
         winner = (team == Team.A ? teamA : teamB);
     }
 
@@ -132,7 +115,7 @@ class DrawCutScene {
 			g2.translate(rect.width / 2 - horizontalOffset - avatarOffset, rect.height / 3);
 			g2.scale(.2,.2);
 			g2.translate(-64,-16);
-            drawImage(imgTeamA.image, g2);
+            //drawImage(imgTeamA.image, g2);
 			g2.translate(64,16);
 			g2.scale(5.,5.);
             g2.setColor(Color.RED);
@@ -146,7 +129,7 @@ class DrawCutScene {
             g2.translate(-(horizontalOffset + avatarOffset), rect.height / 6);
 			g2.scale(.2,.2);
 			g2.translate(-64,-16);
-            drawImage(imgTeamB.image, g2);
+            //drawImage(imgTeamB.image, g2);
 			g2.translate(64,16);
 			g2.scale(5.,5.);
             g2.setColor(Color.BLUE);
