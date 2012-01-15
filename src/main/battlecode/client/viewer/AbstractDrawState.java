@@ -337,6 +337,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
     }
 
+	public void visitTransferFluxSignal(TransferFluxSignal s) {
+		DrawObject from = getRobot(s.fromID);
+		DrawObject to = getRobot(s.toID);
+		from.setFluxTransfer(to,s.amount);
+	}
+
 	public void visitIndicatorStringSignal(IndicatorStringSignal s) {
         if (!RenderConfiguration.isTournamentMode()) {
             getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());

@@ -79,6 +79,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public abstract Animation createMortarAttackAnim(MapLocation target);
 
     public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
+	public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
+
     protected RobotInfo info;
     protected MapLocation loc;
     protected Direction dir;
@@ -268,6 +270,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
         //}
     }
+
+	public void setFluxTransfer(AbstractDrawObject<Animation> target, double amount) {
+		Animation anim = createEnergonTransferAnim(target.getLocation(),target.getType().level,(float)amount,true);
+		animations.put(ENERGON_TRANSFER,anim);
+	}
 
     public void setMoving(boolean isMovingForward) {
         movementAction = ActionType.MOVING;
