@@ -778,64 +778,6 @@ public class GLDrawMap {
             gl.glEnd();
         }
 
-        gl.glEnable(GL.GL_BLEND);
-        gl.glDisable(GL.GL_DEPTH_TEST);
-        MapLocation[][] hulls = ds.getConvexHullsA();
-        for (int i = 0; i < hulls.length; i++) {
-
-            gl.glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-            gl.glBegin(GL.GL_POLYGON);
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.x - ds.getGameMap().getMapOrigin().x,
-                        sy = start.y - ds.getGameMap().getMapOrigin().y,
-                        ex = end.x - ds.getGameMap().getMapOrigin().x,
-                        ey = end.y - ds.getGameMap().getMapOrigin().y;
-
-                gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
-                //  g2.setColor(new java.awt.Color(255, 150, 0));
-                //g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            gl.glEnd();
-
-        }
-        hulls = ds.getConvexHullsB();
-        for (int i = 0; i < hulls.length; i++) {
-
-            gl.glColor4f(0.0f, 0.0f, 1.0f, 0.5f);
-            gl.glBegin(GL.GL_POLYGON);
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.x - ds.getGameMap().getMapOrigin().x,
-                        sy = start.y - ds.getGameMap().getMapOrigin().y,
-                        ex = end.x - ds.getGameMap().getMapOrigin().x,
-                        ey = end.y - ds.getGameMap().getMapOrigin().y;
-
-                gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
-                //  g2.setColor(new java.awt.Color(255, 150, 0));
-                //g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            gl.glEnd();
-
-        }
-        gl.glDisable(GL.GL_BLEND);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        /*
-        // draw the boundaries
-        final String path = "./art/walls/wall.png";
-        if(crateTexture == null && crateTexturePath != null) {
-        crateTexture = GLGameRenderer.textureCache.getResource(crateTexturePath, crateTexturePath).tex;
-        crateTexturePath = null;
-        } else if(crateTexture == null) {
-        crateTexture = GLGameRenderer.textureCache.getResource(path, path).tex;
-        }*/
-
     }
 
     private void drawBox(GL gl) {

@@ -2,10 +2,6 @@ package battlecode.client.viewer.renderer3d;
 
 import java.awt.Color;
 
-
-
-
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -78,94 +74,62 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     // awesomeness signals
     Vector2f awesomePoint = null;
     float radius = 0.0f;
-    //private Map<Integer, DrawUpgrade> upgrades;
-    //private Map<Integer, GLDrawObject> groundUnits;
-    //private Map<Integer, GLDrawObject> airUnits;
-    //private List<GLDrawObject> archonsA;
-    //private List<GLDrawObject> archonsB;
+
     private MapLocation[][] convexHullsA, convexHullsB;
-    // lists to help separate units
-	/*private List<GLDrawObject> archons;
-    private List<GLDrawObject> snipers;
-    private List<GLDrawObject> mortars;
-    private List<GLDrawObject> soldiers;
-    private List<GLDrawObject> scouts;
-    private List<GLDrawObject> bombers;*/
-    // texture paths
+
+    // texture and obj files
     // archon
-    private static final String archonBodyTexPathR = "art/units/NewArchon/Red/villain_1.jpg";
-    private static final String archonBodyTexPathWingR = "art/units/NewArchon/Red/villainWing.jpg";
-    private static final String archonBodyTexPathB = "art/units/NewArchon/Blue/villain_1.jpg";
-    private static final String archonBodyTexPathWingB = "art/units/NewArchon/Blue/villainWing.jpg";
-    // chainer
-    private static final String chainerBodyTexPathR = "art/units/NewChainer/Red/guardbot_MeshShape.jpg";
-    private static final String chainerBodyTexPathB = "art/units/NewChainer/Blue/guardbot_MeshShape.jpg";
-    //  private static final String channelerWingTexPathB = "art/units/channeler/channeler_wing_b.png";
-    // private static final String channelerBodyTexPathR = "art/units/channeler/channeler_body_r.png";
-    // private static final String channelerBodyTexPathB = "art/units/channeler/channeler_body_b.png";
-    // turret
-    private static final String sniperTurretTexPathR = "art/units/NewTurret/Red/tank.jpg";
-    private static final String sniperTurretTexPathB = "art/units/NewTurret/Blue/tank.jpg";
-    //   private static final String sniperTurretTexPathB = "art/units/sniper/sniper_turret_b.png";
-    // private static final String sniperBodyTexPathR = "art/units/sniper/sniper_body_r.png";
-    //private static final String sniperBodyTexPathB = "art/units/sniper/sniper_body_b.png";
-    // wout
-    private static final String woutBodyTexPathR = "art/units/NewWout/Red/wout_Color.jpg";
-    private static final String woutBodyTexPathB = "art/units/NewWout/Blue/wout_Color.jpg";
-    // private static final String scoutBodyTexPathB = "art/units/scout/scout_b.png";
+    private static final OBJFile archonBody = new OBJFile("art/old/units/NewArchon/Low_poly_archon.bcm");
+    private static final String archonBodyTexPathR = "art/old/units/NewArchon/Red/villain_1.jpg";
+    private static final String archonBodyTexPathWingR = "art/old/units/NewArchon/Red/villainWing.jpg";
+    private static final String archonBodyTexPathB = "art/old/units/NewArchon/Blue/villain_1.jpg";
+    private static final String archonBodyTexPathWingB = "art/old/units/NewArchon/Blue/villainWing.jpg";
+    
+    // scorcher
+    private static final OBJFile scorcherBody = new OBJFile("art/old/units/NewChainer/guardbot.bcm");
+    private static final String scorcherBodyTexPathR = "art/old/units/NewChainer/Red/guardbot_MeshShape.jpg";
+    private static final String scorcherBodyTexPathB = "art/old/units/NewChainer/Blue/guardbot_MeshShape.jpg";
+
+    // disrupter
+    private static final OBJFile disrupterBody = new OBJFile("art/old/units/NewTurret/tank.bcm");
+    private static final String disrupterBodyTexPathR = "art/old/units/NewTurret/Red/tank.jpg";
+    private static final String disrupterBodyTexPathB = "art/old/units/NewTurret/Blue/tank.jpg";
+
+    // scout
+    private static final OBJFile scoutBody = new OBJFile("art/old/units/NewWout/wout.bcm");
+    private static final String scoutBodyTexPathR = "art/old/units/NewWout/Red/wout_Color.jpg";
+    private static final String scoutBodyTexPathB = "art/old/units/NewWout/Blue/wout_Color.jpg";
+    
     // soldier
-    private static final String soldierBodyTexPathR = "art/units/NewSoldier/Red/soldior.jpg";//sic
-    private static final String soldierBodyTexPathB = "art/units/NewSoldier/Blue/soldior.jpg";//sic
-    //   private static final String soldierBodyTexPathB = "art/units/soldier/soldier_body_b.png";
-    // worker
-    //   private static final String workerBodyTexPathR = "art/units/worker/worker_body_r.png";
-    // private static final String workerBodyTexPathB = "art/units/worker/worker_body_b.png";
-    /*private static final String workerDroneTexPathR = "art/units/worker/soldier_body_r.png";
-    private static final String workerDroneTexPathB = "art/units/worker/soldier_body_b.png";*/
-    private static final String buildingBodyTexPathR = "art/botBuildings/Red/scifiBuildings.jpg";
-    private static final String buildingBodyTexPathB = "art/botBuildings/Blue/scifiBuildings.jpg";
-    // texture files for the objects
-	/*private TextureFile towerN, towerR, towerB;
-    private TextureFile archonTurretR, archonTurretB, archonBodyR, archonBodyB;
-    private TextureFile mortarTurretR, mortarTurretB, mortarBodyR, mortarBodyB;
-    private TextureFile sniperTurretR, sniperTurretB, sniperBodyR, sinperBodyB;
-    private TextureFile scoutR, scoutB;
-    private TextureFile bomberR, bomberB;
-    private TextureFile soldierR, soldierB;*/
+    private static final OBJFile soldierBody = new OBJFile("art/old/units/NewSoldier/soldier.bcm");
+    private static final String soldierBodyTexPathR = "art/old/units/NewSoldier/Red/soldior.jpg";//sic
+    private static final String soldierBodyTexPathB = "art/old/units/NewSoldier/Blue/soldior.jpg";//sic
+
+    // node
+    private static final OBJFile nodeBody = new OBJFile("art/old/botBuildings/tower.bcm");
+    private static final String nodeBodyTexPathR = "art/old/botBuildings/Red/scifiBuildings.jpg";
+    private static final String nodeBodyTexPathB = "art/old/botBuildings/Blue/scifiBuildings.jpg";
+
+    // power core
+    private static final OBJFile coreBody = new OBJFile("art/old/units/building/building.bcm");
+    private static final String coreBodyTexPathR = "art/old/units/building/tower_r.jpg";
+    private static final String coreBodyTexPathB = "art/old/units/building/tower_b.jpg";
+
+    private static final float MODEL_SCALE = 0.1f;
+    private static final float ARCHON_MODEL_SCALE = 0.07f;
+    
     // texture cache
     public static TextureResource<String> textureCache = GLGameRenderer.textureCache; //new TextureResource<String>();
-    // map origin and block deltas
 
     public GLDrawState() {
-
         groundUnits = new LinkedHashMap<Integer, GLDrawObject>();
         airUnits = new LinkedHashMap<Integer, GLDrawObject>();
-        //archonsA = new ArrayList<GLDrawObject>(4);
-        //archonsB = new ArrayList<GLDrawObject>(4);
-        //upgrades = new HashMap<Integer, DrawUpgrade>();
-        fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
         currentRound = -1;
-        // HACK: from DrawMap update hack
-        /*blockNumber = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++)
-        blockNumber[i][j] = 0;
-        }*/
-        convexHullsA = new MapLocation[0][];
-        convexHullsB = new MapLocation[0][];
-        /*archons = new LinkedList<GLDrawObject>();
-        snipers = new LinkedList<GLDrawObject>();
-        mortars = new LinkedList<GLDrawObject>();
-        soldiers = new LinkedList<GLDrawObject>();
-        scouts = new LinkedList<GLDrawObject>();
-        bombers = new LinkedList<GLDrawObject>();*/
     }
 
     private GLDrawState(GameMap map) {
-
         this();
         this.setGameMap(map);
-        //this.mapMinPoints = map.getMinPoints();
     }
 
     private GLDrawState(GLDrawState clone) {
@@ -185,63 +149,21 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         return awesomePoint;
     }
 
-    public MapLocation[][] getConvexHullsA() {
-        return convexHullsA;
-    }
-
-    public MapLocation[][] getConvexHullsB() {
-        return convexHullsB;
-    }
-
     public float getAwesomeRadius() {
         return radius;
     }
 
-    private void clearAccelerators() {
-        /*	snipers.clear();
-        mortars.clear();
-        soldiers.clear();
-        scouts.clear();
-        bombers.clear();
-        archons.clear();*/
-    }
-
-    private void addAcceleratorUnit(GLDrawObject o) {
-        /*if(o.getType() == RobotType.SNIPER) {
-        snipers.add(o);
-        } else if(o.getType() == RobotType.SOLDIER) {
-        soldiers.add(o);
-        } else if(o.getType() == RobotType.MORTAR) {
-        mortars.add(o);
-        } else if(o.getType() == RobotType.SCOUT) {
-        scouts.add(o);
-        } else if(o.getType() == RobotType.BOMBER) {
-        bombers.add(o);
-        } else if(o.getType() == RobotType.ARCHON) {
-        archons.add(o);
-        }*/
-    }
-
     private synchronized void copyStateFrom(GLDrawState src) {
         groundUnits.clear();
-        //archonsA.clear();
-        //archonsB.clear();
-        clearAccelerators();
         for (Map.Entry<Integer, GLDrawObject> entry : src.groundUnits.entrySet()) {
             GLDrawObject copy = new GLDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
-            addAcceleratorUnit(copy);
+            tryAddArchon(copy);
         }
         airUnits.clear();
         for (Map.Entry<Integer, GLDrawObject> entry : src.airUnits.entrySet()) {
             GLDrawObject copy = new GLDrawObject(entry.getValue());
-            airUnits.put(entry.getKey(), copy);
-            tryAddArchon(copy);
-            addAcceleratorUnit(copy);
-        }
-        fluxDeposits.clear();
-        for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
-            fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
+            airUnits.put(entry.getKey(), copy);            
         }
 
         stats = src.stats;
@@ -251,35 +173,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             this.radius = src.radius;
         }
 
-        // HACK: from DrawMap update hack
-        /*blockNumber = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++) {
-        blockNumber[i][j] = src.blockNumber[i][j];
-        }
-        }*/
-
-        // mapMinPoints = src.mapMinPoints;
-
         if (src.gameMap != null) {
             gameMap = src.gameMap;
         }
         currentRound = src.currentRound;
-        convexHullsA = new MapLocation[src.convexHullsA.length][];
-        if (convexHullsA.length > 0) {
-            for (int i = 0; i < convexHullsA.length; i++) {
-                convexHullsA[i] = new MapLocation[src.convexHullsA[i].length];
-                System.arraycopy(src.convexHullsA[i], 0, convexHullsA[i], 0, convexHullsA[i].length);
-            }
-        }
-
-        convexHullsB = new MapLocation[src.convexHullsB.length][];
-        if (convexHullsB.length > 0) {
-            for (int i = 0; i < convexHullsB.length; i++) {
-                convexHullsB[i] = new MapLocation[src.convexHullsB[i].length];
-                System.arraycopy(src.convexHullsB[i], 0, convexHullsB[i], 0, convexHullsB[i].length);
-            }
-        }
     }
 
     public Void visitAwesomenessSignal(AwesomenessSignal s) {
@@ -307,9 +204,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         this.stats = stats;
     }
 
-    protected void mineFlux(GLDrawObject obj) {
-    }
-
     // we explicitly call super function because it isn't synchronized
     protected synchronized void updateRound() {
         super.updateRound();
@@ -323,35 +217,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
     }
 
-    //public int getMapMinPoints() {
-    //     return mapMinPoints;
-    // }
     private String getAvatarPath(RobotInfo ri) {
         String type = ri.type.toString().toLowerCase();
         return "art/" + type + (ri.team == Team.NEUTRAL ? "0" : (ri.team == Team.A ? "1" : "2")) + ".png";
     }
-    // archon
-    private static final OBJFile archonBody = new OBJFile("art/units/NewArchon/Low_poly_archon.bcm");//NewArchon/archon.obj");
-    //private static final OBJFile archonFluxBurn = new OBJFile("art/units/archon/flux_burn.obj");
-    // chainer
-    private static final OBJFile chainerBody = new OBJFile("art/units/NewChainer/guardbot.bcm");
-    // private static final OBJFile channelerWing = new OBJFile("art/units/channeler/channeler_wing.obj");
-    // turret
-    private static final OBJFile turretBody = new OBJFile("art/units/NewTurret/tank.bcm");
-    // private static final OBJFile sniperTurret = new OBJFile("art/units/sniper/sniper_turret.obj");
-    // wout
-    private static final OBJFile woutBody = new OBJFile("art/units/NewWout/wout.bcm");
-    //private static final OBJFile scoutRotor = new OBJFile("art/units/scout/scout_rotor.bcm");
-    // soldier
-    private static final OBJFile soldierBody = new OBJFile("art/units/NewSoldier/soldier.bcm");
-    // wout?
-//    private static final OBJFile workerBody = new OBJFile("art/units/worker/worker_body.obj");
-    //  private static final OBJFile workerDrone = new OBJFile("art/units/worker/worker_drone.obj");
-    private static final OBJFile towerBody = new OBJFile("art/botBuildings/tower.bcm");
-    private static final OBJFile communicationsBody = new OBJFile("art/botBuildings/communications.bcm");
-    private static final OBJFile processingplantBody = new OBJFile("art/botBuildings/processingplant.bcm");
-    private static final float MODEL_SCALE = 0.1f;
-    private static final float ARCHON_MODEL_SCALE = 0.07f;
+
 
     public void drawArchon(GL gl, GLDrawObject obj) {
         String archonBodyTexPath = (obj.getTeam() == Team.A) ? archonBodyTexPathR : archonBodyTexPathB;
@@ -371,13 +241,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glEnable(GL.GL_BLEND);
     }
 
-    public void drawChainer(GL gl, GLDrawObject obj) {
-
-        // String channelerWingTexPath = (obj.getTeam() == Team.A) ? channelerWingTexPathR : channelerWingTexPathB;
-        String chainerBodyTexPath = (obj.getTeam() == Team.A) ? chainerBodyTexPathR : chainerBodyTexPathB;
-
-        Texture bodyTex = textureCache.getResource(chainerBodyTexPath, chainerBodyTexPath).tex;
-        // Texture wingTex = textureCache.getResource(channelerWingTexPath, channelerWingTexPath).tex;
+    public void drawScorcher(GL gl, GLDrawObject obj) {
+        String scorcherBodyTexPath = (obj.getTeam() == Team.A) ? scorcherBodyTexPathR : scorcherBodyTexPathB;
+        Texture bodyTex = textureCache.getResource(scorcherBodyTexPath, scorcherBodyTexPath).tex;
 
         // translate up to normal level
         gl.glTranslatef(0.0f, 0.1f, 0.0f);
@@ -388,31 +254,15 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         if (bodyTex != null) {
             bodyTex.bind();
         }
-        chainerBody.draw(gl);
-        /*
-        gl.glTranslatef(5000.0f * MODEL_SCALE, 2500.0f * MODEL_SCALE, -7800.0f * MODEL_SCALE);
-        if (wingTex != null)
-        wingTex.bind();
-        channelerWing.draw(gl);
-
-        gl.glTranslatef(-10000.0f * MODEL_SCALE, 0.0f, 0.0f);
-        gl.glScalef(-1.0f, 1.0f, 1.0f);
-        gl.glFrontFace(GL.GL_CW);
-        channelerWing.draw(gl);
-        gl.glFrontFace(GL.GL_CCW);
-         */
+        scorcherBody.draw(gl);
 
         gl.glEnable(GL.GL_BLEND);
 
     }
 
-    public void drawTurret(GL gl, GLDrawObject obj) {
-        String sniperTurretTexPath = (obj.getTeam() == Team.A) ? sniperTurretTexPathR : sniperTurretTexPathB;
-        //  String sniperBodyTexPath = (obj.getTeam() == Team.A) ? sniperBodyTexPathR : sniperBodyTexPathB;
-
-        Texture bodyTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
-        //   Texture turretTex = textureCache.getResource(sniperTurretTexPath, sniperTurretTexPath).tex;
-
+    public void drawdisrupter(GL gl, GLDrawObject obj) {
+        String disrupterBodyTexPath = (obj.getTeam() == Team.A) ? disrupterBodyTexPathR : disrupterBodyTexPathB;
+        Texture bodyTex = textureCache.getResource(disrupterBodyTexPath, disrupterBodyTexPath).tex;
         // translate up to normal level
         gl.glTranslatef(0.0f, 0.1f, 0.0f);
         gl.glDisable(GL.GL_BLEND);
@@ -422,32 +272,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         if (bodyTex != null) {
             bodyTex.bind();
         }
-        turretBody.draw(gl);
-        /*
-        gl.glTranslatef(0.0f, 10000.0f * MODEL_SCALE, 10000.0f * MODEL_SCALE);
-        if (turretTex != null)
-        turretTex.bind();
-        sniperTurret.draw(gl);
+        disrupterBody.draw(gl);
         gl.glEnable(GL.GL_BLEND);
-         */
-        /*} else if (obj.getType() == RobotType.WOUT2XXX) {
-
-        String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
-
-        Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
-
-        if (bodyTex != null)
-        bodyTex.bind();
-        gl.glScalef(2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE, 2.0f * MODEL_SCALE);
-        gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        scoutBody.draw(gl);
-
-        gl.glColor3f(0.0f, 0.0f, 0.0f);
-        gl.glTranslatef(0.0f, 5500.0f * MODEL_SCALE, 0.0f);
-        float time = (System.currentTimeMillis() % 1000) / 1000.0f * 360.0f;
-        gl.glRotatef(time, 0.0f, 1.0f, 0.0f);
-        gl.glScalef(0.5f, 0.5f, 0.5f);
-        scoutRotor.draw(gl);*/
+        
     }
 
     public void drawSoldier(GL gl, GLDrawObject obj) {
@@ -459,18 +286,20 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             bodyTex.bind();
         }
         gl.glTranslatef(-0.1f, 0.1f, 0.0f);
+        gl.glDisable(GL.GL_BLEND);
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         //   gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 
         soldierBody.draw(gl);
+        gl.glEnable(GL.GL_BLEND);
     }
 
-    public void drawWout(GL gl, GLDrawObject obj) {
+    public void drawScout(GL gl, GLDrawObject obj) {
 
         // now draw the worker
-        String woutBodyTexPath = (obj.getTeam() == Team.A) ? woutBodyTexPathR : woutBodyTexPathB;
+        String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
 
-        Texture bodyTex = textureCache.getResource(woutBodyTexPath, woutBodyTexPath).tex;
+        Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
 
         if (bodyTex != null) {
             bodyTex.bind();
@@ -478,13 +307,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.f, MODEL_SCALE * 1.f, MODEL_SCALE * 1.f);
         gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-        woutBody.draw(gl);
+        scoutBody.draw(gl);
     }
 
-    public void scaleBuilding(GL gl, GLDrawObject obj) {
-        String buildingBodyTexPath = (obj.getTeam() == Team.A) ? buildingBodyTexPathR : buildingBodyTexPathB;
+    public void drawNode(GL gl, GLDrawObject obj) {
+        String nodeBodyTexPath = (obj.getTeam() == Team.A) ? nodeBodyTexPathR : nodeBodyTexPathB;
 
-        Texture bodyTex = textureCache.getResource(buildingBodyTexPath, buildingBodyTexPath).tex;
+        Texture bodyTex = textureCache.getResource(nodeBodyTexPath, nodeBodyTexPath).tex;
 
         if (bodyTex != null) {
             bodyTex.bind();
@@ -496,53 +325,27 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
         //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-    }
-
-    public void drawTeleporter(GL gl, GLDrawObject obj) {
-        scaleBuilding(gl, obj);
-        processingplantBody.draw(gl);
-    }
-
-    public void drawAura(GL gl, GLDrawObject obj) {
-        scaleBuilding(gl, obj);
-        towerBody.draw(gl);
-        /*
-        if(obj.getCurrentAura() != null){
-        gl.glPushMatrix();
-        gl.glDisable(GL.GL_TEXTURE_2D);
-        switch(obj.getCurrentAura()){
-        case OFF:
-        gl.glColor4f(1.0f, 0.7f, 0.24f, 0.5f);
-        break;
-        case DEF:
-        gl.glColor4f(0.0f, 0.24f, 0.9f, 0.5f);
-        break;
-        case MOV:
-        gl.glColor4f(0.0f, 0.9f, 0.24f, 0.5f);
-        break;
-        default:
-        gl.glColor4f(0.9f, 0.75f, 0.0f, 0.5f);
-        break;
-        }
+        nodeBody.draw(gl);
         gl.glEnable(GL.GL_BLEND);
-        gl.glDisable(GL.GL_DEPTH_TEST);
-        gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        gl.glScalef(1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f));
-        float diskSize = (float)Math.sqrt(obj.getType().sensorRadiusSquared());
-
-        glu.gluCylinder(quadric, diskSize, 0.0f, 1.0f, 16, 1);
-        gl.glDisable(GL.GL_BLEND);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glPopMatrix();
-
-        }
-         */
     }
+    
+    public void drawCore(GL gl, GLDrawObject obj) {
+        String coreBodyTexPath = (obj.getTeam() == Team.A) ? coreBodyTexPathR : coreBodyTexPathB;
 
-    public void drawComm(GL gl, GLDrawObject obj) {
-        scaleBuilding(gl, obj);
-        communicationsBody.draw(gl);
+        Texture bodyTex = textureCache.getResource(coreBodyTexPath, coreBodyTexPath).tex;
+
+        if (bodyTex != null) {
+            bodyTex.bind();
+        }
+        //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+
+        gl.glDisable(GL.GL_BLEND);
+        // this model uses different a different scale because it's from 2008
+        gl.glTranslatef(0.f, 0.1f, 0.0f);
+        gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
+        //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        coreBody.draw(gl);
+        gl.glEnable(GL.GL_BLEND);
     }
 
     /**
@@ -646,78 +449,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     //gl.glRotatef(roll, 1.0f, 0.0f, 0.0f);
                 }
 
-
-                //gl.glTranslatef(0.0f, map.getTerrainHeight(actualX, actualY), 0.0f);
-                //          	float roll = (float)(Math.atan2(Math.abs(sideDeltaZ), Math.sqrt(2))*180/3.14159);
-                //  gl.glRotatef(roll, 1.0f, 0.0f, 0.0f);
-//            	float pitch = (float)(Math.atan2(Math.abs(deltaZ), Math.sqrt(2))*180/3.14159);//sqrt2 because it's diagonal
-
-                //   gl.glRotatef(-pitch, 0.0f, 0.0f, 1.0f);
-
-
-
-                /*
-                // compute actual jumping height if moving between locations
-                MapLocation dstSquare = obj.getLocation().add(obj.getDirection());
-                //float distToTarget = (float)Math.sqrt(obj.getLocation().distanceSquaredTo(dstSquare));
-
-                // direction delta
-                float squareDeltaX = dstSquare.x - obj.getLocation().x;
-                //squareDeltaX /= 4;
-                float squareDeltaY = dstSquare.y - obj.getLocation().y;
-                //squareDeltaY /= 4;
-
-                
-                float srcHeight = map.getMapHeight(x + 0.5f, y + 0.5f);
-                float dstHeight = map.getMapHeight(x + 0.5f + squareDeltaX, y + 0.5f + squareDeltaY);
-
-
-                //    if(srcHeight != dstHeight) {
-                float heightDelta = Math.abs(srcHeight - dstHeight);
-
-                //float frac = (float)Math.sqrt(xDelta * xDelta + yDelta * yDelta) / distToTarget;
-
-
-                float delay = obj.getDirection().isDiagonal() ? obj.getType().moveDelayDiagonal() : obj.getType().moveDelayOrthogonal();
-
-                float frac = (float)obj.timeUntilIdle() / delay;
-
-                if(frac > 1.0f) frac = 1.0f;
-                else if(frac < 0.0f) frac = 0.0f;
-
-                // magic (completely unnecessary)
-                if(srcHeight > dstHeight) {
-                float temp = srcHeight;
-                srcHeight = dstHeight;
-                dstHeight = temp;
-                }
-
-                //   System.out.println(frac);
-                float h = 0.0f;
-                float m = Math.max(srcHeight, dstHeight) + 0.6f;
-
-                h = frac*srcHeight + (1-frac)*dstHeight;
-
-
-
-                if (srcHeight != dstHeight) {
-                gl.glTranslatef(0.0f, h+.4f, 0.0f);
-
-                //float m = Math.max(srcHeight, dstHeight) + 0.3f;
-                //float a = 2 * dstHeight + 2 * srcHeight - 2 * m;
-                //float b = 2 * m - dstHeight - 3 * srcHeight;
-                //float c = srcHeight;
-                //gl.glTranslatef(0.0f, frac * frac * a + frac * b + c, 0.0f);
-
-                } else {
-
-
-                gl.glTranslatef(0.0f, map.getMapHeight(x + 0.5f, y + 0.5f)+.4f, 0.0f);
-                }
-
-
-                gl.glRotatef(pitch, 0.0f, 0.0f, 1.0f);
-                 */
             }
 
             // draw selection box
@@ -733,18 +464,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // draw channeler drain
             gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDisable(GL.GL_LIGHTING);
-            /*
-            if (obj.getAttackAction() == ActionType.DRAINING) {
-            gl.glPushMatrix();
-            gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-            if (obj.getTeam() == Team.A)
-            gl.glColor4f(0.75f, 0.0f, 0.0f, 0.2f);
-            else
-            gl.glColor4f(0.0f, 0.0f, 0.75f, 0.2f);
-            glu.gluDisk(quadric, 0.0f, Math.sqrt(RobotType.CHAINER.attackRadiusMaxSquared()), 16, 1);
-            gl.glPopMatrix();
-            }
-             */
 
             // draw message broadcast
             if (obj.getBroadcast() != 0x00 && RenderConfiguration.showBroadcast()) {
@@ -828,20 +547,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
                 gl.glLineWidth(1.0f);
 
-                /*
-                tex.bind();
-                gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                gl.glBegin(GL.GL_TRIANGLE_FAN);
-                gl.glTexCoord2f(0.0f, 1.0f);
-                gl.glVertex3f(-0.5f, 0.01f, -0.5f);
-                gl.glTexCoord2f(0.0f, 0.0f);
-                gl.glVertex3f(-0.5f, 0.01f, 0.5f);
-                gl.glTexCoord2f(1.0f, 0.0f);
-                gl.glVertex3f(0.5f, 0.01f, 0.5f);
-                gl.glTexCoord2f(1.0f, 1.0f);
-                gl.glVertex3f(0.5f, 0.01f, -0.5f);
-                gl.glEnd();
-                 */
                 gl.glPopMatrix();
                 gl.glDisable(GL.GL_BLEND);
 
@@ -972,9 +677,16 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 switch (obj.getType()) {
                     case ARCHON:
                         drawArchon(gl, obj);
-                        drawChainer(gl, obj);
+                    case SCORCHER:
+                        drawScorcher(gl, obj);
+                    case DISRUPTER:
+                        drawdisrupter(gl, obj);
+                    case SCOUT:
+                        drawScout(gl, obj);
                     case SOLDIER:
                         drawSoldier(gl, obj);
+                    case TOWER:
+                        drawNode(gl, obj);
                     default:
                         drawRobot(gl, obj);
                 }
@@ -985,16 +697,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             gl.glPopMatrix();
         }
 
-        // draw awesomeness
-		/*if(awesomePoint != null) {
-        gl.glPushMatrix();
-        gl.glColor4f(1.0f, 1.0f, 1.0f, 0.6f);
-        gl.glTranslatef(0.0f, 2.0f, 0.0f);
-        gl.glTranslatef(awesomePoint.x - origin.x, 0.0f, awesomePoint.y - origin.y);
-        gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        glu.gluDisk(quadric, 0, this.radius, 16, 1);
-        gl.glPopMatrix();
-        }*/
 
         gl.glDisable(GL.GL_TEXTURE_2D);
 

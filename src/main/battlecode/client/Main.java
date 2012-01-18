@@ -72,7 +72,6 @@ public class Main {
     }
 
     private static void runLocal(Config options) {
-
         MatchDialog md = new MatchDialog(null);
         if (!options.getBoolean("bc.dialog.skip"))
             md.setVisible(true);
@@ -152,7 +151,8 @@ public class Main {
 
         }
 
-        options.setBoolean("bc.client.opengl", md.getGlClientChoice());
+        //options.setBoolean("bc.client.opengl", md.getGlClientChoice());
+        options.setBoolean("bc.client.opengl", true);
         options.setBoolean("bc.client.minimap", md.getMinimapChoice());
         Main.showViewer(createFrame(), new MatchViewer(theProxy, md.getLockstepChoice()));
         if (serverThread != null)
@@ -173,7 +173,6 @@ public class Main {
         System.out.println(System.getProperty("os.arch"));
 
         final Config options = battlecode.server.Main.setupConfig(args);
-
         if (!run(options)) {
             System.err.println("invalid bc.server.mode");
             System.exit(64);

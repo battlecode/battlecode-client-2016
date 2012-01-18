@@ -240,7 +240,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 		add(new JSeparator(), "1, 7, 8, 7, f, c");
 		
 		chkGlClient = new JCheckBox("View match using 3D renderer", true);
-		//add(chkGlClient, "1, 8, 8, 8, f, c");
+		add(chkGlClient, "1, 8, 8, 8, f, c");
 		
 		chkShowMinimap = new JCheckBox("Show minimap in 3D renderer", false);
 		//add(chkShowMinimap, "1, 9, 8, 9, f, c");
