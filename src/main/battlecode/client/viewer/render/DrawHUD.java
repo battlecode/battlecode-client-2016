@@ -82,23 +82,28 @@ class DrawHUD {
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
-            //g2.setColor(Color.WHITE);
-            //g2.setFont(footerFont);
-            //g2.drawString(footerText, -footerText.length()/2, 0);
             AffineTransform pushed2 = g2.getTransform();
             {
-                battlecode.serial.RoundStats stats = ds.getRoundStats();
-                if (stats != null) {
-                    points = (int) stats.getPoints(team);
-                }
-                g2.translate(-1.875, -1);
-                for (int i = 10000; i > 0; i /= 10) {
-                    g2.drawImage(numbers[(points / i) % 10], textScale, null);
-                    g2.translate(0.75, 0);
-                }
+				g2.translate(-1.875, -1);
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.setFont(new Font("Serif", Font.PLAIN, 24));
+				g2.translate(width / 2, .9);
+				g2.scale(width / 4.5, width / 4.5);
+
+				// should actually get the team names
+				if (team == Team.A) {
+					g2.setColor(Color.RED);
+					g2.drawString("Team A", 0, 0);
+				} else {
+					assert team == Team.B;
+					g2.setColor(Color.BLUE);
+					g2.drawString("Team B", 0, 0);
+				}
             }
+			// Let's write the team names instead of the wtf numbers
+
             g2.setTransform(pushed2);
-            if (footerText.startsWith("GAME")) {
+            if (footerText.startsWith("GAME")) { // Game Number
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
 
@@ -115,7 +120,7 @@ class DrawHUD {
                     g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
                     g2.translate(0.5, 0);
                 }
-            } else if (footerText.length() == 4) {
+            } else if (footerText.length() == 4) { // round counter
                 // if team B won more than one round, give it a blue circle
                 if (bWins > 0) {
                     // damn yangs magic offsets -_-
