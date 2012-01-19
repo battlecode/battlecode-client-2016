@@ -954,8 +954,12 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     public void init(GLAutoDrawable ad) {
         // TODO NO SIDE-EFFECTS IN HERE
         //initGLParams(ad.getGL());
-        init(ad.getGL());
+        init(ad.getGL().getGL2());
     }
+
+	public void dispose(GLAutoDrawable ad) {
+		// do nothing
+	}
 
     public void init(GL2 gl) {
         // TODO NO SIDE-EFFECTS IN HERE
