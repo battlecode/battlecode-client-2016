@@ -242,7 +242,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glEnable(GL2.GL_BLEND);
     }
 
-    public void drawScorcher(GL gl, GLDrawObject obj) {
+    public void drawScorcher(GL2 gl, GLDrawObject obj) {
         String scorcherBodyTexPath = (obj.getTeam() == Team.A) ? scorcherBodyTexPathR : scorcherBodyTexPathB;
         Texture bodyTex = textureCache.getResource(scorcherBodyTexPath, scorcherBodyTexPath).tex;
 
@@ -261,7 +261,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
     }
 
-    public void drawdisrupter(GL gl, GLDrawObject obj) {
+    public void drawdisrupter(GL2 gl, GLDrawObject obj) {
         String disrupterBodyTexPath = (obj.getTeam() == Team.A) ? disrupterBodyTexPathR : disrupterBodyTexPathB;
         Texture bodyTex = textureCache.getResource(disrupterBodyTexPath, disrupterBodyTexPath).tex;
         // translate up to normal level
@@ -274,7 +274,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             bodyTex.bind();
         }
         disrupterBody.draw(gl);
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
     }
 
     public void drawSoldier(GL2 gl, GLDrawObject obj) {
@@ -286,15 +286,15 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             bodyTex.bind();
         }
         gl.glTranslatef(-0.1f, 0.1f, 0.0f);
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         //   gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 
         soldierBody.draw(gl);
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
     }
 
-    public void drawScout(GL gl, GLDrawObject obj) {
+    public void drawScout(GL2 gl, GLDrawObject obj) {
 
         // now draw the worker
         String scoutBodyTexPath = (obj.getTeam() == Team.A) ? scoutBodyTexPathR : scoutBodyTexPathB;
@@ -310,7 +310,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         scoutBody.draw(gl);
     }
 
-    public void drawNode(GL gl, GLDrawObject obj) {
+    public void drawNode(GL2 gl, GLDrawObject obj) {
         String nodeBodyTexPath = (obj.getTeam() == Team.A) ? nodeBodyTexPathR : nodeBodyTexPathB;
 
         Texture bodyTex = textureCache.getResource(nodeBodyTexPath, nodeBodyTexPath).tex;
@@ -326,10 +326,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
         //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
         nodeBody.draw(gl);
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
     }
     
-    public void drawCore(GL gl, GLDrawObject obj) {
+    public void drawCore(GL2 gl, GLDrawObject obj) {
         String coreBodyTexPath = (obj.getTeam() == Team.A) ? coreBodyTexPathR : coreBodyTexPathB;
 
         Texture bodyTex = textureCache.getResource(coreBodyTexPath, coreBodyTexPath).tex;
@@ -339,13 +339,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         // this model uses different a different scale because it's from 2008
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
         //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
         coreBody.draw(gl);
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
     }
 
     /**
@@ -462,8 +462,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw channeler drain
-            gl.glDisable(GL.GL_DEPTH_TEST);
-            gl.glDisable(GL.GL_LIGHTING);
+            gl.glDisable(GL2.GL_DEPTH_TEST);
+            gl.glDisable(GL2.GL_LIGHTING);
 
             // draw message broadcast
             if (obj.getBroadcast() != 0x00 && RenderConfiguration.showBroadcast()) {

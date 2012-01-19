@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
@@ -271,22 +272,22 @@ public class OBJFile extends DataFile {
     }
 
     // draws the obj model the the GL device
-    public void draw(GL gl) {
-    	//gl.glDisable(GL.GL_CULL_FACE);
-        gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+    public void draw(GL2 gl) {
+    	//gl.glDisable(GL2.GL_CULL_FACE);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
-        gl.glVertexPointer(3, GL.GL_FLOAT, 0, vBuf);
-        gl.glNormalPointer(GL.GL_FLOAT, 0, nBuf);
-        gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tBuf);
+        gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vBuf);
+        gl.glNormalPointer(GL2.GL_FLOAT, 0, nBuf);
+        gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, tBuf);
 
-        gl.glDrawElements(GL.GL_TRIANGLES, indexLength, GL.GL_UNSIGNED_INT, iBuf);
+        gl.glDrawElements(GL2.GL_TRIANGLES, indexLength, GL2.GL_UNSIGNED_INT, iBuf);
        
-        gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-        //gl.glEnable(GL.GL_CULL_FACE);
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        //gl.glEnable(GL2.GL_CULL_FACE);
     }
     /*
     public void convertToBCM(String objfile, String bcmfile) {
