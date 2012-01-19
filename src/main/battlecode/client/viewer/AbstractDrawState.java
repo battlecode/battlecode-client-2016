@@ -267,8 +267,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return gameMap;
     }
 
-    protected abstract void mineFlux(DrawObject object);
-
     protected void updateRound() {
         currentRound++;
         for (Iterator<Map.Entry<Integer, DrawObject>> it = drawables.iterator();

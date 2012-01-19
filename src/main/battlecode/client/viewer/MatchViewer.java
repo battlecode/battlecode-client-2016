@@ -36,13 +36,8 @@ public class MatchViewer {
     private final Controller controller;
     private boolean lockstepChoice = false;
     private boolean tournamentMode = false;
-    //private final GameCanvas gc = new GameCanvas();
-    //private final GLGameCanvas gc = new GLGameCanvas();
-    private final BaseCanvas bc; //= new GameCanvas();
-    // configuration options
+    private final BaseCanvas bc;
     private Config cfg = Config.getGlobalConfig();
-    //private GameRenderer gr;
-    //private GLGameRenderer gr;
     private BaseRenderer br;
     private final AudioPlayer audio = new AudioPlayer();
     private InfoPanel info;

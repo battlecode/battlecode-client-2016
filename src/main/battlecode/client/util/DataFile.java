@@ -16,16 +16,15 @@ public abstract class DataFile extends Observable {
   public DataFile(String pathname) {
     this.pathname = pathname;
     
-    if(battlecode.server.Config.getGlobalConfig().getBoolean("bc.client.applet"))
-    {URL url = null;
-
-            try {
-                url = new URL(battlecode.server.Config.getGlobalConfig().get("bc.client.applet.path") + pathname);
-                load(url);
-            } catch (MalformedURLException ex) {
-                System.out.println("EXCEPTION URL" + url.getPath() );
-                ex.printStackTrace();
-            }
+    if(battlecode.server.Config.getGlobalConfig().getBoolean("bc.client.applet")) {
+        URL url = null;
+        try {
+            url = new URL(battlecode.server.Config.getGlobalConfig().get("bc.client.applet.path") + pathname);
+            load(url);
+        } catch (MalformedURLException ex) {
+            System.out.println("EXCEPTION URL" + url.getPath() );
+            ex.printStackTrace();
+        }
     } else {
         File f = new File(pathname);
         lastModified = f.lastModified();
