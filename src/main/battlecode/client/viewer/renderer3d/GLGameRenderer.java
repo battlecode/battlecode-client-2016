@@ -21,6 +21,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
@@ -445,7 +446,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         return cam;
     }
 
-    public void setupProjection(GL gl, GLU glu) {
+    public void setupProjection(GL2 gl, GLU glu) {
         if (cam.isOrtho()) {
             gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -498,31 +499,31 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
 
         if (drawMap == null || ds.getRoundStats() == null || glu == null) {
-            GL gl = ad.getGL();
+            GL2 gl = ad.getGL().getGL2();
 
             /*gl.glClearDepth(1.0f);
-            gl.glEnable(GL.GL_DEPTH_TEST);
-            gl.glDepthFunc(GL.GL_LEQUAL);
-            gl.glEnable(GL.GL_NORMALIZE);
+            gl.glEnable(GL2.GL_DEPTH_TEST);
+            gl.glDepthFunc(GL2.GL_LEQUAL);
+            gl.glEnable(GL2.GL_NORMALIZE);
 
             // TODO: maybe put skybox?
             //gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             gl.glClearColor(0.35f, 0.61f, 0.9f, 0.0f);
 
             gl.glColor3f(0.0f, 0.0f, 0.0f);
-            gl.glShadeModel(GL.GL_SMOOTH);
-            gl.glEnable(GL.GL_LIGHTING);
+            gl.glShadeModel(GL2.GL_SMOOTH);
+            gl.glEnable(GL2.GL_LIGHTING);
 
-            gl.glFrontFace(GL.GL_CCW);
-            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glFrontFace(GL2.GL_CCW);
+            gl.glEnable(GL2.GL_CULL_FACE);
 
-            gl.glEnable(GL.GL_COLOR_MATERIAL);
-            gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
+            gl.glEnable(GL2.GL_COLOR_MATERIAL);
+            gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
 
-            gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+            gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
              */
             gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
             // draw cutscene
             if (cutScene != null)
@@ -548,22 +549,22 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         //miniMapWindow.update(ds, origin);
 
         // TODO draw the scene in here
-        GL gl = ad.getGL();
+        GL2 gl = ad.getGL().getGL2();
         gl.glLoadIdentity();
 
         // make nice blue color
         gl.glClearColor(0.35f * 0.5f, 0.61f * 0.5f, 0.9f * 0.5f, 0.0f);
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         //Draw background (space)
         Texture backgroundTexture = null;
         final String path = "art/backgrounds/space-the-final-frontier.jpg";
 
         backgroundTexture = GLGameRenderer.textureCache.getResource(path, path).tex;
-        gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-        gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+        gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+        gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
 
 
         float boxWidth = 1.0f;
@@ -612,13 +613,13 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             backgroundTexture.bind();
 
             gl.glPushMatrix();
-//			gl.glDisable(GL.GL_COLOR_MATERIAL);
-            gl.glEnable(GL.GL_TEXTURE_2D);
-            gl.glDisable(GL.GL_DEPTH_TEST);
-            gl.glEnable(GL.GL_BLEND);
+//			gl.glDisable(GL2.GL_COLOR_MATERIAL);
+            gl.glEnable(GL2.GL_TEXTURE_2D);
+            gl.glDisable(GL2.GL_DEPTH_TEST);
+            gl.glEnable(GL2.GL_BLEND);
 
             //gl.glScalef(200.0f, 75.0f, 200.0f);
-            gl.glBegin(GL.GL_QUADS);
+            gl.glBegin(GL2.GL_QUADS);
             //Back face
             gl.glTexCoord2f(texXStart, texYStart);
             gl.glVertex3f(-boxWidth, -boxWidth, boxWidth);
@@ -637,7 +638,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
             gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
-            gl.glBegin(GL.GL_QUADS);
+            gl.glBegin(GL2.GL_QUADS);
             //Back face
             gl.glTexCoord2f(texXStart, texYStart);
             gl.glVertex3f(-boxWidth, -boxWidth, boxWidth);
@@ -649,19 +650,19 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             gl.glVertex3f(-boxWidth, boxWidth, boxWidth);
             gl.glEnd();
 
-            gl.glDisable(GL.GL_BLEND);
-            gl.glEnable(GL.GL_DEPTH_TEST);
-            gl.glDisable(GL.GL_TEXTURE_2D);
-            //	gl.glEnable(GL.GL_COLOR_MATERIAL);
+            gl.glDisable(GL2.GL_BLEND);
+            gl.glEnable(GL2.GL_DEPTH_TEST);
+            gl.glDisable(GL2.GL_TEXTURE_2D);
+            //	gl.glEnable(GL2.GL_COLOR_MATERIAL);
 
             gl.glPopMatrix();
         }
         //End draw background
 
 
-        if (!gl.glIsEnabled(GL.GL_COLOR_MATERIAL)) {
-            gl.glEnable(GL.GL_COLOR_MATERIAL);
-            gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
+        if (!gl.glIsEnabled(GL2.GL_COLOR_MATERIAL)) {
+            gl.glEnable(GL2.GL_COLOR_MATERIAL);
+            gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
         }
 
         if (!RenderConfiguration.isTournamentMode()) {
@@ -669,20 +670,20 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
                 int[] viewport = cam.getViewport();
 
                 gl.glSelectBuffer(getSelectBuffer().capacity(), getSelectBuffer());
-                gl.glRenderMode(GL.GL_SELECT);
+                gl.glRenderMode(GL2.GL_SELECT);
 
-                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glLoadIdentity();
 
                 Point mousePoint = cam.getMousePos();
 
-                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glLoadIdentity();
                 glu.gluPickMatrix(mousePoint.x, viewport[3] - mousePoint.y, 1.0, 1.0, cam.getViewport(), 0);
 
                 cam.setProjection(gl, glu);
 
-                gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glMatrixMode(GL2.GL_MODELVIEW);
                 gl.glLoadIdentity();
                 setupProjection(gl, glu);
 
@@ -690,7 +691,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
                 ds.doSelection(gl, glu, this, drawMap, origin);
 
                 // draw the scene
-                int numSelections = gl.glRenderMode(GL.GL_RENDER);
+                int numSelections = gl.glRenderMode(GL2.GL_RENDER);
 
                 if (numSelections > 0) {
                     // selectBuffer is:
@@ -708,13 +709,13 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             //updateInfoPanel();
         }
 
-        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
         if (cam != null)
             cam.setProjection(gl, glu);
 
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 
 
@@ -723,15 +724,15 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             setupProjection(gl, glu);
         }
 
-        gl.glEnable(GL.GL_LIGHTING);
-        //gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[] {drawMap.getMapWidth() / 2, 15.0f, drawMap.getMapHeight() / 2, 1.0f}, 0);
+        gl.glEnable(GL2.GL_LIGHTING);
+        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[] {drawMap.getMapWidth() / 2, 15.0f, drawMap.getMapHeight() / 2, 1.0f}, 0);
         if (!cam.isOrtho())
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[]{0.0f, 7.5f, 0.0f, 1.0f}, 0);
+            gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{0.0f, 7.5f, 0.0f, 1.0f}, 0);
         else
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[]{0.0f, drawMap.getMapHeight(), 7.5f, 1.0f}, 0);
-        gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 1.0f}, 0);
-        gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, new float[]{0.8f, 0.8f, 0.8f, 1.0f}, 0);
-        gl.glEnable(GL.GL_LIGHT0);
+            gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{0.0f, drawMap.getMapHeight(), 7.5f, 1.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 1.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{0.8f, 0.8f, 0.8f, 1.0f}, 0);
+        gl.glEnable(GL2.GL_LIGHT0);
 
 
 
@@ -741,12 +742,12 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         // draw the game state
 
         if (cam.isOrtho())
-            gl.glDisable(GL.GL_LIGHTING);
+            gl.glDisable(GL2.GL_LIGHTING);
 
-        //gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, new float[] {0.6f, 0.6f, 0.6f, 1.0f}, 0);
+        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[] {0.6f, 0.6f, 0.6f, 1.0f}, 0);
         ds.draw(gl, glu, this, debugState, drawMap, origin);
 
-        gl.glDisable(GL.GL_LIGHTING);
+        gl.glDisable(GL2.GL_LIGHTING);
 
         // draw the text
         if (txtRenderer != null) {
@@ -777,13 +778,13 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             int barHalfWidth = (ad.getWidth() - pointsAWidth - pointsBWidth) / 2 - PADDING_MAGIC;
 
             // draw ortho stuff
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glLoadIdentity();
             if (canvas != null)
                 gl.glOrtho(0, canvasSize.width, 0, canvasSize.height, -100, 100);
             else
                 gl.glOrtho(0, 1280, 0, 1024, -100, 100);
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glLoadIdentity();
 
             // draw winner bar here
@@ -797,7 +798,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
                 barDir = 1.0f;
             // if barDir > 0 then B is winning, < 0 then A is winning, else tie
 
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
             // draw background for relative victory line
             gl.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
             gl.glVertex3i(ad.getWidth() / 2 - barHalfWidth, ad.getHeight() - 15, 1);
@@ -821,7 +822,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
             // draw the absolute length to minPoints
             gl.glLineWidth(4.0f);
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
 
             // for the blue guy
             gl.glColor4f(0.7f, 0.95f, 1.0f, 1.0f);
@@ -837,7 +838,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             gl.glEnd();
 
 
-            gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL2.GL_LINES);
             gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             // now draw vertical center bar
             gl.glVertex3i(ad.getWidth() / 2, ad.getHeight() - 6, 4);
@@ -894,14 +895,14 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         // draw light
 		/*gl.glPointSize(8.0f);
-        gl.glBegin(GL.GL_POINTS);
+        gl.glBegin(GL2.GL_POINTS);
         gl.glColor3f(0.0f, 1.0f, 0.0f);
         gl.glVertex3fv(new float[] {drawMap.getMapWidth() / 2, 15.0f, drawMap.getMapHeight() / 2, 1.0f}, 0);
         gl.glEnd();
         gl.glPointSize(1.0f);*/
 
         // draw triad
-		/*gl.glBegin(GL.GL_LINES);
+		/*gl.glBegin(GL2.GL_LINES);
         gl.glColor3f(1.0f, 0.0f, 0.0f);
         gl.glVertex3f(0.0f, 0.0f, 0.0f);
         gl.glVertex3f(1.0f, 0.0f, 0.0f);
@@ -914,17 +915,17 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         gl.glEnd();
          */
         // draw fonts
-		/*gl.glMatrixMode(GL.GL_PROJECTION);
+		/*gl.glMatrixMode(GL2.GL_PROJECTION);
         glu.gluOrtho2D(0.0f, canvasSize.width, 0.0f, canvasSize.height);
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glTranslatef(0.0f, 0.0f, -1.0f);
-        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glEnable(GL2.GL_TEXTURE_2D);
         gl.glColor3f(1.0f, 1.0f, 1.0f);
         gl.glRasterPos2f(20.0f, 15.0f);
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "HELLLLLOOOOO, WOOOORLD");
 
-        gl.glDisable(GL.GL_TEXTURE_2D);*/
+        gl.glDisable(GL2.GL_TEXTURE_2D);*/
         displayObservable.setChanged();
         displayObservable.notifyObservers();
     }
@@ -956,7 +957,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         init(ad.getGL());
     }
 
-    public void init(GL gl) {
+    public void init(GL2 gl) {
         // TODO NO SIDE-EFFECTS IN HERE
         //System.out.println("GLGameRenderer.init()");
         initGLParams(gl);
@@ -964,29 +965,29 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         //updateThread.start();
     }
 
-    private void initGLParams(GL gl) {
+    private void initGLParams(GL2 gl) {
         gl.glClearDepth(1.0f);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glEnable(GL.GL_NORMALIZE);
+        gl.glEnable(GL2.GL_DEPTH_TEST);
+        gl.glDepthFunc(GL2.GL_LEQUAL);
+        gl.glEnable(GL2.GL_NORMALIZE);
 
-        gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+        gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
         // TODO: maybe put skybox?
         //gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClearColor(0.35f, 0.61f, 0.9f, 0.0f);
 
         gl.glColor3f(0.0f, 0.0f, 0.0f);
-        gl.glShadeModel(GL.GL_SMOOTH);
-        gl.glEnable(GL.GL_LIGHTING);
+        gl.glShadeModel(GL2.GL_SMOOTH);
+        gl.glEnable(GL2.GL_LIGHTING);
 
-        gl.glFrontFace(GL.GL_CCW);
-        gl.glEnable(GL.GL_CULL_FACE);
+        gl.glFrontFace(GL2.GL_CCW);
+        gl.glEnable(GL2.GL_CULL_FACE);
 
-        gl.glEnable(GL.GL_COLOR_MATERIAL);
-        gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
 
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+        gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
     }
 
     /**
@@ -1003,13 +1004,13 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 		/*System.out.println("GLGameRenderer.reshape(x = " + x + ", y = " + y +
         ", width = " + width + ", height = " + height +")");*/
 
-        GL gl = ad.getGL();
+        GL2 gl = ad.getGL().getGL2();
 
         canvasSize = new Dimension(width, height);
         if (cam != null)
             cam.updateWindowSize(width, height);
         gl.glViewport(0, 0, width, height);
-        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         if (cam != null)
             cam.setProjection(gl, glu);

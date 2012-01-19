@@ -91,6 +91,7 @@ class DrawHUD {
 				g2.scale(width / 4.5, width / 4.5);
 
 				// should actually get the team names
+				System.out.println(ds.getRoundStats());
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
 					g2.drawString("Team A", 0, 0);
@@ -100,7 +101,6 @@ class DrawHUD {
 					g2.drawString("Team B", 0, 0);
 				}
             }
-			// Let's write the team names instead of the wtf numbers
 
             g2.setTransform(pushed2);
             if (footerText.startsWith("GAME")) { // Game Number
