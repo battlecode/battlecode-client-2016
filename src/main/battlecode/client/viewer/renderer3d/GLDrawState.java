@@ -505,67 +505,70 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 if (tex != null) {*/
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
-                float tx = target.x - origin.x;
-                float ty = target.y - origin.y;
-                float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
-                float deltax = tx - x;
-                float deltay = ty - y;
-                float deltaz = tz;
+				// aha, target is sometimes null!! I'm not sure why, though ~shewu
+				if (obj != null && target != null && origin != null) {
+					float tx = target.x - origin.x;
+					float ty = target.y - origin.y;
+					float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
+					float deltax = tx - x;
+					float deltay = ty - y;
+					float deltaz = tz;
 
-                if (obj.getType().isAirborne()) {
-                    deltaz -= maxHeight;
-                    drawArch = false;
-                } else {
-                    deltaz -= map.getTerrainHeight(x, y);
-                }
+					if (obj.getType().isAirborne()) {
+						deltaz -= maxHeight;
+						drawArch = false;
+					} else {
+						deltaz -= map.getTerrainHeight(x, y);
+					}
 
-                gl.glEnable(GL2.GL_BLEND);
-                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-                gl.glPushMatrix();
-                gl.glTranslatef(deltax, deltaz, deltay);
-                if (obj.getTeam() == Team.A) {
-                    gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-                } else {
-                    gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-                }
-                gl.glLineWidth(3.0f);
-                float angleDelta = (float) 3.14159 / 8;
-                float circleScale = .5f;
-                gl.glBegin(GL2.GL_LINE_LOOP);
-                for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
-                    gl.glVertex3f((float) Math.cos(angle) * circleScale, 0.01f, (float) Math.sin(angle) * circleScale);
-                }
-                gl.glEnd();
+					gl.glEnable(GL2.GL_BLEND);
+					gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+					gl.glPushMatrix();
+					gl.glTranslatef(deltax, deltaz, deltay);
+					if (obj.getTeam() == Team.A) {
+						gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					} else {
+						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+					}
+					gl.glLineWidth(3.0f);
+					float angleDelta = (float) 3.14159 / 8;
+					float circleScale = .5f;
+					gl.glBegin(GL2.GL_LINE_LOOP);
+					for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
+						gl.glVertex3f((float) Math.cos(angle) * circleScale, 0.01f, (float) Math.sin(angle) * circleScale);
+					}
+					gl.glEnd();
 
-                gl.glBegin(GL2.GL_LINES);
-                angleDelta = (float) 3.14159 / 2;
-                for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
-                    gl.glVertex3f((float) (Math.cos(angle) * circleScale * 1.5), 0.01f, (float) (Math.sin(angle) * circleScale * 1.5));
-                    gl.glVertex3f((float) (Math.cos(angle) * circleScale / 2), 0.01f, (float) (Math.sin(angle) * circleScale / 2));
-                }
-                gl.glEnd();
+					gl.glBegin(GL2.GL_LINES);
+					angleDelta = (float) 3.14159 / 2;
+					for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
+						gl.glVertex3f((float) (Math.cos(angle) * circleScale * 1.5), 0.01f, (float) (Math.sin(angle) * circleScale * 1.5));
+						gl.glVertex3f((float) (Math.cos(angle) * circleScale / 2), 0.01f, (float) (Math.sin(angle) * circleScale / 2));
+					}
+					gl.glEnd();
 
-                gl.glLineWidth(1.0f);
+					gl.glLineWidth(1.0f);
 
-                gl.glPopMatrix();
-                gl.glDisable(GL2.GL_BLEND);
+					gl.glPopMatrix();
+					gl.glDisable(GL2.GL_BLEND);
 
-                gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-                if (obj.getTeam() == Team.A) {
-                    gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-                } else {
-                    gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-                }
+					gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+					if (obj.getTeam() == Team.A) {
+						gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					} else {
+						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+					}
 
-                gl.glLineWidth(4.0f);
-                gl.glBegin(GL2.GL_LINES);
-                //if (obj.getType() == RobotType.WOUT2XXX)
-                //    gl.glVertex3f(0.0f, 0.0f, 0.0f);
-                //else
-                gl.glVertex3f(0.0f, 0.5f, 0.0f);
-                gl.glVertex3f(deltax, deltaz, deltay);
-                gl.glEnd();
-                gl.glLineWidth(1.0f);
+					gl.glLineWidth(4.0f);
+					gl.glBegin(GL2.GL_LINES);
+					//if (obj.getType() == RobotType.WOUT2XXX)
+					//    gl.glVertex3f(0.0f, 0.0f, 0.0f);
+					//else
+					gl.glVertex3f(0.0f, 0.5f, 0.0f);
+					gl.glVertex3f(deltax, deltaz, deltay);
+					gl.glEnd();
+					gl.glLineWidth(1.0f);
+				}
             }
             //}
 
