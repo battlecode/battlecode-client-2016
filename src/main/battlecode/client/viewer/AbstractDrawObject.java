@@ -102,6 +102,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	protected boolean loaded = false;
 	protected int regen = 0;
 	protected int robotID;
+	protected Direction attackDir;
     protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
         private static final long serialVersionUID = 0;
@@ -265,6 +266,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         attackAction = ActionType.ATTACKING;
         roundsUntilAttackIdle = info.type.attackDelay;
         targetLoc = target;
+		attackDir = dir;
         //componentType = component;
         //if (info.type == RobotType.CHAINER) {
         //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
