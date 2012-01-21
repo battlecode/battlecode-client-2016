@@ -24,7 +24,7 @@ import javax.swing.Timer;
 import battlecode.client.util.ImageFile;
 import battlecode.common.Team;
 
-import com.sun.opengl.util.j2d.TextRenderer;
+import com.sun.opengl.util.awt.TextRenderer;
 
 class GLDrawCutScene {
 

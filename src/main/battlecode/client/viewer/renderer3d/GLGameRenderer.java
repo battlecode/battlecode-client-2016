@@ -50,7 +50,7 @@ import battlecode.world.GameMap;
 
 import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.GLUT;
-import com.sun.opengl.util.j2d.TextRenderer;
+import com.sun.opengl.util.awt.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 
 import battlecode.client.util.ImageFile;
