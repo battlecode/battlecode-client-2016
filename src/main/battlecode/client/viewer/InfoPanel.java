@@ -16,6 +16,7 @@ public class InfoPanel extends JPanel {
     private JLabel bytecodes;
     private JLabel energon;
 	private JLabel flux;
+	private JLabel location;
     private JLabel direction;
     private GridBagConstraints layoutConstraints;
 
@@ -35,6 +36,8 @@ public class InfoPanel extends JPanel {
         flux = newLabel();
 		layoutConstraints.gridx++;
 		bytecodes = newLabel();
+		layoutConstraints.gridx++;
+        location = newLabel();
 		layoutConstraints.gridx++;
         direction = newLabel();
 
@@ -78,6 +81,7 @@ public class InfoPanel extends JPanel {
             setEnergon(robot.getEnergon());
 			setFlux(robot.getFlux());
             setBytecodesUsed(robot.getBytecodesUsed());
+			location.setText(String.format(" Location: %s ",robot.getLocation()));
             direction.setText(robot.getDirection().toString());
             for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
                 String ids = robot.getIndicatorString(i);

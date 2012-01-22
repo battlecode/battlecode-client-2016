@@ -329,7 +329,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             g2.setStroke(mediumStroke);
 			if(targetLoc==null) {
 				// scorcher
-				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,90-RobotType.SCORCHER.attackAngle/2.+dir.ordinal()*(-45),RobotType.SCORCHER.attackAngle,Arc2D.PIE));
+				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,90-RobotType.SCORCHER.attackAngle/2.+attackDir.ordinal()*(-45),RobotType.SCORCHER.attackAngle,Arc2D.PIE));
 			}
 			else {
                 BufferedImage target;
