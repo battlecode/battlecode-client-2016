@@ -25,8 +25,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
     protected double[] teamHP = new double[2];
-    protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
-    protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
+    Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
+    Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
 	protected int [] coreIDs = new int [2];
 	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
