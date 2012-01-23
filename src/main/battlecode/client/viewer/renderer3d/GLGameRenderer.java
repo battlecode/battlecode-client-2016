@@ -49,7 +49,7 @@ import battlecode.server.Config;
 import battlecode.world.GameMap;
 
 import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.gl2.GLUT;
 import com.sun.opengl.util.awt.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 
