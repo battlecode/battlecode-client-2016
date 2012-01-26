@@ -15,7 +15,7 @@ public class TournamentTimer {
     //private GLGameRenderer gr;
     private BaseRenderer br;
     private volatile boolean continueCued = false;
-	// spaceBarListener does not do anything any more
+	public static volatile boolean waitBetweenMatches; 
 	private Runnable spaceBarListener = new Runnable() {
 
         public void run() {
@@ -58,7 +58,7 @@ public class TournamentTimer {
                         winner = match.getFooter().getWinner();
                     }
                 });
-                continueCued = true;
+                continueCued = !waitBetweenMatches;
                 while (!(gst.getMatch().isFinished() && continueCued)) {
                     if (minimap != null) {
                         minimap.repaint();
