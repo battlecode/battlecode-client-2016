@@ -59,6 +59,11 @@ public abstract class BaseCanvas extends JPanel {
             im.put(KeyStroke.getKeyStroke("SPACE"), "space");
         }
         im.put(KeyStroke.getKeyStroke("SLASH"), "find");
+		im.put(KeyStroke.getKeyStroke("shift SEMICOLON"),"jump");
+		im.put(KeyStroke.getKeyStroke("OPEN_BRACKET"), "jump");
+		im.put(KeyStroke.getKeyStroke("shift OPEN_BRACKET"), "jump");
+		im.put(KeyStroke.getKeyStroke("CLOSE_BRACKET"), "jump");
+		im.put(KeyStroke.getKeyStroke("shift CLOSE_BRACKET"), "jump");
 		im.put(KeyStroke.getKeyStroke("shift PERIOD"), "searcharchon");
 		im.put(KeyStroke.getKeyStroke("shift COMMA"), "searcharchon");
         getActionMap().put("toggle", new AbstractAction() {
@@ -107,6 +112,38 @@ public abstract class BaseCanvas extends JPanel {
                 }
             }
         });
+		getActionMap().put("jump", new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+				BaseRenderer renderer = getRenderer();
+				if (renderer != null) {
+					GameStateTimeline timeline = renderer.getTimeline();	
+					String ac = e.getActionCommand();
+					if(":".equals(ac)) {
+						String strRound = JOptionPane.showInputDialog("Jump to round:");
+						int round;
+						try {
+							round = Integer.parseInt(strRound);
+						} catch(NumberFormatException ex) {
+							return;
+						}
+						timeline.setRound(round);
+					}
+					else if("[".equals(ac)) {
+						timeline.setRound(timeline.getRound()-1);
+					}
+					else if("{".equals(ac)) {
+						timeline.setRound(timeline.getRound()-20);
+					}
+					else if("]".equals(ac)) {
+						timeline.setRound(timeline.getRound()+1);
+					}
+					else if("}".equals(ac)) {
+						timeline.setRound(timeline.getRound()+20);
+					}
+				}
+			}
+		});
 		getActionMap().put("searcharchon", new AbstractAction() {
 
 			private static final long serialVersionUID = 0;
