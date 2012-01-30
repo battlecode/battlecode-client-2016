@@ -130,11 +130,6 @@ public class GLDrawMap {
 
                 }
 
-
-
-
-
-
                 total.scale(1.0f / (float) numNorms);
                 norms[j][i].set(total);
                 norms[j][i].normalize();
@@ -158,7 +153,6 @@ public class GLDrawMap {
         for (int j = 1; j < mapHeight; j++) {
             for (int i = 1; i < mapWidth; i++) {
 
-
                 int numLand = 0;
                 if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
@@ -177,11 +171,7 @@ public class GLDrawMap {
                 Color4f color = new Color4f();
                 color.interpolate(obstacleColor, groundColor, landFrac);
 
-
-
                 cols[j][i] = color;
-
-
 
                 //cols[j][i] = new Color3f(0.0f, 0.4f * landFrac, 0.4f * waterFrac);
             }
@@ -529,7 +519,6 @@ public class GLDrawMap {
         final Color4f highColor = new Color4f(0.0f, 1.0f, 0.0f, 1.0f);
         final Color4f lowColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-
         Color4f[][] trueCols = new Color4f[mapHeight][mapWidth];
 //		InternalTerrainTile tiles[][] = ds.getGameMap().getTerrainMatrix();
         //Update colors
@@ -620,12 +609,19 @@ public class GLDrawMap {
 
         boolean showGrid = RenderConfiguration.showGridlines();
         if (showGrid) {
-            gl.glBegin(GL2.GL_LINE_STRIP);
+            //gl.glBegin(GL2.GL_LINE_STRIP);
             gl.glColor3f(0.1f, 0.1f, 0.1f);
             gl.glNormal3f(0.0f, 1.0f, 0.0f);
 
 
-            // do the vertical gridlines
+            // do the horizontal gridlines
+			gl.glBegin(GL2.GL_LINES);
+			for (int j = 1; j < map.getHeight(); ++j) {
+				gl.glVertex3f(0.0f, 0.0f, j);
+				gl.glVertex3f(map.getWidth(), 0.0f, j);
+			}
+			gl.glEnd();
+			/*
             for (int j = 0; j < mapHeight; j++) {
                 if ((j + 1) % DENSITY != 0) {
                     continue;
@@ -636,21 +632,16 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j < mapHeight - 1 && i > 0) {
-
                             pTwo = points[j + 1][i - 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
 
-
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
-
 
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -662,7 +653,6 @@ public class GLDrawMap {
                         }
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
                     }
                 } else {
                     for (int i = mapWidth - 1; i >= 0; i--) {
@@ -695,11 +685,19 @@ public class GLDrawMap {
                     }
                 }
             }
+			*/
 
-            gl.glEnd();
+            //gl.glEnd();
 
-            // do the horizontal gridlines
-            gl.glBegin(GL2.GL_LINE_STRIP);
+            // do the vertical gridlines
+			gl.glBegin(GL2.GL_LINES);
+			for (int j = 1; j < map.getWidth(); ++j) {
+				gl.glVertex3f(j, 0.0f, 0.0f);
+				gl.glVertex3f(j, 0.0f, map.getHeight());
+			}
+			gl.glEnd();
+            //gl.glBegin(GL2.GL_LINE_STRIP);
+			/*
             for (int i = 0; i < mapWidth; i++) {
                 if ((i + 1) % DENSITY != 0) {
                     continue;
@@ -710,18 +708,14 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j > 0 && i < mapWidth - 1) {
-
                             pTwo = points[j - 1][i + 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
-
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
 
@@ -735,10 +729,6 @@ public class GLDrawMap {
                         }
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
-
-
-
                     }
                 } else {
                     for (int j = mapHeight - 1; j >= 0; j--) {
@@ -746,7 +736,6 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
@@ -758,25 +747,22 @@ public class GLDrawMap {
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j > 0 && i < mapWidth - 1) {
-
                             pTwo = points[j - 1][i + 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
 
-
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
                     }
                 }
             }
+			*/
 
-            gl.glEnd();
+            //gl.glEnd();
         }
 
     }

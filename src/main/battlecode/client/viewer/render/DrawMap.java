@@ -78,36 +78,13 @@ public class DrawMap {
 
 
         Graphics2D g2 = prerender.createGraphics();
-        for (int i = 0; i <= mapWidth; i++) for (int j = 0; j <= mapHeight; j++) {
-                byte index = indices[i][j];
-                assert 0 <= index && index < 16;
-                g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
+        for (int i = 0; i <= mapWidth; i++) {
+			for (int j = 0; j <= mapHeight; j++) {
+				byte index = indices[i][j];
+				assert 0 <= index && index < 16;
+				g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
             }
-        // find max height
-
-		/*
-        for (int i = 0; i < mapWidth; i++) for (int j = 0; j < mapHeight; j++) {
-                if (map[i][j].getType() == TerrainTile.VOID)
-                    continue;
-
-                float height = 0;
-                g2.setColor(new Color(height, height, height, 1.f));
-                g2.fill(new Rectangle(imgSize * i, imgSize * j, imgSize, imgSize));
-            }
-		*/
-
-        // prerender the flux deposits
-        // TODO: GET RID OF THIS
-		/*InternalFluxDeposit deposits[] = m.getDeposits();
-        //MapLocation deposits[] = m.getDepositLocations();
-        MapLocation origin = m.getMapOrigin();
-        for(int i = 0; i < deposits.length; ++i) {
-        MapLocation l = deposits[i].getLocation();
-        int x = l.x - origin.x;
-        int y = l.y - origin.y;
-        g2.setColor(new Color(0.f, 1.0f, 0.f, 1.0f));
-        g2.fillOval(x * imgSize, y * imgSize, imgSize, imgSize);
-        }*/
+		}
 
         g2.dispose();
         terrainImg.unload();
