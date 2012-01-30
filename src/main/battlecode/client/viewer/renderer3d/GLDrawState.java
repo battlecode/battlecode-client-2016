@@ -367,6 +367,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         // draw the units
         Color3f energonColor = new Color3f();
+		Color3f fluxColor = new Color3f();
         gl.glLineWidth(2.0f);
 
         Iterable<Map.Entry<Integer, GLDrawObject>> drawableSet = getDrawableSet();
@@ -651,13 +652,26 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
                 gl.glEnd();
                 gl.glLineWidth(1.0f);
-
             }
 
-			if (RenderConfiguration.showFlux()) {
+			// draw flux
+			if (RenderConfiguration.showFlux() && obj.getType() != RobotType.TOWER) {
 				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
+				final Color3f max = new Color3f(0.0f, 0.0f, 1.0f);
+				final Color3f min = new Color3f(0.0f, 0.0f, 0.5f);
+				final float z = 0.7f;
+				fluxColor.interpolate(min, max, frac);
+
 				gl.glLineWidth(2.0f);
 				gl.glBegin(GL2.GL_LINES);
+				gl.glNormal3f(0.0f, 1.0f, 0.0f);
+				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+				gl.glVertex3f(-0.5f + frac, 0.125f, z);
+				gl.glVertex3f(0.5f, 0.125f, z);
+
+				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
+				gl.glVertex3f(-0.5f, 0.125f, z);
+				gl.glVertex3f(-0.5f + frac, 0.125f, z);
 				gl.glEnd();
 				gl.glLineWidth(1.0f);
 			}
