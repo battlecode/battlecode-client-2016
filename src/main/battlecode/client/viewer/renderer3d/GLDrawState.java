@@ -639,7 +639,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
 
-                gl.glLineWidth(4.0f);
+                gl.glLineWidth(2.0f);
                 gl.glBegin(GL2.GL_LINES);
                 gl.glNormal3f(0.0f, 1.0f, 0.0f);
                 gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -653,6 +653,14 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glLineWidth(1.0f);
 
             }
+
+			if (RenderConfiguration.showFlux()) {
+				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
+				gl.glLineWidth(2.0f);
+				gl.glBegin(GL2.GL_LINES);
+				gl.glEnd();
+				gl.glLineWidth(1.0f);
+			}
 
             // disable lighting in ortho mode
             if (r.getCamera().isOrtho()) {
