@@ -22,7 +22,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 	private final float distance;
 	
 	private static final Vector4f energonColor = new Vector4f(0.0f, 1.0f, 0.0f, 0.5f);
-	private static final Vector4f fluxColor = new Vector4f(1.0f, 0.0f, 1.0f, 0.5f);
+	private static final Vector4f fluxColor = new Vector4f(0.0f, 0.0f, 1.0f, 0.5f);
 	
 	private Vector4f color;
 
@@ -73,7 +73,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 		toTarget.z = target.y - src.getDrawY();
 		float time = Math.min(roundsToLive, lifetime-roundsToLive)/lifetime;
 
-		gl.glLineWidth(8.0f * time);
+		gl.glLineWidth(2.0f);
 		gl.glColor4f(color.x, color.y, color.z, color.w);
 		gl.glBegin(GL2.GL_LINES);
 		gl.glVertex3f(0.0f, 0.1f, 0.0f);

@@ -82,6 +82,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
     private int pointsAWidth = -1;
     private int pointsBWidth = -1;
     private GLDrawCutScene cutScene;
+	private GLDrawHUD sideA, sideB;
     private GLDrawMap drawMap;
     public static boolean USE_MODELS = Config.getGlobalConfig().getBoolean("bc.client.use-models");
     private GLDrawState ds;
@@ -142,6 +143,14 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         debugFont = new Font(null, Font.PLAIN, 2);
         ds = new GLDrawState();
         cam = new Camera();
+
+		try {
+			System.out.println(match.getTeamA() + " " + match.getTeamB() + " " + Team.A + " " + Team.B + " " + match.getHeader());
+			sideA = new GLDrawHUD(ds, Team.A);
+			sideB = new GLDrawHUD(ds, Team.B);
+		} catch (Error e) {
+			e.printStackTrace();
+		}
 
         //fullscreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow();
 

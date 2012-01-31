@@ -531,7 +531,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					} else {
 						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 					}
-					gl.glLineWidth(3.0f);
+					gl.glLineWidth(2.0f);
 					float angleDelta = (float) 3.14159 / 8;
 					float circleScale = .5f;
 					gl.glBegin(GL2.GL_LINE_LOOP);
@@ -560,7 +560,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 					}
 
-					gl.glLineWidth(4.0f);
+					gl.glLineWidth(1.0f);
 					gl.glBegin(GL2.GL_LINES);
 					//if (obj.getType() == RobotType.WOUT2XXX)
 					//    gl.glVertex3f(0.0f, 0.0f, 0.0f);
@@ -568,7 +568,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glVertex3f(0.0f, 0.5f, 0.0f);
 					gl.glVertex3f(deltax, deltaz, deltay);
 					gl.glEnd();
-					gl.glLineWidth(1.0f);
 				}
             }
             //}
@@ -634,12 +633,28 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw energon
+			final float fluxEnergonBarStart = 0.5f;
+			final float fluxEnergonBarHeight = 1.0f;
             if (RenderConfiguration.showEnergon()) {
                 float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
 
+				//gl.glBegin(GL2.GL_QUADS);
+				//gl.glNormal3f(0.0f, 1.0f, 0.0f);
+				//gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, fluxEnergonBarStart);
+				//gl.glVertex3f(0.5f, 0.125f, fluxEnergonBarStart);
+				//gl.glVertex3f(0.5f, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
+				//gl.glVertex3f(-0.5f + frac, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
+
+				//gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
+				//gl.glVertex3f(-0.5f, 0.125f, fluxEnergonBarStart);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, fluxEnergonBarStart);
+				//gl.glVertex3f(-0.5f + frac, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
+				//gl.glVertex3f(-0.5f, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
+				//gl.glEnd();
                 gl.glLineWidth(2.0f);
                 gl.glBegin(GL2.GL_LINES);
                 gl.glNormal3f(0.0f, 1.0f, 0.0f);
@@ -662,6 +677,20 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				final float z = 0.7f;
 				fluxColor.interpolate(min, max, frac);
 
+				//gl.glBegin(GL2.GL_QUADS);
+				//gl.glNormal3f(0.0f, 1.0f, 0.0f);
+				//gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.0f);
+				//gl.glVertex3f(0.5f, 0.125f, 1.0f);
+				//gl.glVertex3f(0.5f, 0.125f, 1.5f);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.5f);
+
+				//gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
+				//gl.glVertex3f(-0.5f, 0.125f, 1.0f);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.0f);
+				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.5f);
+				//gl.glVertex3f(-0.5f, 0.125f, 1.5f);
+				//gl.glEnd();
 				gl.glLineWidth(2.0f);
 				gl.glBegin(GL2.GL_LINES);
 				gl.glNormal3f(0.0f, 1.0f, 0.0f);

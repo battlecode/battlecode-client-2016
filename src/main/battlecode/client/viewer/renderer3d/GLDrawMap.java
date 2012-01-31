@@ -2,10 +2,7 @@ package battlecode.client.viewer.renderer3d;
 
 import java.lang.Math;
 
-
-
 import java.util.ArrayList;
-
 import java.util.LinkedList;
 
 import javax.media.opengl.GL;
