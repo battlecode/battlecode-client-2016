@@ -321,11 +321,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     private void drawAction(Graphics2D g2) {
         if (roundsUntilAttackIdle>0) {
-			if (getTeam() == Team.A) {
-            	g2.setColor(Color.RED);
-            } else {
-            	g2.setColor(Color.BLUE);
-            }
+			g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
             g2.setStroke(mediumStroke);
 			if(targetLoc==null) {
 				// scorcher

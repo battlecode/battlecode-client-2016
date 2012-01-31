@@ -498,7 +498,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL2.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != RobotType.CHAINER*/) {
+            if (obj.getAttackAction() == ActionType.ATTACKING) {
                 /*  final String crosshairRed = "art/crosshair.png";
                 final String crosshairBlue = "art/crosshair2.png";
                 String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
@@ -507,7 +507,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
 				// aha, target is sometimes null!! I'm not sure why, though ~shewu
-				if (obj != null && target != null && origin != null) {
+				// BECAUSE SCORCHERS ~shewu
+				if (target != null) {
 					float tx = target.x - origin.x;
 					float ty = target.y - origin.y;
 					float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
@@ -568,10 +569,29 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glVertex3f(0.0f, 0.5f, 0.0f);
 					gl.glVertex3f(deltax, deltaz, deltay);
 					gl.glEnd();
+				} else { // target null, scorcher
+					// we need to draw a semicircle; approximate with linestrips
+					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+					final float angleDelta = (float) Math.PI / 32;
+					final float circleScale = 5.f;
+
+					if (obj.getTeam() == Team.A) {
+						gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					} else {
+						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+					}
+					gl.glLineWidth(2.0f);
+
+					gl.glBegin(GL2.GL_LINE_LOOP);
+					for (double angle = -Math.PI/2.0f; angle <= Math.PI/2.0f + angleDelta; angle += angleDelta) {
+						gl.glVertex3f((float)(Math.cos(angle) * radius), 0.0f, (float)(Math.sin(angle) * radius));
+						gl.glVertex3f((float)(Math.cos(angle) * radius), 0.0f, (float)(Math.sin(angle) * radius));
+					}
+					gl.glEnd();
+
+					gl.glLineWidth(1.0f);
 				}
             }
-            //}
-
 
             if (!obj.getType().isAirborne()) {
                 // rotate into position

@@ -25,6 +25,13 @@ public class GLDrawHUD {
 	}
 
 	public void draw(GL2 gl, GLU glu, GLDrawState ds) {
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+
 		gl.glColor3f(0.5f, 0.5f, 0.5f);
 		
 		try {
