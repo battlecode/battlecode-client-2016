@@ -375,6 +375,30 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             return;
         }
 
+		// power grid
+		gl.glLineWidth(2.0f);
+		gl.glBegin(GL2.GL_LINES);
+		for (Link l : links) {
+			if (l.connected[0]) {
+				if (l.connected[1]) {
+					gl.glColor4f(0.75f, 0.0f, 0.75f, 1.0f); // both
+				} else {
+					gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f); // A
+				}
+			} else {
+				if (l.connected[1]) {
+					gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f); // B
+				} else {
+					gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f); // none
+				}
+			}
+			final float pgMult = 0.5f;
+			gl.glVertex3f(l.from.x - origin.x, 0.01f, l.from.y - origin.y);
+			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
+		}
+		gl.glEnd();
+		gl.glLineWidth(1.0f);
+
         for (Map.Entry<Integer, GLDrawObject> entry : drawableSet) {
             int id = entry.getKey();
             GLDrawObject obj = entry.getValue();
@@ -397,7 +421,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             float maxHeight = GLDrawMap.MAP_SCALE * 32;
             // are we flying or not
             if (obj.getType().isAirborne()) {
-
                 gl.glTranslatef(0.0f, maxHeight, 0.0f);
             } //                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
             else {
@@ -428,12 +451,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     actualZ = srcZ + distFrac * deltaZ;
                     //obj.setString(0, new String("S " + x + " " + y + " " + srcZ + " " + destZ + " " + distFrac));
 
-
                     gl.glTranslatef(0.0f, actualZ + extraDist, 0.0f);
                 } else {
                     gl.glTranslatef(0.0f, map.getTerrainHeight(x, y) + extraDist, 0.0f);
                     //	obj.setString(0, new String("N " + map.getTerrainHeight(x, y) + " " + x + " " + y ));
-
                 }
 
                 //This is to get the units to tilt properly
