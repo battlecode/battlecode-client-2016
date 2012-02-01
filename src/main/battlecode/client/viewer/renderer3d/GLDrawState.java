@@ -376,8 +376,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
 		// power grid
-		gl.glLineWidth(2.0f);
+		gl.glLineWidth(4.0f);
 		gl.glBegin(GL2.GL_LINES);
+		gl.glNormal3f(0.0f, 1.0f, 0.0f);
 		for (Link l : links) {
 			if (l.connected[0]) {
 				if (l.connected[1]) {
