@@ -499,11 +499,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             gl.glDisable(GL2.GL_LIGHTING);
             // draw crosshair if shooting
             if (obj.getAttackAction() == ActionType.ATTACKING) {
-                /*  final String crosshairRed = "art/crosshair.png";
-                final String crosshairBlue = "art/crosshair2.png";
-                String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
-                Texture tex = textureCache.getResource(crosshair, crosshair).tex;
-                if (tex != null) {*/
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
 				// aha, target is sometimes null!! I'm not sure why, though ~shewu
@@ -563,9 +558,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
 					gl.glLineWidth(1.0f);
 					gl.glBegin(GL2.GL_LINES);
-					//if (obj.getType() == RobotType.WOUT2XXX)
-					//    gl.glVertex3f(0.0f, 0.0f, 0.0f);
-					//else
 					gl.glVertex3f(0.0f, 0.5f, 0.0f);
 					gl.glVertex3f(deltax, deltaz, deltay);
 					gl.glEnd();
@@ -606,7 +598,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 }
             }
 
-            // draw archon circle
+            // draw scout circle
             if (obj.getType().isAirborne()) {
                 gl.glDisable(GL2.GL_LIGHTING);
                 gl.glDisable(GL2.GL_CULL_FACE);
@@ -653,40 +645,31 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw energon
-			final float fluxEnergonBarStart = 0.5f;
-			final float fluxEnergonBarHeight = 1.0f;
+			final float efXStart = -0.5f;
+			final float efXEnd = 0.5f;
+			final float efY = 0.125f;
+			final float efZStart = 0.5f;
+			final float efZWidth = 0.25f;
             if (RenderConfiguration.showEnergon()) {
                 float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
 
-				//gl.glBegin(GL2.GL_QUADS);
-				//gl.glNormal3f(0.0f, 1.0f, 0.0f);
-				//gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, fluxEnergonBarStart);
-				//gl.glVertex3f(0.5f, 0.125f, fluxEnergonBarStart);
-				//gl.glVertex3f(0.5f, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
-				//gl.glVertex3f(-0.5f + frac, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
+				gl.glBegin(GL2.GL_QUADS);
+				gl.glNormal3f(0.0f, 1.0f, 0.0f);
+				gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXEnd, efY, efZStart);
 
-				//gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
-				//gl.glVertex3f(-0.5f, 0.125f, fluxEnergonBarStart);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, fluxEnergonBarStart);
-				//gl.glVertex3f(-0.5f + frac, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
-				//gl.glVertex3f(-0.5f, 0.625f, fluxEnergonBarStart + fluxEnergonBarHeight);
-				//gl.glEnd();
-                gl.glLineWidth(2.0f);
-                gl.glBegin(GL2.GL_LINES);
-                gl.glNormal3f(0.0f, 1.0f, 0.0f);
-                gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-                gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
-                gl.glVertex3f(0.5f, 0.125f, 0.5f);
-
-                gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
-                gl.glVertex3f(-0.5f, 0.125f, 0.5f);
-                gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
-                gl.glEnd();
-                gl.glLineWidth(1.0f);
+				gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
+				gl.glVertex3f(efXStart, efY, efZStart);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart);
+				gl.glEnd();
             }
 
 			// draw flux
@@ -697,32 +680,20 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				final float z = 0.7f;
 				fluxColor.interpolate(min, max, frac);
 
-				//gl.glBegin(GL2.GL_QUADS);
-				//gl.glNormal3f(0.0f, 1.0f, 0.0f);
-				//gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.0f);
-				//gl.glVertex3f(0.5f, 0.125f, 1.0f);
-				//gl.glVertex3f(0.5f, 0.125f, 1.5f);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.5f);
-
-				//gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
-				//gl.glVertex3f(-0.5f, 0.125f, 1.0f);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.0f);
-				//gl.glVertex3f(-0.5f + frac, 0.125f, 1.5f);
-				//gl.glVertex3f(-0.5f, 0.125f, 1.5f);
-				//gl.glEnd();
-				gl.glLineWidth(2.0f);
-				gl.glBegin(GL2.GL_LINES);
+				gl.glBegin(GL2.GL_QUADS);
 				gl.glNormal3f(0.0f, 1.0f, 0.0f);
 				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				gl.glVertex3f(-0.5f + frac, 0.125f, z);
-				gl.glVertex3f(0.5f, 0.125f, z);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth); // 4
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f); // 1
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f); // 2
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth); // 3
 
 				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
-				gl.glVertex3f(-0.5f, 0.125f, z);
-				gl.glVertex3f(-0.5f + frac, 0.125f, z);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
 				gl.glEnd();
-				gl.glLineWidth(1.0f);
 			}
 
             // disable lighting in ortho mode

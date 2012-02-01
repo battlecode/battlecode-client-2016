@@ -858,30 +858,30 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             String s = teamANameShort + " - " + aPoints;
             // do text rendering
             txtRenderer.beginRendering(ad.getWidth(), ad.getHeight());
-            //int numArchons = ds.getArchons(Team.A).size();
-            //String archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
-//            txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-//            //txtRenderer.draw("RED TEAM - " + aPoints, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
-//            txtRenderer.draw(s, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
-//            txtRenderer.draw(archons, 2 + 4, ad.getHeight() - metric.getAscent() * 2 + 2);
-//            txtRenderer.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-//            //txtRenderer.draw("RED TEAM - " + aPoints, 0 + 4, ad.getHeight() - metric.getAscent());
-//            txtRenderer.draw(s, 0 + 4, ad.getHeight() - metric.getAscent());
-//            txtRenderer.draw(archons, 0 + 4, ad.getHeight() - metric.getAscent() * 2);
-//
-//
-//            //String s = bPoints + " - BLUE TEAM";
-//            s = bPoints + " - " + teamBNameShort;
-//            numArchons = ds.getArchons(Team.B).size();
-//            archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
-//
-//            txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-//            txtRenderer.draw(s, ad.getWidth() - metric.stringWidth(s) + 2 - 2 - 4, ad.getHeight() - metric.getAscent() + 2);
-//            txtRenderer.draw(archons, ad.getWidth() - metric.stringWidth(archons) + 2 - 2 - 4, ad.getHeight() - metric.getAscent() * 2 + 2);
-//            //txtRenderer.setColor(0.0f, 0.0f, 1.0f, 1.0f);
-//            txtRenderer.setColor(0.7f, 0.95f, 1.0f, 1.0f);
-//            txtRenderer.draw(s, ad.getWidth() - metric.stringWidth(s) - 2 - 4, ad.getHeight() - metric.getAscent());
-//            txtRenderer.draw(archons, ad.getWidth() - metric.stringWidth(archons) - 2 - 4, ad.getHeight() - metric.getAscent() * 2);
+            int numArchons = ds.getArchons(Team.A).size();
+            String archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
+            txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //txtRenderer.draw("RED TEAM - " + aPoints, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
+            txtRenderer.draw(s, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
+            txtRenderer.draw(archons, 2 + 4, ad.getHeight() - metric.getAscent() * 2 + 2);
+            txtRenderer.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+            //txtRenderer.draw("RED TEAM - " + aPoints, 0 + 4, ad.getHeight() - metric.getAscent());
+            txtRenderer.draw(s, 0 + 4, ad.getHeight() - metric.getAscent());
+            txtRenderer.draw(archons, 0 + 4, ad.getHeight() - metric.getAscent() * 2);
+
+
+            //String s = bPoints + " - BLUE TEAM";
+            s = bPoints + " - " + teamBNameShort;
+            numArchons = ds.getArchons(Team.B).size();
+            archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
+
+            txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+            txtRenderer.draw(s, ad.getWidth() - metric.stringWidth(s) + 2 - 2 - 4, ad.getHeight() - metric.getAscent() + 2);
+            txtRenderer.draw(archons, ad.getWidth() - metric.stringWidth(archons) + 2 - 2 - 4, ad.getHeight() - metric.getAscent() * 2 + 2);
+            //txtRenderer.setColor(0.0f, 0.0f, 1.0f, 1.0f);
+            txtRenderer.setColor(0.7f, 0.95f, 1.0f, 1.0f);
+            txtRenderer.draw(s, ad.getWidth() - metric.stringWidth(s) - 2 - 4, ad.getHeight() - metric.getAscent());
+            txtRenderer.draw(archons, ad.getWidth() - metric.stringWidth(archons) - 2 - 4, ad.getHeight() - metric.getAscent() * 2);
 
             String round = "RND: " + String.valueOf(maxRounds - timeline.getRound());
             if (roundStringWidth == -1)

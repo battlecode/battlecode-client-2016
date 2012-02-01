@@ -33,6 +33,12 @@ public class GLDrawHUD {
 		gl.glLoadIdentity();
 
 		gl.glColor3f(0.5f, 0.5f, 0.5f);
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glVertex3f(0.0f, 0.0f, 0.0f);
+		gl.glVertex3f(0.0f, 10.0f, 0.0f);
+		gl.glVertex3f(10.0f, 10.0f, 0.0f);
+		gl.glVertex3f(10.0f, 0.0f, 0.0f);
+		gl.glEnd();
 		
 		try {
 			java.util.List<GLDrawObject> archons = ds.getArchons(team);
