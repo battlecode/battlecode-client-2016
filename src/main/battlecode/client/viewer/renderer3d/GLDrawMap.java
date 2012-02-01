@@ -606,19 +606,20 @@ public class GLDrawMap {
 
         boolean showGrid = RenderConfiguration.showGridlines();
         if (showGrid) {
-            //gl.glBegin(GL2.GL_LINE_STRIP);
             gl.glColor3f(0.1f, 0.1f, 0.1f);
             gl.glNormal3f(0.0f, 1.0f, 0.0f);
-
+			gl.glLineWidth(1.5f);
 
             // do the horizontal gridlines
+			/*
 			gl.glBegin(GL2.GL_LINES);
 			for (int j = 1; j < map.getHeight(); ++j) {
 				gl.glVertex3f(0.0f, 0.0f, j);
 				gl.glVertex3f(map.getWidth(), 0.0f, j);
 			}
 			gl.glEnd();
-			/*
+			*/
+			gl.glBegin(GL2.GL_LINE_STRIP);
             for (int j = 0; j < mapHeight; j++) {
                 if ((j + 1) % DENSITY != 0) {
                     continue;
@@ -682,19 +683,19 @@ public class GLDrawMap {
                     }
                 }
             }
-			*/
+            gl.glEnd();
 
-            //gl.glEnd();
 
             // do the vertical gridlines
+			/*
 			gl.glBegin(GL2.GL_LINES);
 			for (int j = 1; j < map.getWidth(); ++j) {
 				gl.glVertex3f(j, 0.0f, 0.0f);
 				gl.glVertex3f(j, 0.0f, map.getHeight());
 			}
 			gl.glEnd();
-            //gl.glBegin(GL2.GL_LINE_STRIP);
-			/*
+			*/
+            gl.glBegin(GL2.GL_LINE_STRIP);
             for (int i = 0; i < mapWidth; i++) {
                 if ((i + 1) % DENSITY != 0) {
                     continue;
@@ -757,9 +758,7 @@ public class GLDrawMap {
                     }
                 }
             }
-			*/
-
-            //gl.glEnd();
+            gl.glEnd();
         }
 
     }
