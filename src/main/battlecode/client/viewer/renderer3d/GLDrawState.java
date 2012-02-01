@@ -359,10 +359,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         final GLUquadric quadric = glu.gluNewQuadric();
 
         // draw the flux deposits
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        
         gl.glEnable(GL2.GL_TEXTURE_2D);
-        gl.glEnable(GL2.GL_BLEND);
+		gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         // draw the units
@@ -376,10 +374,12 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
 		// power grid
+		gl.glDisable(GL2.GL_BLEND);
 		gl.glLineWidth(4.0f);
 		gl.glBegin(GL2.GL_LINES);
 		gl.glNormal3f(0.0f, 1.0f, 0.0f);
 		for (Link l : links) {
+			// wtf, no glColor4f statements work in this block?!?!?!?!
 			if (l.connected[0]) {
 				if (l.connected[1]) {
 					gl.glColor4f(0.75f, 0.0f, 0.75f, 1.0f); // both
@@ -393,11 +393,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f); // none
 				}
 			}
-			final float pgMult = 0.5f;
 			gl.glVertex3f(l.from.x - origin.x, 0.01f, l.from.y - origin.y);
 			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
 		}
 		gl.glEnd();
+		gl.glEnable(GL2.GL_BLEND);
 		gl.glLineWidth(1.0f);
 
         for (Map.Entry<Integer, GLDrawObject> entry : drawableSet) {
@@ -705,10 +705,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				gl.glBegin(GL2.GL_QUADS);
 				gl.glNormal3f(0.0f, 1.0f, 0.0f);
 				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth); // 4
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f); // 1
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f); // 2
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth); // 3
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
 
 				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
 				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
