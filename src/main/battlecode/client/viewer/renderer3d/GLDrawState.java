@@ -358,15 +358,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     public synchronized void draw(GL2 gl, GLU glu, GLGameRenderer r, DebugState debug, GLDrawMap map, MapLocation origin) {
         final GLUquadric quadric = glu.gluNewQuadric();
 
-        // draw the flux deposits
         gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-
-        // draw the units
-        Color3f energonColor = new Color3f();
-		Color3f fluxColor = new Color3f();
-        gl.glLineWidth(2.0f);
 
         Iterable<Map.Entry<Integer, GLDrawObject>> drawableSet = getDrawableSet();
         if (drawableSet == null) {
@@ -379,7 +373,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 		gl.glBegin(GL2.GL_LINES);
 		gl.glNormal3f(0.0f, 1.0f, 0.0f);
 		for (Link l : links) {
-			// wtf, no glColor4f statements work in this block?!?!?!?!
 			if (l.connected[0]) {
 				if (l.connected[1]) {
 					gl.glColor4f(0.75f, 0.0f, 0.75f, 1.0f); // both
@@ -665,6 +658,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glEnable(GL2.GL_CULL_FACE);
 
             }
+
+			Color3f energonColor = new Color3f();
+			Color3f fluxColor = new Color3f();
 
             // draw energon
 			final float efXStart = -0.5f;
