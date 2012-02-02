@@ -46,40 +46,39 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     }
 
     public GLDrawObject(GLDrawObject copy) {
-	super(copy);
-	targetHeight = copy.targetHeight;
-	if(animations.containsKey(ENERGON_TRANSFER)) {
-	    GLEnergonTransferAnim a = (GLEnergonTransferAnim)animations.get(ENERGON_TRANSFER);
-	    a.setSource(this);
-	}
+		super(copy);
+		targetHeight = copy.targetHeight;
+		if(animations.containsKey(ENERGON_TRANSFER)) {
+			GLEnergonTransferAnim a = (GLEnergonTransferAnim)animations.get(ENERGON_TRANSFER);
+			a.setSource(this);
+		}
     }
 
     public static void loadAll() {
     }
 
     public RobotLevel getTargetHeight() {
-	return targetHeight;
+		return targetHeight;
     }
 
     public GLEnergonTransferAnim getEnergonTransferAnim() {
-	return (GLEnergonTransferAnim)animations.get(AbstractAnimation.AnimationType.ENERGON_TRANSFER);
+		return (GLEnergonTransferAnim)animations.get(AbstractAnimation.AnimationType.ENERGON_TRANSFER);
     }
 
     public GLExplosionAnim getExplosionAnim() {
-	return (GLExplosionAnim)animations.get(AbstractAnimation.AnimationType.DEATH_EXPLOSION);
+		return (GLExplosionAnim)animations.get(AbstractAnimation.AnimationType.DEATH_EXPLOSION);
     }
     
     public GLTeleportAnim getTeleportAnim(){
-	
-	return (GLTeleportAnim)animations.get(AbstractAnimation.AnimationType.TELEPORT);
+		return (GLTeleportAnim)animations.get(AbstractAnimation.AnimationType.TELEPORT);
     }
 
     public GLMortarAttackAnim getMortarAttackAnim() {
-	return (GLMortarAttackAnim)animations.get(AbstractAnimation.AnimationType.MORTAR_ATTACK);
+		return (GLMortarAttackAnim)animations.get(AbstractAnimation.AnimationType.MORTAR_ATTACK);
     }
 
     public GLExplosionAnim getMortarExplosionAnim() {
-	return (GLExplosionAnim)animations.get(AbstractAnimation.AnimationType.MORTAR_EXPLOSION);
+		return (GLExplosionAnim)animations.get(AbstractAnimation.AnimationType.MORTAR_EXPLOSION);
     }
 
 	public MapLocation getMortarAttackTarget() {
@@ -95,8 +94,7 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     }
 
     public GLTeleportAnim createTeleportAnim(MapLocation src, MapLocation teleportLoc){
-	return new GLTeleportAnim(this, teleportLoc);
-	
+		return new GLTeleportAnim(this, teleportLoc);
     }
 
 	public GLExplosionAnim createDeathExplosionAnim(boolean isArchon) {

@@ -90,8 +90,8 @@ class DrawHUD {
 				g2.translate(width / 2, .9);
 				g2.scale(width / 4.5, width / 4.5);
 
-				// should actually get the team names
-				System.out.println(ds.getRoundStats());
+				// should actually get the team names --sherry
+				//System.out.println(ds.getRoundStats());
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
 					g2.drawString("Team A", 0, 0);
@@ -160,15 +160,15 @@ class DrawHUD {
         {
         	g2.scale(spriteScale, spriteScale);
             AffineTransform pushed2 = g2.getTransform();
-                {
-                    BufferedImage underImg = unitUnder.image;
-                    g2.translate(-0.5, -0.5);
-                    g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-                    g2.drawImage(underImg, null, null);
-                }
-                g2.setTransform(pushed2);
-                if (r!=null)
-                    r.drawImmediate(g2, false, true);
+			{
+				BufferedImage underImg = unitUnder.image;
+				g2.translate(-0.5, -0.5);
+				g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+				g2.drawImage(underImg, null, null);
+			}
+			g2.setTransform(pushed2);
+			if (r!=null)
+				r.drawImmediate(g2, false, true);
         }
         g2.setTransform(pushed);
         g2.translate(0, slotSize);

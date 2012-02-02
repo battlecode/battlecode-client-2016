@@ -359,10 +359,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         final GLUquadric quadric = glu.gluNewQuadric();
 
         // draw the flux deposits
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        
         gl.glEnable(GL2.GL_TEXTURE_2D);
-        gl.glEnable(GL2.GL_BLEND);
+		gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         // draw the units
@@ -374,6 +372,33 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         if (drawableSet == null) {
             return;
         }
+
+		// power grid
+		gl.glDisable(GL2.GL_BLEND);
+		gl.glLineWidth(4.0f);
+		gl.glBegin(GL2.GL_LINES);
+		gl.glNormal3f(0.0f, 1.0f, 0.0f);
+		for (Link l : links) {
+			// wtf, no glColor4f statements work in this block?!?!?!?!
+			if (l.connected[0]) {
+				if (l.connected[1]) {
+					gl.glColor4f(0.75f, 0.0f, 0.75f, 1.0f); // both
+				} else {
+					gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f); // A
+				}
+			} else {
+				if (l.connected[1]) {
+					gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f); // B
+				} else {
+					gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f); // none
+				}
+			}
+			gl.glVertex3f(l.from.x - origin.x, 0.01f, l.from.y - origin.y);
+			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
+		}
+		gl.glEnd();
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glLineWidth(1.0f);
 
         for (Map.Entry<Integer, GLDrawObject> entry : drawableSet) {
             int id = entry.getKey();
@@ -397,7 +422,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             float maxHeight = GLDrawMap.MAP_SCALE * 32;
             // are we flying or not
             if (obj.getType().isAirborne()) {
-
                 gl.glTranslatef(0.0f, maxHeight, 0.0f);
             } //                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
             else {
@@ -428,12 +452,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     actualZ = srcZ + distFrac * deltaZ;
                     //obj.setString(0, new String("S " + x + " " + y + " " + srcZ + " " + destZ + " " + distFrac));
 
-
                     gl.glTranslatef(0.0f, actualZ + extraDist, 0.0f);
                 } else {
                     gl.glTranslatef(0.0f, map.getTerrainHeight(x, y) + extraDist, 0.0f);
                     //	obj.setString(0, new String("N " + map.getTerrainHeight(x, y) + " " + x + " " + y ));
-
                 }
 
                 //This is to get the units to tilt properly
@@ -498,16 +520,12 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL2.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != RobotType.CHAINER*/) {
-                /*  final String crosshairRed = "art/crosshair.png";
-                final String crosshairBlue = "art/crosshair2.png";
-                String crosshair = (obj.getTeam() == Team.A) ? crosshairRed : crosshairBlue;
-                Texture tex = textureCache.getResource(crosshair, crosshair).tex;
-                if (tex != null) {*/
+            if (obj.getAttackAction() == ActionType.ATTACKING) {
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
 				// aha, target is sometimes null!! I'm not sure why, though ~shewu
-				if (obj != null && target != null && origin != null) {
+				// BECAUSE SCORCHERS ~shewu
+				if (target != null) {
 					float tx = target.x - origin.x;
 					float ty = target.y - origin.y;
 					float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
@@ -531,7 +549,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					} else {
 						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 					}
-					gl.glLineWidth(3.0f);
+					gl.glLineWidth(2.0f);
 					float angleDelta = (float) 3.14159 / 8;
 					float circleScale = .5f;
 					gl.glBegin(GL2.GL_LINE_LOOP);
@@ -560,19 +578,34 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 					}
 
-					gl.glLineWidth(4.0f);
+					gl.glLineWidth(1.0f);
 					gl.glBegin(GL2.GL_LINES);
-					//if (obj.getType() == RobotType.WOUT2XXX)
-					//    gl.glVertex3f(0.0f, 0.0f, 0.0f);
-					//else
 					gl.glVertex3f(0.0f, 0.5f, 0.0f);
 					gl.glVertex3f(deltax, deltaz, deltay);
 					gl.glEnd();
+				} else { // target null, scorcher
+					// we need to draw a semicircle; approximate with linestrips
+					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+					final float angleDelta = (float) Math.PI / 32;
+					final float circleScale = 5.f;
+
+					if (obj.getTeam() == Team.A) {
+						gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					} else {
+						gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+					}
+					gl.glLineWidth(2.0f);
+
+					gl.glBegin(GL2.GL_LINE_LOOP);
+					for (double angle = -Math.PI/2.0f; angle <= Math.PI/2.0f + angleDelta; angle += angleDelta) {
+						gl.glVertex3f((float)(Math.cos(angle) * radius), 0.0f, (float)(Math.sin(angle) * radius));
+						gl.glVertex3f((float)(Math.cos(angle) * radius), 0.0f, (float)(Math.sin(angle) * radius));
+					}
+					gl.glEnd();
+
 					gl.glLineWidth(1.0f);
 				}
             }
-            //}
-
 
             if (!obj.getType().isAirborne()) {
                 // rotate into position
@@ -587,7 +620,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 }
             }
 
-            // draw archon circle
+            // draw scout circle
             if (obj.getType().isAirborne()) {
                 gl.glDisable(GL2.GL_LIGHTING);
                 gl.glDisable(GL2.GL_CULL_FACE);
@@ -634,24 +667,31 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw energon
+			final float efXStart = -0.5f;
+			final float efXEnd = 0.5f;
+			final float efY = 0.125f;
+			final float efZStart = 0.5f;
+			final float efZWidth = 0.25f;
             if (RenderConfiguration.showEnergon()) {
                 float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);
 
-                gl.glLineWidth(2.0f);
-                gl.glBegin(GL2.GL_LINES);
-                gl.glNormal3f(0.0f, 1.0f, 0.0f);
-                gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-                gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
-                gl.glVertex3f(0.5f, 0.125f, 0.5f);
+				gl.glBegin(GL2.GL_QUADS);
+				gl.glNormal3f(0.0f, 1.0f, 0.0f);
+				gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXEnd, efY, efZStart);
 
-                gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
-                gl.glVertex3f(-0.5f, 0.125f, 0.5f);
-                gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
-                gl.glEnd();
-                gl.glLineWidth(1.0f);
+				gl.glColor4f(energonColor.x, energonColor.y, energonColor.z, 1.0f);
+				gl.glVertex3f(efXStart, efY, efZStart);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart);
+				gl.glEnd();
             }
 
 			// draw flux
@@ -662,18 +702,20 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				final float z = 0.7f;
 				fluxColor.interpolate(min, max, frac);
 
-				gl.glLineWidth(2.0f);
-				gl.glBegin(GL2.GL_LINES);
+				gl.glBegin(GL2.GL_QUADS);
 				gl.glNormal3f(0.0f, 1.0f, 0.0f);
 				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				gl.glVertex3f(-0.5f + frac, 0.125f, z);
-				gl.glVertex3f(0.5f, 0.125f, z);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
 
 				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
-				gl.glVertex3f(-0.5f, 0.125f, z);
-				gl.glVertex3f(-0.5f + frac, 0.125f, z);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
 				gl.glEnd();
-				gl.glLineWidth(1.0f);
 			}
 
             // disable lighting in ortho mode
