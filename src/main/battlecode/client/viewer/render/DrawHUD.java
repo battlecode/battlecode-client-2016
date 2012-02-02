@@ -94,7 +94,6 @@ class DrawHUD {
 				g2.scale(width / 4.5, width / 4.5);
 
 				// should actually get the team names
-				System.out.println(ds.getRoundStats());
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
 					String teamName = "Team A";
