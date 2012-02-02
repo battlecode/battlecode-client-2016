@@ -388,6 +388,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     public EnergonTransferAnim createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux) {
+		System.out.println("energon transfer animation");
         return new EnergonTransferAnim(this, loc, amt, isFlux);
     }
 

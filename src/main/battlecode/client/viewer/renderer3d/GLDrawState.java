@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.Color3f;
@@ -353,13 +354,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
     private static final float MODEL_SCALE = 0.1f;
     private static final float ARCHON_MODEL_SCALE = 0.07f;
 
-    public void drawArchon(GL gl, GLDrawObject obj) {
+    public void drawArchon(GL2 gl, GLDrawObject obj) {
         String archonBodyTexPath = (obj.getTeam() == Team.A) ? archonBodyTexPathR : archonBodyTexPathB;
         Texture bodyTex = textureCache.getResource(archonBodyTexPath, archonBodyTexPath).tex;
 
         // translate up to normal level
         gl.glTranslatef(0.0f, 0.1f, 0.0f);
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         // scale the model
         gl.glScalef(ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE);
         // gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
@@ -368,10 +369,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
         archonBody.draw(gl);
 
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
     }
 
-    public void drawChainer(GL gl, GLDrawObject obj) {
+    public void drawChainer(GL2 gl, GLDrawObject obj) {
 
         // String channelerWingTexPath = (obj.getTeam() == Team.A) ? channelerWingTexPathR : channelerWingTexPathB;
         String chainerBodyTexPath = (obj.getTeam() == Team.A) ? chainerBodyTexPathR : chainerBodyTexPathB;
@@ -381,7 +382,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         // translate up to normal level
         gl.glTranslatef(0.0f, 0.1f, 0.0f);
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         // scale the model
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         // gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
@@ -397,16 +398,16 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         gl.glTranslatef(-10000.0f * MODEL_SCALE, 0.0f, 0.0f);
         gl.glScalef(-1.0f, 1.0f, 1.0f);
-        gl.glFrontFace(GL.GL_CW);
+        gl.glFrontFace(GL2.GL_CW);
         channelerWing.draw(gl);
-        gl.glFrontFace(GL.GL_CCW);
+        gl.glFrontFace(GL2.GL_CCW);
          */
 
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
 
     }
 
-    public void drawTurret(GL gl, GLDrawObject obj) {
+    public void drawTurret(GL2 gl, GLDrawObject obj) {
         String sniperTurretTexPath = (obj.getTeam() == Team.A) ? sniperTurretTexPathR : sniperTurretTexPathB;
         //  String sniperBodyTexPath = (obj.getTeam() == Team.A) ? sniperBodyTexPathR : sniperBodyTexPathB;
 
@@ -415,7 +416,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         // translate up to normal level
         gl.glTranslatef(0.0f, 0.1f, 0.0f);
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         // scale the model
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         //  gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
@@ -428,7 +429,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         if (turretTex != null)
         turretTex.bind();
         sniperTurret.draw(gl);
-        gl.glEnable(GL.GL_BLEND);
+        gl.glEnable(GL2.GL_BLEND);
          */
         /*} else if (obj.getType() == RobotType.WOUT2XXX) {
 
@@ -450,7 +451,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         scoutRotor.draw(gl);*/
     }
 
-    public void drawSoldier(GL gl, GLDrawObject obj) {
+    public void drawSoldier(GL2 gl, GLDrawObject obj) {
         String soldierBodyTexPath = (obj.getTeam() == Team.A) ? soldierBodyTexPathR : soldierBodyTexPathB;
 
         Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
@@ -465,7 +466,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         soldierBody.draw(gl);
     }
 
-    public void drawWout(GL gl, GLDrawObject obj) {
+    public void drawWout(GL2 gl, GLDrawObject obj) {
 
         // now draw the worker
         String woutBodyTexPath = (obj.getTeam() == Team.A) ? woutBodyTexPathR : woutBodyTexPathB;
@@ -481,7 +482,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         woutBody.draw(gl);
     }
 
-    public void scaleBuilding(GL gl, GLDrawObject obj) {
+    public void scaleBuilding(GL2 gl, GLDrawObject obj) {
         String buildingBodyTexPath = (obj.getTeam() == Team.A) ? buildingBodyTexPathR : buildingBodyTexPathB;
 
         Texture bodyTex = textureCache.getResource(buildingBodyTexPath, buildingBodyTexPath).tex;
@@ -491,25 +492,25 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
         // this model uses different a different scale because it's from 2008
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f, MODEL_SCALE * 1.2f);
         //gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     }
 
-    public void drawTeleporter(GL gl, GLDrawObject obj) {
+    public void drawTeleporter(GL2 gl, GLDrawObject obj) {
         scaleBuilding(gl, obj);
         processingplantBody.draw(gl);
     }
 
-    public void drawAura(GL gl, GLDrawObject obj) {
+    public void drawAura(GL2 gl, GLDrawObject obj) {
         scaleBuilding(gl, obj);
         towerBody.draw(gl);
         /*
         if(obj.getCurrentAura() != null){
         gl.glPushMatrix();
-        gl.glDisable(GL.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
         switch(obj.getCurrentAura()){
         case OFF:
         gl.glColor4f(1.0f, 0.7f, 0.24f, 0.5f);
@@ -524,23 +525,23 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glColor4f(0.9f, 0.75f, 0.0f, 0.5f);
         break;
         }
-        gl.glEnable(GL.GL_BLEND);
-        gl.glDisable(GL.GL_DEPTH_TEST);
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glDisable(GL2.GL_DEPTH_TEST);
         gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
         gl.glScalef(1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f), 1.0f/(MODEL_SCALE * 1.2f));
         float diskSize = (float)Math.sqrt(obj.getType().sensorRadiusSquared());
 
         glu.gluCylinder(quadric, diskSize, 0.0f, 1.0f, 16, 1);
-        gl.glDisable(GL.GL_BLEND);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_BLEND);
+        gl.glEnable(GL2.GL_DEPTH_TEST);
+        gl.glEnable(GL2.GL_TEXTURE_2D);
         gl.glPopMatrix();
 
         }
          */
     }
 
-    public void drawComm(GL gl, GLDrawObject obj) {
+    public void drawComm(GL2 gl, GLDrawObject obj) {
         scaleBuilding(gl, obj);
         communicationsBody.draw(gl);
     }
@@ -552,15 +553,15 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
      * @param g2 The graphics context, transformed to MapLocation-space
      * @param debug The debug state, including MapLocation-space mouse state
      */
-    public synchronized void draw(GL gl, GLU glu, GLGameRenderer r, DebugState debug, GLDrawMap map, MapLocation origin) {
+    public synchronized void draw(GL2 gl, GLU glu, GLGameRenderer r, DebugState debug, GLDrawMap map, MapLocation origin) {
         final GLUquadric quadric = glu.gluNewQuadric();
 
         // draw the flux deposits
-        gl.glDisable(GL.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
         
-        gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glEnable(GL2.GL_TEXTURE_2D);
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         // draw the units
         Color3f energonColor = new Color3f();
@@ -585,7 +586,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // first translate to position
             gl.glTranslatef(x + 0.5f, 0.0f, y + 0.5f);
 
-            gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+            gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
             gl.glLineWidth(4.0f);
 
@@ -731,8 +732,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
             // draw channeler drain
-            gl.glDisable(GL.GL_DEPTH_TEST);
-            gl.glDisable(GL.GL_LIGHTING);
+            gl.glDisable(GL2.GL_DEPTH_TEST);
+            gl.glDisable(GL2.GL_LIGHTING);
             /*
             if (obj.getAttackAction() == ActionType.DRAINING) {
             gl.glPushMatrix();
@@ -749,8 +750,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // draw message broadcast
             if (obj.getBroadcast() != 0x00 && RenderConfiguration.showBroadcast()) {
 
-                gl.glEnable(GL.GL_BLEND);
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+                gl.glEnable(GL2.GL_BLEND);
+                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
                 gl.glPushMatrix();
                 gl.glTranslatef(0.0f, 0.001f, 0.0f);
                 gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -764,10 +765,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 }
                 gl.glPopMatrix();
 
-                gl.glDisable(GL.GL_BLEND);
+                gl.glDisable(GL2.GL_BLEND);
             }
-            gl.glEnable(GL.GL_LIGHTING);
-            gl.glEnable(GL.GL_DEPTH_TEST);
+            gl.glEnable(GL2.GL_LIGHTING);
+            gl.glEnable(GL2.GL_DEPTH_TEST);
 
             gl.glLineWidth(4.0f);
             // draw energon transfer animation
@@ -776,7 +777,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 transferAnim.draw(gl, map, origin);
             }
 
-            gl.glDisable(GL.GL_LIGHTING);
+            gl.glDisable(GL2.GL_LIGHTING);
             // draw crosshair if shooting
             if (obj.getAttackAction() == ActionType.ATTACKING /*&& obj.getType() != RobotType.CHAINER*/) {
                 /*  final String crosshairRed = "art/crosshair.png";
@@ -800,8 +801,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                     deltaz -= map.getTerrainHeight(x, y);
                 }
 
-                gl.glEnable(GL.GL_BLEND);
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+                gl.glEnable(GL2.GL_BLEND);
+                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
                 gl.glPushMatrix();
                 gl.glTranslatef(deltax, deltaz, deltay);
                 if (obj.getTeam() == Team.A) {
@@ -812,13 +813,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glLineWidth(3.0f);
                 float angleDelta = (float) 3.14159 / 8;
                 float circleScale = .5f;
-                gl.glBegin(GL.GL_LINE_LOOP);
+                gl.glBegin(GL2.GL_LINE_LOOP);
                 for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
                     gl.glVertex3f((float) Math.cos(angle) * circleScale, 0.01f, (float) Math.sin(angle) * circleScale);
                 }
                 gl.glEnd();
 
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 angleDelta = (float) 3.14159 / 2;
                 for (float angle = 0; angle < 3.14159 * 2; angle += angleDelta) {
                     gl.glVertex3f((float) (Math.cos(angle) * circleScale * 1.5), 0.01f, (float) (Math.sin(angle) * circleScale * 1.5));
@@ -831,7 +832,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 /*
                 tex.bind();
                 gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                gl.glBegin(GL.GL_TRIANGLE_FAN);
+                gl.glBegin(GL2.GL_TRIANGLE_FAN);
                 gl.glTexCoord2f(0.0f, 1.0f);
                 gl.glVertex3f(-0.5f, 0.01f, -0.5f);
                 gl.glTexCoord2f(0.0f, 0.0f);
@@ -843,9 +844,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glEnd();
                  */
                 gl.glPopMatrix();
-                gl.glDisable(GL.GL_BLEND);
+                gl.glDisable(GL2.GL_BLEND);
 
-                gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+                gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
                 if (obj.getTeam() == Team.A) {
                     gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
                 } else {
@@ -853,7 +854,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 }
 
                 gl.glLineWidth(4.0f);
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 //if (obj.getType() == RobotType.WOUT2XXX)
                 //    gl.glVertex3f(0.0f, 0.0f, 0.0f);
                 //else
@@ -880,10 +881,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             // draw archon circle
             if (obj.getType().isAirborne()) {
-                gl.glDisable(GL.GL_LIGHTING);
-                gl.glDisable(GL.GL_CULL_FACE);
-                gl.glEnable(GL.GL_BLEND);
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+                gl.glDisable(GL2.GL_LIGHTING);
+                gl.glDisable(GL2.GL_CULL_FACE);
+                gl.glEnable(GL2.GL_BLEND);
+                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
                 gl.glPushMatrix();
                 float mapheight = map.getTerrainHeight(x, y);
                 gl.glTranslatef(0.0f, -maxHeight + mapheight, 0.0f);
@@ -898,13 +899,13 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glPopMatrix();
 
 
-                gl.glDisable(GL.GL_BLEND);
-                gl.glEnable(GL.GL_CULL_FACE);
+                gl.glDisable(GL2.GL_BLEND);
+                gl.glEnable(GL2.GL_CULL_FACE);
             } else {
-                gl.glDisable(GL.GL_LIGHTING);
-                gl.glDisable(GL.GL_CULL_FACE);
-                gl.glEnable(GL.GL_BLEND);
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+                gl.glDisable(GL2.GL_LIGHTING);
+                gl.glDisable(GL2.GL_CULL_FACE);
+                gl.glEnable(GL2.GL_BLEND);
+                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
                 gl.glPushMatrix();
                 gl.glTranslatef(0.0f, 0.05f, 0.0f);
                 gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -919,8 +920,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 gl.glPopMatrix();
 
 
-                gl.glDisable(GL.GL_BLEND);
-                gl.glEnable(GL.GL_CULL_FACE);
+                gl.glDisable(GL2.GL_BLEND);
+                gl.glEnable(GL2.GL_CULL_FACE);
 
             }
 
@@ -932,7 +933,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 energonColor.interpolate(min, max, frac);
 
                 gl.glLineWidth(4.0f);
-                gl.glBegin(GL.GL_LINES);
+                gl.glBegin(GL2.GL_LINES);
                 gl.glNormal3f(0.0f, 1.0f, 0.0f);
                 gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
                 gl.glVertex3f(-0.5f + frac, 0.125f, 0.5f);
@@ -948,10 +949,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             // disable lighting in ortho mode
             if (r.getCamera().isOrtho()) {
-                gl.glDisable(GL.GL_LIGHTING);
+                gl.glDisable(GL2.GL_LIGHTING);
             } else {
-                gl.glEnable(GL.GL_LIGHT0);
-                gl.glEnable(GL.GL_LIGHTING);
+                gl.glEnable(GL2.GL_LIGHT0);
+                gl.glEnable(GL2.GL_LIGHTING);
             }
 
             // rotate to direction
@@ -996,7 +997,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glPopMatrix();
         }*/
 
-        gl.glDisable(GL.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
 
         // draw explosions
         gl.glTranslatef(-origin.x, 0.0f, -origin.y);
@@ -1043,10 +1044,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
         gl.glLineWidth(1.0f);
-        gl.glDisable(GL.GL_BLEND);
+        gl.glDisable(GL2.GL_BLEND);
     }
 
-    public void doSelection(GL gl, GLU glu, GLGameRenderer r, GLDrawMap map, MapLocation origin) {
+    public void doSelection(GL2 gl, GLU glu, GLGameRenderer r, GLDrawMap map, MapLocation origin) {
         final GLUquadric quadric = glu.gluNewQuadric();
 
         Iterable<Map.Entry<Integer, GLDrawObject>> drawableSet = getDrawableSet();
@@ -1090,7 +1091,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glPopName();
     }
 
-    private void drawRobot(GL gl, GLDrawObject obj) {
+    private void drawRobot(GL2 gl, GLDrawObject obj) {
         String path = getAvatarPath(new RobotInfo(obj.getType(), obj.getTeam()));
         Texture tex = textureCache.getResource(path, path).tex;
 
@@ -1099,7 +1100,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
         // draw robot
-        gl.glBegin(GL.GL_TRIANGLE_FAN);
+        gl.glBegin(GL2.GL_TRIANGLE_FAN);
         gl.glTexCoord2f(0.0f, 1.0f);
         gl.glVertex3f(-0.5f, 0.1f, -0.5f);
         gl.glTexCoord2f(0.0f, 0.0f);
@@ -1111,7 +1112,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glEnd();
     }
 
-    private void drawBox(GL gl) {
+    private void drawBox(GL2 gl) {
         // points are
         final float[] points = new float[]{
             // top
@@ -1131,7 +1132,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             0, 1, 2, 3, 0, 4, 5, 1, 5, 6, 2, 6, 7, 3, 7, 4
         };
 
-        gl.glBegin(GL.GL_LINE_STRIP);
+        gl.glBegin(GL2.GL_LINE_STRIP);
         final int VEC_SIZE = 3;
         for (int i = 0; i < indices.length; i++) {
             gl.glVertex3fv(points, indices[i] * VEC_SIZE);

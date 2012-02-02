@@ -19,6 +19,7 @@ class DrawHUD {
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
+	private static BufferedMatch match;
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -41,9 +42,10 @@ class DrawHUD {
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
 
-    public DrawHUD(DrawState ds, Team team) {
+    public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
         this.team = team;
+		this.match = match;
         setRatioWidth(2.0f / 9.0f);
     }
 
@@ -82,23 +84,36 @@ class DrawHUD {
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
-            //g2.setColor(Color.WHITE);
-            //g2.setFont(footerFont);
-            //g2.drawString(footerText, -footerText.length()/2, 0);
             AffineTransform pushed2 = g2.getTransform();
             {
-                battlecode.serial.RoundStats stats = ds.getRoundStats();
-                if (stats != null) {
-                    points = (int) stats.getPoints(team);
-                }
-                g2.translate(-1.875, -1);
-                for (int i = 10000; i > 0; i /= 10) {
-                    g2.drawImage(numbers[(points / i) % 10], textScale, null);
-                    g2.translate(0.75, 0);
-                }
+				g2.translate(-1.875, -1);
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.setFont(new Font("Serif", Font.PLAIN, 24));
+				g2.translate(width / 2, .9);
+				g2.scale(width / 4.5, width / 4.5);
+
+				// should actually get the team names
+				System.out.println(ds.getRoundStats());
+				if (team == Team.A) {
+					g2.setColor(Color.RED);
+					String teamName = "Team A";
+					if (match.getTeamA() != null) {
+						teamName = match.getTeamA();
+					}
+					g2.drawString(teamName, 0, 0);
+				} else {
+					assert team == Team.B;
+					g2.setColor(Color.BLUE);
+					String teamName = "Team B";
+					if (match.getTeamB() != null) {
+						teamName = match.getTeamB();
+					}
+					g2.drawString(teamName, 0, 0);
+				}
             }
+
             g2.setTransform(pushed2);
-            if (footerText.startsWith("GAME")) {
+            if (footerText.startsWith("GAME")) { // Game Number
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
 
@@ -115,7 +130,7 @@ class DrawHUD {
                     g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
                     g2.translate(0.5, 0);
                 }
-            } else if (footerText.length() == 4) {
+            } else if (footerText.length() == 4) { // round counter
                 // if team B won more than one round, give it a blue circle
                 if (bWins > 0) {
                     // damn yangs magic offsets -_-
