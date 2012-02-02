@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
+import battlecode.client.viewer.BufferedMatch;
 
 import java.awt.*;
 import java.awt.geom.*;

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+
 import javax.swing.Timer;
 
 import battlecode.client.util.ImageFile;
@@ -102,7 +102,7 @@ class GLDrawCutScene {
         winningTeam = (team == Team.A ? teamAName : teamBName);
     }
 
-    public void draw(GL2 gl, int width, int height, TextRenderer txt, FontMetrics fm) {
+    public void draw(GL gl, int width, int height, TextRenderer txt, FontMetrics fm) {
         if (visible) {
             switch (step) {
                 case INTRO:
@@ -138,7 +138,7 @@ class GLDrawCutScene {
             return p1.length() + i;
     }
 
-    private void drawIntro(GL2 gl, int width, int height, TextRenderer txt, FontMetrics fm) {
+    private void drawIntro(GL gl, int width, int height, TextRenderer txt, FontMetrics fm) {
         if (txt != null) {
             float until = Math.max((targetEnd - System.currentTimeMillis()) / 1000.0f, 0);
             float horizontalOffset = 0.0f;
@@ -193,18 +193,18 @@ class GLDrawCutScene {
         } g2.setTransform(pushed);*/
     }
 
-    private void drawOutro(GL2 gl, int width, int height, TextRenderer txt, FontMetrics fm) {
+    private void drawOutro(GL gl, int width, int height, TextRenderer txt, FontMetrics fm) {
 
-        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glOrtho(0, width, 0, height, -10, 10);
 
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        gl.glEnable(GL2.GL_BLEND);
+        gl.glEnable(GL.GL_BLEND);
         gl.glColor4f(0.0f, 0.0f, 0.0f, fade);
-        gl.glBegin(GL2.GL_TRIANGLE_FAN);
+        gl.glBegin(GL.GL_TRIANGLE_FAN);
         gl.glVertex3i(0, 0, 5);
         gl.glVertex3i(width, 0, 5);
         gl.glVertex3i(width, height, 5);

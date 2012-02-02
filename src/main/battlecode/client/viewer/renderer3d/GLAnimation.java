@@ -2,7 +2,7 @@ package battlecode.client.viewer.renderer3d;
 
 import battlecode.client.viewer.AbstractAnimation;
 import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+
 import javax.media.opengl.glu.GLU;
 
 abstract class GLAnimation extends AbstractAnimation {
@@ -11,6 +11,6 @@ abstract class GLAnimation extends AbstractAnimation {
 		super(roundsToLive);
 	}
 
-	public abstract void draw(GL2 gl, GLU glu);
+	public abstract void draw(GL gl, GLU glu);
 
 }

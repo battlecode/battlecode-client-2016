@@ -1,7 +1,7 @@
 package battlecode.client.viewer.renderer3d;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.Vector3f;
@@ -49,11 +49,11 @@ class GLMortarAttackAnim extends GLAnimation {
 	}
 
 
-	public void draw(GL2 gl, GLU glu) {
+	public void draw(GL gl, GLU glu) {
 		
 	}
 	
-	public void draw(GL2 gl, GLU glu, GLDrawMap map, MapLocation origin) {
+	public void draw(GL gl, GLU glu, GLDrawMap map, MapLocation origin) {
 		/*if (q == null)
 			q = glu.gluNewQuadric();
 

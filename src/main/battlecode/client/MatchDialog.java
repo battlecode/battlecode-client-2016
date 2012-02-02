@@ -232,17 +232,17 @@ public class MatchDialog extends JDialog implements ActionListener {
 		add(txtHost, "2, 5, 8, 5, f, c");
 		
 		// Analyze file checkbox
-		//chkAnalyzeFile = new JCheckBox("Compute awesomeness before playback", false);
+		chkAnalyzeFile = new JCheckBox("Compute awesomeness before playback", false);
 		//chkAnalyzeFile.setEnabled(false);
 		//add(chkAnalyzeFile, "1, 6, 8, 6, f, c");
 		
 		// Separator.
 		add(new JSeparator(), "1, 7, 8, 7, f, c");
 		
-		//chkGlClient = new JCheckBox("View match using 3D renderer", true);
+		chkGlClient = new JCheckBox("View match using 3D renderer", false);
 		//add(chkGlClient, "1, 8, 8, 8, f, c");
 		
-		//chkShowMinimap = new JCheckBox("Show minimap in 3D renderer", false);
+		chkShowMinimap = new JCheckBox("Show minimap in 3D renderer", false);
 		//add(chkShowMinimap, "1, 9, 8, 9, f, c");
 
 		chkLockstep = new JCheckBox("Compute and view match synchronously");
