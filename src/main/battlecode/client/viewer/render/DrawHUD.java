@@ -23,6 +23,7 @@ class DrawHUD {
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
 	private static BufferedMatch match;
+	private ImageFile avatar;
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -58,6 +59,8 @@ class DrawHUD {
         this.team = team;
 		this.match = match;
         setRatioWidth(2.0f / 9.0f);
+		String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
+		avatar = new ImageFile(teamName+".png");
     }
 
     public float getRatioWidth() {
@@ -95,34 +98,40 @@ class DrawHUD {
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
-            AffineTransform pushed2 = g2.getTransform();
-            {
+			AffineTransform pushed2 = g2.getTransform();
+			if(avatar.image!=null) {
+				g2.setTransform(pushed);
+        		g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
+				g2.scale(spriteScale,spriteScale);
+				g2.translate(-.5,-.5);
+				g2.scale(2.0/avatar.image.getWidth(),2.0/avatar.image.getHeight());
+				g2.drawImage(avatar.image,null,null);
+			}
+            else {
 				g2.translate(-1.875, -1);
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2.setFont(footerFont);
 				g2.translate(width / 2, .9);
 				g2.scale(width / 4.5, width / 4.5);
-
-				// should actually get the team names
+				String teamName;
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
-					String teamName = "Team A";
+					teamName = "Team A";
 					if (match.getTeamA() != null) {
 						teamName = match.getTeamA();
 					}
-					g2.drawString(teamName, 0, 0);
 				} else {
 					assert team == Team.B;
 					g2.setColor(Color.BLUE);
-					String teamName = "Team B";
+					teamName = "Team B";
 					if (match.getTeamB() != null) {
 						teamName = match.getTeamB();
 					}
-					g2.drawString(teamName, 0, 0);
 				}
+				g2.drawString(teamName, 0, 0);
             }
-
             g2.setTransform(pushed2);
+
             if (footerText.startsWith("GAME")) { // Game Number
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
