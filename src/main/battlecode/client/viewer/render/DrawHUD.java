@@ -57,8 +57,6 @@ class DrawHUD {
         this.ds = ds;
         this.team = team;
         setRatioWidth(2.0f / 9.0f);
-		String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
-		avatar = new ImageFile(teamName+".png");
     }
 
     public float getRatioWidth() {
@@ -85,6 +83,15 @@ class DrawHUD {
         bWins = b;
     }
 
+	public void tryLoadAvatar() {
+		if(avatar==null) {
+			String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
+			if(teamName!=null) {
+				avatar = new ImageFile(teamName+".png");
+			}
+		}
+	}
+
     public void draw(Graphics2D g2) {
         //g2.setColor(Color.BLACK);
         //g2.fill(bgFill);
@@ -97,7 +104,8 @@ class DrawHUD {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
 			AffineTransform pushed2 = g2.getTransform();
-			if(avatar.image!=null) {
+			tryLoadAvatar();
+			if(avatar!=null&&avatar.image!=null) {
 				g2.setTransform(pushed);
         		g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
 				g2.scale(spriteScale,spriteScale);
