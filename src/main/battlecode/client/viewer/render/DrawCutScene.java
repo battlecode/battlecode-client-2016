@@ -129,9 +129,9 @@ public class DrawCutScene {
 
 	private void drawLogo(Graphics2D g2, BufferedImage img, double height) {
 		Rectangle rect = g2.getDeviceConfiguration().getBounds();
-		double x = (rect.getWidth()-img.getWidth())/2;
-		double y = height - img.getHeight()/2;
-		g2.drawImage(img,new AffineTransform(1,0,0,1,x,y),null);
+		double x = rect.getWidth()/2 - 64;
+		double y = height - 64;
+		g2.drawImage(img,new AffineTransform(128./img.getWidth(),0,0,128./img.getHeight(),x,y),null);
 	}
 
     private void drawIntro(Graphics2D g2) {
