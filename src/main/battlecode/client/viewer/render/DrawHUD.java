@@ -6,6 +6,7 @@ import battlecode.client.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
@@ -13,7 +14,8 @@ class DrawHUD {
 
     private static final int numArchons = GameConstants.NUMBER_OF_ARCHONS;
     private static final float slotSize = 0.8f / (numArchons + 1);
-    private static final Font footerFont = new Font(null, Font.PLAIN, 1);
+    private static final Font footerFont;
+	
     private static final ImageFile bg = new ImageFile("art/hud_bg.png");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
@@ -30,6 +32,14 @@ class DrawHUD {
                // e.printStackTrace();
             }
         }
+		Font font;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(14.f);
+		} catch(Exception e) {
+			font = new Font("Serif",Font.PLAIN,18);
+		}
+		footerFont = font;
+
     }
     private final DrawState ds;
     private final Team team;
@@ -86,7 +96,7 @@ class DrawHUD {
             {
 				g2.translate(-1.875, -1);
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2.setFont(new Font("Serif", Font.PLAIN, 24));
+				g2.setFont(footerFont);
 				g2.translate(width / 2, .9);
 				g2.scale(width / 4.5, width / 4.5);
 
