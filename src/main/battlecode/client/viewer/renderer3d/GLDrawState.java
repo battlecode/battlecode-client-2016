@@ -360,7 +360,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
         // draw the flux deposits
         gl.glEnable(GL2.GL_TEXTURE_2D);
-		gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         // draw the units
@@ -374,12 +373,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
 		// power grid
-		gl.glDisable(GL2.GL_BLEND);
+		gl.glDisable(GL2.GL_TEXTURE_2D);
 		gl.glLineWidth(4.0f);
 		gl.glBegin(GL2.GL_LINES);
-		gl.glNormal3f(0.0f, 1.0f, 0.0f);
+		gl.glNormal3f(0.0f, 0.0f, 1.0f);
 		for (Link l : links) {
-			// wtf, no glColor4f statements work in this block?!?!?!?!
 			if (l.connected[0]) {
 				if (l.connected[1]) {
 					gl.glColor4f(0.75f, 0.0f, 0.75f, 1.0f); // both
@@ -397,7 +395,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
 		}
 		gl.glEnd();
-		gl.glEnable(GL2.GL_BLEND);
+		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glLineWidth(1.0f);
 
         for (Map.Entry<Integer, GLDrawObject> entry : drawableSet) {
@@ -423,8 +421,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             // are we flying or not
             if (obj.getType().isAirborne()) {
                 gl.glTranslatef(0.0f, maxHeight, 0.0f);
-            } //                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
-            else {
+            } else {
                 if (obj.getMovementAction() == ActionType.MOVING) {
                     float delay = obj.getDirection().isDiagonal() ? obj.getType().moveDelayDiagonal : obj.getType().moveDelayOrthogonal;
                     float distFrac = (float) (obj.timeUntilIdle() + 1) / delay;
