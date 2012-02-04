@@ -3,6 +3,7 @@ package battlecode.client.viewer.render;
 import battlecode.client.viewer.AbstractAnimation;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.geom.Ellipse2D;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -174,6 +175,15 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 					g2.setColor(linkNone);
 			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
 		}
+
+		g2.setColor(new Color(1.f,0.f,0.f,.5f));
+		MapLocation coreLoc = coreLocs.get(Team.A);
+		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+		
+		g2.setColor(new Color(0.f,0.f,1.f,.5f));
+		coreLoc = coreLocs.get(Team.B);
+		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+
 		g2.setTransform(pushed2);
 
         for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
