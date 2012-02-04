@@ -54,21 +54,25 @@ public class DrawCutScene {
 		teamNames = names;
 	}
 
+	public static String getTeamName(String genericName) {
+		try {
+			int id = Integer.parseInt(genericName.substring(4,7));
+			if (teamNames.containsKey(id))
+				return teamNames.get(id);
+			else
+				return genericName;
+		} catch(Exception e) {
+			return genericName;
+		}
+	}
+
     public DrawCutScene(float width, float height, String teamA, String teamB) {
 
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
-        int aid = Integer.parseInt(teamA.substring(4,7));
-		if(teamNames.containsKey(aid))
-			this.teamA = teamNames.get(aid);
-		else
-			this.teamA = teamA;
-        int bid = Integer.parseInt(teamB.substring(4,7));
-		if(teamNames.containsKey(bid))
-        	this.teamB = teamNames.get(bid);
-		else
-			this.teamB = teamB;
+        this.teamA = getTeamName(teamA);
+		this.teamB = getTeamName(teamB);
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(48.f);
 		} catch(Exception e) {
