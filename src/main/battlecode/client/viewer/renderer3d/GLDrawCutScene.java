@@ -22,6 +22,7 @@ import javax.media.opengl.GL2;
 import javax.swing.Timer;
 
 import battlecode.client.util.ImageFile;
+import battlecode.client.viewer.render.DrawCutScene;
 import battlecode.common.Team;
 
 import com.sun.opengl.util.awt.TextRenderer;
@@ -49,41 +50,14 @@ class GLDrawCutScene {
     private static Map<Integer, String> teamNames = null;
 
     public GLDrawCutScene(float width, float height, String teamA, String teamB) {
-        if (teamPath == null)
-            teamPath = System.getProperty("tv.matches") + File.separator + "teams.txt";
-        if (teamNames == null) {
-            System.out.println("Loading team names");
-            teamNames = new HashMap<Integer, String>();
-            try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(teamPath)));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    String[] parts = line.split("\t");
-                    // parts[0] is team number
-                    // parts[1] is team name
-                    try {
-                        teamNames.put(Integer.parseInt(parts[0]), parts[1]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Can't parse team number: " + parts[0]);
-                    }
-                }
-                System.out.println(teamNames);
-            } catch (FileNotFoundException e) {
-                System.out.println("Can't open: " + teamPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
         rect.width = width;
         rect.height = height;
 
         // HACK: make this into a normal string parsing
         try {
-            int teamAnum = Integer.parseInt(teamA.substring(4));
-            int teamBnum = Integer.parseInt(teamB.substring(4));
-            teamAName = "#" + teamAnum + " " + teamNames.get(teamAnum);
-            teamBName = "#" + teamBnum + " " + teamNames.get(teamBnum);
+			teamAName = DrawCutScene.getTeamName(teamA);
+			teamBName = DrawCutScene.getTeamName(teamB);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
