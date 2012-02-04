@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
+import battlecode.client.viewer.BufferedMatch;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -53,9 +54,10 @@ class DrawHUD {
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
 
-    public DrawHUD(DrawState ds, Team team) {
+    public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
         this.team = team;
+		this.match = match;
         setRatioWidth(2.0f / 9.0f);
     }
 
