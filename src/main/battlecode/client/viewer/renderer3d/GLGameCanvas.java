@@ -20,8 +20,6 @@ import java.util.Observer;
 import javax.media.opengl.GL;
 
 import javax.media.opengl.GLCanvas;
-import javax.media.opengl.GLProfile;
-import javax.media.opengl.GLCapabilities;
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
@@ -45,7 +43,7 @@ public final class GLGameCanvas extends BaseCanvas {
 		super();
 		
 		// add the canvas for painting, then start its update thread
-		canvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
+		canvas = new GLCanvas();
 		this.setLayout(new GridLayout(1,1));
 		add(canvas);
 		canvas.setVisible(true);

@@ -111,7 +111,6 @@
         <javac encoding="${build.encoding}"
                 srcdir="${src.dir}"
                 includes="**/*.java"
-				excludes="**/renderer3d/*,**/OBJFile.java,**/ModelResource.java"
                 destdir="${pkg.build.dir}"
                 debug="${javac.debug}"
                 optimize="${javac.optimize}"
