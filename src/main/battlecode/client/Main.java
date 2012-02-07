@@ -38,8 +38,8 @@ public class Main {
         // if tournament mode and 2 monitors run viewer on monitor 2 and minimap
         // on monitor one, else run only viewer
 
-        final GraphicsDevice gd = (viewer.isTournamentMode()
-                ? (devices.length > 1 ? devices[1] : devices[0]) : devices[0]);
+        final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer.usingTwoScreens())
+                ? devices[1] : devices[0];
 
         SwingUtilities.invokeLater(new Runnable() {
 
