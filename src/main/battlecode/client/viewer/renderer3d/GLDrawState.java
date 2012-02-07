@@ -391,8 +391,8 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f); // none
 				}
 			}
-			gl.glVertex3f(l.from.x - origin.x, 0.01f, l.from.y - origin.y);
-			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
+			gl.glVertex3f(l.from.x - origin.x + 0.5f, 0.01f, l.from.y - origin.y + 0.5f);
+			gl.glVertex3f(l.to.x - origin.x + 0.5f, 0.01f, l.to.y - origin.y + 0.5f);
 		}
 		gl.glEnd();
 		gl.glEnable(GL2.GL_TEXTURE_2D);

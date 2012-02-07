@@ -606,9 +606,9 @@ public class GLDrawMap {
 
         boolean showGrid = RenderConfiguration.showGridlines();
         if (showGrid) {
-            gl.glColor3f(0.1f, 0.1f, 0.1f);
+            gl.glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
             gl.glNormal3f(0.0f, 1.0f, 0.0f);
-			gl.glLineWidth(1.5f);
+			gl.glLineWidth(1.0f);
 
             // do the horizontal gridlines
 			/*
