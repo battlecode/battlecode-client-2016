@@ -158,6 +158,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
 
 		AffineTransform pushed2 = g2.getTransform();
+		
+		// Woohoo the power grid!
 		g2.setStroke(new BasicStroke(.15f));
 		g2.translate(.5,.5);
 		for (Link l : links) {

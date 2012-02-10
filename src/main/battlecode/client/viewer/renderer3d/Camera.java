@@ -9,7 +9,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.media.opengl.GL;
-
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.swing.event.MouseInputListener;
 import javax.vecmath.Matrix3f;
@@ -303,11 +303,11 @@ public class Camera implements MouseMotionListener, MouseInputListener, MouseWhe
 	 * @param gl
 	 *            the context to which the transform is applied.
 	 */
-	public void setTransform(GL gl, GLU glu) {
+	public void setTransform(GL2 gl, GLU glu) {
 		glu.gluLookAt(position.x, position.y, position.z, target.x,
 				target.y, target.z, normal.x, normal.y, normal.z);
 
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelView, 0);
+		gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class Camera implements MouseMotionListener, MouseInputListener, MouseWhe
 	 * @param glu
 	 *            the context to which to apply the transformation.
 	 */
-	public void setProjection(GL gl, GLU glu) {
+	public void setProjection(GL2 gl, GLU glu) {
 		double aspect = 0.0;
 		if(windowHeight == 0)
 			aspect = windowWidth;
@@ -334,8 +334,8 @@ public class Camera implements MouseMotionListener, MouseInputListener, MouseWhe
 			//gl.glTranslatef(0.0f, -windowHeight, 0.0f);
 		}
 		
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, proj, 0);
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+		gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, proj, 0);
+		gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
 	}
 
 	/**

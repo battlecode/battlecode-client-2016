@@ -1,7 +1,7 @@
 package battlecode.client.viewer.renderer3d;
 
 import javax.media.opengl.GL;
-
+import javax.media.opengl.GL2;
 
 
 import javax.media.opengl.glu.GLU;
@@ -31,7 +31,7 @@ class GLTeleportAnim extends GLAnimation {
 		this.src = src;
 	}
 
-	public void draw(GL gl, GLU glu) {
+	public void draw(GL2 gl, GLU glu) {
 		final GLUquadric quadric= glu.gluNewQuadric();
 		int delta = lifetime - roundsToLive;
 		float frac = 1.0f - (float)delta / lifetime;
@@ -44,7 +44,7 @@ class GLTeleportAnim extends GLAnimation {
 		gl.glPopMatrix();
 	}
 /*
-	public void draw(GL gl, GLDrawMap map, MapLocation origin) {
+	public void draw(GL2 gl, GLDrawMap map, MapLocation origin) {
 
 		// do nothing
 		

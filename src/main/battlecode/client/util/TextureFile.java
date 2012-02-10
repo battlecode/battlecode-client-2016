@@ -4,8 +4,8 @@ import java.io.File;
 
 import java.io.IOException;
 
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureIO;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 import java.net.URL;
 
 public class TextureFile extends DataFile {
@@ -30,7 +30,7 @@ public class TextureFile extends DataFile {
 
     @Override
     protected void finalize() throws Throwable {
-        tex.dispose();
+        //tex.dispose();
     }
 
     @Override

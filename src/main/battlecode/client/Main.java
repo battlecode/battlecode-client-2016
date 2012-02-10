@@ -38,8 +38,8 @@ public class Main {
         // if tournament mode and 2 monitors run viewer on monitor 2 and minimap
         // on monitor one, else run only viewer
 
-        final GraphicsDevice gd = (viewer.isTournamentMode()
-                ? (devices.length > 1 ? devices[1] : devices[0]) : devices[0]);
+        final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer.usingTwoScreens())
+                ? devices[1] : devices[0];
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -72,7 +72,6 @@ public class Main {
     }
 
     private static void runLocal(Config options) {
-
         MatchDialog md = new MatchDialog(null);
         if (!options.getBoolean("bc.dialog.skip"))
             md.setVisible(true);
@@ -155,6 +154,7 @@ public class Main {
 		System.out.println("opengl = " + md.getGlClientChoice());
 		System.out.println("minimap = " + md.getGlClientChoice());
         options.setBoolean("bc.client.opengl", md.getGlClientChoice());
+        //options.setBoolean("bc.client.opengl", true);
         options.setBoolean("bc.client.minimap", md.getMinimapChoice());
         Main.showViewer(createFrame(), new MatchViewer(theProxy, md.getLockstepChoice()));
         if (serverThread != null)
@@ -175,7 +175,6 @@ public class Main {
         System.out.println(System.getProperty("os.arch"));
 
         final Config options = battlecode.server.Main.setupConfig(args);
-
         if (!run(options)) {
             System.err.println("invalid bc.server.mode");
             System.exit(64);

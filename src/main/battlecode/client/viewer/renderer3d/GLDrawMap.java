@@ -2,14 +2,11 @@ package battlecode.client.viewer.renderer3d;
 
 import java.lang.Math;
 
-
-
 import java.util.ArrayList;
-
 import java.util.LinkedList;
 
 import javax.media.opengl.GL;
-
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.Color3f;
@@ -22,7 +19,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.TerrainTile;
 
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GLDrawMap {
 
@@ -130,11 +127,6 @@ public class GLDrawMap {
 
                 }
 
-
-
-
-
-
                 total.scale(1.0f / (float) numNorms);
                 norms[j][i].set(total);
                 norms[j][i].normalize();
@@ -158,7 +150,6 @@ public class GLDrawMap {
         for (int j = 1; j < mapHeight; j++) {
             for (int i = 1; i < mapWidth; i++) {
 
-
                 int numLand = 0;
                 if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
                     numLand++;
@@ -177,11 +168,7 @@ public class GLDrawMap {
                 Color4f color = new Color4f();
                 color.interpolate(obstacleColor, groundColor, landFrac);
 
-
-
                 cols[j][i] = color;
-
-
 
                 //cols[j][i] = new Color3f(0.0f, 0.4f * landFrac, 0.4f * waterFrac);
             }
@@ -525,10 +512,9 @@ public class GLDrawMap {
         this.crateTexturePath = tex;
     }
 
-    public void draw(GL gl, GLU glu, GLDrawState ds) {
+    public void draw(GL2 gl, GLU glu, GLDrawState ds) {
         final Color4f highColor = new Color4f(0.0f, 1.0f, 0.0f, 1.0f);
         final Color4f lowColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 
         Color4f[][] trueCols = new Color4f[mapHeight][mapWidth];
 //		InternalTerrainTile tiles[][] = ds.getGameMap().getTerrainMatrix();
@@ -592,9 +578,9 @@ public class GLDrawMap {
         //	gl.glTranslatef(1.5f, 0.0f, 1.5f);
         if (tex != null) {
             System.out.println("Using texture");
-            gl.glEnable(GL.GL_TEXTURE_2D);
-            tex.bind();
-            gl.glBegin(GL.GL_TRIANGLE_STRIP);
+            gl.glEnable(GL2.GL_TEXTURE_2D);
+            tex.bind(gl);
+            gl.glBegin(GL2.GL_TRIANGLE_STRIP);
             for (int i = 0; i < indices.length; i++) {
                 gl.glTexCoord2f(texCoords[indices[i] * 2], texCoords[indices[i] * 2 + 1]);
                 gl.glColor4f(colorNorm[indices[i] * 4], colorNorm[indices[i] * 4 + 1], colorNorm[indices[i] * 4 + 2], colorNorm[indices[i] * 4 + 3]);
@@ -605,7 +591,7 @@ public class GLDrawMap {
             gl.glEnd();
         } else {
             gl.glEnable(gl.GL_BLEND);
-            gl.glBegin(GL.GL_TRIANGLE_STRIP);
+            gl.glBegin(GL2.GL_TRIANGLE_STRIP);
             for (int i = 0; i < indices.length; i++) {
                 gl.glColor4f(colors[indices[i] * 4], colors[indices[i] * 4 + 1], colors[indices[i] * 4 + 2], colors[indices[i] * 4 + 3]);
                 gl.glNormal3f(normals[indices[i] * 3], normals[indices[i] * 3 + 1], normals[indices[i] * 3 + 2]);
@@ -620,12 +606,20 @@ public class GLDrawMap {
 
         boolean showGrid = RenderConfiguration.showGridlines();
         if (showGrid) {
-            gl.glBegin(GL.GL_LINE_STRIP);
-            gl.glColor3f(0.1f, 0.1f, 0.1f);
+            gl.glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
             gl.glNormal3f(0.0f, 1.0f, 0.0f);
+			gl.glLineWidth(1.0f);
 
-
-            // do the vertical gridlines
+            // do the horizontal gridlines
+			/*
+			gl.glBegin(GL2.GL_LINES);
+			for (int j = 1; j < map.getHeight(); ++j) {
+				gl.glVertex3f(0.0f, 0.0f, j);
+				gl.glVertex3f(map.getWidth(), 0.0f, j);
+			}
+			gl.glEnd();
+			*/
+			gl.glBegin(GL2.GL_LINE_STRIP);
             for (int j = 0; j < mapHeight; j++) {
                 if ((j + 1) % DENSITY != 0) {
                     continue;
@@ -636,21 +630,16 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j < mapHeight - 1 && i > 0) {
-
                             pTwo = points[j + 1][i - 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
 
-
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
-
 
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -662,7 +651,6 @@ public class GLDrawMap {
                         }
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
                     }
                 } else {
                     for (int i = mapWidth - 1; i >= 0; i--) {
@@ -695,11 +683,19 @@ public class GLDrawMap {
                     }
                 }
             }
-
             gl.glEnd();
 
-            // do the horizontal gridlines
-            gl.glBegin(GL.GL_LINE_STRIP);
+
+            // do the vertical gridlines
+			/*
+			gl.glBegin(GL2.GL_LINES);
+			for (int j = 1; j < map.getWidth(); ++j) {
+				gl.glVertex3f(j, 0.0f, 0.0f);
+				gl.glVertex3f(j, 0.0f, map.getHeight());
+			}
+			gl.glEnd();
+			*/
+            gl.glBegin(GL2.GL_LINE_STRIP);
             for (int i = 0; i < mapWidth; i++) {
                 if ((i + 1) % DENSITY != 0) {
                     continue;
@@ -710,18 +706,14 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j > 0 && i < mapWidth - 1) {
-
                             pTwo = points[j - 1][i + 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
-
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
 
@@ -735,10 +727,6 @@ public class GLDrawMap {
                         }
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
-
-
-
                     }
                 } else {
                     for (int j = mapHeight - 1; j >= 0; j--) {
@@ -746,7 +734,6 @@ public class GLDrawMap {
                         Vector3f pOne;
                         Vector3f pTwo;
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
@@ -758,88 +745,25 @@ public class GLDrawMap {
 
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
 
-
                         pOne = points[j][i];
                         p = new Vector3f(0.0f, 0.0f, 0.0f);
                         p.add(pOne);
                         if (j > 0 && i < mapWidth - 1) {
-
                             pTwo = points[j - 1][i + 1];
                             p.add(pTwo);
                             p.scale(.5f);
                         }
 
-
                         gl.glVertex3f(p.x, p.y + 0.01f, p.z);
-
                     }
                 }
             }
-
             gl.glEnd();
         }
-
-        gl.glEnable(GL.GL_BLEND);
-        gl.glDisable(GL.GL_DEPTH_TEST);
-        MapLocation[][] hulls = ds.getConvexHullsA();
-        for (int i = 0; i < hulls.length; i++) {
-
-            gl.glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-            gl.glBegin(GL.GL_POLYGON);
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.x - ds.getGameMap().getMapOrigin().x,
-                        sy = start.y - ds.getGameMap().getMapOrigin().y,
-                        ex = end.x - ds.getGameMap().getMapOrigin().x,
-                        ey = end.y - ds.getGameMap().getMapOrigin().y;
-
-                gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
-                //  g2.setColor(new java.awt.Color(255, 150, 0));
-                //g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            gl.glEnd();
-
-        }
-        hulls = ds.getConvexHullsB();
-        for (int i = 0; i < hulls.length; i++) {
-
-            gl.glColor4f(0.0f, 0.0f, 1.0f, 0.5f);
-            gl.glBegin(GL.GL_POLYGON);
-            for (int j = 0; j < hulls[i].length; j++) {
-                MapLocation start = hulls[i][j];
-                MapLocation end = hulls[i][(j + 1) % hulls[i].length];
-                int sx = start.x - ds.getGameMap().getMapOrigin().x,
-                        sy = start.y - ds.getGameMap().getMapOrigin().y,
-                        ex = end.x - ds.getGameMap().getMapOrigin().x,
-                        ey = end.y - ds.getGameMap().getMapOrigin().y;
-
-                gl.glVertex3f(sx + .5f, getMapHeight(sx, sy) * MAP_SCALE + 1.0f, sy + .5f);
-                //  g2.setColor(new java.awt.Color(255, 150, 0));
-                //g2.drawLine(sx * 32 + 16, sy * 32 + 16, ex * 32 + 16, ey * 32 + 16);
-                //System.out.println("Drawing hull line " + sx + " " + sy + " "
-                //        + ex + " " + ey);
-            }
-            gl.glEnd();
-
-        }
-        gl.glDisable(GL.GL_BLEND);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        /*
-        // draw the boundaries
-        final String path = "./art/walls/wall.png";
-        if(crateTexture == null && crateTexturePath != null) {
-        crateTexture = GLGameRenderer.textureCache.getResource(crateTexturePath, crateTexturePath).tex;
-        crateTexturePath = null;
-        } else if(crateTexture == null) {
-        crateTexture = GLGameRenderer.textureCache.getResource(path, path).tex;
-        }*/
 
     }
 
-    private void drawBox(GL gl) {
+    private void drawBox(GL2 gl) {
         // points are
         final float[] points = new float[]{
             // top
@@ -883,7 +807,7 @@ public class GLDrawMap {
             0, 3, 2, 0, 2, 1
         };
 
-        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glBegin(GL2.GL_TRIANGLES);
         final int VEC_SIZE = 3;
         final int TEX_SIZE = 2;
         for (int i = 0; i < indices.length; i++) {
