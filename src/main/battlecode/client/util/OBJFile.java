@@ -20,7 +20,7 @@ import javax.media.opengl.GL2;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import com.sun.opengl.util.BufferUtil;
+import com.jogamp.opengl.util.GLBuffers;
 import java.io.FileReader;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -198,10 +198,10 @@ public class OBJFile extends DataFile {
                 }
 
                 // make buffers
-                vBuf = BufferUtil.newFloatBuffer(vertices.length);
-                nBuf = BufferUtil.newFloatBuffer(normals.length);
-                tBuf = BufferUtil.newFloatBuffer(texCoords.length);
-                iBuf = BufferUtil.newIntBuffer(indices.length);
+                vBuf = GLBuffers.newDirectFloatBuffer(vertices.length);
+                nBuf = GLBuffers.newDirectFloatBuffer(normals.length);
+                tBuf = GLBuffers.newDirectFloatBuffer(texCoords.length);
+                iBuf = GLBuffers.newDirectIntBuffer(indices.length);
                 indexLength = indices.length;
 
                 // copy into buffer
@@ -241,10 +241,10 @@ public class OBJFile extends DataFile {
         }
 
         // make buffers
-        vBuf = BufferUtil.newFloatBuffer(b.v.length);
-        nBuf = BufferUtil.newFloatBuffer(b.n.length);
-        tBuf = BufferUtil.newFloatBuffer(b.t.length);
-        iBuf = BufferUtil.newIntBuffer(b.i.length);
+        vBuf = GLBuffers.newDirectFloatBuffer(b.v.length);
+        nBuf = GLBuffers.newDirectFloatBuffer(b.n.length);
+        tBuf = GLBuffers.newDirectFloatBuffer(b.t.length);
+        iBuf = GLBuffers.newDirectIntBuffer(b.i.length);
         indexLength = b.i.length;
         vBuf.put(b.v);
         vBuf.rewind();

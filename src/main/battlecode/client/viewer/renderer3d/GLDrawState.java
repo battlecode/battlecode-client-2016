@@ -51,7 +51,7 @@ import battlecode.world.signal.MovementSignal;
 import battlecode.world.signal.SetDirectionSignal;
 import battlecode.world.signal.SpawnSignal;
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 import battlecode.common.TerrainTile;
 
 public class GLDrawState extends AbstractDrawState<GLDrawObject> {
@@ -235,7 +235,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE);
         // gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         archonBody.draw(gl);
 
@@ -253,7 +253,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         // gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         scorcherBody.draw(gl);
 
@@ -271,7 +271,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         //  gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         disrupterBody.draw(gl);
         gl.glEnable(GL2.GL_BLEND);
@@ -283,7 +283,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         gl.glTranslatef(-0.1f, 0.1f, 0.0f);
         gl.glDisable(GL2.GL_BLEND);
@@ -302,7 +302,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.f, MODEL_SCALE * 1.f, MODEL_SCALE * 1.f);
@@ -316,7 +316,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(nodeBodyTexPath, nodeBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -335,7 +335,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(coreBodyTexPath, coreBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -861,7 +861,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture tex = textureCache.getResource(path, path).tex;
 
         if (tex != null) {
-            tex.bind();
+            tex.bind(gl);
         }
 
         // draw robot

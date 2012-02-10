@@ -48,10 +48,10 @@ import battlecode.serial.MatchHeader;
 import battlecode.server.Config;
 import battlecode.world.GameMap;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.gl2.GLUT;
-import com.sun.opengl.util.awt.TextRenderer;
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.GLBuffers;
+import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
 
 import battlecode.client.util.ImageFile;
 
@@ -264,7 +264,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         // select buffer size (2 * mapWidth * mapHeight) squares
         //selectCapacity = 2 * drawMap.getMapHeight() * drawMap.getMapWidth() * SELECT_STACK_DEPTH * 4;
         selectCapacity = 64 * SELECT_STACK_DEPTH * 4;
-        selectBuffer = BufferUtil.newIntBuffer(selectCapacity);
+        selectBuffer = GLBuffers.newDirectIntBuffer(selectCapacity);
         selectBuffer.rewind();
 
         File f = new File("art/computerfont.ttf");
@@ -619,7 +619,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (backgroundTexture != null) {
-            backgroundTexture.bind();
+            backgroundTexture.bind(gl);
 
             gl.glPushMatrix();
 //			gl.glDisable(GL2.GL_COLOR_MATERIAL);

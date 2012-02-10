@@ -19,7 +19,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.TerrainTile;
 
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GLDrawMap {
 
@@ -579,7 +579,7 @@ public class GLDrawMap {
         if (tex != null) {
             System.out.println("Using texture");
             gl.glEnable(GL2.GL_TEXTURE_2D);
-            tex.bind();
+            tex.bind(gl);
             gl.glBegin(GL2.GL_TRIANGLE_STRIP);
             for (int i = 0; i < indices.length; i++) {
                 gl.glTexCoord2f(texCoords[indices[i] * 2], texCoords[indices[i] * 2 + 1]);

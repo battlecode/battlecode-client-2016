@@ -25,7 +25,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.render.DrawCutScene;
 import battlecode.common.Team;
 
-import com.sun.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 class GLDrawCutScene {
 
