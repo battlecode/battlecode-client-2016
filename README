@@ -3,6 +3,12 @@ Battlecode Client
 
 BUILDING
 
+!!! Now that the 3D viewer is up and running, you'll need a couple more jars, specifically:
+- jogl.all.jar
+- gluegen-rt.jar
+
+All of these jars can be found on http://jogamp.org
+
 You have to build the server before the client. This process builds both. You need an existing battlecode distribution for the updated jogl.jar file, and everything else.
 
 1. cd into your workspace

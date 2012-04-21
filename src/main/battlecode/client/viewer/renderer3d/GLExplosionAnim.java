@@ -1,7 +1,7 @@
 package battlecode.client.viewer.renderer3d;
 
 import javax.media.opengl.GL;
-
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.Vector4f;
@@ -43,7 +43,7 @@ class GLExplosionAnim extends GLAnimation {
 	private final static Vector4f startColor = new Vector4f(2.0f, 2.0f, 0.0f, 1.0f);
 	private final static Vector4f endColor = new Vector4f(2.0f, 1.0f, 0.0f, 0.55f);
 	
-	public void draw(GL gl, GLU glu) {
+	public void draw(GL2 gl, GLU glu) {
 		if(q == null) 
 			q = glu.gluNewQuadric();
 		

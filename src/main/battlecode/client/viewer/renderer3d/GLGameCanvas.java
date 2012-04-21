@@ -18,8 +18,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.media.opengl.GL;
-
-import javax.media.opengl.GLCanvas;
+import javax.media.opengl.GL2;
+import javax.media.opengl.awt.GLCanvas;
+import javax.media.opengl.GLProfile;
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
@@ -29,7 +30,7 @@ import battlecode.client.viewer.render.BaseCanvas;
 import battlecode.client.viewer.render.BaseRenderer;
 import battlecode.client.viewer.render.RenderConfiguration;
 
-import com.sun.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.FPSAnimator;
 
 public final class GLGameCanvas extends BaseCanvas {
 
@@ -38,7 +39,11 @@ public final class GLGameCanvas extends BaseCanvas {
 	private GLGameRenderer renderer = null;
 	private GLCanvas canvas = null;
 	private FPSAnimator animator = null;
-	
+
+	static {
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+	}
+
 	public GLGameCanvas() {
 		super();
 		

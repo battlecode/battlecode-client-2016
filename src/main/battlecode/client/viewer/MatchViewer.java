@@ -36,13 +36,8 @@ public class MatchViewer {
     private final Controller controller;
     private boolean lockstepChoice = false;
     private boolean tournamentMode = false;
-    //private final GameCanvas gc = new GameCanvas();
-    //private final GLGameCanvas gc = new GLGameCanvas();
-    private final BaseCanvas bc; //= new GameCanvas();
-    // configuration options
+    private final BaseCanvas bc;
     private Config cfg = Config.getGlobalConfig();
-    //private GameRenderer gr;
-    //private GLGameRenderer gr;
     private BaseRenderer br;
     private final AudioPlayer audio = new AudioPlayer();
     private InfoPanel info;
@@ -59,6 +54,11 @@ public class MatchViewer {
     public ClientProxy getProxy() {
         return proxy;
     }
+
+	public static boolean usingTwoScreens() {
+		return "true".equalsIgnoreCase(System.getProperty("tv.multiscreen"))&&
+			(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1);
+	}
 
     public MatchViewer(ClientProxy proxy, boolean lockstepChoice) {
         if (cfg.getBoolean("bc.client.opengl"))
@@ -120,7 +120,7 @@ public class MatchViewer {
         panel.add(bc, BorderLayout.CENTER);
         bc.setTournamentMode();
 
-        if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1) {
+        if (usingTwoScreens()) {
             minimap = new MinimapViewer(true);
         }
         TournamentTimer timer = new TournamentTimer(this);

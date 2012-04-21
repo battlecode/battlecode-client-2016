@@ -25,8 +25,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
     protected double[] teamHP = new double[2];
-    protected Map<RobotType, Integer> chassisTypeCountA = new EnumMap<RobotType, Integer>(RobotType.class);
-    protected Map<RobotType, Integer> chassisTypeCountB = new EnumMap<RobotType, Integer>(RobotType.class);
 	protected Map<Team, List<DrawObject>> archons;
 	protected int [] coreIDs = new int [2];
 	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
@@ -155,8 +153,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
         coreIDs = src.coreIDs;
 		stats = src.stats;
-        chassisTypeCountA = new EnumMap<RobotType, Integer>(src.chassisTypeCountA);
-        chassisTypeCountB = new EnumMap<RobotType, Integer>(src.chassisTypeCountB);
 
 		nodeTeams = new HashMap<MapLocation,Team>(src.nodeTeams);
 	
@@ -219,15 +215,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return obj;
     }
 
-    public Map<RobotType, Integer> getRobotTypeTypeCount(Team t) {
-        Map<RobotType, Integer> orig = (t == Team.A) ? chassisTypeCountA : chassisTypeCountB;
-        Map<RobotType, Integer> byclass = new EnumMap<RobotType, Integer>(RobotType.class);
-        for (RobotType ct : orig.keySet())
-            if (orig.get(ct) > 0)
-                byclass.put(ct, orig.get(ct));
-        return byclass;
-    }
-
     protected void removeRobot(int id) {
         DrawObject previous = groundUnits.remove(id);
         if (previous == null) {
@@ -267,8 +254,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         return gameMap;
     }
 
-    protected abstract void mineFlux(DrawObject object);
-
     protected void updateRound() {
         currentRound++;
         for (Iterator<Map.Entry<Integer, DrawObject>> it = drawables.iterator();
@@ -301,8 +286,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         DrawObject robot = getRobot(s.getObjectID());
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
-            Map<RobotType, Integer> ctc = (robot.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
-            ctc.put(robot.getType(), ctc.get(robot.getType()) - 1);
         }
 
 		if(robot.getType()==RobotType.TOWER) {
@@ -405,11 +388,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
             teamHP[team] += getRobot(s.getRobotID()).getEnergon();
-            Map<RobotType, Integer> ctc = (s.getTeam() == Team.A) ? this.chassisTypeCountA : this.chassisTypeCountB;
-            if (ctc.containsKey(s.getType()))
-                ctc.put(s.getType(), ctc.get(s.getType()) + 1);
-            else
-                ctc.put(s.getType(), 1);
         }
 		if(spawn.getType()==RobotType.TOWER) {
 			nodeTeams.put(spawn.getLocation(),spawn.getTeam());

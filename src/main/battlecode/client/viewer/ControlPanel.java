@@ -194,7 +194,13 @@ public class ControlPanel extends JPanel
     }
 
     public void enableNext() {
-        next.setEnabled(true);
+		// we need to use invokeLater to avoid a deadlock
+		// in the 3d client
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+	        	next.setEnabled(true);
+			}
+		});
     }
 
     public void setPlayer(MatchPlayer player) {
