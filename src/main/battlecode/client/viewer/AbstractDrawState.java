@@ -8,6 +8,7 @@ import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
+import battlecode.world.InternalRobot;
 import battlecode.world.signal.*;
 
 import java.util.ArrayList;
@@ -187,13 +188,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     protected void putRobot(int id, DrawObject unit) {
-        if (unit.getType().isAirborne()) {
-            DrawObject previous = airUnits.put(id, unit);
-            assert previous == null : "Robot #" + id + " already exists";
-        } else {
-            DrawObject previous = groundUnits.put(id, unit);
-            assert previous == null : "Robot #" + id + " already exists";
-        }
+        DrawObject previous = groundUnits.put(id, unit);
+        assert previous == null : "Robot #" + id + " already exists";
     }
 
     protected void tryAddHQ(DrawObject hq) {
@@ -236,6 +232,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
         
     }
+    
+    public void visitShieldSignal(ShieldSignal s) {
+//    	getRobot(s.robotID).setAction(1, ActionType.SHIELDING);
+    	getRobot(s.robotID).setAttacking(null, null);
+    }
 
     public void visitBroadcastSignal(BroadcastSignal s) {
         getRobot(s.getRobotID()).setBroadcast();
@@ -263,7 +264,19 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             if (team < 2)
                 teamHP[team] += energon[i];
         }
-        
+    }
+    
+    public void visitShieldChangeSignal(ShieldChangeSignal s) {
+    	int[] robotIDs = s.getRobotIDs();
+        double[] shield = s.getShield();
+        for (int i = 0; i < robotIDs.length; i++) {
+//            int team = getRobot(robotIDs[i]).getTeam().ordinal();
+//            if (team < 2)
+//                teamHP[team] -= getRobot(robotIDs[i]).getEnergon();
+            getRobot(robotIDs[i]).setShields(shield[i]);
+//            if (team < 2)
+//                teamHP[team] += energon[i];
+        }
     }
 
     public void visitFluxChangeSignal(FluxChangeSignal s) {
@@ -385,7 +398,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
 	public void visitRegenSignal(RegenSignal s) {
-		getRobot(s.robotID).setRegen();
+//		getRobot(s.robotID).setRegen();
+//		getRobot(s.robotID).setAction(1, ActionType.REGENING);
+		getRobot(s.robotID).setAttacking(null, null);
 	}
 
     public void visitTurnOffSignal(TurnOffSignal s) {

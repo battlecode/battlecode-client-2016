@@ -53,6 +53,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         loc = copy.loc;
         dir = copy.dir;
         energon = copy.energon;
+        shields = copy.shields;
 		flux = copy.flux;
         moving = copy.moving;
         targetLoc = copy.targetLoc;
@@ -91,6 +92,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected float drawX = 0, drawY = 0;
     protected int moving = 0;
     protected double energon = 0;
+    protected double shields = 0;
 	protected double flux = 0;
 	protected double maxEnergon;
     protected int roundsUntilAttackIdle;
@@ -182,6 +184,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public double getEnergon() {
         return energon;
     }
+    
+    public double getShields() {
+    	return shields;
+    }
 
 	public double getFlux() {
 		return flux;
@@ -230,6 +236,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public void setEnergon(double energon) {
         this.energon = energon;
+    }
+    
+    public void setShields(double shields) {
+        this.shields = shields;
     }
 
 	public void setFlux(double f) {
@@ -315,6 +325,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         attackAction = ActionType.IDLE;
         actionAction = ActionType.IDLE;
         energon = 0;
+        shields = 0;
         animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
         animations.remove(ENERGON_TRANSFER);
     }

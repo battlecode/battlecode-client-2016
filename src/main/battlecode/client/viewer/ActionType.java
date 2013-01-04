@@ -35,7 +35,9 @@ public enum ActionType {
     
     DEFUSING(true, true),
     MINING(true, true),
-    CAPTURING(true, true);
+    CAPTURING(true, true),
+    REGENING(true, true),
+    SHIELDING(true, true);
 
     private ActionType(boolean hasAttackCooldown, boolean hasMovementCooldown) {
         this.hasAttackCooldown = hasAttackCooldown;

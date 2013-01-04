@@ -78,7 +78,7 @@ public class InfoPanel extends JPanel {
         if (robot == null)
             clear();
         else {
-            setEnergon(robot.getEnergon());
+            setEnergon(robot.getEnergon(), robot.getShields());
 			setFlux(robot.getFlux());
             setBytecodesUsed(robot.getBytecodesUsed());
 			location.setText(String.format(" Location: %s ",robot.getLocation()));
@@ -92,8 +92,11 @@ public class InfoPanel extends JPanel {
         }
     }
 
-    private void setEnergon(double amount) {
-        energon.setText(String.format(" Energon: %.1f ", amount));
+    private void setEnergon(double amount, double shields) {
+    	if (shields > 0.0)
+    		energon.setText(String.format(" Energon: %.1f Shields: %.1f", amount, shields));
+    	else
+    		energon.setText(String.format(" Energon: %.1f ", amount));
     }
 
 	private void setFlux(double amount) {

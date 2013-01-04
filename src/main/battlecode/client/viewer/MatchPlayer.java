@@ -4,6 +4,7 @@ import battlecode.client.DebugProxy;
 
 import battlecode.serial.*;
 import battlecode.serial.notification.*;
+import battlecode.server.Config;
 
 
 import java.awt.event.*;
@@ -55,7 +56,7 @@ public class MatchPlayer implements Observer, ActionListener {
     private int stepSize = 1;
     // value that determines the delay in ticks between timer ticks
     private volatile static MatchPlayer currentPlayer = null;
-    public static final int DEFAULT_TIME_DELTA = 15;
+    public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig().getInt("bc.client.viewer-delay");
 
 	private int delta = DEFAULT_TIME_DELTA;
 	private boolean fastForward = false; 
