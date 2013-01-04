@@ -858,7 +858,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             String s = teamANameShort + " - " + aPoints;
             // do text rendering
             txtRenderer.beginRendering(ad.getWidth(), ad.getHeight());
-            int numArchons = ds.getArchons(Team.A).size();
+            int numArchons;// = ds.getArchons(Team.A).size();
+            numArchons = 1;
             String archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
             txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
             //txtRenderer.draw("RED TEAM - " + aPoints, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
@@ -872,7 +873,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
             //String s = bPoints + " - BLUE TEAM";
             s = bPoints + " - " + teamBNameShort;
-            numArchons = ds.getArchons(Team.B).size();
+//            numArchons = ds.getArchons(Team.B).size();
+            numArchons = 1;
             archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
 
             txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);

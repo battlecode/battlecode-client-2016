@@ -13,7 +13,7 @@ import java.util.List;
 
 class DrawHUD {
 
-    private static final int numArchons = GameConstants.NUMBER_OF_ARCHONS;
+    private static final int numArchons = 1;
     private static final float slotSize = 0.8f / (numArchons + 1);
     private static final Font footerFont;
 	
@@ -53,6 +53,8 @@ class DrawHUD {
     private int points = 0;
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
+    private static final AffineTransform textScaleSmall =
+            AffineTransform.getScaleInstance(1 / 256.0, 1 / 256.0);
 
     public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
@@ -179,14 +181,17 @@ class DrawHUD {
                 0.5f * (slotSize - spriteScale));
 		//System.out.println("drawing");
         try {
-            java.util.List<DrawObject> archons = ds.getArchons(team);
+        	// TODO
+        	// CORY FIX IT
+            DrawObject hq = ds.getHQ(team);
             for (int i = 0; i < numArchons; i++) {
-				if(i < archons.size())
-					drawRobot(g2,archons.get(i));
+				if(i<1)
+					drawRobot(g2,hq);
 				else
 					drawRobot(g2,null);
             }
-			drawRobot(g2,ds.getPowerCore(team));
+//			drawRobot(g2,ds.getPowerCore(team));
+            drawTeamResource(g2, hq);
         } catch (ConcurrentModificationException e) {
 			e.printStackTrace();
         }
@@ -206,6 +211,40 @@ class DrawHUD {
 			g2.setTransform(pushed2);
 			if (r!=null)
 				r.drawImmediate(g2, false, true);
+        }
+        g2.setTransform(pushed);
+        g2.translate(0, slotSize);
+	}
+	
+	public void drawTeamResource(Graphics2D g2, DrawObject r) {
+		if (r==null) return;
+    	AffineTransform pushed = g2.getTransform();
+        {
+        	g2.scale(spriteScale, spriteScale);
+            AffineTransform pushed2 = g2.getTransform();
+			{
+				BufferedImage underImg = unitUnder.image;
+				g2.translate(-0.5, -0.5);
+				g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+				if (r.getTeam() == Team.A) g2.setColor(Color.red);
+				else g2.setColor(Color.blue);
+				double percent = Math.min(ds.getTeamResources(r.getTeam())/10000.0, 1.0);
+//				System.out.println(percent);
+				int height = (int)(underImg.getHeight()*percent);
+				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
+			}
+			
+			
+			g2.setTransform(pushed2);
+//			if (r!=null)
+//				r.drawImmediate(g2, false, true);
+			String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
+			while (resource.length() < 8) resource = "0"+resource;
+			g2.translate(-.3, 1.5);
+            for (int i = 0; i < 8; i++) {
+                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+                g2.translate(0.75/4, 0);
+            }
         }
         g2.setTransform(pushed);
         g2.translate(0, slotSize);

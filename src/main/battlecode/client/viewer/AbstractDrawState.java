@@ -1,6 +1,8 @@
 package battlecode.client.viewer;
 
 import battlecode.client.viewer.render.RenderConfiguration;
+import battlecode.common.Direction;
+import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
@@ -24,14 +26,18 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected Map<Integer, DrawObject> groundUnits;
     protected Map<Integer, DrawObject> airUnits;
     protected Map<Integer, FluxDepositState> fluxDeposits;
+    protected Set<MapLocation> encampments;
     protected double[] teamHP = new double[2];
-	protected Map<Team, List<DrawObject>> archons;
+//	protected Map<Team, List<DrawObject>> archons;
+	protected Map<Team, DrawObject> hqs;
 	protected int [] coreIDs = new int [2];
-	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
+//	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
+	protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
     protected RoundStats stats = null;
+    protected double[] teamResources = new double[2];;
     protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
             new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -86,67 +92,28 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	private Map<MapLocation, Team> nodeTeams = new HashMap<MapLocation,Team>();
 	protected List<Link> links = new ArrayList<Link>();
 
-	private class Graph implements battlecode.world.GameWorld.Graph {
-
-		private Set<MapLocation> [] connected;
-
-		public Graph() {
-			connected = new Set [] { new HashSet<MapLocation>(), new HashSet<MapLocation>() };
-		}
-
-		public List<MapLocation> neighbors(MapLocation loc) {
-			return neighbors.get(loc);
-		}
-
-		public MapLocation baseNode(Team t) {
-			return coreLocs.get(t);
-		}
-
-		public Team team(MapLocation loc) {
-			if(nodeTeams.containsKey(loc))
-				return nodeTeams.get(loc);
-			else
-				return Team.NEUTRAL;
-		}
-
-		public void setConnected(MapLocation loc, Team t) {
-			connected[t.ordinal()].add(loc);
-		}
-
-		public void colorLinks() {
-			
-			for(int i=0;i<2;i++) {
-				Team tm = Team.values()[i];
-				for(Link l: links) {
-					boolean tConn = team(l.to)==tm && connected[i].contains(l.to);
-					boolean fConn = team(l.from)==tm && connected[i].contains(l.from);
-					l.connected[i] = tConn || fConn; 
-				}
-			}
-		}
-
-	}
 
 	public AbstractDrawState() {
-		archons = new EnumMap<Team, List<DrawObject>>(Team.class);
-		archons.put(Team.A,new ArrayList<DrawObject>());
-		archons.put(Team.B,new ArrayList<DrawObject>());
+		hqs = new EnumMap<Team, DrawObject>(Team.class);
 	}
 
 	protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
         groundUnits.clear();
-        archons.get(Team.A).clear();
-        archons.get(Team.B).clear();
         for (Map.Entry<Integer, DrawObject> entry : src.groundUnits.entrySet()) {
             DrawObject copy = createDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
-            tryAddArchon(copy);
+            tryAddHQ(copy);
         }
         airUnits.clear();
         for (Map.Entry<Integer, DrawObject> entry : src.airUnits.entrySet()) {
             DrawObject copy = createDrawObject(entry.getValue());
             airUnits.put(entry.getKey(), copy);
         }
+        
+        mineLocs.clear();
+        mineLocs.putAll(src.mineLocs);
+        
+        
         fluxDeposits.clear();
         for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
             fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
@@ -157,7 +124,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 		nodeTeams = new HashMap<MapLocation,Team>(src.nodeTeams);
 	
 		neighbors = src.neighbors;
-		coreLocs = src.coreLocs;
 
 		links.clear();
 		for(Link l : src.links) {
@@ -169,19 +135,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
 
         currentRound = src.currentRound;
+        for (int x=0; x<teamResources.length; x++)
+        	teamResources[x] = src.teamResources[x];
     }
 
-	public void recomputeConnected() {
-		if(neighbors!=null) {
-			Graph g = new Graph();
-			new battlecode.world.GameWorld.Connections(g,Team.A).findAll();
-			new battlecode.world.GameWorld.Connections(g,Team.B).findAll();
-			g.colorLinks();
-		}
-	}
-
-	public List<DrawObject> getArchons(Team t) {
-		return archons.get(t);
+	public DrawObject getHQ(Team t) {
+		return hqs.get(t);
 	}
 
 	public DrawObject getPowerCore(Team t) {
@@ -190,6 +149,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 			return getRobot(id);
 		else
 			return null;
+	}
+	
+	public Set<MapLocation> getEncampmentLocations() {
+		return encampments;
 	}
 
     protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
@@ -233,14 +196,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         }
     }
 
-    protected void tryAddArchon(DrawObject archon) {
-        if (archon.getType() == RobotType.ARCHON)
-			archons.get(archon.getTeam()).add(archon);
+    protected void tryAddHQ(DrawObject hq) {
+        if (hq.getType() == RobotType.HQ)
+        	hqs.put(hq.getTeam(),hq);
     }
 
-    //public List<DrawObject> getArchons(Team team) {
-    //    return (team == Team.A ? archonsA : archonsB);
-    //}
     public RoundStats getRoundStats() {
         return stats;
     }
@@ -288,11 +248,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
         }
 
-		if(robot.getType()==RobotType.TOWER) {
-			nodeTeams.remove(robot.getLocation());
-			recomputeConnected();
-		}
-
         robot.destroyUnit();
         
     }
@@ -312,12 +267,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     public void visitFluxChangeSignal(FluxChangeSignal s) {
-        int[] robotIDs = s.getRobotIDs();
-        double[] flux = s.flux;
-        for (int i = 0; i < robotIDs.length; i++) {
-            getRobot(robotIDs[i]).setFlux(flux[i]);
-        }
-        
+//        int[] robotIDs = s.getRobotIDs();
+//        double[] flux = s.flux;
+//        for (int i = 0; i < robotIDs.length; i++) {
+//            getRobot(robotIDs[i]).setFlux(flux[i]);
+//        }
+//        teamResources = s.flux;
+        for (int x=0; x<teamResources.length; x++)
+        	teamResources[x] = s.flux[x];
     }
 
 	public void visitTransferFluxSignal(TransferFluxSignal s) {
@@ -347,32 +304,37 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         DrawObject obj = getRobot(s.getRobotID());
         boolean teleported = !obj.loc.isAdjacentTo(s.getNewLoc());
         //TODO: this should probably be from a teleported signal
+        MapLocation oldloc = obj.loc;
         obj.setLocation(s.getNewLoc());
         if (teleported) {
             obj.setTeleport(obj.loc, s.getNewLoc());
         } else {
-
+        	obj.setDirection(oldloc.directionTo(s.getNewLoc()));
             obj.setMoving(s.isMovingForward());
         }
         
     }
-
-	public void connectNode(MapLocation l1, MapLocation l2) {
-		if(!neighbors.containsKey(l1))
-			neighbors.put(l1,new ArrayList<MapLocation>());
-		neighbors.get(l1).add(l2);
-
-	}
-
-	public void visitNodeConnectionSignal(NodeConnectionSignal s) {
-		neighbors = new HashMap<MapLocation,List<MapLocation>>();
-		for(MapLocation [] l : s.connections) {
-			links.add(new Link(l[0],l[1]));
-			connectNode(l[0],l[1]);
-			connectNode(l[1],l[0]);
-		}
-		recomputeConnected();
-	}
+    
+    public void visitMineSignal(MineSignal s) {
+    	if (s.shouldAdd()) {
+    		if (mineLocs.get(s.getMineLoc()) == null)
+    			mineLocs.put(s.getMineLoc(), s.getMineTeam());
+    	} else {
+    		mineLocs.remove(s.getMineLoc());
+    	}
+    }
+    
+    public void visitMinelayerSignal(MinelayerSignal s) {
+    	if (s.isDefusing())
+    		getRobot(s.getRobotID()).setAction(GameConstants.ROUNDS_TO_DEFUSE, ActionType.DEFUSING);
+    	else
+    		getRobot(s.getRobotID()).setAction(GameConstants.ROUNDS_TO_MINE, ActionType.MINING);
+    }
+    
+    public void visitCaptureSignal(CaptureSignal s) {
+    	getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_DELAY, ActionType.CAPTURING);
+    		
+    }
 
     public void visitSetDirectionSignal(SetDirectionSignal s) {
         getRobot(s.getRobotID()).setDirection(s.getDirection());
@@ -382,21 +344,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     public DrawObject spawnRobot(SpawnSignal s) {
         DrawObject spawn = createDrawObject(s.getType(), s.getTeam(), s.getRobotID());
         spawn.setLocation(s.getLoc());
-        spawn.setDirection(s.getDirection());
+//        spawn.setDirection(s.getDirection());
+        spawn.setDirection(Direction.NORTH);
+        
         putRobot(s.getRobotID(), spawn);
-        tryAddArchon(spawn);
+        tryAddHQ(spawn);
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
             teamHP[team] += getRobot(s.getRobotID()).getEnergon();
         }
-		if(spawn.getType()==RobotType.TOWER) {
-			nodeTeams.put(spawn.getLocation(),spawn.getTeam());
-			if(!coreLocs.containsKey(spawn.getTeam())) {
-				coreIDs[spawn.getTeam().ordinal()]=spawn.getID();
-				coreLocs.put(spawn.getTeam(),spawn.getLocation());
-			}
-			recomputeConnected();
-		}
+		
         return spawn;
     }
 
@@ -433,5 +390,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
     public void visitTurnOffSignal(TurnOffSignal s) {
         getRobot(s.robotID).setPower(false);
+    }
+    
+    public void visitNodeBirthSignal(NodeBirthSignal s) {
+    	encampments.add(s.location);
     }
 }

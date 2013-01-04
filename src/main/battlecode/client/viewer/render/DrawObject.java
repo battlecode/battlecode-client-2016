@@ -18,6 +18,8 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
+import battlecode.client.viewer.ActionType;
+import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
@@ -57,13 +59,18 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public static final AbstractAnimation.AnimationType[] postDrawOrder = new AbstractAnimation.AnimationType[]{MORTAR_ATTACK, MORTAR_EXPLOSION, ENERGON_TRANSFER};
     private int teleportRounds;
     private MapLocation teleportLoc;
-	private static final double scorcherRadius = Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
-	private static final double regenRadius = Math.sqrt(RobotType.SCOUT.attackRadiusMaxSquared);
+    private RobotType rtype = null;
+    private static final double medbayRadius = Math.sqrt(RobotType.MEDBAY.attackRadiusMaxSquared);
+    private static final double shieldsRadius = Math.sqrt(RobotType.SHIELDS.attackRadiusMaxSquared);
+    private static final double soldierRadius = Math.sqrt(RobotType.SOLDIER.attackRadiusMaxSquared);
+    private static final double artilleryRadius = Math.sqrt(GameConstants.ARTILLERY_SPLASH_RADIUS_SQUARED);
+    
 
     public DrawObject(RobotType type, Team team, int id) {
         super(type, team, id);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
         maxEnergon = type.maxEnergon;
+        rtype = type;
     }
 
 
@@ -75,6 +82,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         preEvolve = copy.preEvolve;
         teleportRounds = copy.teleportRounds;
         teleportLoc = copy.teleportLoc;
+        rtype = copy.rtype;
         if (animations.containsKey(ENERGON_TRANSFER)) {
             EnergonTransferAnim a = (EnergonTransferAnim) animations.get(ENERGON_TRANSFER);
             a.setSource(this);
@@ -179,7 +187,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
             if (broadcast != 0x00 && RenderConfiguration.showBroadcast()) {
                 g2.setStroke(broadcastStroke);
-                double drdR = broadcastRadius * 0.05; // dradius/dRound
+                double drdR = visualBroadcastRadius * 0.05; // dradius/dRound
                 for (int i = 0; i < 20; i++) {
                     if ((broadcast & (1 << i)) != 0x00) {
                         double r = i * drdR;
@@ -189,11 +197,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 }
             }
 
-			if(regen > 0 && RenderConfiguration.showSpawnRadii()) {
-				g2.setStroke(broadcastStroke);
-				g2.setColor(regenColor);
-				g2.draw(new Ellipse2D.Double(.5-regenRadius,.5-regenRadius,2*regenRadius,2*regenRadius));
-			}
+//			if(regen > 0 && RenderConfiguration.showSpawnRadii()) {
+//				g2.setStroke(broadcastStroke);
+//				g2.setColor(regenColor);
+//				g2.draw(new Ellipse2D.Double(.5-regenRadius,.5-regenRadius,2*regenRadius,2*regenRadius));
+//			}
         }
         g2.setTransform(pushed); // pop
         // these animations shouldn't be drawn in the HUD, and they expect
@@ -227,7 +235,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         } else {
 
 			boolean showEnergon = RenderConfiguration.showEnergon() || drawOutline;
-			boolean showFlux = (RenderConfiguration.showFlux() || drawOutline) && getType()!=RobotType.TOWER;
+			boolean showFlux = (RenderConfiguration.showFlux() || drawOutline);
 
             if (showEnergon) {
                 Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
@@ -246,7 +254,24 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 g2.fill(rect);
             }
 
-			if(showFlux) {
+//			if(showFlux) {
+//			    Rectangle2D.Float rect;
+//				if(showEnergon)
+//					rect = new Rectangle2D.Float(0, 1.15f, 1, 0.15f);
+//				else
+//					rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+//                g2.setColor(Color.BLACK);
+//                g2.fill(rect);
+//                float frac = Math.min((float) (flux / info.type.maxFlux), 1);frac = Math.min((float) (energon / maxEnergon), 1);
+//                rect.width = frac;
+//                if (frac < 0)
+//                    frac = 0;
+//                g2.setColor(new Color(frac,0,.5f+.5f*frac));
+//                g2.fill(rect);
+//			}
+			
+            // actions
+			if (actionAction != null && actionAction != ActionType.IDLE) {
 			    Rectangle2D.Float rect;
 				if(showEnergon)
 					rect = new Rectangle2D.Float(0, 1.15f, 1, 0.15f);
@@ -254,11 +279,20 @@ class DrawObject extends AbstractDrawObject<Animation> {
 					rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
                 g2.setColor(Color.BLACK);
                 g2.fill(rect);
-                float frac = Math.min((float) (flux / info.type.maxFlux), 1);
+                float frac = Math.min(1-((float)roundsUntilActionIdle / Math.max(totalActionRounds,1)), 1);
+                if (totalActionRounds == 0)
+                	frac = 1;
                 rect.width = frac;
                 if (frac < 0)
                     frac = 0;
-                g2.setColor(new Color(frac,0,.5f+.5f*frac));
+                switch (actionAction)
+                {
+                case MINING: g2.setColor(new Color(1.0f, 0, 0.8f)); break;
+                case DEFUSING: g2.setColor(Color.cyan); break;
+                case CAPTURING: g2.setColor(new Color(0.3f, 0.3f, 1.0f)); break;
+                default:;
+                }
+//                g2.setColor(new Color(frac,0,.5f+.5f*frac));
                 g2.fill(rect);
 			}
 
@@ -323,26 +357,64 @@ class DrawObject extends AbstractDrawObject<Animation> {
         if (roundsUntilAttackIdle>0) {
 			g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
             g2.setStroke(mediumStroke);
-			if(targetLoc==null) {
-				// scorcher
-				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,90-RobotType.SCORCHER.attackAngle/2.+attackDir.ordinal()*(-45),RobotType.SCORCHER.attackAngle,Arc2D.PIE));
-			}
-			else {
-                BufferedImage target;
-                if (getTeam() == Team.A) {
-                    target = crosshair.image;
-                } else {
-                    target = crosshairBlue.image;
-                }
-                if (target != null) {
-                    AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.x, targetLoc.y);
-                    trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
-                    g2.drawImage(target, trans, null);
-                }
+            
+            if (rtype == null)
+            {
+            	if(targetLoc==null) {
+    				// scorcher
+//    				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,90-RobotType.SCORCHER.attackAngle/2.+attackDir.ordinal()*(-45),RobotType.SCORCHER.attackAngle,Arc2D.PIE));
+    			}
+    			else {
+                    BufferedImage target;
+                    if (getTeam() == Team.A) {
+                        target = crosshair.image;
+                    } else {
+                        target = crosshairBlue.image;
+                    }
+                    if (target != null) {
+                        AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.x, targetLoc.y);
+                        trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+                        g2.drawImage(target, trans, null);
+                    }
 
-                g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
-                        targetLoc.x + 0.5, targetLoc.y + 0.5));
+                    g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
+                            targetLoc.x + 0.5, targetLoc.y + 0.5));
+                }
+            } else
+            {
+            	switch (rtype) {
+            	case SOLDIER:
+            		g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
+            		break;
+            	case ARTILLERY:
+            		BufferedImage target;
+                    if (getTeam() == Team.A) {
+                        target = crosshair.image;
+                    } else {
+                        target = crosshairBlue.image;
+                    }
+                    if (target != null) {
+                        AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.x, targetLoc.y);
+                        trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+                        g2.drawImage(target, trans, null);
+                    }
+
+                    g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
+                            targetLoc.x + 0.5, targetLoc.y + 0.5));
+            		g2.draw(new Ellipse2D.Double(targetLoc.x+.5-artilleryRadius,targetLoc.y+.5-artilleryRadius,2*artilleryRadius,2*artilleryRadius));
+            		break;
+            	case MEDBAY:
+            		g2.setColor(g2.getColor().darker().darker());
+            		g2.draw(new Ellipse2D.Double(getDrawX()+.5-medbayRadius,getDrawY()+.5-medbayRadius,2*medbayRadius,2*medbayRadius));
+            		break;
+            	case SHIELDS:
+            		g2.setColor(g2.getColor().brighter().brighter());
+            		g2.draw(new Ellipse2D.Double(getDrawX()+.5-shieldsRadius,getDrawY()+.5-shieldsRadius,2*shieldsRadius,2*shieldsRadius));
+            		break;
+            	}
             }
+            
+			
         }
 
     }

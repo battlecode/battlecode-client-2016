@@ -64,6 +64,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         turnedOn = copy.turnedOn;
 		loaded = copy.loaded;
 		regen = copy.regen;
+		
+		actionAction = copy.actionAction;
+		totalActionRounds = copy.totalActionRounds;
+		roundsUntilActionIdle = copy.roundsUntilActionIdle;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
@@ -91,13 +95,16 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 	protected double maxEnergon;
     protected int roundsUntilAttackIdle;
     protected int roundsUntilMovementIdle;
+    protected int roundsUntilActionIdle;
+    protected int totalActionRounds;
     protected ActionType attackAction;
     protected ActionType movementAction;
+    protected ActionType actionAction;
     protected MapLocation targetLoc = null;
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
-    protected final int broadcastRadius = (int)Math.round(Math.sqrt(GameConstants.BROADCAST_RADIUS_SQUARED));
+    protected final int visualBroadcastRadius = 2;
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
 	protected int regen = 0;
@@ -141,7 +148,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     public int broadcastRadius() {
-        return broadcastRadius;
+        return visualBroadcastRadius;
     }
 
     public RobotType getType() {
@@ -291,6 +298,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         roundsUntilMovementIdle = delay;
         updateDrawLoc();
     }
+    
+    public void setAction(int totalrounds, ActionType type)
+    {
+    	actionAction = type;
+    	roundsUntilActionIdle = totalrounds;
+    	totalActionRounds = totalrounds;
+    }
 
     public void setTeleport(MapLocation src, MapLocation loc) {
         animations.put(TELEPORT, createTeleportAnim(src, loc));
@@ -299,6 +313,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public void destroyUnit() {
         movementAction = ActionType.IDLE;
         attackAction = ActionType.IDLE;
+        actionAction = ActionType.IDLE;
         energon = 0;
         animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
         animations.remove(ENERGON_TRANSFER);
@@ -314,6 +329,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         if (roundsUntilAttackIdle == 0) {
             attackAction = ActionType.IDLE;
         }
+        
+        if (roundsUntilActionIdle == 0) {
+        	actionAction = ActionType.IDLE;
+        	totalActionRounds = 0;
+        }
 
         updateDrawLoc();
 
@@ -325,6 +345,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
             roundsUntilMovementIdle--;
         if (roundsUntilAttackIdle > 0)
             roundsUntilAttackIdle--;
+        if (roundsUntilActionIdle > 0)
+        	roundsUntilActionIdle--;
 
         Iterator<Map.Entry<AbstractAnimation.AnimationType, Animation>> it = animations.entrySet().iterator();
         Map.Entry<AbstractAnimation.AnimationType, Animation> entry;

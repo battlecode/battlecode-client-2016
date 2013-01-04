@@ -14,7 +14,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
 
 public class GLDrawHUD {
-	private static final int numArchons = GameConstants.NUMBER_OF_ARCHONS;
+	private static final int numArchons = 1;
 
 	private final GLDrawState ds;
 	private final Team team;
@@ -41,7 +41,8 @@ public class GLDrawHUD {
 		gl.glEnd();
 		
 		try {
-			java.util.List<GLDrawObject> archons = ds.getArchons(team);
+			java.util.List<GLDrawObject> archons = null;// = ds.getArchons(team);
+			
 			int i;
 			for (i = 0; i < archons.size(); ++i) {
 				drawRobot(gl, glu, archons.get(i));

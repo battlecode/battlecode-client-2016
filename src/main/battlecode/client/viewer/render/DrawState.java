@@ -8,10 +8,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.DebugState;
@@ -63,6 +65,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     public DrawState() {
         groundUnits = new LinkedHashMap<Integer, DrawObject>();
         airUnits = new LinkedHashMap<Integer, DrawObject>();
+        encampments = new HashSet<MapLocation>();
         towers = new LinkedList<DrawObject>();
         fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
         currentRound = -1;
@@ -95,6 +98,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     public MapLocation[][] getConvexHullsB() {
         return convexHullsB;
+    }
+    
+    public double getTeamResources(Team t) {
+    	return teamResources[t.ordinal()];
     }
 
 	protected void mineFlux(DrawObject obj) {
@@ -157,34 +164,50 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             return;
         }
 
-		AffineTransform pushed2 = g2.getTransform();
+//		AffineTransform pushed2 = g2.getTransform();
 		
 		// Woohoo the power grid!
-		g2.setStroke(new BasicStroke(.15f));
-		g2.translate(.5,.5);
-		for (Link l : links) {
-			if(l.connected[0])
-				if(l.connected[1])
-					g2.setColor(linkBoth);
-				else
-					g2.setColor(linkA);
-			else
-				if(l.connected[1])
-					g2.setColor(linkB);
-				else
-					g2.setColor(linkNone);
-			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
-		}
-
-		g2.setColor(new Color(1.f,0.f,0.f,.5f));
-		MapLocation coreLoc = coreLocs.get(Team.A);
-		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+//		g2.setStroke(new BasicStroke(.15f));
+//		g2.translate(.5,.5);
+//		for (Link l : links) {
+//			if(l.connected[0])
+//				if(l.connected[1])
+//					g2.setColor(linkBoth);
+//				else
+//					g2.setColor(linkA);
+//			else
+//				if(l.connected[1])
+//					g2.setColor(linkB);
+//				else
+//					g2.setColor(linkNone);
+//			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
+//		}
+        for (MapLocation m : getEncampmentLocations()) {
+        	 g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
+ 			g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
+        }
+        
 		
-		g2.setColor(new Color(0.f,0.f,1.f,.5f));
-		coreLoc = coreLocs.get(Team.B);
-		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+		for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {
+			MapLocation loc = entry.getKey();
+			Team team = entry.getValue();
+		
+			if (team == Team.A) g2.setColor(new Color(1.f,0.f,0.f,.5f));
+			else if (team == Team.B) g2.setColor(new Color(0.f,0.f,1.f,.5f));
+			else g2.setColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
+			g2.fill(new Ellipse2D.Float(loc.x+0.25f, loc.y+0.25f, 0.5f, 0.5f));
+		}
+		
 
-		g2.setTransform(pushed2);
+//		g2.setColor(new Color(1.f,0.f,0.f,.5f));
+//		MapLocation coreLoc = coreLocs.get(Team.A);
+//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+//		
+//		g2.setColor(new Color(0.f,0.f,1.f,.5f));
+//		coreLoc = coreLocs.get(Team.B);
+//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+
+//		g2.setTransform(pushed2);
 
         for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
 

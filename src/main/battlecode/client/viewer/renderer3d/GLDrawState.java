@@ -159,7 +159,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         for (Map.Entry<Integer, GLDrawObject> entry : src.groundUnits.entrySet()) {
             GLDrawObject copy = new GLDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
-            tryAddArchon(copy);
+//            tryAddArchon(copy);
         }
         airUnits.clear();
         for (Map.Entry<Integer, GLDrawObject> entry : src.airUnits.entrySet()) {
@@ -582,7 +582,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glEnd();
 				} else { // target null, scorcher
 					// we need to draw a semicircle; approximate with linestrips
-					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+//					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
 					final float angleDelta = (float) Math.PI / 32;
 					final float circleScale = 5.f;
 
@@ -692,28 +692,28 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
 			// draw flux
-			if (RenderConfiguration.showFlux() && obj.getType() != RobotType.TOWER) {
-				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
-				final Color3f max = new Color3f(0.0f, 0.0f, 1.0f);
-				final Color3f min = new Color3f(0.0f, 0.0f, 0.5f);
-				final float z = 0.7f;
-				fluxColor.interpolate(min, max, frac);
-
-				gl.glBegin(GL2.GL_QUADS);
-				gl.glNormal3f(0.0f, 1.0f, 0.0f);
-				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
-
-				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
-				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
-				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
-				gl.glEnd();
-			}
+//			if (RenderConfiguration.showFlux() && obj.getType() != RobotType.TOWER) {
+//				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
+//				final Color3f max = new Color3f(0.0f, 0.0f, 1.0f);
+//				final Color3f min = new Color3f(0.0f, 0.0f, 0.5f);
+//				final float z = 0.7f;
+//				fluxColor.interpolate(min, max, frac);
+//
+//				gl.glBegin(GL2.GL_QUADS);
+//				gl.glNormal3f(0.0f, 1.0f, 0.0f);
+//				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
+//
+//				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
+//				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+//				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+//				gl.glEnd();
+//			}
 
             // disable lighting in ortho mode
             if (r.getCamera().isOrtho()) {
@@ -736,27 +736,27 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
 
 
-            if (GLGameRenderer.USE_MODELS) {
-
-                switch (obj.getType()) {
-                    case ARCHON:
-                        drawArchon(gl, obj);
-                    case SCORCHER:
-                        drawScorcher(gl, obj);
-                    case DISRUPTER:
-                        drawdisrupter(gl, obj);
-                    case SCOUT:
-                        drawScout(gl, obj);
-                    case SOLDIER:
-                        drawSoldier(gl, obj);
-                    case TOWER:
-                        drawNode(gl, obj);
-                    default:
-                        drawRobot(gl, obj);
-                }
-            } else {
-                drawRobot(gl, obj);
-            }
+//            if (GLGameRenderer.USE_MODELS) {
+//
+//                switch (obj.getType()) {
+//                    case ARCHON:
+//                        drawArchon(gl, obj);
+//                    case SCORCHER:
+//                        drawScorcher(gl, obj);
+//                    case DISRUPTER:
+//                        drawdisrupter(gl, obj);
+//                    case SCOUT:
+//                        drawScout(gl, obj);
+//                    case SOLDIER:
+//                        drawSoldier(gl, obj);
+//                    case TOWER:
+//                        drawNode(gl, obj);
+//                    default:
+//                        drawRobot(gl, obj);
+//                }
+//            } else {
+//                drawRobot(gl, obj);
+//            }
 
             gl.glPopMatrix();
         }
