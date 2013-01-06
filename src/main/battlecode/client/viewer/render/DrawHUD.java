@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Map;
 
 class DrawHUD {
 
@@ -24,6 +25,13 @@ class DrawHUD {
     private static BufferedImage[] numbers;
 	private static BufferedMatch match;
 	private ImageFile avatar;
+
+    private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
+    private static final ImageFile rDiffusion = new ImageFile("art/diffusion.png");
+    private static final ImageFile rVision = new ImageFile("art/vision.png");
+    private static final ImageFile rFusion = new ImageFile("art/fusion.png");
+    private static final ImageFile rNuke = new ImageFile("art/nuke.png");
+
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -233,8 +241,38 @@ class DrawHUD {
 				int height = (int)(underImg.getHeight()*percent);
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
 			}
-			
-			
+
+			BufferedImage[] rImage = new BufferedImage[]{ rPickaxe.image,
+																										rDiffusion.image,
+																										rVision.image,
+																										rFusion.image,
+																										rNuke.image, };
+
+			g2.setTransform(pushed2);
+			g2.translate(-0.5, 1.75);
+			for (int u = 0; u < Upgrade.values().length; u++) {
+					double research = ds.getResearchProgress(r.getTeam(), u);
+					if (research > 0) {
+							BufferedImage target = rImage[u];
+							AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+							trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
+							g2.drawImage(target, trans, null);
+							
+							
+							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+							g2.setColor(Color.gray);
+							g2.fill(rect);
+							double frac = Math.min(research, 1);
+							rect.width = frac / 2;
+							g2.setColor(Color.green);
+							g2.fill(rect);
+
+							g2.translate(0.65, 0);
+							if (u == 2)
+									g2.translate(-1.65, 0.6);
+					}
+			}
+
 			g2.setTransform(pushed2);
 //			if (r!=null)
 //				r.drawImmediate(g2, false, true);

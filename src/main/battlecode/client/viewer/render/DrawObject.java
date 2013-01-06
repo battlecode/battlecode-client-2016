@@ -310,7 +310,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 g2.fill(rect);
 			}
 
-            AffineTransform trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
+	      		AffineTransform trans = AffineTransform.getRotateInstance(0, 0.5, 0.5);//(dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
 
             assert preEvolve != null;
             BufferedImage image = getTypeSprite();

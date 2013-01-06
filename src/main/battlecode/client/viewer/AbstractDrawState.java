@@ -6,6 +6,7 @@ import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import battlecode.common.Upgrade;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.InternalRobot;
@@ -38,7 +39,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected GameMap gameMap;
     protected int currentRound;
     protected RoundStats stats = null;
-    protected double[] teamResources = new double[2];;
+    protected double[] teamResources = new double[2];
+		protected double[][] researchProgress = new double[2][5];
     protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
             new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -138,6 +140,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         currentRound = src.currentRound;
         for (int x=0; x<teamResources.length; x++)
         	teamResources[x] = src.teamResources[x];
+				for (int t = 0; t < researchProgress.length; t++)
+						for (int r = 0; r < researchProgress[t].length; r++)
+								researchProgress[t][r] = src.researchProgress[t][r];
     }
 
 	public DrawObject getHQ(Team t) {
@@ -289,6 +294,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         for (int x=0; x<teamResources.length; x++)
         	teamResources[x] = s.flux[x];
     }
+
+		public void visitResearchChangeSignal(ResearchChangeSignal s) {
+				for (int t = 0; t < researchProgress.length; t++)
+						for (int r = 0; r < researchProgress[t].length; r++)
+								researchProgress[t][r] = s.progress[t][r];
+		}
 
 	public void visitTransferFluxSignal(TransferFluxSignal s) {
 		DrawObject from = getRobot(s.fromID);

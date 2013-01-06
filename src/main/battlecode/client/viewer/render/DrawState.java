@@ -4,6 +4,7 @@ import battlecode.client.viewer.AbstractAnimation;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.FluxDepositState;
@@ -36,6 +38,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	protected static final Color linkA = new Color(1.f,0.f,0.f);
 	protected static final Color linkB = new Color(0.f,0.f,1.f);
 	protected static final Color linkBoth = new Color(.75f,0.f,.75f);
+	protected static final ImageFile mineWhite = new ImageFile("art/mine0.png");
+	protected static final ImageFile mineRed = new ImageFile("art/mine1.png");
+	protected static final ImageFile mineBlue = new ImageFile("art/mine2.png");
+	protected static final ImageFile encampment = new ImageFile("art/encampment0.png");
 
     private static class Factory implements GameStateFactory<DrawState> {
 
@@ -102,6 +108,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     
     public double getTeamResources(Team t) {
     	return teamResources[t.ordinal()];
+    }
+
+    public double getResearchProgress(Team t, int i) {
+    	return researchProgress[t.ordinal()][i];
     }
 
 	protected void mineFlux(DrawObject obj) {
@@ -182,9 +192,15 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 //					g2.setColor(linkNone);
 //			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
 //		}
+
+				BufferedImage target = encampment.image;
         for (MapLocation m : getEncampmentLocations()) {
-        	 g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
- 			g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
+						AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
+						trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+
+						g2.drawImage(target, trans, null);
+						//g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
+						//g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
         }
         
 		
@@ -195,7 +211,18 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 			if (team == Team.A) g2.setColor(new Color(1.f,0.f,0.f,.5f));
 			else if (team == Team.B) g2.setColor(new Color(0.f,0.f,1.f,.5f));
 			else g2.setColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
-			g2.fill(new Ellipse2D.Float(loc.x+0.25f, loc.y+0.25f, 0.5f, 0.5f));
+			target = mineWhite.image;
+			if (team == Team.A) {
+					target = mineRed.image;
+			} else if (team == Team.B) {
+					target = mineBlue.image;
+			}
+			if (target != null) {
+					AffineTransform trans = AffineTransform.getTranslateInstance(loc.x, loc.y);
+					trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+					g2.drawImage(target, trans, null);
+			}
+			//g2.fill(new Ellipse2D.Float(loc.x+0.25f, loc.y+0.25f, 0.5f, 0.5f));
 		}
 		
 
