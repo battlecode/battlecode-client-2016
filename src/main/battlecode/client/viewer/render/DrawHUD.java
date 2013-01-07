@@ -250,6 +250,7 @@ class DrawHUD {
 
 			g2.setTransform(pushed2);
 			g2.translate(-0.5, 1.75);
+			int c = 0;
 			for (int u = 0; u < Upgrade.values().length; u++) {
 					double research = ds.getResearchProgress(r.getTeam(), u);
 					if (research > 0) {
@@ -268,8 +269,9 @@ class DrawHUD {
 							g2.fill(rect);
 
 							g2.translate(0.65, 0);
-							if (u == 2)
+							if (c == 2)
 									g2.translate(-1.65, 0.6);
+							c++;
 					}
 			}
 
