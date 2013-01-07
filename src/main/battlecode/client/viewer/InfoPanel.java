@@ -78,6 +78,7 @@ public class InfoPanel extends JPanel {
         if (robot == null)
             clear();
         else {
+        	robotID.setText(robotID.getText()+robot.getType()+" ");
             setEnergon(robot.getEnergon(), robot.getShields());
 			setFlux(robot.getFlux());
             setBytecodesUsed(robot.getBytecodesUsed());
