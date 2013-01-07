@@ -114,14 +114,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     	return researchProgress[t.ordinal()][i];
     }
 
-	protected void mineFlux(DrawObject obj) {
-    }
-
-    // return the set of all flux deposits to be drawn in proper order by GameRenderer
-    public Collection<FluxDepositState> getFluxDeposits() {
-        return fluxDeposits.values();
-    }
-
     public synchronized void apply(RoundStats stats) {
         this.stats = stats;
     }
@@ -195,12 +187,12 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
 				BufferedImage target = encampment.image;
         for (MapLocation m : getEncampmentLocations()) {
-						AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
-						trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+			AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
+			trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
 
-						g2.drawImage(target, trans, null);
-						//g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
-						//g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
+			g2.drawImage(target, trans, null);
+			//g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
+			//g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
         }
         
 		
@@ -211,18 +203,20 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 			if (team == Team.A) g2.setColor(new Color(1.f,0.f,0.f,.5f));
 			else if (team == Team.B) g2.setColor(new Color(0.f,0.f,1.f,.5f));
 			else g2.setColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
-			target = mineWhite.image;
-			if (team == Team.A) {
-					target = mineRed.image;
-			} else if (team == Team.B) {
-					target = mineBlue.image;
-			}
-			if (target != null) {
-					AffineTransform trans = AffineTransform.getTranslateInstance(loc.x, loc.y);
-					trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
-					g2.drawImage(target, trans, null);
-			}
-			//g2.fill(new Ellipse2D.Float(loc.x+0.25f, loc.y+0.25f, 0.5f, 0.5f));
+			
+			g2.fill(new Ellipse2D.Float(loc.x+0.25f, loc.y+0.25f, 0.5f, 0.5f));
+			
+//			target = mineWhite.image;
+//			if (team == Team.A) {
+//					target = mineRed.image;
+//			} else if (team == Team.B) {
+//					target = mineBlue.image;
+//			}
+//			if (target != null) {
+//					AffineTransform trans = AffineTransform.getTranslateInstance(loc.x, loc.y);
+//					trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+//					g2.drawImage(target, trans, null);
+//			}
 		}
 		
 

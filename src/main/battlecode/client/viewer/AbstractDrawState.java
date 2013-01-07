@@ -350,13 +350,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
     public void visitMinelayerSignal(MinelayerSignal s) {
     	if (s.isDefusing())
-    		getRobot(s.getRobotID()).setAction(GameConstants.ROUNDS_TO_DEFUSE, ActionType.DEFUSING);
+    		getRobot(s.getRobotID()).setAction(GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING);
     	else
-    		getRobot(s.getRobotID()).setAction(GameConstants.ROUNDS_TO_MINE, ActionType.MINING);
+    		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
     }
     
     public void visitCaptureSignal(CaptureSignal s) {
-    	getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_DELAY, ActionType.CAPTURING);
+    	getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_ROUND_DELAY, ActionType.CAPTURING);
     		
     }
 
