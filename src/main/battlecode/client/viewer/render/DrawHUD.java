@@ -27,7 +27,7 @@ class DrawHUD {
 	private ImageFile avatar;
 
     private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
-    private static final ImageFile rDiffusion = new ImageFile("art/diffusion.png");
+    private static final ImageFile rDefusion = new ImageFile("art/defusion.png");
     private static final ImageFile rVision = new ImageFile("art/vision.png");
     private static final ImageFile rFusion = new ImageFile("art/fusion.png");
     private static final ImageFile rNuke = new ImageFile("art/nuke.png");
@@ -244,7 +244,7 @@ class DrawHUD {
 
 			BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
 																										rVision.image,
-																										rDiffusion.image,
+																										rDefusion.image,
 																										rPickaxe.image,
 																										rNuke.image, };
 
