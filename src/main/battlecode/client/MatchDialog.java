@@ -40,7 +40,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 	
 	private final double[][] LAYOUT = { /* 10 x 21 */
 		{ 20, 30, 70, 5, 100, 5, 55, 5, 40, 20 },
-		{ 110, 25, 25, 30, 25, 30, 25, 25, 25, 25, 25, 25, 30, 25, 25, 25, 25, 15, 30, 30, 0, 15, 30, 10 }
+		{ 110, 25, 25, 30, 25, 30, 25, 25, 25, 25, 30, 25, 25, 25, 25, 15, 30, 30, 0, 15, 30, 10 }
 	};
 	
 	private final ButtonGroup matchOptionsGroup;
@@ -240,35 +240,35 @@ public class MatchDialog extends JDialog implements ActionListener {
 		add(new JSeparator(), "1, 7, 8, 7, f, c");
 		
 		chkGlClient = new JCheckBox("View match using 3D renderer", false);
-		add(chkGlClient, "1, 8, 8, 8, f, c");
+		//add(chkGlClient, "1, 8, 8, 8, f, c");
 		
 		chkShowMinimap = new JCheckBox("Show minimap in 3D renderer", false);
-		add(chkShowMinimap, "1, 9, 8, 9, f, c");
+		//add(chkShowMinimap, "1, 9, 8, 9, f, c");
 
 		chkLockstep = new JCheckBox("Compute and view match synchronously");
-		add(chkLockstep, "1, 10, 8, 10, f, c");
+		add(chkLockstep, "1, 8, 8, 8, f, c");
 		
 		// Save to file check box.
 		chkSave = new JCheckBox("Save match to file");
 		chkSave.setActionCommand("save");
 		chkSave.addActionListener(this);
-		add(chkSave, "1, 11, 8, 11, f, c");
+		add(chkSave, "1, 9, 8, 9, f, c");
 		
 		// Save to file path field.
 		txtSaveFile = new JTextField();
 		txtSaveFile.setPreferredSize(new Dimension(WIDTH, 20));
 		txtSaveFile.setEnabled(false);
-		add(txtSaveFile, "2, 12, 4, 12, f, c");
+		add(txtSaveFile, "2, 10, 4, 10, f, c");
 		
 		// Save to file browse button.
 		btnSaveBrowse = new JButton("Browse");
 		btnSaveBrowse.setActionCommand("save-browse");
 		btnSaveBrowse.addActionListener(this);
 		btnSaveBrowse.setEnabled(false);
-		add(btnSaveBrowse, "6, 12, 8, 12, f, c");
+		add(btnSaveBrowse, "6, 10, 8, 10, f, c");
 		
 		// Separator.
-		add(new JSeparator(), "1, 13, 8, 13, f, c");
+		add(new JSeparator(), "1, 11, 8, 11, f, c");
 		
 		// Create match parameter dropdown boxes.
 		parameters.put(Parameter.TEAM_A, new JComboBox());
@@ -282,7 +282,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 			paramBox.setPreferredSize(new Dimension(WIDTH, 20));
 			paramBox.setEditable(true);
 			
-			int offset = i + 14;
+			int offset = i + 12;
 			add(paramBox, String.format("4, %d, 8, %d, f, c", offset, offset));
 			add(new JLabel(param.getLabel()),
 					String.format("1, %d, 2, %d", offset, offset));
@@ -295,34 +295,34 @@ public class MatchDialog extends JDialog implements ActionListener {
 		lstMatches.setLayoutOrientation(JList.VERTICAL);
 		lstMatches.setAutoscrolls(true);
 		JScrollPane scrMatches = new JScrollPane(lstMatches);
-		add(scrMatches, "1, 18, 6, 21, f, f");
+		add(scrMatches, "1, 16, 6, 19, f, f");
 		
 		// The "queue match" button.
 		btnAdd = new JButton();
 		btnAdd.setActionCommand("add");
 		btnAdd.addActionListener(this);
 		btnAdd.setIcon(new ImageIcon("art/icons/list-add.png"));
-		add(btnAdd, "8, 18, f, f");
+		add(btnAdd, "8, 16, f, f");
 		
 		btnRemove = new JButton();
 		btnRemove.setActionCommand("remove");
 		btnRemove.addActionListener(this);
 		btnRemove.setIcon(new ImageIcon("art/icons/list-remove.png"));
-		add(btnRemove, "8, 19, f, f");
+		add(btnRemove, "8, 17, f, f");
 		
 		// The OK button.
 		btnOK = new JButton("OK");
 		btnOK.setMnemonic('O');
 		btnOK.setActionCommand("ok");
 		btnOK.addActionListener(this);
-		add(btnOK, "4, 22, f, c");
+		add(btnOK, "4, 20, f, c");
 		
 		// The cancel button.
 		btnCancel = new JButton("Cancel");
 		btnCancel.setMnemonic('C');
 		btnCancel.setActionCommand("cancel");
 		btnCancel.addActionListener(this);
-		add(btnCancel, "6, 22, 8, 22, f, c");
+		add(btnCancel, "6, 20, 8, 20, f, c");
 		
 		int idx;
 		if(version==null||(idx=version.indexOf('.'))<0)
@@ -331,7 +331,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 			lblVersion = new JLabel("v" + version.substring(idx+1));
 		lblVersion.setFont(lblVersion.getFont().deriveFont(Font.ITALIC));
 		lblVersion.setHorizontalAlignment(JLabel.LEFT);
-		add(lblVersion, "1, 22, 2, 22, f, c");
+		add(lblVersion, "1, 20, 2, 20, f, c");
 		
 		// Restore saved prefs, if any.
 		loadFields();
@@ -712,7 +712,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 	 * @return true if the user wants GL client, false otherwise
 	 */
 	public boolean getGlClientChoice() {
-		return chkGlClient.isEnabled() && chkGlClient.isSelected();
+			return false;//chkGlClient.isEnabled() && chkGlClient.isSelected();
 	}
 
 	/**

@@ -133,7 +133,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 								g2.drawImage(sensorImg, trans, null);
 							}
 						}
-						if ((info.type.canAttackGround || info.type.canAttackAir)
+						if ((info.type.canAttack)
 								&& info.type.attackRadiusMinSquared <= distSq
 								&& distSq <= info.type.attackRadiusMaxSquared
 								&& inAngleRange(i, j, info.type.attackCosHalfTheta)) {
