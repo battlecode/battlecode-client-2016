@@ -242,10 +242,10 @@ class DrawHUD {
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
 			}
 
-			BufferedImage[] rImage = new BufferedImage[]{ rPickaxe.image,
-																										rDiffusion.image,
+			BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
 																										rVision.image,
-																										rFusion.image,
+																										rDiffusion.image,
+																										rPickaxe.image,
 																										rNuke.image, };
 
 			g2.setTransform(pushed2);
