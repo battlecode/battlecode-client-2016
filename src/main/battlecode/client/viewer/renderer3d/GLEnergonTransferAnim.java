@@ -68,8 +68,8 @@ class GLEnergonTransferAnim extends GLAnimation {
 		
 		float airHeight = GLDrawMap.MAP_SCALE*32;//map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y);
 		toTarget.x = target.x - src.getDrawX();
-		toTarget.y = ((targetHeight == RobotLevel.IN_AIR) ? airHeight : map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y)) -
-		((targetHeight == RobotLevel.IN_AIR) ? airHeight  : map.getTerrainHeight(src.getDrawX() - origin.x, src.getDrawY() - origin.y));
+		toTarget.y = (map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y)) -
+		(map.getTerrainHeight(src.getDrawX() - origin.x, src.getDrawY() - origin.y));
 		toTarget.z = target.y - src.getDrawY();
 		float time = Math.min(roundsToLive, lifetime-roundsToLive)/lifetime;
 

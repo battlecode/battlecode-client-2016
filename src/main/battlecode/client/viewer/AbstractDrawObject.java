@@ -135,10 +135,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     private static final double sq2 = Math.sqrt(2.);
 
     protected int moveDelay() {
-        if (dir.isDiagonal())
-            return info.type.moveDelayDiagonal;
-        else
-            return info.type.moveDelayOrthogonal;
+				return 0;
     }
 
 	public int getID() {
