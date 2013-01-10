@@ -162,6 +162,17 @@ public class Main {
     }
 
     public static boolean run(Config options) {
+				if (options.get("bc.client.match") != null && !options.get("bc.client.match").trim().equals("")) {
+						ClientProxy theProxy;
+						try {
+								theProxy = new StreamClientProxy(options.get("bc.client.match"));
+						} catch (IOException e) {
+								e.printStackTrace();
+								return false;
+						}
+						Main.showViewer(createFrame(), new MatchViewer(theProxy, true));
+						return true;
+				}
         if (options.get("bc.server.mode").equalsIgnoreCase("LOCAL")) {
             runLocal(options);
             return true;
