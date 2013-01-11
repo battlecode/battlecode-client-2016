@@ -77,6 +77,9 @@ public abstract class BaseRenderer {
 		case 'H':
 			RenderConfiguration.toggleDrawHeight();
 		break;
+		case 'K':
+			RenderConfiguration.toggleAttack();
+		break;
 		case 'N':
 			RenderConfiguration.toggleBlocks();
 		break;

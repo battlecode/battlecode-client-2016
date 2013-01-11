@@ -381,8 +381,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     private void drawAction(Graphics2D g2) {
-        if (roundsUntilAttackIdle>0 
-        		|| attackAction == ActionType.ATTACKING 
+        if ((roundsUntilAttackIdle>0 
+						 || attackAction == ActionType.ATTACKING) && RenderConfiguration.showAttack()
 //        		|| rtype == RobotType.SHIELDS 
 //        		|| rtype == RobotType.MEDBAY
         		) {

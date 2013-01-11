@@ -9,6 +9,7 @@ public class RenderConfiguration {
 	private static RenderConfiguration instance = null;
 
 	private static boolean broadcast = true;
+	private static boolean attack = true;
 	private static boolean discrete = false;
 	private static boolean energon = true;
 	private static boolean flux = true;
@@ -52,6 +53,7 @@ public class RenderConfiguration {
   private RenderConfiguration() {}
 
 	public static void toggleBroadcast() { broadcast = !broadcast; }
+	public static void toggleAttack() { attack = !attack; }
 	public static void toggleDiscrete()  { discrete  = !discrete;  }
 	public static void toggleEnergon()   { energon   = !energon;   }
 	public static void toggleGridlines() { gridlines = !gridlines; }
@@ -87,6 +89,7 @@ public class RenderConfiguration {
 	}
 
 	public static boolean showBroadcast() { return broadcast; }
+	public static boolean showAttack() { return attack; }
 	public static boolean showDiscrete()  { return discrete;  }
 	public static boolean showEnergon()   { return energon;   }
 	public static boolean showGridlines() { return gridlines; }
