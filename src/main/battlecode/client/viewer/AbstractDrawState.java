@@ -40,7 +40,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected int currentRound;
     protected RoundStats stats = null;
     protected double[] teamResources = new double[2];
-		protected double[][] researchProgress = new double[2][5];
+	protected double[][] researchProgress = new double[2][5];
     protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
             new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -140,9 +140,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         currentRound = src.currentRound;
         for (int x=0; x<teamResources.length; x++)
         	teamResources[x] = src.teamResources[x];
-				for (int t = 0; t < researchProgress.length; t++)
-						for (int r = 0; r < researchProgress[t].length; r++)
-								researchProgress[t][r] = src.researchProgress[t][r];
+			for (int t = 0; t < researchProgress.length; t++)
+				for (int r = 0; r < researchProgress[t].length; r++)
+					researchProgress[t][r] = src.researchProgress[t][r];
     }
 
 	public DrawObject getHQ(Team t) {
@@ -296,9 +296,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
 		public void visitResearchChangeSignal(ResearchChangeSignal s) {
-				for (int t = 0; t < researchProgress.length; t++)
-						for (int r = 0; r < researchProgress[t].length; r++)
-								researchProgress[t][r] = s.progress[t][r];
+			for (int t = 0; t < researchProgress.length; t++)
+				for (int r = 0; r < researchProgress[t].length; r++)
+					researchProgress[t][r] = s.progress[t][r];
 		}
 
 	public void visitTransferFluxSignal(TransferFluxSignal s) {
@@ -350,7 +350,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
     public void visitMinelayerSignal(MinelayerSignal s) {
     	if (s.isDefusing())
-    		getRobot(s.getRobotID()).setAction(GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING);
+    		getRobot(s.getRobotID()).setAction(
+    				researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == Upgrade.DEFUSION.numRounds 
+    				? GameConstants.MINE_DEFUSE_DELAY : GameConstants.MINE_DEFUSE_DEFUSION_DELAY, ActionType.DEFUSING);
     	else
     		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
     }

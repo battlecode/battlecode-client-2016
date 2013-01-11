@@ -91,7 +91,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     }
 
     protected DrawObject createDrawObject(RobotType type, Team team, int id) {
-        return new DrawObject(type, team, id);
+        return new DrawObject(type, team, id, this);
     }
 
 	protected DrawObject createDrawObject(DrawObject o) {

@@ -24,6 +24,8 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import battlecode.common.Upgrade;
+
 import java.util.ArrayList;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
@@ -66,13 +68,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final double artilleryRadius = Math.sqrt(GameConstants.ARTILLERY_SPLASH_RADIUS_SQUARED);
     private static final Color shieldColor = new Color(150,150,255,150);
     private static final Color regenColor = new Color(150,255,150,150);
+    private final DrawState overallstate;
     
 
-    public DrawObject(RobotType type, Team team, int id) {
+    public DrawObject(RobotType type, Team team, int id, DrawState state) {
         super(type, team, id);
         img = preEvolve = ir.getResource(info, getAvatarPath(info));
         maxEnergon = type.maxEnergon;
         rtype = type;
+        overallstate = state;
     }
 
 
@@ -89,6 +93,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             EnergonTransferAnim a = (EnergonTransferAnim) animations.get(ENERGON_TRANSFER);
             a.setSource(this);
         }
+        overallstate = copy.overallstate;
     }
 
     public static void loadAll() {
@@ -116,9 +121,17 @@ class DrawObject extends AbstractDrawObject<Animation> {
         return 1.;
         //return this.getType().relativeSize();
     }
+    
+    private int getViewRange() {
+    	return info.type.sensorRadiusSquared + 
+    			((overallstate.getResearchProgress(getTeam(), 
+    					Upgrade.VISION.ordinal()) == 1.0) 
+    					? GameConstants.VISION_UPGRADE_BONUS : 0);
+    }
 
 	public void drawRangeHatch(Graphics2D g2) {
 		AffineTransform pushed = g2.getTransform();
+		final int viewrange = getViewRange();
 		{
 			g2.translate(loc.x, loc.y);
 			try {
@@ -126,7 +139,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 				BufferedImage attackImg = hatchAttack.image;
 				for (int i = -11; i <= 11; i++) for (int j = -11; j <= 11; j++) {
 						int distSq = i * i + j * j;
-						if (distSq <= info.type.sensorRadiusSquared) {
+						if (distSq <= viewrange) {
 							if (inAngleRange(i, j, info.type.sensorCosHalfTheta)) {
 								AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
 								trans.scale(1.0 / sensorImg.getWidth(), 1.0 / sensorImg.getHeight());
