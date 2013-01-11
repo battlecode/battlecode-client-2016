@@ -351,8 +351,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     public void visitMinelayerSignal(MinelayerSignal s) {
     	if (s.isDefusing())
     		getRobot(s.getRobotID()).setAction(
-    				researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == Upgrade.DEFUSION.numRounds 
-    				? GameConstants.MINE_DEFUSE_DELAY : GameConstants.MINE_DEFUSE_DEFUSION_DELAY, ActionType.DEFUSING);
+    				researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
+    				? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING);
     	else
     		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
     }
