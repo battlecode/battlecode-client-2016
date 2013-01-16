@@ -184,6 +184,13 @@ public class MatchPlayer implements Observer, ActionListener {
         }
     }
 
+		public void togglePause() {
+				if (isPlaying)
+						doPause();
+				else
+						doPlay();
+		}
+
     private void doPause() {
         isPlaying = false;
         controller.setPlayEnabled(true);

@@ -13,8 +13,10 @@ import javax.swing.*;
 
 import battlecode.client.viewer.BufferedMatch;
 import battlecode.client.viewer.GameStateTimeline;
+import battlecode.client.viewer.MatchPlayer;
 import battlecode.engine.signal.Signal;
 import battlecode.world.signal.DeathSignal;
+
 
 public abstract class BaseCanvas extends JPanel {
 
@@ -64,8 +66,8 @@ public abstract class BaseCanvas extends JPanel {
 		im.put(KeyStroke.getKeyStroke("shift OPEN_BRACKET"), "jump");
 		im.put(KeyStroke.getKeyStroke("CLOSE_BRACKET"), "jump");
 		im.put(KeyStroke.getKeyStroke("shift CLOSE_BRACKET"), "jump");
-		im.put(KeyStroke.getKeyStroke("shift PERIOD"), "searcharchon");
-		im.put(KeyStroke.getKeyStroke("shift COMMA"), "searcharchon");
+		im.put(KeyStroke.getKeyStroke("shift PERIOD"), "pause");
+		im.put(KeyStroke.getKeyStroke("shift COMMA"), "pause");
         getActionMap().put("toggle", new AbstractAction() {
 
             private static final long serialVersionUID = 0; // don't serialize
@@ -144,30 +146,9 @@ public abstract class BaseCanvas extends JPanel {
 				}
 			}
 		});
-		getActionMap().put("searcharchon", new AbstractAction() {
-
-			private static final long serialVersionUID = 0;
-
+		getActionMap().put("pause", new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				BaseRenderer renderer = getRenderer();
-				if (renderer != null) {
-					int dt = "<".equals(e.getActionCommand()) ? -1 : 1;
-					GameStateTimeline timeline = renderer.getTimeline();
-					BufferedMatch match = timeline.getMatch();
-					int t;
-					for(t=timeline.getRound()+dt;t>0&&t<=timeline.getNumRounds();t+=dt) {
-						for(Signal s : match.getRound(t-1).getSignals()) {
-							if((s instanceof DeathSignal)) {
-								int id = ((DeathSignal)s).getObjectID();
-								if(id<=100) {
-									timeline.setRound(t);
-									renderer.getDebugState().setFocusAndUpdate(id);
-									return;
-								}
-							}
-						}
-					}
-				}
+					MatchPlayer.getCurrent().togglePause();
 			}
 
 		});
