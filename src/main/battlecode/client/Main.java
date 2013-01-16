@@ -49,7 +49,7 @@ public class Main {
                     //frame.setIgnoreRepaint(true);
                     frame.setResizable(false);
                     frame.setUndecorated(true);
-                    //gd.setFullScreenWindow(frame);
+                    gd.setFullScreenWindow(frame);
                     /*
                     // TESTING!!
                     frame.setResizable(true);
