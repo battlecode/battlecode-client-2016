@@ -196,6 +196,8 @@ public class DrawCutScene {
 		}
 
 		public void drawTwoLine(String s, double centerx, double centery, boolean up) {
+				if (s == null || s.length() == 0)
+						s = "ERROR";
 			drawTwoLine(s,(float)centerx,(float)centery,up);
 		}
 
@@ -231,7 +233,7 @@ public class DrawCutScene {
 		drawText.drawTwoLine(winner,rect.getCenterX(),rect.getCenterY()-textHeight/2,true);
 		g2.setColor(neutralColor);
 		drawText.draw("WINS!",rect.getCenterX(),rect.getCenterY()+textHeight/2);
-		if(imgWinner.image!=null)
+		if(imgWinner != null && imgWinner.image!=null)
 			drawLogo(g2,imgWinner.image,rect.getCenterY()-5*textHeight/2 - 80);
 		g2.setTransform(pushed);
     }

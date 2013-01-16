@@ -26,29 +26,28 @@ public class TournamentTimer {
     int aWins = 0, bWins = 0;
     private Thread thread = new Thread() {
 
-        private long wakeNanoTime;
+				private long wakeNanoTime;
 
-        public void run() {
+				public void run() {
             final MinimapViewer minimap = mv.getMinimap();
             while (true) {
                 loop = new MetaGameLoop();
+								winner = null;
 
                 loop.start();
                 
                 br = mv.setupViewer();
 
-
-
                 GameStateTimeline gst = br.getTimeline();
                 gst.getMatch().addMatchListener(new MatchListener() {
 
-                    public void headerReceived(BufferedMatch match) {
-                        if (match.getHeader().getMatchNumber() == 0) {
+										public void headerReceived(BufferedMatch match) {
+												if (match.getHeader().getMatchNumber() == 0) {
                             //loop.start();
+														aWins = bWins = 0;
                             if (minimap != null) {
                                 minimap.resetMatches();
                                 minimap.setBracket();
-                                aWins = bWins = 0;
                             }
                         }
                         //else if (minimap != null) { minimap.setNull(); }
@@ -59,12 +58,14 @@ public class TournamentTimer {
                     }
                 });
                 continueCued = !waitBetweenMatches;
-                while (!(gst.getMatch().isFinished() && continueCued)) {
-                    if (minimap != null) {
-                        minimap.repaint();
-                    }
-                    doSleep(100);
-                }
+								
+								while (!(gst.getMatch().isFinished() && continueCued)) {
+										if (minimap != null) {
+												minimap.repaint();
+										}
+										doSleep(100);
+								}
+
                 if (minimap != null) {
                     minimap.setTimeline(gst);
                 }
@@ -73,34 +74,42 @@ public class TournamentTimer {
                         minimap.addWin(Team.A);
                     if (bWins > 0)
                         minimap.addWin(Team.B);
-                }
+                } else {
+                    if (aWins > 0)
+                        br.addWin(Team.A);
+                    if (bWins > 0)
+                        br.addWin(Team.B);
+								}
                 br.beginIntroCutScene(loop.stop());
                 while (loop.isPlaying()) {
                     doSleep(100);
-					mv.getCanvas().repaint();
+										mv.getCanvas().repaint();
                 }
                 doSleep(2000);
                 br.setCutSceneVisible(false);
                 new MatchPlayer(null, controller, gst, null, false);
-                while (gst.getRound() < gst.getNumRounds()) {
+                while (gst.getRound() < gst.getNumRounds() || winner == null) {
                     doSleep(100);
                 }
+								if (minimap == null)
+										br.addWin(winner);
                 doSleep(1000);
                 br.setCutSceneVisible(true);
                 br.fadeOutCutScene();
-				System.out.println("sleep "+Thread.currentThread());
-				for(int i=0;i<60;i++) {
-	                doSleep(50);
-					mv.getCanvas().repaint();
-				}
-                if (minimap != null) {
-                    minimap.addWin(winner);
-                    if (winner == Team.A)
-                        aWins++;
-                    else if (winner == Team.B)
-                        bWins++;
-                }
-                gst.terminate();
+								System.out.println("sleep "+Thread.currentThread());
+								for(int i=0;i<60;i++) {
+										doSleep(50);
+										mv.getCanvas().repaint();
+								}
+								if (winner == Team.A)
+										aWins++;
+								else if (winner == Team.B)
+										bWins++;
+				
+								if (minimap != null) {
+										minimap.addWin(winner);
+								}
+								gst.terminate();
             }
         }
 

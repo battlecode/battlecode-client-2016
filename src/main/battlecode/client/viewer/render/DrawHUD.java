@@ -117,15 +117,15 @@ class DrawHUD {
             g2.scale(width / 4.5, width / 4.5);
 			AffineTransform pushed2 = g2.getTransform();
 			tryLoadAvatar();
-			if(avatar!=null&&avatar.image!=null && 1 != 1) {
+			if(avatar!=null&&avatar.image!=null) {
 				g2.setTransform(pushed);
-        		g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
+				g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
 				g2.scale(spriteScale,spriteScale);
 				g2.translate(-.5,-.5);
 				g2.scale(2.0/avatar.image.getWidth(),2.0/avatar.image.getHeight());
 				g2.drawImage(avatar.image,null,null);
 			}
-            else {
+      {
 				g2.translate(-1.875, -1);
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2.setFont(footerFont);
@@ -192,13 +192,7 @@ class DrawHUD {
         	// TODO
         	// CORY FIX IT
             DrawObject hq = ds.getHQ(team);
-            for (int i = 0; i < numArchons; i++) {
-				if(i<1)
-					drawRobot(g2,hq);
-				else
-					drawRobot(g2,null);
-            }
-//			drawRobot(g2,ds.getPowerCore(team));
+						drawRobot(g2,hq);
             drawTeamResource(g2, hq);
         } catch (ConcurrentModificationException e) {
 			e.printStackTrace();
