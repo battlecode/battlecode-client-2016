@@ -90,7 +90,8 @@ public class GameRenderer extends BaseRenderer {
         } else if (t == Team.B) {
             bWins++;
         }
-				cutScene.setWinner(t);
+				if (cutScene != null)
+						cutScene.setWinner(t);
     }
 
     public void loadPrefs() {
