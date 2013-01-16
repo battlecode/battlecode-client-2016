@@ -117,15 +117,14 @@ class DrawHUD {
             g2.scale(width / 4.5, width / 4.5);
 			AffineTransform pushed2 = g2.getTransform();
 			tryLoadAvatar();
-			if(avatar!=null&&avatar.image!=null) {
+			if(avatar!=null&&avatar.image!=null && 1 == 0) {
 				g2.setTransform(pushed);
 				g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
 				g2.scale(spriteScale,spriteScale);
 				g2.translate(-.5,-.5);
 				g2.scale(2.0/avatar.image.getWidth(),2.0/avatar.image.getHeight());
 				g2.drawImage(avatar.image,null,null);
-			}
-      {
+			} else {
 				g2.translate(-1.875, -1);
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2.setFont(footerFont);
