@@ -44,7 +44,12 @@ public abstract class BaseRenderer {
 	}
 
 	protected final void toggleFastForward() {
-		MatchPlayer.getCurrent().toggleFastForward();
+			MatchPlayer.getCurrent().speedup();
+			//MatchPlayer.getCurrent().toggleFastForward();
+	}
+
+	protected final void toggleSlowDown() {
+			MatchPlayer.getCurrent().slowdown();
 	}
 
 	@SuppressWarnings("empty")
@@ -100,6 +105,9 @@ public abstract class BaseRenderer {
 		break;
 		case 'F':
 			toggleFastForward();
+		break;
+		case 'J':
+				toggleSlowDown();
 		break;
 		case 'S':
 			skipRounds(100);
