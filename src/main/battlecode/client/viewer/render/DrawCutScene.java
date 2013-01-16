@@ -78,8 +78,8 @@ public class DrawCutScene {
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to load font",e);
 		}
-		imgTeamA = new ImageFile(teamA+".png");
-		imgTeamB = new ImageFile(teamB+".png");
+		imgTeamA = new ImageFile("avatars/" + teamA+".png");
+		imgTeamB = new ImageFile("avatars/" + teamB+".png");
     }
 
     public void setTargetEnd(long millis) {

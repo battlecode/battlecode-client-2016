@@ -99,7 +99,7 @@ class DrawHUD {
 		if(avatar==null) {
 			String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
 			if(teamName!=null) {
-				avatar = new ImageFile(teamName+".png");
+				avatar = new ImageFile("avatars/" + teamName+".png");
 			}
 		}
 	}
@@ -117,7 +117,7 @@ class DrawHUD {
             g2.scale(width / 4.5, width / 4.5);
 			AffineTransform pushed2 = g2.getTransform();
 			tryLoadAvatar();
-			if(avatar!=null&&avatar.image!=null) {
+			if(avatar!=null&&avatar.image!=null && 1 != 1) {
 				g2.setTransform(pushed);
         		g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
 				g2.scale(spriteScale,spriteScale);
