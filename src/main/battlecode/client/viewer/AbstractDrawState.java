@@ -334,7 +334,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
             obj.setTeleport(obj.loc, s.getNewLoc());
         } else {
         	obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-            obj.setMoving(s.isMovingForward());
+            obj.setMoving(s.isMovingForward(), s.getDelay());
         }
         
     }
@@ -352,9 +352,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     	if (s.isDefusing())
     		getRobot(s.getRobotID()).setAction(
     				researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
-    				? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING);
-    	else
+    				? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING,
+    						s.getTarget());
+    	else if (s.isLaying())
     		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
+    	else if (s.isStopping())
+    		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_STOP_DELAY, ActionType.MININGSTOPPING);
     }
     
     public void visitCaptureSignal(CaptureSignal s) {

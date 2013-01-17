@@ -35,6 +35,7 @@ public enum ActionType {
     
     DEFUSING(true, true),
     MINING(true, true),
+    MININGSTOPPING(true, true),
     CAPTURING(true, true),
     REGENING(true, true),
     SHIELDING(true, true);

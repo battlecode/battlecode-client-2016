@@ -50,13 +50,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final ImageFile crosshairBlue = new ImageFile("art/crosshair2.png");
     private static final ImageFile hatchSensor = new ImageFile("art/hatch_sensor.png");
     private static final ImageFile hatchAttack = new ImageFile("art/hatch_attack.png");
-    private static final ImageFile workerRedBlock = new ImageFile("art/worker1_block.png");
-    private static final ImageFile workerBlueBlock = new ImageFile("art/worker2_block.png");
-    private static final ImageFile[] activeTeleporterRed = new ImageFile[]{new ImageFile("art/teleporter1_t1.png"), new ImageFile("art/teleporter1_t2.png"), new ImageFile("art/teleporter1_t3.png")};
-    private static final ImageFile[] activeTeleporterBlue = new ImageFile[]{new ImageFile("art/teleporter2_t1.png"), new ImageFile("art/teleporter2_t2.png"), new ImageFile("art/teleporter2_t3.png")};
     private ImageFile img;
     private ImageFile preEvolve;
-    private static final int maxTransfers = 10;
     public static final AbstractAnimation.AnimationType[] preDrawOrder = new AbstractAnimation.AnimationType[]{TELEPORT};
     public static final AbstractAnimation.AnimationType[] postDrawOrder = new AbstractAnimation.AnimationType[]{MORTAR_ATTACK, MORTAR_EXPLOSION, ENERGON_TRANSFER};
     private int teleportRounds;
@@ -314,16 +309,22 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     frac = 0;
                 switch (actionAction)
                 {
-                case MINING: g2.setColor(new Color(1.0f, 0, 0.8f)); break;
-                case DEFUSING: g2.setColor(Color.cyan); break;
-                case CAPTURING: g2.setColor(new Color(0.3f, 0.3f, 1.0f)); break;
+                case MINING:			g2.setColor(new Color(1.0f, 0, 0.8f)); 		break;
+                case MININGSTOPPING: 	g2.setColor(new Color(1.0f, 0.0f, 0.0f)); 	break;
+                case DEFUSING: 			g2.setColor(Color.cyan); 					break;
+                case CAPTURING: 		g2.setColor(new Color(0.3f, 0.3f, 1.0f)); 	break;
                 default:;
                 }
 //                g2.setColor(new Color(frac,0,.5f+.5f*frac));
                 g2.fill(rect);
 			}
-
-	      		AffineTransform trans = AffineTransform.getRotateInstance(0, 0.5, 0.5);//(dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
+			
+			AffineTransform trans;
+			
+			if (getType() == RobotType.SOLDIER)
+				trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
+			else 
+				trans = AffineTransform.getRotateInstance(0, 0.5, 0.5);//(dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
 
             assert preEvolve != null;
             BufferedImage image = getTypeSprite();
@@ -333,33 +334,28 @@ class DrawObject extends AbstractDrawObject<Animation> {
                 } else {
                     trans.scale((1.0 / image.getWidth()) * this.getRelativeSize(), (1.0 / image.getHeight()) * this.getRelativeSize());
                 }
-
-                // draw if worker is carrying block
-                if (teleportRounds > 0 && RenderConfiguration.showTeleport()) {
-                    if (teleportLoc == null) {
-                        if (getTeam() == Team.A) {
-                            g2.drawImage(activeTeleporterRed[teleportRounds % 3].image, trans, null);
-                        } else {
-                            g2.drawImage(activeTeleporterBlue[teleportRounds % 3].image, trans, null);
-                        }
-                    } else {
-                        if (teleportRounds % 8 < 4) {
-                            BufferedImage im2 = oneHalf.filter(image, null);
-                            g2.drawImage(im2, trans, null);
-                            if (RenderConfiguration.showTeleportGhosts() && !isHUD) {
-                                g2.translate(teleportLoc.x - loc.x, teleportLoc.y - loc.y);
-                                g2.drawImage(im2, trans, null);
-                                g2.translate(loc.x - teleportLoc.x, loc.y - teleportLoc.y);
-                            }
-                        } else {
-                            g2.drawImage(image, trans, null);
-                        }
-                    }
-                } else {
-                    g2.drawImage(image, trans, null);
-                }
+                g2.drawImage(image, trans, null);
             } else {
                 //System.out.println("null image in DrawObject.drawImmediate");
+            }
+            
+            if ( (RenderConfiguration.showActionLines() || drawOutline) && getType() == RobotType.SOLDIER)
+            {
+            	if (movementAction == ActionType.MOVING)
+            	{
+            		Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
+            		c = c.brighter().brighter().brighter();
+        			g2.setColor(c);
+                    g2.setStroke(thickStroke);
+                    g2.draw(new Line2D.Double(0.5, 0.5,
+                    		0.5 - dir.dx, 0.5 - dir.dy));
+            	}
+            	if (targetLoc!=null && actionAction==ActionType.DEFUSING)
+                {
+            		g2.setColor(Color.cyan);
+                	g2.setStroke(mediumStroke);
+                	g2.draw(new Line2D.Double(0.5, 0.5, targetLoc.x-loc.x+0.5, targetLoc.y-loc.y+0.5));
+                }
             }
         }
 

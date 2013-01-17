@@ -135,7 +135,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     private static final double sq2 = Math.sqrt(2.);
 
     protected int moveDelay() {
-				return 0;
+    	return 1;
     }
 
 	public int getID() {
@@ -312,6 +312,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     	roundsUntilActionIdle = totalrounds;
     	totalActionRounds = totalrounds;
     }
+    
+    public void setAction(int totalrounds, ActionType type, MapLocation target)
+    {
+    	actionAction = type;
+    	roundsUntilActionIdle = totalrounds;
+    	totalActionRounds = totalrounds;
+    	targetLoc = target;
+    }
 
     public void setTeleport(MapLocation src, MapLocation loc) {
         animations.put(TELEPORT, createTeleportAnim(src, loc));
@@ -388,6 +396,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
 
             float dist = (float) moving * roundsUntilMovementIdle / moveDelay();
+            dist = 0.5f; // hack for now until we do intermediate round rendering
             drawX = -dist * dir.dx;
             drawY = -dist * dir.dy;
             /*

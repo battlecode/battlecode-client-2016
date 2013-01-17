@@ -109,6 +109,9 @@ public abstract class BaseRenderer {
 		case 'J':
 				toggleSlowDown();
 		break;
+		case 'I':
+				RenderConfiguration.toggleActionLines();
+		break;
 		case 'S':
 			skipRounds(100);
 		break;
