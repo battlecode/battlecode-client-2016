@@ -129,22 +129,28 @@ class DrawHUD {
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2.setFont(footerFont);
 				g2.translate(width / 2, .9);
-				g2.scale(width / 4.5, width / 4.5);
+				//g2.scale(width / 4.5, width / 4.5);
+				FontMetrics fm = g2.getFontMetrics();
 				String teamName;
+				double scaleAmount = 4.5;
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
 					teamName = "Team A";
 					if (match.getTeamA() != null) {
-						teamName = match.getTeamA();
+							teamName = DrawCutScene.getTeamName(match.getTeamA());
+							scaleAmount = fm.stringWidth(teamName) / 16.0;
 					}
 				} else {
 					assert team == Team.B;
 					g2.setColor(Color.BLUE);
 					teamName = "Team B";
 					if (match.getTeamB() != null) {
-						teamName = match.getTeamB();
+							teamName = DrawCutScene.getTeamName(match.getTeamB());
+							scaleAmount = fm.stringWidth(teamName) / 16.0;
 					}
 				}
+				scaleAmount = Math.max(scaleAmount, 4.5);
+				g2.scale(width / scaleAmount, width / scaleAmount);
 				g2.drawString(teamName, 0, 0);
             }
             g2.setTransform(pushed2);
