@@ -148,6 +148,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	public DrawObject getHQ(Team t) {
 		return hqs.get(t);
 	}
+	
+	public int[] getRobotCounts(Team t) {
+		// naive way for now...
+		int[] counts = new int[RobotType.values().length];
+		for (Map.Entry<Integer, DrawObject> e : drawables) {
+			if (e.getValue().getTeam() == t)
+				counts[e.getValue().getType().ordinal()]++;
+		}
+		return counts;
+	}
 
 	public DrawObject getPowerCore(Team t) {
 		int id = coreIDs[t.ordinal()];
@@ -236,6 +246,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     public void visitAttackSignal(AttackSignal s) {
         getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
         
+    }
+    
+    public void visitHatSignal(HatSignal s) {
+    	getRobot(s.getRobotID()).addHat(s.hat);
     }
     
     public void visitShieldSignal(ShieldSignal s) {
@@ -356,8 +370,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     						s.getTarget());
     	else if (s.isLaying())
     		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
-    	else if (s.isStopping())
-    		getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_STOP_DELAY, ActionType.MININGSTOPPING);
     }
     
     public void visitCaptureSignal(CaptureSignal s) {

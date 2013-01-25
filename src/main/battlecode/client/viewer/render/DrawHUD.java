@@ -31,7 +31,16 @@ class DrawHUD {
     private static final ImageFile rVision = new ImageFile("art/vision.png");
     private static final ImageFile rFusion = new ImageFile("art/fusion.png");
     private static final ImageFile rNuke = new ImageFile("art/nuke.png");
-
+    
+    private static final RobotType[] drawnTypes = new RobotType[] {
+    	RobotType.SOLDIER,
+    	RobotType.GENERATOR,
+    	RobotType.SUPPLIER,
+    	RobotType.ARTILLERY,
+    	RobotType.MEDBAY,
+    	RobotType.SHIELDS
+    };
+    private static final ImageFile [][] rImages = new ImageFile[3][6];		
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -50,7 +59,13 @@ class DrawHUD {
 			font = new Font("Serif",Font.PLAIN,18);
 		}
 		footerFont = font;
-
+		
+		for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B})
+    		for (int x=0; x<drawnTypes.length; x++)
+    		{
+    			RobotType rt = drawnTypes[x];
+    			rImages[t.ordinal()][x] = new ImageFile("art/" + rt + (t == Team.NEUTRAL ? "0" : (t == Team.A ? "1" : "2")) + ".png");
+    		}
     }
     private final DrawState ds;
     private final Team team;
@@ -240,7 +255,35 @@ class DrawHUD {
 				int height = (int)(underImg.getHeight()*percent);
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
 			}
+			
+			
+			g2.setTransform(pushed2);
+			g2.translate(-0.5, -2.0);
+			int[] counts = ds.getRobotCounts(r.getTeam());
 
+			g2.translate(0.1, 0);
+			for (int x=0; x<drawnTypes.length; x++)
+			{
+				BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
+				AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+				trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
+				g2.drawImage(target, trans, null);
+				
+				String number = counts[drawnTypes[x].ordinal()]+"";
+				while (number.length() < 3) number = "0"+number;
+				g2.translate(0.0, 0.4);
+	            for (int i = 0; i < 3; i++) {
+	                g2.drawImage(numbers[Integer.decode(number.substring(i, i + 1))], textScaleSmall, null);
+	                g2.translate(0.75/4, 0);
+	            }
+	            g2.translate(-0.75/4*3, 0);
+
+				g2.translate(0.65, -0.4);
+				if (x == 2)
+						g2.translate(-1.95, 0.7);
+			}
+			
+			
 			BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
 																										rVision.image,
 																										rDefusion.image,

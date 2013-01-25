@@ -24,6 +24,7 @@ public class RenderConfiguration {
 	private static boolean teleport = true;
 	private static boolean teleportGhosts = true;
 	private static boolean actionlines = false;
+	private static boolean hats = true;
 
 	private static boolean ground = true;
 	private static boolean air	= true;
@@ -69,6 +70,7 @@ public class RenderConfiguration {
 	public static void toggleTeleport() { teleport = !teleport; }
 	public static void toggleTeleportGhosts() { teleportGhosts = !teleportGhosts; }
 	public static void toggleFlux() { flux = !flux; }
+	public static void toggleShowHats() { hats = !hats; }
 
 	public static void toggleDrawHeight() {
 		if(!air && !ground) {
@@ -105,6 +107,7 @@ public class RenderConfiguration {
 	public static boolean showTeleport() { return teleport; }
 	public static boolean showTeleportGhosts() { return teleportGhosts; }
 	public static boolean showFlux() { return flux; }
+	public static boolean showHats() { return hats; }
 
 	public static boolean showGround() { return ground; }
 	public static boolean showAir   () { return air;    }

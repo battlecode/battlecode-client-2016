@@ -6,18 +6,26 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.render.RenderConfiguration;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
-
+	private static Random hatGenerator = new Random();
+	private static final int numHats;
+	static {
+		numHats = (new File("art/hats/")).listFiles().length;
+	}
+	
     public static class RobotInfo {
 
         public final RobotType type;
@@ -44,6 +52,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public AbstractDrawObject(RobotType type, Team team, int id) {
         info = new RobotInfo(type, team);
 		robotID = id;
+		hats = "";
     }
 
     @SuppressWarnings("unchecked")
@@ -69,6 +78,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		actionAction = copy.actionAction;
 		totalActionRounds = copy.totalActionRounds;
 		roundsUntilActionIdle = copy.roundsUntilActionIdle;
+		
+		hats = copy.hats;
 
         for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone());
@@ -85,7 +96,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
 	public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
-
+	
+	
+	protected String hats;
     protected RobotInfo info;
     protected MapLocation loc;
     protected Direction dir;
@@ -260,6 +273,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
 	public void setRegen() { regen = 2; }
+	
+	public void addHat(int hat) {
+		hats += ""+(char)(((hat%numHats)+numHats)%numHats);
+	}
 
     public boolean isAlive() {
         Animation deathAnim = animations.get(AbstractAnimation.AnimationType.DEATH_EXPLOSION);

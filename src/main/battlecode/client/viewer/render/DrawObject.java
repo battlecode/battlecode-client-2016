@@ -13,6 +13,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+import java.io.File;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
@@ -64,6 +65,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final Color shieldColor = new Color(150,150,255,150);
     private static final Color regenColor = new Color(150,255,150,150);
     private final DrawState overallstate;
+    
+    public static final ImageFile[] hatImages;
+    
+    static {
+    	File[] files = (new File("art/hats/")).listFiles();
+    	hatImages = new ImageFile[files.length];
+    	for (int x=0; x<files.length; x++)
+    		hatImages[x] = new ImageFile(files[x].getAbsolutePath());
+    }
     
 
     public DrawObject(RobotType type, Team team, int id, DrawState state) {
@@ -335,6 +345,24 @@ class DrawObject extends AbstractDrawObject<Animation> {
                     trans.scale((1.0 / image.getWidth()) * this.getRelativeSize(), (1.0 / image.getHeight()) * this.getRelativeSize());
                 }
                 g2.drawImage(image, trans, null);
+                
+                // hats
+                if (RenderConfiguration.showHats()) {
+                	double hatscale = 1.5;
+                	AffineTransform pushed = g2.getTransform();
+                	g2.translate((2.0-hatscale)/4.0, 0.2);
+                	double width = image.getWidth();
+                	trans = AffineTransform.getScaleInstance(hatscale/image.getWidth() * this.getRelativeSize(), hatscale/image.getWidth() * this.getRelativeSize());
+                	for (int x=0; x<hats.length(); x++)
+                	{
+                		
+                		image = hatImages[(int)hats.charAt(x)].image;
+                		g2.translate(0, -hatscale/width*(image.getHeight()-2));
+                		g2.drawImage(image, trans, null);
+                		
+                	}
+                	g2.setTransform(pushed);
+                }
             } else {
                 //System.out.println("null image in DrawObject.drawImmediate");
             }

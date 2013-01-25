@@ -107,11 +107,13 @@ public abstract class BaseRenderer {
 			toggleFastForward();
 		break;
 		case 'J':
-				toggleSlowDown();
+			toggleSlowDown();
 		break;
 		case 'I':
-				RenderConfiguration.toggleActionLines();
+			RenderConfiguration.toggleActionLines();
 		break;
+		case 'O':
+			RenderConfiguration.toggleShowHats();
 		case 'S':
 			skipRounds(100);
 		break;
