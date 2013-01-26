@@ -64,7 +64,7 @@ class DrawHUD {
     		for (int x=0; x<drawnTypes.length; x++)
     		{
     			RobotType rt = drawnTypes[x];
-    			rImages[t.ordinal()][x] = new ImageFile("art/" + rt + (t == Team.NEUTRAL ? "0" : (t == Team.A ? "1" : "2")) + ".png");
+    			rImages[t.ordinal()][x] = new ImageFile("art/" + rt.toString().toLowerCase() + (t == Team.NEUTRAL ? "0" : (t == Team.A ? "1" : "2")) + ".png");
     		}
     }
     private final DrawState ds;
