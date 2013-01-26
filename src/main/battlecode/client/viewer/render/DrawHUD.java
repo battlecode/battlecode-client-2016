@@ -2,23 +2,45 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.*;
 import battlecode.client.util.*;
+import battlecode.client.viewer.BufferedMatch;
 
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Map;
 
 class DrawHUD {
 
-    private static final int numArchons = GameConstants.NUMBER_OF_ARCHONS;
+    private static final int numArchons = 1;
     private static final float slotSize = 0.8f / (numArchons + 1);
-    private static final Font footerFont = new Font(null, Font.PLAIN, 1);
+    private static final Font footerFont;
+	
     private static final ImageFile bg = new ImageFile("art/hud_bg.png");
     private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
     private static ImageFile numberText;
     private static BufferedImage[] numbers;
+	private static BufferedMatch match;
+	private ImageFile avatar;
+
+    private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
+    private static final ImageFile rDefusion = new ImageFile("art/defusion.png");
+    private static final ImageFile rVision = new ImageFile("art/vision.png");
+    private static final ImageFile rFusion = new ImageFile("art/fusion.png");
+    private static final ImageFile rNuke = new ImageFile("art/nuke.png");
+    
+    private static final RobotType[] drawnTypes = new RobotType[] {
+    	RobotType.SOLDIER,
+    	RobotType.GENERATOR,
+    	RobotType.SUPPLIER,
+    	RobotType.ARTILLERY,
+    	RobotType.MEDBAY,
+    	RobotType.SHIELDS
+    };
+    private static final ImageFile [][] rImages = new ImageFile[3][6];		
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -30,6 +52,20 @@ class DrawHUD {
                // e.printStackTrace();
             }
         }
+		Font font;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(14.f);
+		} catch(Exception e) {
+			font = new Font("Serif",Font.PLAIN,18);
+		}
+		footerFont = font;
+		
+		for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B})
+    		for (int x=0; x<drawnTypes.length; x++)
+    		{
+    			RobotType rt = drawnTypes[x];
+    			rImages[t.ordinal()][x] = new ImageFile("art/" + rt + (t == Team.NEUTRAL ? "0" : (t == Team.A ? "1" : "2")) + ".png");
+    		}
     }
     private final DrawState ds;
     private final Team team;
@@ -40,10 +76,13 @@ class DrawHUD {
     private int points = 0;
     private static final AffineTransform textScale =
             AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
+    private static final AffineTransform textScaleSmall =
+            AffineTransform.getScaleInstance(1 / 256.0, 1 / 256.0);
 
-    public DrawHUD(DrawState ds, Team team) {
+    public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
         this.ds = ds;
         this.team = team;
+		this.match = match;
         setRatioWidth(2.0f / 9.0f);
     }
 
@@ -71,6 +110,15 @@ class DrawHUD {
         bWins = b;
     }
 
+	public void tryLoadAvatar() {
+		if(avatar==null) {
+			String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
+			if(teamName!=null) {
+				avatar = new ImageFile("avatars/" + teamName+".png");
+			}
+		}
+	}
+
     public void draw(Graphics2D g2) {
         //g2.setColor(Color.BLACK);
         //g2.fill(bgFill);
@@ -82,27 +130,46 @@ class DrawHUD {
         {
             g2.translate(width / 2, 0.9);
             g2.scale(width / 4.5, width / 4.5);
-            AffineTransform pushed2 = g2.getTransform();
-            {
+			AffineTransform pushed2 = g2.getTransform();
+			tryLoadAvatar();
+			if(avatar!=null&&avatar.image!=null && 1 == 0) {
+				g2.setTransform(pushed);
+				g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
+				g2.scale(spriteScale,spriteScale);
+				g2.translate(-.5,-.5);
+				g2.scale(2.0/avatar.image.getWidth(),2.0/avatar.image.getHeight());
+				g2.drawImage(avatar.image,null,null);
+			} else {
 				g2.translate(-1.875, -1);
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2.setFont(new Font("Serif", Font.PLAIN, 24));
+				g2.setFont(footerFont);
 				g2.translate(width / 2, .9);
-				g2.scale(width / 4.5, width / 4.5);
-
-				// should actually get the team names --sherry
-				//System.out.println(ds.getRoundStats());
+				//g2.scale(width / 4.5, width / 4.5);
+				FontMetrics fm = g2.getFontMetrics();
+				String teamName;
+				double scaleAmount = 4.5;
 				if (team == Team.A) {
 					g2.setColor(Color.RED);
-					g2.drawString("Team A", 0, 0);
+					teamName = "Team A";
+					if (match.getTeamA() != null) {
+							teamName = DrawCutScene.getTeamName(match.getTeamA());
+							scaleAmount = fm.stringWidth(teamName) / 16.0;
+					}
 				} else {
 					assert team == Team.B;
 					g2.setColor(Color.BLUE);
-					g2.drawString("Team B", 0, 0);
+					teamName = "Team B";
+					if (match.getTeamB() != null) {
+							teamName = DrawCutScene.getTeamName(match.getTeamB());
+							scaleAmount = fm.stringWidth(teamName) / 16.0;
+					}
 				}
+				scaleAmount = Math.max(scaleAmount, 4.5);
+				g2.scale(width / scaleAmount, width / scaleAmount);
+				g2.drawString(teamName, 0, 0);
             }
-
             g2.setTransform(pushed2);
+
             if (footerText.startsWith("GAME")) { // Game Number
                 g2.translate(-2, 0);
                 g2.drawImage(gameText.image, textScale, null);
@@ -142,14 +209,11 @@ class DrawHUD {
                 0.5f * (slotSize - spriteScale));
 		//System.out.println("drawing");
         try {
-            java.util.List<DrawObject> archons = ds.getArchons(team);
-            for (int i = 0; i < numArchons; i++) {
-				if(i < archons.size())
-					drawRobot(g2,archons.get(i));
-				else
-					drawRobot(g2,null);
-            }
-			drawRobot(g2,ds.getPowerCore(team));
+        	// TODO
+        	// CORY FIX IT
+            DrawObject hq = ds.getHQ(team);
+						drawRobot(g2,hq);
+            drawTeamResource(g2, hq);
         } catch (ConcurrentModificationException e) {
 			e.printStackTrace();
         }
@@ -169,6 +233,100 @@ class DrawHUD {
 			g2.setTransform(pushed2);
 			if (r!=null)
 				r.drawImmediate(g2, false, true);
+        }
+        g2.setTransform(pushed);
+        g2.translate(0, slotSize);
+	}
+	
+	public void drawTeamResource(Graphics2D g2, DrawObject r) {
+		if (r==null) return;
+    	AffineTransform pushed = g2.getTransform();
+        {
+        	g2.scale(spriteScale, spriteScale);
+            AffineTransform pushed2 = g2.getTransform();
+			{
+				BufferedImage underImg = unitUnder.image;
+				g2.translate(-0.5, -0.5);
+				g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+				if (r.getTeam() == Team.A) g2.setColor(Color.red);
+				else g2.setColor(Color.blue);
+				double percent = Math.min(ds.getTeamResources(r.getTeam())/200.0, 1.0);
+//				System.out.println(percent);
+				int height = (int)(underImg.getHeight()*percent);
+				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
+			}
+			
+			
+			g2.setTransform(pushed2);
+			g2.translate(-0.5, -2.0);
+			int[] counts = ds.getRobotCounts(r.getTeam());
+
+			g2.translate(0.1, 0);
+			for (int x=0; x<drawnTypes.length; x++)
+			{
+				BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
+				AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+				trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
+				g2.drawImage(target, trans, null);
+				
+				String number = counts[drawnTypes[x].ordinal()]+"";
+				while (number.length() < 3) number = "0"+number;
+				g2.translate(0.0, 0.4);
+	            for (int i = 0; i < 3; i++) {
+	                g2.drawImage(numbers[Integer.decode(number.substring(i, i + 1))], textScaleSmall, null);
+	                g2.translate(0.75/4, 0);
+	            }
+	            g2.translate(-0.75/4*3, 0);
+
+				g2.translate(0.65, -0.4);
+				if (x == 2)
+						g2.translate(-1.95, 0.7);
+			}
+			
+			
+			BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
+																										rVision.image,
+																										rDefusion.image,
+																										rPickaxe.image,
+																										rNuke.image, };
+
+			g2.setTransform(pushed2);
+			g2.translate(-0.5, 1.75);
+			int c = 0;
+			for (int u = 0; u < Upgrade.values().length; u++) {
+					double research = ds.getResearchProgress(r.getTeam(), u);
+					if (research > 0) {
+							BufferedImage target = rImage[u];
+							AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+							trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
+							g2.drawImage(target, trans, null);
+							
+							
+							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+							g2.setColor(Color.gray);
+							g2.fill(rect);
+							double frac = Math.min(research, 1);
+							rect.width = frac / 2;
+							g2.setColor(Color.green);
+							g2.fill(rect);
+
+							g2.translate(0.65, 0);
+							if (c == 2)
+									g2.translate(-1.65, 0.6);
+							c++;
+					}
+			}
+
+			g2.setTransform(pushed2);
+//			if (r!=null)
+//				r.drawImmediate(g2, false, true);
+			String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
+			while (resource.length() < 8) resource = "0"+resource;
+			g2.translate(-.3, 1.5);
+            for (int i = 0; i < 8; i++) {
+                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+                g2.translate(0.75/4, 0);
+            }
         }
         g2.setTransform(pushed);
         g2.translate(0, slotSize);

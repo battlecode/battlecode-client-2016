@@ -19,7 +19,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.TerrainTile;
 
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GLDrawMap {
 
@@ -579,7 +579,7 @@ public class GLDrawMap {
         if (tex != null) {
             System.out.println("Using texture");
             gl.glEnable(GL2.GL_TEXTURE_2D);
-            tex.bind();
+            tex.bind(gl);
             gl.glBegin(GL2.GL_TRIANGLE_STRIP);
             for (int i = 0; i < indices.length; i++) {
                 gl.glTexCoord2f(texCoords[indices[i] * 2], texCoords[indices[i] * 2 + 1]);
@@ -606,9 +606,9 @@ public class GLDrawMap {
 
         boolean showGrid = RenderConfiguration.showGridlines();
         if (showGrid) {
-            gl.glColor3f(0.1f, 0.1f, 0.1f);
+            gl.glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
             gl.glNormal3f(0.0f, 1.0f, 0.0f);
-			gl.glLineWidth(1.5f);
+			gl.glLineWidth(1.0f);
 
             // do the horizontal gridlines
 			/*

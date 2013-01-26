@@ -38,8 +38,8 @@ public class Main {
         // if tournament mode and 2 monitors run viewer on monitor 2 and minimap
         // on monitor one, else run only viewer
 
-        final GraphicsDevice gd = (viewer.isTournamentMode()
-                ? (devices.length > 1 ? devices[1] : devices[0]) : devices[0]);
+        final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer.usingTwoScreens())
+                ? devices[1] : devices[0];
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -151,6 +151,8 @@ public class Main {
 
         }
 
+		System.out.println("opengl = " + md.getGlClientChoice());
+		System.out.println("minimap = " + md.getGlClientChoice());
         options.setBoolean("bc.client.opengl", md.getGlClientChoice());
         //options.setBoolean("bc.client.opengl", true);
         options.setBoolean("bc.client.minimap", md.getMinimapChoice());
@@ -160,6 +162,17 @@ public class Main {
     }
 
     public static boolean run(Config options) {
+				if (options.get("bc.client.match") != null && !options.get("bc.client.match").trim().equals("")) {
+						ClientProxy theProxy;
+						try {
+								theProxy = new StreamClientProxy(options.get("bc.client.match"));
+						} catch (IOException e) {
+								e.printStackTrace();
+								return false;
+						}
+						Main.showViewer(createFrame(), new MatchViewer(theProxy, true));
+						return true;
+				}
         if (options.get("bc.server.mode").equalsIgnoreCase("LOCAL")) {
             runLocal(options);
             return true;

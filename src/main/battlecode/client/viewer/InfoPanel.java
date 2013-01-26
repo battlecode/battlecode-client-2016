@@ -33,7 +33,7 @@ public class InfoPanel extends JPanel {
 		layoutConstraints.gridx++;
         energon = newLabel();
 		layoutConstraints.gridx++;
-        flux = newLabel();
+		flux = newLabel();
 		layoutConstraints.gridx++;
 		bytecodes = newLabel();
 		layoutConstraints.gridx++;
@@ -78,11 +78,13 @@ public class InfoPanel extends JPanel {
         if (robot == null)
             clear();
         else {
-            setEnergon(robot.getEnergon());
+        	robotID.setText(robotID.getText()+robot.getType()+" ");
+            setEnergon(robot.getEnergon(), robot.getShields());
 			setFlux(robot.getFlux());
             setBytecodesUsed(robot.getBytecodesUsed());
 			location.setText(String.format(" Location: %s ",robot.getLocation()));
-            direction.setText(robot.getDirection().toString());
+			      direction.setText("");
+			      //direction.setText(robot.getDirection().toString());
             for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
                 String ids = robot.getIndicatorString(i);
                 if (ids == null)
@@ -92,12 +94,16 @@ public class InfoPanel extends JPanel {
         }
     }
 
-    private void setEnergon(double amount) {
-        energon.setText(String.format(" Energon: %.1f ", amount));
+    private void setEnergon(double amount, double shields) {
+    	if (shields > 0.0)
+    		energon.setText(String.format(" Energon: %.1f Shields: %.1f", amount, shields));
+    	else
+    		energon.setText(String.format(" Energon: %.1f ", amount));
     }
 
 	private void setFlux(double amount) {
-		flux.setText(String.format(" Flux: %.1f ", amount));
+		flux.setText("");
+		//flux.setText(String.format(" Flux: %.1f ", amount));
 	}
 
     private void setBytecodesUsed(int bytecodesUsed) {

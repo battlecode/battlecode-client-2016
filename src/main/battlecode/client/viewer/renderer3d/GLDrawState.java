@@ -51,7 +51,7 @@ import battlecode.world.signal.MovementSignal;
 import battlecode.world.signal.SetDirectionSignal;
 import battlecode.world.signal.SpawnSignal;
 
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.Texture;
 import battlecode.common.TerrainTile;
 
 public class GLDrawState extends AbstractDrawState<GLDrawObject> {
@@ -159,7 +159,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         for (Map.Entry<Integer, GLDrawObject> entry : src.groundUnits.entrySet()) {
             GLDrawObject copy = new GLDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
-            tryAddArchon(copy);
+//            tryAddArchon(copy);
         }
         airUnits.clear();
         for (Map.Entry<Integer, GLDrawObject> entry : src.airUnits.entrySet()) {
@@ -235,7 +235,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE, ARCHON_MODEL_SCALE);
         // gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         archonBody.draw(gl);
 
@@ -253,7 +253,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         // gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         scorcherBody.draw(gl);
 
@@ -271,7 +271,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         gl.glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         //  gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         disrupterBody.draw(gl);
         gl.glEnable(GL2.GL_BLEND);
@@ -283,7 +283,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(soldierBodyTexPath, soldierBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         gl.glTranslatef(-0.1f, 0.1f, 0.0f);
         gl.glDisable(GL2.GL_BLEND);
@@ -302,7 +302,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(scoutBodyTexPath, scoutBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         gl.glTranslatef(0.f, 0.1f, 0.0f);
         gl.glScalef(MODEL_SCALE * 1.f, MODEL_SCALE * 1.f, MODEL_SCALE * 1.f);
@@ -316,7 +316,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(nodeBodyTexPath, nodeBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -335,7 +335,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture bodyTex = textureCache.getResource(coreBodyTexPath, coreBodyTexPath).tex;
 
         if (bodyTex != null) {
-            bodyTex.bind();
+            bodyTex.bind(gl);
         }
         //  gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -359,7 +359,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         final GLUquadric quadric = glu.gluNewQuadric();
 
         gl.glEnable(GL2.GL_TEXTURE_2D);
-		gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         Iterable<Map.Entry<Integer, GLDrawObject>> drawableSet = getDrawableSet();
@@ -368,10 +367,10 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         }
 
 		// power grid
-		gl.glDisable(GL2.GL_BLEND);
+		gl.glDisable(GL2.GL_TEXTURE_2D);
 		gl.glLineWidth(4.0f);
 		gl.glBegin(GL2.GL_LINES);
-		gl.glNormal3f(0.0f, 1.0f, 0.0f);
+		gl.glNormal3f(0.0f, 0.0f, 1.0f);
 		for (Link l : links) {
 			if (l.connected[0]) {
 				if (l.connected[1]) {
@@ -386,11 +385,11 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f); // none
 				}
 			}
-			gl.glVertex3f(l.from.x - origin.x, 0.01f, l.from.y - origin.y);
-			gl.glVertex3f(l.to.x - origin.x, 0.01f, l.to.y - origin.y);
+			gl.glVertex3f(l.from.x - origin.x + 0.5f, 0.01f, l.from.y - origin.y + 0.5f);
+			gl.glVertex3f(l.to.x - origin.x + 0.5f, 0.01f, l.to.y - origin.y + 0.5f);
 		}
 		gl.glEnd();
-		gl.glEnable(GL2.GL_BLEND);
+		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glLineWidth(1.0f);
 
         for (Map.Entry<Integer, GLDrawObject> entry : drawableSet) {
@@ -413,13 +412,9 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             float extraDist = 0.1f;
             float maxHeight = GLDrawMap.MAP_SCALE * 32;
-            // are we flying or not
-            if (obj.getType().isAirborne()) {
-                gl.glTranslatef(0.0f, maxHeight, 0.0f);
-            } //                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
-            else {
+            {
                 if (obj.getMovementAction() == ActionType.MOVING) {
-                    float delay = obj.getDirection().isDiagonal() ? obj.getType().moveDelayDiagonal : obj.getType().moveDelayOrthogonal;
+                    float delay = 0;
                     float distFrac = (float) (obj.timeUntilIdle() + 1) / delay;
 
                     if (distFrac > 1.0f) {
@@ -456,15 +451,6 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
                 float xNegZ = map.getTerrainHeight(x - 1, y);
                 float yPosZ = map.getTerrainHeight(x, y + 1);
                 float yNegZ = map.getTerrainHeight(x, y - 1);
-                if (!obj.getType().isAirborne()) {
-                    //If we're not flying
-                    float pitch = -(float) (Math.atan2(xPosZ - xNegZ, 2) * 180 / 3.14159);//sqrt2 because it's diagonal
-
-                    float roll = -(float) (Math.atan2(yPosZ - yNegZ, 2) * 180 / 3.14159);
-                    //gl.glRotatef(pitch, 0.0f, 0.0f, 1.0f);
-                    //gl.glRotatef(roll, 1.0f, 0.0f, 0.0f);
-                }
-
             }
 
             // draw selection box
@@ -521,17 +507,12 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				if (target != null) {
 					float tx = target.x - origin.x;
 					float ty = target.y - origin.y;
-					float tz = (obj.getTargetHeight() == RobotLevel.IN_AIR) ? maxHeight : map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
+					float tz = map.getTerrainHeight(tx + 0.5f, ty + 0.5f);
 					float deltax = tx - x;
 					float deltay = ty - y;
 					float deltaz = tz;
 
-					if (obj.getType().isAirborne()) {
-						deltaz -= maxHeight;
-						drawArch = false;
-					} else {
-						deltaz -= map.getTerrainHeight(x, y);
-					}
+					deltaz -= map.getTerrainHeight(x, y);
 
 					gl.glEnable(GL2.GL_BLEND);
 					gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
@@ -578,7 +559,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 					gl.glEnd();
 				} else { // target null, scorcher
 					// we need to draw a semicircle; approximate with linestrips
-					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
+//					final float radius = (float)Math.sqrt(RobotType.SCORCHER.attackRadiusMaxSquared);
 					final float angleDelta = (float) Math.PI / 32;
 					final float circleScale = 5.f;
 
@@ -600,42 +581,19 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 				}
             }
 
-            if (!obj.getType().isAirborne()) {
-                // rotate into position
-                final Vector3f startNormal = new Vector3f(0.0f, 1.0f, 0.0f);
-                Vector3f newNormal = map.getTileNormal(x + 0.5f, y + 0.5f);
-                if (!newNormal.epsilonEquals(startNormal, 0.00001f)) {
-                    Vector3f axis = new Vector3f();
-                    axis.cross(newNormal, startNormal);
-                    axis.normalize();
-                    float angle = -newNormal.angle(startNormal);
-                    gl.glRotatef(angle * 180.0f / (float) Math.PI, axis.x, axis.y, axis.z);
-                }
-            }
-
-            // draw scout circle
-            if (obj.getType().isAirborne()) {
-                gl.glDisable(GL2.GL_LIGHTING);
-                gl.glDisable(GL2.GL_CULL_FACE);
-                gl.glEnable(GL2.GL_BLEND);
-                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-                gl.glPushMatrix();
-                float mapheight = map.getTerrainHeight(x, y);
-                gl.glTranslatef(0.0f, -maxHeight + mapheight, 0.0f);
-                gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                if (obj.getTeam() == Team.A) {
-                    gl.glColor4f(0.5f, 0.0f, 0.0f, 0.5f);
-                } else {
-                    gl.glColor4f(0.0f, 0.0f, 0.5f, 0.5f);
-                }
-                float diskSize = 0.5f;
-                glu.gluCylinder(quadric, diskSize, 0.0f, 1.0f, 16, 1);
-                gl.glPopMatrix();
+						// rotate into position
+						final Vector3f startNormal = new Vector3f(0.0f, 1.0f, 0.0f);
+						Vector3f newNormal = map.getTileNormal(x + 0.5f, y + 0.5f);
+						if (!newNormal.epsilonEquals(startNormal, 0.00001f)) {
+								Vector3f axis = new Vector3f();
+								axis.cross(newNormal, startNormal);
+								axis.normalize();
+								float angle = -newNormal.angle(startNormal);
+								gl.glRotatef(angle * 180.0f / (float) Math.PI, axis.x, axis.y, axis.z);
+						}
 
 
-                gl.glDisable(GL2.GL_BLEND);
-                gl.glEnable(GL2.GL_CULL_FACE);
-            } else {
+            {
                 gl.glDisable(GL2.GL_LIGHTING);
                 gl.glDisable(GL2.GL_CULL_FACE);
                 gl.glEnable(GL2.GL_BLEND);
@@ -691,28 +649,28 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             }
 
 			// draw flux
-			if (RenderConfiguration.showFlux() && obj.getType() != RobotType.TOWER) {
-				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
-				final Color3f max = new Color3f(0.0f, 0.0f, 1.0f);
-				final Color3f min = new Color3f(0.0f, 0.0f, 0.5f);
-				final float z = 0.7f;
-				fluxColor.interpolate(min, max, frac);
-
-				gl.glBegin(GL2.GL_QUADS);
-				gl.glNormal3f(0.0f, 1.0f, 0.0f);
-				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
-
-				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
-				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
-				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
-				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
-				gl.glEnd();
-			}
+//			if (RenderConfiguration.showFlux() && obj.getType() != RobotType.TOWER) {
+//				float frac = (float) (obj.getFlux() / obj.getType().maxFlux);
+//				final Color3f max = new Color3f(0.0f, 0.0f, 1.0f);
+//				final Color3f min = new Color3f(0.0f, 0.0f, 0.5f);
+//				final float z = 0.7f;
+//				fluxColor.interpolate(min, max, frac);
+//
+//				gl.glBegin(GL2.GL_QUADS);
+//				gl.glNormal3f(0.0f, 1.0f, 0.0f);
+//				gl.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXEnd, efY, efZStart + efZWidth);
+//
+//				gl.glColor4f(fluxColor.x, fluxColor.y, fluxColor.z, 1.0f);
+//				gl.glVertex3f(efXStart, efY, efZStart + efZWidth);
+//				gl.glVertex3f(efXStart, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth * 2.0f);
+//				gl.glVertex3f(efXStart + frac, efY, efZStart + efZWidth);
+//				gl.glEnd();
+//			}
 
             // disable lighting in ortho mode
             if (r.getCamera().isOrtho()) {
@@ -735,27 +693,27 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
 
 
-            if (GLGameRenderer.USE_MODELS) {
-
-                switch (obj.getType()) {
-                    case ARCHON:
-                        drawArchon(gl, obj);
-                    case SCORCHER:
-                        drawScorcher(gl, obj);
-                    case DISRUPTER:
-                        drawdisrupter(gl, obj);
-                    case SCOUT:
-                        drawScout(gl, obj);
-                    case SOLDIER:
-                        drawSoldier(gl, obj);
-                    case TOWER:
-                        drawNode(gl, obj);
-                    default:
-                        drawRobot(gl, obj);
-                }
-            } else {
-                drawRobot(gl, obj);
-            }
+//            if (GLGameRenderer.USE_MODELS) {
+//
+//                switch (obj.getType()) {
+//                    case ARCHON:
+//                        drawArchon(gl, obj);
+//                    case SCORCHER:
+//                        drawScorcher(gl, obj);
+//                    case DISRUPTER:
+//                        drawdisrupter(gl, obj);
+//                    case SCOUT:
+//                        drawScout(gl, obj);
+//                    case SOLDIER:
+//                        drawSoldier(gl, obj);
+//                    case TOWER:
+//                        drawNode(gl, obj);
+//                    default:
+//                        drawRobot(gl, obj);
+//                }
+//            } else {
+//                drawRobot(gl, obj);
+//            }
 
             gl.glPopMatrix();
         }
@@ -773,12 +731,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
             float y = obj.getDrawY() - origin.y;
 
             gl.glPushMatrix();
-            // are we flying or not
-            if (obj.getType().isAirborne()) {
-                gl.glTranslatef(obj.getDrawX(), map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, obj.getDrawY());
-            } else {
-                gl.glTranslatef(obj.getDrawX(), map.getTerrainHeight(x + 0.5f, y + 0.5f), obj.getDrawY());
-            }
+						gl.glTranslatef(obj.getDrawX(), map.getTerrainHeight(x + 0.5f, y + 0.5f), obj.getDrawY());
 
             if (obj.getExplosionAnim() != null) {
                 obj.getExplosionAnim().draw(gl, glu);
@@ -837,12 +790,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glPushMatrix();
             gl.glTranslatef(x + 0.5f, 0.0f, y + 0.5f);
-            // are we flying or not
-            if (obj.getType().isAirborne()) {
-                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f) + 5.0f, 0.0f);
-            } else {
-                gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f), 0.0f);
-            }
+						gl.glTranslatef(0.0f, map.getTerrainHeight(x + 0.5f, y + 0.5f), 0.0f);
 
             double rad = 0.5f;
             //if (obj.getType() == RobotType.ARCHON)
@@ -860,7 +808,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
         Texture tex = textureCache.getResource(path, path).tex;
 
         if (tex != null) {
-            tex.bind();
+            tex.bind(gl);
         }
 
         // draw robot

@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+
 import javax.media.opengl.glu.GLU;
 import javax.vecmath.Vector3f;
 
@@ -90,7 +90,7 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 		return roundsUntilMovementIdle;
     }
 
-    public void draw(GL2 gl, GLU glu, boolean focused) {
+    public void draw(GL gl, GLU glu, boolean focused) {
     }
 
     public GLTeleportAnim createTeleportAnim(MapLocation src, MapLocation teleportLoc){

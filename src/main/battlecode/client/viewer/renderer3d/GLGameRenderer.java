@@ -48,10 +48,10 @@ import battlecode.serial.MatchHeader;
 import battlecode.server.Config;
 import battlecode.world.GameMap;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.gl2.GLUT;
-import com.sun.opengl.util.awt.TextRenderer;
-import com.sun.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.GLBuffers;
+import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
 
 import battlecode.client.util.ImageFile;
 
@@ -264,7 +264,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
         // select buffer size (2 * mapWidth * mapHeight) squares
         //selectCapacity = 2 * drawMap.getMapHeight() * drawMap.getMapWidth() * SELECT_STACK_DEPTH * 4;
         selectCapacity = 64 * SELECT_STACK_DEPTH * 4;
-        selectBuffer = BufferUtil.newIntBuffer(selectCapacity);
+        selectBuffer = GLBuffers.newDirectIntBuffer(selectCapacity);
         selectBuffer.rewind();
 
         File f = new File("art/computerfont.ttf");
@@ -619,7 +619,7 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (backgroundTexture != null) {
-            backgroundTexture.bind();
+            backgroundTexture.bind(gl);
 
             gl.glPushMatrix();
 //			gl.glDisable(GL2.GL_COLOR_MATERIAL);
@@ -858,7 +858,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
             String s = teamANameShort + " - " + aPoints;
             // do text rendering
             txtRenderer.beginRendering(ad.getWidth(), ad.getHeight());
-            int numArchons = ds.getArchons(Team.A).size();
+            int numArchons;// = ds.getArchons(Team.A).size();
+            numArchons = 1;
             String archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
             txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
             //txtRenderer.draw("RED TEAM - " + aPoints, 2 + 4, ad.getHeight() - metric.getAscent() + 2);
@@ -872,7 +873,8 @@ public class GLGameRenderer extends BaseRenderer implements GLEventListener {
 
             //String s = bPoints + " - BLUE TEAM";
             s = bPoints + " - " + teamBNameShort;
-            numArchons = ds.getArchons(Team.B).size();
+//            numArchons = ds.getArchons(Team.B).size();
+            numArchons = 1;
             archons = numArchons + ((numArchons == 1) ? " Archon" : " Archons");
 
             txtRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);

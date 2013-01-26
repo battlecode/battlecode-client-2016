@@ -44,7 +44,12 @@ public abstract class BaseRenderer {
 	}
 
 	protected final void toggleFastForward() {
-		MatchPlayer.getCurrent().toggleFastForward();
+			MatchPlayer.getCurrent().speedup();
+			//MatchPlayer.getCurrent().toggleFastForward();
+	}
+
+	protected final void toggleSlowDown() {
+			MatchPlayer.getCurrent().slowdown();
 	}
 
 	@SuppressWarnings("empty")
@@ -77,6 +82,9 @@ public abstract class BaseRenderer {
 		case 'H':
 			RenderConfiguration.toggleDrawHeight();
 		break;
+		case 'K':
+			RenderConfiguration.toggleAttack();
+		break;
 		case 'N':
 			RenderConfiguration.toggleBlocks();
 		break;
@@ -98,6 +106,14 @@ public abstract class BaseRenderer {
 		case 'F':
 			toggleFastForward();
 		break;
+		case 'J':
+			toggleSlowDown();
+		break;
+		case 'I':
+			RenderConfiguration.toggleActionLines();
+		break;
+		case 'O':
+			RenderConfiguration.toggleShowHats();
 		case 'S':
 			skipRounds(100);
 		break;

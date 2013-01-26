@@ -1,30 +1,27 @@
 package battlecode.client.viewer.render;
 
-import battlecode.client.viewer.AbstractAnimation;
-import java.awt.BasicStroke;
 import java.awt.Color;
-
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.FluxDepositState;
 import battlecode.client.viewer.GameStateFactory;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
-import battlecode.common.GameConstants;
 import battlecode.common.Team;
-
-import battlecode.world.GameMap;
 import battlecode.serial.RoundStats;
-import java.awt.geom.AffineTransform;
-import java.util.EnumMap;
+import battlecode.world.GameMap;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
 
@@ -33,6 +30,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	protected static final Color linkA = new Color(1.f,0.f,0.f);
 	protected static final Color linkB = new Color(0.f,0.f,1.f);
 	protected static final Color linkBoth = new Color(.75f,0.f,.75f);
+	protected static final ImageFile encampment = new ImageFile("art/encampment.png");
 
     private static class Factory implements GameStateFactory<DrawState> {
 
@@ -62,6 +60,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     public DrawState() {
         groundUnits = new LinkedHashMap<Integer, DrawObject>();
         airUnits = new LinkedHashMap<Integer, DrawObject>();
+        encampments = new HashSet<MapLocation>();
         towers = new LinkedList<DrawObject>();
         fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
         currentRound = -1;
@@ -81,7 +80,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     }
 
     protected DrawObject createDrawObject(RobotType type, Team team, int id) {
-        return new DrawObject(type, team, id);
+        return new DrawObject(type, team, id, this);
     }
 
 	protected DrawObject createDrawObject(DrawObject o) {
@@ -95,13 +94,13 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     public MapLocation[][] getConvexHullsB() {
         return convexHullsB;
     }
-
-	protected void mineFlux(DrawObject obj) {
+    
+    public double getTeamResources(Team t) {
+    	return teamResources[t.ordinal()];
     }
 
-    // return the set of all flux deposits to be drawn in proper order by GameRenderer
-    public Collection<FluxDepositState> getFluxDeposits() {
-        return fluxDeposits.values();
+    public double getResearchProgress(Team t, int i) {
+    	return researchProgress[t.ordinal()][i];
     }
 
     public synchronized void apply(RoundStats stats) {
@@ -156,25 +155,59 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             return;
         }
 
-		AffineTransform pushed2 = g2.getTransform();
+//		AffineTransform pushed2 = g2.getTransform();
 		
 		// Woohoo the power grid!
-		g2.setStroke(new BasicStroke(.15f));
-		g2.translate(.5,.5);
-		for (Link l : links) {
-			if(l.connected[0])
-				if(l.connected[1])
-					g2.setColor(linkBoth);
-				else
-					g2.setColor(linkA);
-			else
-				if(l.connected[1])
-					g2.setColor(linkB);
-				else
-					g2.setColor(linkNone);
-			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
+//		g2.setStroke(new BasicStroke(.15f));
+//		g2.translate(.5,.5);
+//		for (Link l : links) {
+//			if(l.connected[0])
+//				if(l.connected[1])
+//					g2.setColor(linkBoth);
+//				else
+//					g2.setColor(linkA);
+//			else
+//				if(l.connected[1])
+//					g2.setColor(linkB);
+//				else
+//					g2.setColor(linkNone);
+//			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
+//		}
+
+		
+		for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {
+			MapLocation loc = entry.getKey();
+			Team team = entry.getValue();
+		
+			if (team == Team.A) g2.setColor(new Color(1.f,0.f,0.f,.5f));
+			else if (team == Team.B) g2.setColor(new Color(0.f,0.f,1.f,.5f));
+			else g2.setColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
+		
+			g2.fill(new Rectangle2D.Float(loc.x+0.1f, loc.y+0.1f, .9f, .9f));
 		}
-		g2.setTransform(pushed2);
+	
+		
+		BufferedImage target = encampment.image;
+        for (MapLocation m : getEncampmentLocations()) {
+			AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
+			trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
+			g2.drawImage(target, trans, null);
+			//g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
+			//g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
+        }
+        
+		
+		
+
+//		g2.setColor(new Color(1.f,0.f,0.f,.5f));
+//		MapLocation coreLoc = coreLocs.get(Team.A);
+//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+//		
+//		g2.setColor(new Color(0.f,0.f,1.f,.5f));
+//		coreLoc = coreLocs.get(Team.B);
+//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
+
+//		g2.setTransform(pushed2);
 
         for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
 

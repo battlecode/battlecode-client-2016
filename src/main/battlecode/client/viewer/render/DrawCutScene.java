@@ -34,7 +34,7 @@ public class DrawCutScene {
     private volatile Timer fadeTimer;
     private static final ImageFile imgVersus = new ImageFile("art/overlay_vs.png");
     private static final ImageFile imgWinnerLabel = new ImageFile("art/overlay_win.png");
-    //private final ImageFile imgTeamA, imgTeamB;
+    private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
     private ImageFile imgWinner;
     private String winner;
@@ -54,30 +54,32 @@ public class DrawCutScene {
 		teamNames = names;
 	}
 
+	public static String getTeamName(String genericName) {
+		try {
+			int id = Integer.parseInt(genericName.substring(4,7));
+			if (teamNames.containsKey(id))
+				return teamNames.get(id);
+			else
+				return genericName;
+		} catch(Exception e) {
+			return genericName;
+		}
+	}
+
     public DrawCutScene(float width, float height, String teamA, String teamB) {
 
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
-        int aid = Integer.parseInt(teamA.substring(4,7));
-		if(teamNames.containsKey(aid))
-			this.teamA = teamNames.get(aid);
-		else
-			this.teamA = teamA;
-        int bid = Integer.parseInt(teamB.substring(4,7));
-		if(teamNames.containsKey(bid))
-        	this.teamB = teamNames.get(bid);
-		else
-			this.teamB = teamB;
+        this.teamA = getTeamName(teamA);
+		this.teamB = getTeamName(teamB);
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(48.f);
 		} catch(Exception e) {
 			throw new RuntimeException("Failed to load font",e);
 		}
-		//imgTeamA = new ImageFile(teamA+".png");
-		//imgTeamB = new ImageFile(teamB+".png");
-        //imgTeamA = new ImageFile("team-names/a/" + teamA + "-r.png");
-        //imgTeamB = new ImageFile("team-names/b/" + teamB + "-l.png");
+		imgTeamA = new ImageFile("avatars/" + teamA+".png");
+		imgTeamB = new ImageFile("avatars/" + teamB+".png");
     }
 
     public void setTargetEnd(long millis) {
@@ -90,12 +92,12 @@ public class DrawCutScene {
 
     public void setWinner(Team team) {
 		if(team==Team.A) {
-			//imgWinner = imgTeamA
+			imgWinner = imgTeamA;
 			winner = teamA;
 			winnerColor = teamAColor;
 		}
 		else {
-			//imgWinner = imgTeamB
+			imgWinner = imgTeamB;
 			winner = teamB;
 			winnerColor = teamBColor;
 		}
@@ -129,39 +131,14 @@ public class DrawCutScene {
         }
     }
 
+	private void drawLogo(Graphics2D g2, BufferedImage img, double height) {
+		Rectangle rect = g2.getDeviceConfiguration().getBounds();
+		double x = rect.getWidth()/2 - 64;
+		double y = height - 64;
+		g2.drawImage(img,new AffineTransform(128./img.getWidth(),0,0,128./img.getHeight(),x,y),null);
+	}
+
     private void drawIntro(Graphics2D g2) {
-    	/*
-		AffineTransform pushed = g2.getTransform();
-        {
-            float until = Math.max((targetEnd - System.currentTimeMillis()) / 1000.0f, 0);
-            float horizontalOffset = 2 * rect.width * until;
-            float avatarOffset = rect.width / 4;
-        	g2.scale(.5,.5);
-			g2.translate(rect.width / 2 - horizontalOffset - avatarOffset, rect.height / 3);
-			g2.scale(.2,.2);
-			g2.translate(-64,-16);
-            //drawImage(imgTeamA.image, g2);
-			g2.translate(64,16);
-			g2.scale(5.,5.);
-            g2.setColor(Color.RED);
-            g2.drawString(teamA, 0, 0);
-            g2.translate(horizontalOffset + avatarOffset, rect.height / 6);
-            if (until < 0.1f) {
-                g2.scale(0.1, 0.1);
-                drawImage(imgVersus.image, g2);
-                g2.scale(10, 10);
-            }
-            g2.translate(-(horizontalOffset + avatarOffset), rect.height / 6);
-			g2.scale(.2,.2);
-			g2.translate(-64,-16);
-            //drawImage(imgTeamB.image, g2);
-			g2.translate(64,16);
-			g2.scale(5.,5.);
-            g2.setColor(Color.BLUE);
-            g2.drawString(teamB, 0, 0);
-        }
-        g2.setTransform(pushed);
-		*/
 		AffineTransform pushed = g2.getTransform();
 		g2.setTransform(new AffineTransform());
 		int textHeight = g2.getFontMetrics(font).getHeight();
@@ -175,6 +152,11 @@ public class DrawCutScene {
 		drawText.draw("VS",rect.getCenterX(),rect.getCenterY());
 		g2.setColor(teamBColor);
 		drawText.drawTwoLine(teamB,rect.getCenterX(),rect.getCenterY()+textHeight,false);
+		if(imgTeamA.image!=null)
+			drawLogo(g2,imgTeamA.image,rect.getCenterY()-3*textHeight-80);
+		if(imgTeamB.image!=null)
+			drawLogo(g2,imgTeamB.image,rect.getCenterY()+3*textHeight+80);
+
 		g2.setTransform(pushed);
     }
 
@@ -208,10 +190,14 @@ public class DrawCutScene {
 		
 		public void draw(String s, float centerx, float centery) {
 			GlyphVector glyphs = font.createGlyphVector(renderContext,s);
-			g2.drawGlyphVector(glyphs,centerx-metrics.stringWidth(s)/2,centery-metrics.getHeight()/2);
+			// Apparently the x,y coordinates given to drawGlyphVector are the bottom
+			// right corner?
+			g2.drawGlyphVector(glyphs,centerx-metrics.stringWidth(s)/2,centery+metrics.getHeight()/2);
 		}
 
 		public void drawTwoLine(String s, double centerx, double centery, boolean up) {
+				if (s == null || s.length() == 0)
+						s = "ERROR";
 			drawTwoLine(s,(float)centerx,(float)centery,up);
 		}
 
@@ -236,41 +222,6 @@ public class DrawCutScene {
 	}
 
     private void drawOutro(Graphics2D g2) {
-		/*
-        AffineTransform pushed = g2.getTransform();
-        {
-            fade+=1./60.;
-			if(fade>=1) fade=1;
-			g2.setColor(new Color(0, 0, 0, fade));
-            g2.fill(rect);
-            //g2.setColor(Color.WHITE);
-            g2.scale(0.5,0.5);
-			g2.translate(rect.width / 2, rect.height / 3);
-            g2.scale(0.5, 0.5);
-            drawImage(imgWinnerLabel.image, g2);
-            g2.scale(2, 2);
-            if (winner.equals(teamA)){//(imgWinner == imgTeamA) {
-                g2.setColor(Color.RED);
-				g2.translate(0,rect.height/4);
-                //g2.translate(-rect.width / 5, rect.height / 4);
-            } else {
-                g2.setColor(Color.BLUE);
-				g2.translate(0,rect.height/4);
-                //g2.translate(rect.width / 5, rect.height / 4);
-            }
-            //g2.drawImage(imgWinnerLabel.image,
-            //g2.drawString("WINNER:", (int) rect.width/2 - 3, (int) rect.height/2 - 2);
-            //g2.translate(0, rect.height/3);
-			g2.scale(.2,.2);
-			g2.translate(-64,-16);
-            drawImage(imgWinner.image, g2);
-			g2.translate(64,16);
-			g2.scale(5.,5.);
-            g2.drawString(winner, 0, 0);
-			g2.scale(2,2);
-        }
-        g2.setTransform(pushed);
-		*/
 		AffineTransform pushed = g2.getTransform();
 		g2.setTransform(new AffineTransform());
 		int textHeight = g2.getFontMetrics(font).getHeight();
@@ -282,6 +233,8 @@ public class DrawCutScene {
 		drawText.drawTwoLine(winner,rect.getCenterX(),rect.getCenterY()-textHeight/2,true);
 		g2.setColor(neutralColor);
 		drawText.draw("WINS!",rect.getCenterX(),rect.getCenterY()+textHeight/2);
+		if(imgWinner != null && imgWinner.image!=null)
+			drawLogo(g2,imgWinner.image,rect.getCenterY()-5*textHeight/2 - 80);
 		g2.setTransform(pushed);
     }
 

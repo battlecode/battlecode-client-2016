@@ -55,6 +55,11 @@ public class MatchViewer {
         return proxy;
     }
 
+	public static boolean usingTwoScreens() {
+		return "true".equalsIgnoreCase(System.getProperty("tv.multiscreen"))&&
+			(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1);
+	}
+
     public MatchViewer(ClientProxy proxy, boolean lockstepChoice) {
         if (cfg.getBoolean("bc.client.opengl"))
             bc = new GLGameCanvas();
@@ -115,7 +120,7 @@ public class MatchViewer {
         panel.add(bc, BorderLayout.CENTER);
         bc.setTournamentMode();
 
-        if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1) {
+        if (usingTwoScreens()) {
             minimap = new MinimapViewer(true);
         }
         TournamentTimer timer = new TournamentTimer(this);

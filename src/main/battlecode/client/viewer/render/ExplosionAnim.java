@@ -25,7 +25,7 @@ class ExplosionAnim extends Animation {
 	public ExplosionAnim(MapLocation loc) { this(loc, 1); }
 
 	public ExplosionAnim(MapLocation loc, double size) {
-		super(8);
+		super(4);
 		this.loc = loc;
 		this.size = size;
 	}

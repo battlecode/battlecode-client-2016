@@ -9,7 +9,8 @@ public class RenderConfiguration {
 	private static RenderConfiguration instance = null;
 
 	private static boolean broadcast = true;
-	private static boolean discrete = false;
+	private static boolean attack = true;
+	private static boolean discrete = true;
 	private static boolean energon = true;
 	private static boolean flux = true;
 	private static boolean gridlines = true;
@@ -22,6 +23,8 @@ public class RenderConfiguration {
 	private static boolean ambientMusic = false;
 	private static boolean teleport = true;
 	private static boolean teleportGhosts = true;
+	private static boolean actionlines = false;
+	private static boolean hats = true;
 
 	private static boolean ground = true;
 	private static boolean air	= true;
@@ -52,6 +55,8 @@ public class RenderConfiguration {
   private RenderConfiguration() {}
 
 	public static void toggleBroadcast() { broadcast = !broadcast; }
+	public static void toggleAttack() { attack = !attack; }
+	public static void toggleActionLines() { actionlines = !actionlines; }
 	public static void toggleDiscrete()  { discrete  = !discrete;  }
 	public static void toggleEnergon()   { energon   = !energon;   }
 	public static void toggleGridlines() { gridlines = !gridlines; }
@@ -65,6 +70,7 @@ public class RenderConfiguration {
 	public static void toggleTeleport() { teleport = !teleport; }
 	public static void toggleTeleportGhosts() { teleportGhosts = !teleportGhosts; }
 	public static void toggleFlux() { flux = !flux; }
+	public static void toggleShowHats() { hats = !hats; }
 
 	public static void toggleDrawHeight() {
 		if(!air && !ground) {
@@ -87,6 +93,8 @@ public class RenderConfiguration {
 	}
 
 	public static boolean showBroadcast() { return broadcast; }
+	public static boolean showAttack() { return attack; }
+	public static boolean showActionLines() { return actionlines; }
 	public static boolean showDiscrete()  { return discrete;  }
 	public static boolean showEnergon()   { return energon;   }
 	public static boolean showGridlines() { return gridlines; }
@@ -99,6 +107,7 @@ public class RenderConfiguration {
 	public static boolean showTeleport() { return teleport; }
 	public static boolean showTeleportGhosts() { return teleportGhosts; }
 	public static boolean showFlux() { return flux; }
+	public static boolean showHats() { return hats; }
 
 	public static boolean showGround() { return ground; }
 	public static boolean showAir   () { return air;    }

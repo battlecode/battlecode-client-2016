@@ -62,8 +62,8 @@ public class GameRenderer extends BaseRenderer {
     
         try {
         	System.out.println(match.getTeamA() + " " +  match.getTeamB() + " " + Team.A + " " +  Team.B + " " + match.getHeader());
-        	sideA = new DrawHUD(ds, Team.A);
-            sideB = new DrawHUD(ds, Team.B);
+        	sideA = new DrawHUD(ds, Team.A,match);
+            sideB = new DrawHUD(ds, Team.B,match);
         } catch (Error e) {
             e.printStackTrace();
         }
@@ -84,11 +84,14 @@ public class GameRenderer extends BaseRenderer {
     }
 
     public void addWin(Team t) {
+				System.out.println("Win added" + t);
         if (t == Team.A) {
             aWins++;
         } else if (t == Team.B) {
             bWins++;
         }
+				if (cutScene != null)
+						cutScene.setWinner(t);
     }
 
     public void loadPrefs() {
@@ -297,6 +300,12 @@ public class GameRenderer extends BaseRenderer {
      * @see battlecode.client.viewer.render.BaseRenderer#beginIntroCutScene(long)
      */
     public void beginIntroCutScene(long targetMillis) {
+				while (cutScene == null) {
+						try {
+								Thread.sleep(500);
+						} catch (InterruptedException e) {
+						}
+				}
         cutScene.setTargetEnd(targetMillis);
         setCutSceneVisible(true);
     }
@@ -308,7 +317,7 @@ public class GameRenderer extends BaseRenderer {
         if (visible) {
             if (timeline.getRound() == -1) {
                 cutScene.step = DrawCutScene.Step.INTRO;
-            } else if (timeline.getRound() == timeline.getNumRounds()) {
+            } else {//if (timeline.getRound() == timeline.getNumRounds()) {
                 cutScene.step = DrawCutScene.Step.OUTRO;
             }
         }
