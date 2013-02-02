@@ -36,6 +36,7 @@ public class PlayState extends GameState {
     private Set<GameSoundBank.ClipGroup> futureClips;
     private Map<Integer, RobotType> robotTypes;
     private int intensityLevel = 0;
+    private boolean[][] nukeFlags = new boolean[Team.values().length][3];
     
 
     public PlayState() {
@@ -52,7 +53,10 @@ public class PlayState extends GameState {
 
     private synchronized void copyStateFrom(PlayState src) {
     	this.intensityLevel = src.intensityLevel;
-    	//System.out.println("Copied");
+    	
+    	for(int i=0; i<this.nukeFlags.length; i++) {
+    		this.nukeFlags[i] = Arrays.copyOf(src.nukeFlags[i], src.nukeFlags[i].length);
+    	}
     }
 
     private void scheduleClip(GameSoundBank.ClipGroup clip) {
@@ -67,6 +71,27 @@ public class PlayState extends GameState {
     private void scheduleClip(GameSoundBank.ClipGroup clip, float minGain, float maxGain) {
         scheduleClip(clip, ((float) Math.random()) * (maxGain - minGain) + minGain);
     }
+    
+ 
+
+    public Void visitResearchChangeSignal(ResearchChangeSignal s) {
+    	for(int i=0; i<2; i++) {
+    		int nukeRound = (int)Math.round(s.progress[i][Upgrade.NUKE.ordinal()] * Upgrade.NUKE.numRounds);
+	    	if (nukeRound > 202 && !nukeFlags[i][0]) {
+	    		scheduleClip(GameSoundBank.NUKE_READY);
+	    		nukeFlags[i][0] = true;
+	    	} else if (nukeRound > 350 && !nukeFlags[i][1]) {
+	    		scheduleClip(GameSoundBank.NUKE_DETECTED);
+	    		nukeFlags[i][1] = true;
+	    	} else if (nukeRound > 390 && !nukeFlags[i][2]) {
+	    		scheduleClip(GameSoundBank.NUKE_SIREN);
+	    		nukeFlags[i][2] = true;
+	    	}
+    	}
+    	return null;
+    }
+    
+    
 
     public Void visitAttackSignal(AttackSignal s) {
         try {

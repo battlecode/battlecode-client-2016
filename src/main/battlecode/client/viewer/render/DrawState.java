@@ -20,11 +20,19 @@ import battlecode.client.viewer.GameStateFactory;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import battlecode.common.Upgrade;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
 
+	
+	private static final ImageFile rNuker = new ImageFile("art/nuker1.png");
+	private static final ImageFile rNuker2 = new ImageFile("art/nuker2.png");
+	private static final ImageFile rNukeb = new ImageFile("art/nukeb1.png");
+	private static final ImageFile rNukeb2 = new ImageFile("art/nukeb2.png");
+	private static final ImageFile rexplode = new ImageFile("art/nukeexplode.png");
+	
     protected static final Color dragShadow = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 	protected static final Color linkNone = new Color(0.f,0.f,0.f);
 	protected static final Color linkA = new Color(1.f,0.f,0.f);
@@ -226,6 +234,42 @@ public class DrawState extends AbstractDrawState<DrawObject> {
                 }
                 obj.draw(g2, id == focusID || id == hoverID);
             }
+        }
+        
+        AffineTransform pushed = g2.getTransform();
+        for (Team t : new Team[]{Team.A, Team.B})
+        {
+        	g2.setTransform(pushed);
+        	int research = (int)(1.000001*getResearchProgress(t, Upgrade.NUKE.ordinal())*Upgrade.NUKE.numRounds);
+        	if (research > 350 && research<370)
+        	{
+        		DrawObject o = getHQ(t);
+            	g2.translate(o.getDrawX(), o.getDrawY());
+            	g2.translate(0.0, -(research-350)*0.45);
+            	g2.translate(0.0, -1);
+            	BufferedImage bi = t==Team.A ? rNuker.image : rNukeb.image;
+            	AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()) * o.getRelativeSize(), (1.0 / bi.getWidth()) * o.getRelativeSize());
+            	g2.drawImage(bi, trans, null);
+        	} else if (research > 375)
+        	{
+        		DrawObject o = getHQ(t.opponent());
+            	g2.translate(o.getDrawX(), o.getDrawY());
+            	g2.translate(0.0, -(404-research)*0.45);
+            	g2.translate(0.0, -1);
+            	BufferedImage bi = t==Team.A ? rNuker2.image : rNukeb2.image;
+            	AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()) * o.getRelativeSize(), (1.0 / bi.getWidth()) * o.getRelativeSize());
+            	g2.drawImage(bi, trans, null);
+            	if (research == 404)
+            	{
+            		double scale = 6.0;
+            		BufferedImage ei = rexplode.image;
+            		trans = AffineTransform.getScaleInstance((scale / ei.getWidth()) * o.getRelativeSize(), (scale / ei.getWidth()) * o.getRelativeSize());
+            		g2.translate(-(scale-1.0)/2, -(scale-1.0)/2-2);
+            		g2.drawImage(ei, trans, null);
+            	}
+        	}
+        	
+        	
         }
         
         if (!debug.isDragging()) {
