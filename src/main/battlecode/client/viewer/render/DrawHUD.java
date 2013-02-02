@@ -247,13 +247,24 @@ class DrawHUD {
 			{
 				BufferedImage underImg = unitUnder.image;
 				g2.translate(-0.5, -0.5);
-				g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+				g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
 				if (r.getTeam() == Team.A) g2.setColor(Color.red);
 				else g2.setColor(Color.blue);
 				double percent = Math.min(ds.getTeamResources(r.getTeam())/200.0, 1.0);
 //				System.out.println(percent);
 				int height = (int)(underImg.getHeight()*percent);
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
+				
+				g2.setTransform(pushed2);
+//				if (r!=null)
+//					r.drawImmediate(g2, false, true);
+				String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
+				while (resource.length() < 8) resource = "0"+resource;
+				g2.translate(-.3, .5);
+	            for (int i = 0; i < 8; i++) {
+	                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+	                g2.translate(0.75/4, 0);
+	            }
 			}
 			
 			
@@ -291,42 +302,95 @@ class DrawHUD {
 																										rNuke.image, };
 
 			g2.setTransform(pushed2);
-			g2.translate(-0.5, 1.75);
+			g2.translate(-0.5, 0.75);
+			final double upgradewidth = 0.7;
+			final double upgradescale = upgradewidth/0.65;
+			g2.translate(0.65*3/2-upgradewidth, 0);
+			g2.scale(upgradescale, upgradescale);
 			int c = 0;
 			for (int u = 0; u < Upgrade.values().length; u++) {
 					double research = ds.getResearchProgress(r.getTeam(), u);
 					if (research > 0) {
-							BufferedImage target = rImage[u];
-							AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-							trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
-							g2.drawImage(target, trans, null);
+							if (u == rImage.length-1)
+							{
+								g2.setTransform(pushed2);
+								g2.translate(-0.5, 0.75);
+								g2.translate(0.65*3/2-upgradewidth, 0);
+								g2.scale(upgradescale, upgradescale);
+								
+								
+								BufferedImage target = rImage[u];
+								AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+								double finalsize = research>0.5 ? research+0.15 : 0.65;
+								trans.scale(finalsize / target.getWidth(), finalsize / target.getHeight());
+								g2.translate(0.65-finalsize/2, 1.2);
+//								g2.translate(-finalsize+0.65, -finalsize+0.65);
+								g2.drawImage(target, trans, null);
+								
+								g2.scale(finalsize/0.65, finalsize/0.65);
+								Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+								g2.setColor(Color.gray);
+								g2.fill(rect);
+								double frac = Math.min(research, 1);
+								rect.width = frac / 2;
+								g2.setColor(Color.green);
+								g2.fill(rect);
+								
+								int roundsleft = (int)((1.00001-research)*Upgrade.NUKE.numRounds);
+								if (roundsleft < 55)
+								{
+									g2.setTransform(pushed2);
+									g2.translate(-0.5, 0.75);
+									g2.scale(upgradescale, upgradescale);
+									g2.translate(0, 1.6);
+									
+									
+									String resource = ""+roundsleft;
+									while (resource.length() < 2) resource = "0"+resource;
+						            for (int i = 0; i < 2; i++) {
+						                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+						                g2.translate(0.75/4, 0);
+						            }
+								}
+							} else
+							{
+								BufferedImage target = rImage[u];
+								AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+								trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
+								g2.drawImage(target, trans, null);
+								
+								Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+								g2.setColor(Color.gray);
+								g2.fill(rect);
+								double frac = Math.min(research, 1);
+								rect.width = frac / 2;
+								g2.setColor(Color.green);
+								g2.fill(rect);
+								
+								g2.translate(0.65, 0);
+								if (c == 1 || c == 3)
+										g2.translate(-0.65*2, 0.6);
+								c++;
+							}
 							
 							
-							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-							g2.setColor(Color.gray);
-							g2.fill(rect);
-							double frac = Math.min(research, 1);
-							rect.width = frac / 2;
-							g2.setColor(Color.green);
-							g2.fill(rect);
-
-							g2.translate(0.65, 0);
-							if (c == 2)
-									g2.translate(-1.65, 0.6);
-							c++;
+							
+//							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+//							g2.setColor(Color.gray);
+//							g2.fill(rect);
+//							double frac = Math.min(research, 1);
+//							rect.width = frac / 2;
+//							g2.setColor(Color.green);
+//							g2.fill(rect);
+//
+//							g2.translate(0.65, 0);
+//							if (c == 2)
+//									g2.translate(-0.65*3, 0.6);
+//							c++;
 					}
 			}
 
-			g2.setTransform(pushed2);
-//			if (r!=null)
-//				r.drawImmediate(g2, false, true);
-			String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
-			while (resource.length() < 8) resource = "0"+resource;
-			g2.translate(-.3, 1.5);
-            for (int i = 0; i < 8; i++) {
-                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
-                g2.translate(0.75/4, 0);
-            }
+			
         }
         g2.setTransform(pushed);
         g2.translate(0, slotSize);

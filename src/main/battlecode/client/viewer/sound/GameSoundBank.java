@@ -145,6 +145,12 @@ public class GameSoundBank {
 	public static ClipGroup GLOP;// = new ClipGroup("sound/glop.wav");
 	public static  ClipGroup CAPTURE;//= new ClipGroup("sound/laser_rocket.wav", 500000, 2);
 	
+
+	// extra game sounds used in 2013
+	public static ClipGroup NUKE_READY;
+	public static ClipGroup NUKE_DETECTED;
+	public static ClipGroup NUKE_SIREN;
+	
 	
 	//public static final ClipGroup FLUX_BURN = new ClipGroup("sound/flux_burn.wav");
 
@@ -165,6 +171,14 @@ public class GameSoundBank {
 			 FLOP = new ClipGroup("sound/flop.wav");
 			 GLOP = new ClipGroup("sound/glop.wav");
 			 CAPTURE= new ClipGroup("sound/laser_rocket.wav", 500000, 2);
+
+			 NUKE_READY = new ClipGroup("sound/2013/nuke_ready.wav");
+			 NUKE_READY.setGain(1);
+			 NUKE_SIREN = new ClipGroup("sound/2013/nuke_siren.wav");
+			 NUKE_SIREN.setGain(1);
+			 NUKE_DETECTED = new ClipGroup("sound/2013/nuke_launch.wav");
+			 NUKE_DETECTED.setGain(1);
+			 
 			 
 		DEATH.setFadeTime(1000000);
 		OPEN.setGain(1);
