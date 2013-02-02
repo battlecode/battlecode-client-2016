@@ -32,7 +32,14 @@ public class GameStateTimeline<E extends GameState> extends Observable {
   private volatile long numApplies = 0;
 
   // THIS IS A HACK TO SYNC THE 2D AND 3D CLIENTS - PLEASE REMOVE THIS AFTER THE FINAL TOURNAMENT
-  static volatile int globalRound;
+  public static volatile int globalRound;
+  public static volatile int globalCutscene;
+  public static volatile int globalGame;
+  public static volatile String globalFile;
+
+  static {
+  	startSocket();
+  }
 
   public static void startSocket() {
   	new Thread(new Runnable() {
@@ -43,9 +50,13 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 					Socket socket = ss.accept();
 					PrintWriter writer = new PrintWriter(socket.getOutputStream());
 					while(!writer.checkError()) {
-						writer.println(globalRound);
-						writer.flush();
-						Thread.sleep(20);
+						synchronized(GameStateTimeline.class) {
+							if(globalFile!=null) {
+								writer.println(String.format("%s %d %d",globalFile,globalGame,globalCutscene!=0?globalCutscene:globalRound));
+								writer.flush();
+							}
+						}
+						Thread.sleep(25);
 					}
 				}
 			} catch(Exception e) {

@@ -109,10 +109,12 @@ public class DrawCutScene {
             switch (step) {
                 case INTRO:
                     //System.out.println("Drawing Intro");
+					battlecode.client.viewer.GameStateTimeline.globalCutscene = -1;
                     drawIntro(g2);
                     break;
                 case OUTRO:
                     //System.out.println("Drawing Outro");
+					battlecode.client.viewer.GameStateTimeline.globalCutscene = -2;
                     drawOutro(g2);
                     break;
                 default:
@@ -120,6 +122,9 @@ public class DrawCutScene {
                     break;
             }
         }
+		else {
+			battlecode.client.viewer.GameStateTimeline.globalCutscene = 0;
+		}
     }
 
     private void drawImage(BufferedImage img, Graphics2D g2) {
