@@ -5,9 +5,6 @@ import battlecode.engine.signal.Signal;
 
 import java.util.*;
 
-import java.io.*;
-import java.net.*;
-
 public class GameStateTimeline<E extends GameState> extends Observable {
 
   private GameStateFactory<E> gsf;
@@ -30,32 +27,6 @@ public class GameStateTimeline<E extends GameState> extends Observable {
   private volatile long numClones = 0;
   private volatile long applyTime = 0;
   private volatile long numApplies = 0;
-
-  // THIS IS A HACK TO SYNC THE 2D AND 3D CLIENTS - PLEASE REMOVE THIS AFTER THE FINAL TOURNAMENT
-  static volatile int globalRound;
-
-  public static void startSocket() {
-  	new Thread(new Runnable() {
-		public void run() {
-			try {
-				ServerSocket ss = new ServerSocket(6370);
-				while(true) {
-					Socket socket = ss.accept();
-					PrintWriter writer = new PrintWriter(socket.getOutputStream());
-					while(!writer.checkError()) {
-						writer.println(globalRound);
-						writer.flush();
-						Thread.sleep(20);
-					}
-				}
-			} catch(Exception e) {
-				System.err.println("Round number server failed");
-				e.printStackTrace();
-			}
-		}
-	}).start();
-  }
-  // END OF HACK
 
 	public GameStateTimeline(BufferedMatch match, GameStateFactory<E> gsf,
 	                         int rpk) {
@@ -219,9 +190,6 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 		}
 		setChanged();
 		notifyObservers();
-
-		// please remove this variable after the final tournament
-		globalRound = currentRound;
 	}
 
 	public void refreshRound() {
