@@ -80,11 +80,6 @@ public class TournamentTimer {
                     if (bWins > 0)
                         br.addWin(Team.B);
 								}
-				synchronized(GameStateTimeline.class) {
-					GameStateTimeline.globalGame = aWins + bWins;
-					GameStateTimeline.globalCutscene = -1;
-					GameStateTimeline.globalRound = 0;
-				}
                 br.beginIntroCutScene(loop.stop());
                 while (loop.isPlaying()) {
                     doSleep(100);
@@ -92,7 +87,6 @@ public class TournamentTimer {
                 }
                 doSleep(2000);
                 br.setCutSceneVisible(false);
-				GameStateTimeline.globalCutscene = 0;
                 new MatchPlayer(null, controller, gst, null, false);
                 while (gst.getRound() < gst.getNumRounds() || winner == null) {
                     doSleep(100);
@@ -101,7 +95,6 @@ public class TournamentTimer {
 										br.addWin(winner);
                 doSleep(1000);
                 br.setCutSceneVisible(true);
-				GameStateTimeline.globalCutscene = -2;
                 br.fadeOutCutScene();
 								System.out.println("sleep "+Thread.currentThread());
 								for(int i=0;i<60;i++) {
