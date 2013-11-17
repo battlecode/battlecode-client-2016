@@ -57,7 +57,6 @@ public class DrawMap {
 
     public void prerenderMap(battlecode.world.GameMap m) {
         this.m = m;
-        this.m.getNeutralsMap().print();
         TerrainTile[][] map = m.getTerrainMatrix();
 
         byte[][] indices = new byte[mapWidth + 1][mapHeight + 1]; // init indices
@@ -99,7 +98,8 @@ public class DrawMap {
 				byte index = indices[i][j];
 				assert 0 <= index && index < 16;
                 if (map[i][j] != VOID) {
-                    g2.setPaint(new Color((float) Math.log(cows[i][j]) / (float) maxCows, 0.0f, 0.0f));
+                    float x = (float) Math.log(cows[i][j]) / (float) maxCows;
+                    g2.setPaint(new Color(x, x, x));
                     g2.fill(new Rectangle2D.Double(imgSize * i, imgSize * j, imgSize, imgSize));
                 } else {
                     // fancy void stuff
@@ -128,7 +128,6 @@ public class DrawMap {
     }
 
     public void draw(Graphics2D g2, DrawState ds) {
-        System.out.println("DRAW");
         AffineTransform pushed = g2.getTransform();
         g2.scale(1.0 / scaleSize, 1.0 / scaleSize);
 
