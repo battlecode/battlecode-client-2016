@@ -12,6 +12,7 @@ import java.awt.Stroke;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 
@@ -35,6 +36,7 @@ public class DrawMap {
     // origin of the map
     MapLocation origin;
     private int imgSize = 32;
+    public battlecode.world.GameMap m;
 
     public DrawMap(battlecode.world.GameMap map) {
         mapWidth = map.getWidth();
@@ -49,7 +51,13 @@ public class DrawMap {
 
     }
 
+    public void redraw() {
+        prerenderMap(this.m);
+    }
+
     public void prerenderMap(battlecode.world.GameMap m) {
+        this.m = m;
+        this.m.getNeutralsMap().print();
         TerrainTile[][] map = m.getTerrainMatrix();
 
         byte[][] indices = new byte[mapWidth + 1][mapHeight + 1]; // init indices
@@ -76,13 +84,27 @@ public class DrawMap {
         prerender = RenderConfiguration.createCompatibleImage(imgSize * mapWidth,
                 imgSize * mapHeight);
 
+        double[][] cows = m.getNeutralsMap().copyOfCurrentData();
+        double maxCows = 0.0;
+        for (int i = 0; i < mapWidth; i++) {
+            for (int j = 0; j < mapHeight; j++) {
+                maxCows = Math.max(maxCows, cows[i][j]);
+            }
+        }
+        maxCows = Math.log(maxCows);
 
         Graphics2D g2 = prerender.createGraphics();
-        for (int i = 0; i <= mapWidth; i++) {
-			for (int j = 0; j <= mapHeight; j++) {
+        for (int i = 0; i < mapWidth; i++) {
+			for (int j = 0; j < mapHeight; j++) {
 				byte index = indices[i][j];
 				assert 0 <= index && index < 16;
-				g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
+                if (map[i][j] != VOID) {
+                    g2.setPaint(new Color((float) Math.log(cows[i][j]) / (float) maxCows, 0.0f, 0.0f));
+                    g2.fill(new Rectangle2D.Double(imgSize * i, imgSize * j, imgSize, imgSize));
+                } else {
+                    // fancy void stuff
+				    //g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
+                }
             }
 		}
 
@@ -106,6 +128,7 @@ public class DrawMap {
     }
 
     public void draw(Graphics2D g2, DrawState ds) {
+        System.out.println("DRAW");
         AffineTransform pushed = g2.getTransform();
         g2.scale(1.0 / scaleSize, 1.0 / scaleSize);
 
