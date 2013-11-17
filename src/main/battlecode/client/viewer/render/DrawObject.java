@@ -442,6 +442,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             		g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
             		break;
             	case ARTILLERY:
+                case HQ:
             		if (roundsUntilAttackIdle == RobotType.ARTILLERY.attackDelay-1)
             		{
             			BufferedImage target;
