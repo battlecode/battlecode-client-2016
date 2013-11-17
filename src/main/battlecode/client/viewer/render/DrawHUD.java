@@ -34,6 +34,9 @@ class DrawHUD {
     
     private static final RobotType[] drawnTypes = new RobotType[] {
     	RobotType.SOLDIER,
+    	RobotType.WALL,
+    	RobotType.PASTR,
+    	RobotType.NOISETOWER,
     	RobotType.GENERATOR,
     	RobotType.SUPPLIER,
     	RobotType.ARTILLERY,

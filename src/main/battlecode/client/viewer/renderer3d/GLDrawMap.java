@@ -151,16 +151,16 @@ public class GLDrawMap {
             for (int i = 1; i < mapWidth; i++) {
 
                 int numLand = 0;
-                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.NORMAL) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.NORMAL) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.NORMAL) {
                     numLand++;
                 }
-                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.LAND) {
+                if (tiles[i / DENSITY][j / DENSITY] == TerrainTile.NORMAL) {
                     numLand++;
                 }
 
