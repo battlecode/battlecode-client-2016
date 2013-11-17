@@ -43,7 +43,7 @@ class DrawHUD {
     	RobotType.MEDBAY,
     	RobotType.SHIELDS
     };
-    private static final ImageFile [][] rImages = new ImageFile[3][6];		
+    private static final ImageFile [][] rImages = new ImageFile[3][9];		
 
     static {
         numberText = new ImageFile("art/numbers.png");
