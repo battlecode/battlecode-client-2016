@@ -98,7 +98,10 @@ public class DrawMap {
 				byte index = indices[i][j];
 				assert 0 <= index && index < 16;
                 if (map[i][j] != VOID) {
-                    float x = (float) Math.log(cows[i][j]) / (float) maxCows;
+                    int x = (int) (255 * (float) Math.log(cows[i][j]) / (float) maxCows);
+                    if (x < 0) {
+                        x = 0;
+                    }
                     g2.setPaint(new Color(x, x, x));
                     g2.fill(new Rectangle2D.Double(imgSize * i, imgSize * j, imgSize, imgSize));
                 } else {
