@@ -41,6 +41,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     protected RoundStats stats = null;
     protected double[] teamResources = new double[2];
 	protected double[][] researchProgress = new double[2][5];
+    protected double[][] neutralsDensity = new double[2][2];
     protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
             new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -437,5 +438,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
     public void visitNodeBirthSignal(NodeBirthSignal s) {
     	encampments.add(s.location);
+    }
+
+    public void visitNeutralsDensitySignal(NeutralsDensitySignal s) {
+        neutralsDensity = s.getAmounts();
     }
 }

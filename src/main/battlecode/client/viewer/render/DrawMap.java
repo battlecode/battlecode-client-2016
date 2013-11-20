@@ -83,31 +83,12 @@ public class DrawMap {
         prerender = RenderConfiguration.createCompatibleImage(imgSize * mapWidth,
                 imgSize * mapHeight);
 
-        double[][] cows = m.getNeutralsMap().copyOfCurrentData();
-        double maxCows = 0.0;
-        for (int i = 0; i < mapWidth; i++) {
-            for (int j = 0; j < mapHeight; j++) {
-                maxCows = Math.max(maxCows, cows[i][j]);
-            }
-        }
-        maxCows = Math.log(maxCows);
-
         Graphics2D g2 = prerender.createGraphics();
         for (int i = 0; i < mapWidth; i++) {
 			for (int j = 0; j < mapHeight; j++) {
 				byte index = indices[i][j];
 				assert 0 <= index && index < 16;
-                if (map[i][j] != VOID) {
-                    int x = (int) (255 * (float) Math.log(cows[i][j]) / (float) maxCows);
-                    if (x < 0) {
-                        x = 0;
-                    }
-                    g2.setPaint(new Color(x, x, x));
-                    g2.fill(new Rectangle2D.Double(imgSize * i, imgSize * j, imgSize, imgSize));
-                } else {
-                    // fancy void stuff
-				    //g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
-                }
+				g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
             }
 		}
 

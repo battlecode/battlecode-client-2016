@@ -182,6 +182,21 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 //			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
 //		}
 
+        double maxDensity = 0.0;
+        for (int i = 0; i < neutralsDensity.length; i++) {
+            for (int j = 0; j < neutralsDensity.length; j++) {
+                maxDensity = Math.max(maxDensity, neutralsDensity[i][j]);
+            }
+        }
+        for (int i = 0; i < neutralsDensity.length; i++) {
+            for (int j = 0; j < neutralsDensity.length; j++) {
+                int x = (int) (256 * Math.log(neutralsDensity[i][j]) / Math.log(maxDensity));
+                if (x < 0) x = 0;
+                if (x > 255) x = 255;
+                g2.setColor(new Color(x, x, x));
+                g2.fill(new Rectangle2D.Double((float) i, (float) j, 1.0f, 1.0f));
+            }
+        }
 		
 		for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {
 			MapLocation loc = entry.getKey();
