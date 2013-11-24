@@ -58,7 +58,8 @@ public class DrawMap {
   public void prerenderMap(battlecode.world.GameMap m) {
     this.m = m;
     TerrainTile[][] map = m.getTerrainMatrix();
-
+    
+    // this code calculates which tile to use to represent the wall edges
     byte[][] indices = new byte[mapWidth + 1][mapHeight + 1]; // init indices
     for (int j = 0; j <= mapHeight; j++) for (int i = 0; i <= mapWidth; i++) {
         int top = (j == 0 ? 0x03 : (indices[i][j - 1] & 0x03));
@@ -66,11 +67,13 @@ public class DrawMap {
                       | (i == mapWidth || map[i][j] == VOID ? 0x01 : 0x00));
         indices[i][j] = (byte) (top << 2 | bottom);
       }
+    // this image has the tiles for all possible wall types
     ImageFile terrainImg = new ImageFile("art/terrain.png"); // actual rendering
     BufferedImage image = terrainImg.image;
     assert image.getWidth() == image.getHeight();
     imgSize = image.getWidth() / 4;
     BufferedImage[] tiles = new BufferedImage[16];
+
     byte[][] imgToMap = {
       {8, 1, 7, 14},
       {0, 5, 15, 10},

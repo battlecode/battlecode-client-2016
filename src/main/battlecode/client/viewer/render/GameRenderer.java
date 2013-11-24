@@ -248,7 +248,7 @@ public class GameRenderer extends BaseRenderer {
         } // just in case
         AffineTransform pushed = g2.getTransform();
         {
-            g2.translate(unitHUDwidth * 2, 0);
+          g2.translate(unitHUDwidth * 2, 0);
             drawMap.draw(g2, ds);
             g2.clip(clipRect);
             g2.translate(-origin.x, -origin.y);
