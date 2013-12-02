@@ -76,7 +76,7 @@ public class DrawMap {
       for (int j = 0; j < mapHeight; j++) {
         byte index = tileIndices[i][j];
         assert 0 <= index && index < 16;
-        g2.drawImage(tiles[index], null, imgSize * i - imgSize / 2, imgSize * j - imgSize / 2);
+        g2.drawImage(tiles[index], null, imgSize * i, imgSize * j);
       }
     }
    
