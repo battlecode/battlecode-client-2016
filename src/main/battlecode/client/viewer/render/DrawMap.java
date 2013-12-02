@@ -30,21 +30,27 @@ public class DrawMap {
   private int mapWidth;
   private int mapHeight;
   private Stroke gridStroke;
-  private float scaleSize;
   // number of blocks at each square
   // origin of the map
   MapLocation origin;
-  private int imgSize = 32;
+  private int locPixelWidth = 32;
 
   // prerendered images
   private BufferedImage prerender;
   private BufferedImage roadPrerender;
 
   // for storing the loaded walls
-  private BufferedImage[] tiles;
-  private byte[][] tileIndices;
+  //private BufferedImage[] tiles;
+  //private byte[][] tileIndices;
   // for the stored roads
-  private BufferedImage roadImages[][];
+  private BufferedImage roadTiles[][];
+  // 0-2 which image to draw from, 3rd bit for road v wall
+  private byte[] subtileIndices;
+
+  private final int subtileRows = 4; // 4 x 4
+  private final int tileCount = 3; // empty, full, rounded
+  private final int subtileCols = tileCount * subtileRows; // side by side
+
   
   public battlecode.world.GameMap m;
 
@@ -72,11 +78,17 @@ public class DrawMap {
   public void prerenderMap(battlecode.world.GameMap m) {
     Graphics2D g2 = prerender.createGraphics();
     
-    for (int i = 0; i < mapWidth; i++) {
-      for (int j = 0; j < mapHeight; j++) {
-        byte index = tileIndices[i][j];
-        assert 0 <= index && index < 16;
-        g2.drawImage(tiles[index], null, imgSize * i, imgSize * j);
+    for (int r = 0; r < mapHeight; r++) {
+      for (int c = 0; c < mapWidth; c++) {
+        for (int sr = 0; sr < subtileRows; sr++) {
+          for (int sc = 0; sc < subtileRows; sc++) {
+            byte index = subtileIndices[mapIndex(r, c, sr, sc)];
+            // why row and col don't need to be converted is still under investigation
+            g2.drawImage(roadTiles[sr][sc + (subtileRows * index)], null,
+                         (subtileRows * r + sr) * locPixelWidth / subtileRows,
+                         (subtileRows * c + sc) * locPixelWidth / subtileRows);
+          }
+        }
       }
     }
    
@@ -84,7 +96,6 @@ public class DrawMap {
   }
 
   public void prerenderMap(BufferedImage bg) {
-    scaleSize = (float) bg.getWidth() / mapWidth;
     prerender = bg;
   }
 
@@ -98,7 +109,8 @@ public class DrawMap {
 
   public void draw(Graphics2D g2, DrawState ds) {
     AffineTransform pushed = g2.getTransform();
-    g2.scale(1.0 / scaleSize, 1.0 / scaleSize);
+    
+    g2.scale(1.0 / locPixelWidth, 1.0 / locPixelWidth);
 
     g2.drawImage(prerender, null, null);
         
@@ -121,53 +133,59 @@ public class DrawMap {
   }
 
 
+  private int mapIndex(int r, int c, int sr, int sc) {
+    int index = (r * subtileRows + sr) * mapWidth * subtileRows
+      + (c * subtileRows + sr);
+    return index;
+  }
+
   public void loadMapArt()  {
     TerrainTile[][] map = m.getTerrainMatrix();
-    // this code calculates which tile to use to represent the wall edges
-    tileIndices = new byte[mapWidth + 1][mapHeight + 1]; // init tileIndices
-    for (int j = 0; j <= mapHeight; j++) for (int i = 0; i <= mapWidth; i++) {
-        int top = (j == 0 ? 0x03 : (tileIndices[i][j - 1] & 0x03));
-        int bottom = (j == mapHeight ? 0x03 : (i == 0 || map[i - 1][j] == VOID ? 0x02 : 0x00)
-                      | (i == mapWidth || map[i][j] == VOID ? 0x01 : 0x00));
-        tileIndices[i][j] = (byte) (top << 2 | bottom);
-      }
-    // this image has the tiles for all possible wall types
-    ImageFile terrainImg = new ImageFile("art/terrain.png");
-    BufferedImage image = terrainImg.image;
-    assert image.getWidth() == image.getHeight();
-    imgSize = image.getWidth() / 4;
-    tiles = new BufferedImage[16];
-
-    byte[][] imgToMap = {
-      {8, 1, 7, 14},
-      {0, 5, 15, 10},
-      {2, 4, 13, 11},
-      {9, 3, 6, 12}};
-    for (int row = 0; row < 4; row++) for (int col = 0; col < 4; col++) {
-        tiles[imgToMap[row][col]] =
-          image.getSubimage(col * imgSize, row * imgSize, imgSize, imgSize);
-      }
-
-    prerender = RenderConfiguration.createCompatibleImage(imgSize * mapWidth,
-                                                          imgSize * mapHeight);
-
-
-    terrainImg.unload();
-
-    scaleSize = imgSize;
 
     // set up the road tiles
     ImageFile roadImg = new ImageFile("art/roads.png"); // actual rendering
     BufferedImage roadAtlas = roadImg.image;
-    int roadPixelSize = roadAtlas.getWidth() / 2;
-    roadImages = new BufferedImage[2][2];
-    for (int row = 0; row < 2; row++) for (int col = 0; col < 2; col++) {
-        roadImages[row][col] = roadAtlas.getSubimage(col * roadPixelSize,
-                                                     row * roadPixelSize,
-                                                     roadPixelSize,
-                                                     roadPixelSize);
-      }
+    locPixelWidth = roadAtlas.getWidth() / tileCount;
+    int subtileWidth = locPixelWidth / subtileRows;
+      
+    assert roadAtlas.getWidth() % tileCount == 0; // the road Atlas has 3 images side by side
 
+    roadTiles = new BufferedImage[subtileRows][subtileCols];
+    
+    for (int row = 0; row < subtileRows; row++) for (int col = 0; col < subtileCols; col++) {
+        roadTiles[row][col] = roadAtlas.getSubimage(col * subtileWidth,
+                                                    row * subtileWidth,
+                                                    subtileWidth,
+                                                    subtileWidth);
+      }
+    
+    prerender = RenderConfiguration.createCompatibleImage(locPixelWidth * mapWidth,
+                                                          locPixelWidth * mapHeight);
+    
+    subtileIndices = new byte[subtileRows * mapHeight * subtileRows * mapWidth];
+    for (int i = 0; i < subtileRows * mapHeight * subtileRows * mapWidth; i++) {
+        subtileIndices[i] = 0; // default value
+    }
+    for (int r = 0; r < mapHeight; r++) for (int c = 0; c < mapWidth; c++) {
+        TerrainTile typeHere = map[r][c];
+        if (typeHere != ROAD)
+        {
+          continue;
+        }
+        boolean top = (r - 1 >= 0) && (map[r - 1][c] == typeHere);
+        boolean bot = (r + 1 < mapHeight) && (map[r + 1][c] == typeHere);
+        boolean left = (c - 1 >= 0) && (map[r][c - 1] == typeHere);
+        boolean right = (c + 1 < mapWidth) && (map[r][c + 1] == typeHere);
+        subtileIndices[mapIndex(r, c, 0, 1)] = subtileIndices[mapIndex(r, c, 0, 2)] = (byte)(top ? 1 : 0);
+        subtileIndices[mapIndex(r, c, 3, 1)] = subtileIndices[mapIndex(r, c, 3, 2)] = (byte)(bot ? 1 : 0);
+        subtileIndices[mapIndex(r, c, 1, 0)] = subtileIndices[mapIndex(r, c, 2, 0)] = (byte)(left ? 1 : 0);
+        subtileIndices[mapIndex(r, c, 1, 3)] = subtileIndices[mapIndex(r, c, 2, 3)] = (byte)(right ? 1 : 0);
+        subtileIndices[mapIndex(r, c, 1, 1)] = (byte)((!top && !left) ? 2 : 1);
+        subtileIndices[mapIndex(r, c, 1, 2)] = (byte)((!top && !right) ? 2 : 1);
+        subtileIndices[mapIndex(r, c, 2, 1)] = (byte)((!bot && !left) ? 2 : 1);
+        subtileIndices[mapIndex(r, c, 2, 2)] = (byte)((!bot && !right) ? 2 : 1);
+      }
+    
     roadImg.unload();
   }
 }
