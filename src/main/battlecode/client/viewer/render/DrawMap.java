@@ -47,9 +47,9 @@ public class DrawMap {
   // 0-2 which image to draw from, 3rd bit for road v wall
   private byte[] subtileIndices;
 
-  private final int subtileRows = 4; // 4 x 4
+  private final int subtileHeight = 4; // 4 x 4
   private final int tileCount = 3; // empty, full, rounded
-  private final int subtileCols = tileCount * subtileRows; // side by side
+  private final int subtileWidth = tileCount * subtileHeight; // side by side
 
   
   public battlecode.world.GameMap m;
@@ -78,15 +78,14 @@ public class DrawMap {
   public void prerenderMap(battlecode.world.GameMap m) {
     Graphics2D g2 = prerender.createGraphics();
     
-    for (int r = 0; r < mapHeight; r++) {
-      for (int c = 0; c < mapWidth; c++) {
-        for (int sr = 0; sr < subtileRows; sr++) {
-          for (int sc = 0; sc < subtileRows; sc++) {
-            byte index = subtileIndices[mapIndex(r, c, sr, sc)];
-            // why row and col don't need to be converted is still under investigation
-            g2.drawImage(roadTiles[sr][sc + (subtileRows * index)], null,
-                         (subtileRows * r + sr) * locPixelWidth / subtileRows,
-                         (subtileRows * c + sc) * locPixelWidth / subtileRows);
+    for (int x = 0; x < mapWidth; x++) {
+      for (int y = 0; y < mapHeight; y++) {
+        for (int sx = 0; sx < subtileHeight; sx++) {
+          for (int sy = 0; sy < subtileHeight; sy++) {
+            byte index = subtileIndices[mapIndex(x, y, sx, sy)];
+            g2.drawImage(roadTiles[sx + (subtileHeight * index)][sy], null,
+                         (subtileHeight * x + sx) * locPixelWidth / subtileHeight,
+                         (subtileHeight * y + sy) * locPixelWidth / subtileHeight);
           }
         }
       }
@@ -133,9 +132,9 @@ public class DrawMap {
   }
 
 
-  private int mapIndex(int r, int c, int sr, int sc) {
-    int index = (r * subtileRows + sr) * mapWidth * subtileRows
-      + (c * subtileRows + sr);
+  private int mapIndex(int x, int y, int sx, int sy) {
+    int index = (x * subtileHeight + sx) * mapHeight * subtileHeight
+      + (y * subtileHeight + sy);
     return index;
   }
 
@@ -146,44 +145,44 @@ public class DrawMap {
     ImageFile roadImg = new ImageFile("art/roads.png"); // actual rendering
     BufferedImage roadAtlas = roadImg.image;
     locPixelWidth = roadAtlas.getWidth() / tileCount;
-    int subtileWidth = locPixelWidth / subtileRows;
+    int subtileYPixels = locPixelWidth / subtileHeight;
       
     assert roadAtlas.getWidth() % tileCount == 0; // the road Atlas has 3 images side by side
 
-    roadTiles = new BufferedImage[subtileRows][subtileCols];
+    roadTiles = new BufferedImage[subtileWidth][subtileHeight];
     
-    for (int row = 0; row < subtileRows; row++) for (int col = 0; col < subtileCols; col++) {
-        roadTiles[row][col] = roadAtlas.getSubimage(col * subtileWidth,
-                                                    row * subtileWidth,
-                                                    subtileWidth,
-                                                    subtileWidth);
+    for (int y = 0; y < subtileHeight; y++) for (int x = 0; x < subtileWidth; x++) {
+        roadTiles[x][y] = roadAtlas.getSubimage(x * subtileYPixels,
+                                                y * subtileYPixels,
+                                                subtileYPixels,
+                                                subtileYPixels);
       }
     
     prerender = RenderConfiguration.createCompatibleImage(locPixelWidth * mapWidth,
                                                           locPixelWidth * mapHeight);
     
-    subtileIndices = new byte[subtileRows * mapHeight * subtileRows * mapWidth];
-    for (int i = 0; i < subtileRows * mapHeight * subtileRows * mapWidth; i++) {
+    subtileIndices = new byte[subtileHeight * mapHeight * subtileHeight * mapWidth];
+    for (int i = 0; i < subtileHeight * mapHeight * subtileHeight * mapWidth; i++) {
         subtileIndices[i] = 0; // default value
     }
-    for (int r = 0; r < mapHeight; r++) for (int c = 0; c < mapWidth; c++) {
-        TerrainTile typeHere = map[r][c];
+    for (int x = 0; x < mapWidth; x++) for (int y = 0; y < mapHeight; y++) {
+        TerrainTile typeHere = map[x][y];
         if (typeHere != ROAD)
         {
           continue;
         }
-        boolean top = (r - 1 >= 0) && (map[r - 1][c] == typeHere);
-        boolean bot = (r + 1 < mapHeight) && (map[r + 1][c] == typeHere);
-        boolean left = (c - 1 >= 0) && (map[r][c - 1] == typeHere);
-        boolean right = (c + 1 < mapWidth) && (map[r][c + 1] == typeHere);
-        subtileIndices[mapIndex(r, c, 0, 1)] = subtileIndices[mapIndex(r, c, 0, 2)] = (byte)(top ? 1 : 0);
-        subtileIndices[mapIndex(r, c, 3, 1)] = subtileIndices[mapIndex(r, c, 3, 2)] = (byte)(bot ? 1 : 0);
-        subtileIndices[mapIndex(r, c, 1, 0)] = subtileIndices[mapIndex(r, c, 2, 0)] = (byte)(left ? 1 : 0);
-        subtileIndices[mapIndex(r, c, 1, 3)] = subtileIndices[mapIndex(r, c, 2, 3)] = (byte)(right ? 1 : 0);
-        subtileIndices[mapIndex(r, c, 1, 1)] = (byte)((!top && !left) ? 2 : 1);
-        subtileIndices[mapIndex(r, c, 1, 2)] = (byte)((!top && !right) ? 2 : 1);
-        subtileIndices[mapIndex(r, c, 2, 1)] = (byte)((!bot && !left) ? 2 : 1);
-        subtileIndices[mapIndex(r, c, 2, 2)] = (byte)((!bot && !right) ? 2 : 1);
+        boolean top = (y - 1 >= 0) && (map[x][y - 1] == typeHere);
+        boolean bot = (y + 1 < mapHeight) && (map[x][y + 1] == typeHere);
+        boolean left = (x - 1 >= 0) && (map[x - 1][y] == typeHere);
+        boolean right = (x + 1 < mapWidth) && (map[x + 1][y] == typeHere);
+        subtileIndices[mapIndex(x, y, 1, 0)] = subtileIndices[mapIndex(x, y, 2, 0)] = (byte)(top ? 1 : 0);
+        subtileIndices[mapIndex(x, y, 1, 3)] = subtileIndices[mapIndex(x, y, 2, 3)] = (byte)(bot ? 1 : 0);
+        subtileIndices[mapIndex(x, y, 0, 1)] = subtileIndices[mapIndex(x, y, 0, 2)] = (byte)(left ? 1 : 0);
+        subtileIndices[mapIndex(x, y, 3, 1)] = subtileIndices[mapIndex(x, y, 3, 2)] = (byte)(right ? 1 : 0);
+        subtileIndices[mapIndex(x, y, 1, 1)] = (byte)((!top && !left) ? 2 : 1);
+        subtileIndices[mapIndex(x, y, 1, 2)] = (byte)((!bot && !left) ? 2 : 1);
+        subtileIndices[mapIndex(x, y, 2, 1)] = (byte)((!top && !right) ? 2 : 1);
+        subtileIndices[mapIndex(x, y, 2, 2)] = (byte)((!bot && !right) ? 2 : 1);
       }
     
     roadImg.unload();
