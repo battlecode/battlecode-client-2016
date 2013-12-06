@@ -444,3 +444,4 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         neutralsDensity = s.getAmounts();
     }
 }
+
