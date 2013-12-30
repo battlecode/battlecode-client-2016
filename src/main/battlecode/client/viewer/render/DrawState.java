@@ -200,7 +200,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           float greenChannel = (float)(.5 * density / maxDensity + .25);
           g2.setColor(new Color(0.0f, greenChannel, 0.0f, 1.0f));
           float maxPossible = 2000;
-          float size = (float) Math.sqrt(density / maxPossible);
+          float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
           float offset = ((1.0f - size) / 2);
           g2.fill(new Rectangle2D.Float(i + offset, j + offset, size, size));
         }
