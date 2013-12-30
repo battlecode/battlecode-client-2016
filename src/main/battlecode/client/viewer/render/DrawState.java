@@ -184,6 +184,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 //			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
 //		}
       
+
+      // cow densities
       double maxDensity = 0.0;
       for (int i = 0; i < neutralsDensity.length; i++) {
         for (int j = 0; j < neutralsDensity.length; j++) {
@@ -200,7 +202,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           float maxPossible = 2000;
           float size = (float) Math.sqrt(density / maxPossible);
           float offset = ((1.0f - size) / 2);
-          g2.fill(new Ellipse2D.Float(i + offset, j + offset, size, size));
+          g2.fill(new Rectangle2D.Float(i + offset, j + offset, size, size));
         }
       }
 
