@@ -347,8 +347,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
         //PASTR capture ranges
         if (getType() == RobotType.PASTR)
         {
-          int rad = GameConstants.PASTR_RANGE * 1;
-          g2.draw(new Ellipse2D.Float(-.5f * (rad - 1), -.5f * (rad - 1), rad, rad));
+          int size = (int)(Math.pow(GameConstants.PASTR_RANGE, .5) * 2);
+          g2.draw(new Ellipse2D.Float(-.5f * (size - 1), -.5f * (size - 1), size, size));
         }
         g2.drawImage(image, trans, null);
                 
