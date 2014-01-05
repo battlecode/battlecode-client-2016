@@ -22,24 +22,25 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.Upgrade;
+import battlecode.common.GameConstants;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
 
 	
-	private static final ImageFile rNuker = new ImageFile("art/nuker1.png");
-	private static final ImageFile rNuker2 = new ImageFile("art/nuker2.png");
-	private static final ImageFile rNukeb = new ImageFile("art/nukeb1.png");
-	private static final ImageFile rNukeb2 = new ImageFile("art/nukeb2.png");
-	private static final ImageFile rexplode = new ImageFile("art/nukeexplode.png");
+  private static final ImageFile rNuker = new ImageFile("art/nuker1.png");
+  private static final ImageFile rNuker2 = new ImageFile("art/nuker2.png");
+  private static final ImageFile rNukeb = new ImageFile("art/nukeb1.png");
+  private static final ImageFile rNukeb2 = new ImageFile("art/nukeb2.png");
+  private static final ImageFile rexplode = new ImageFile("art/nukeexplode.png");
 	
   protected static final Color dragShadow = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-	protected static final Color linkNone = new Color(0.f,0.f,0.f);
-	protected static final Color linkA = new Color(1.f,0.f,0.f);
-	protected static final Color linkB = new Color(0.f,0.f,1.f);
-	protected static final Color linkBoth = new Color(.75f,0.f,.75f);
-	protected static final ImageFile encampment = new ImageFile("art/encampment.png");
+  protected static final Color linkNone = new Color(0.f,0.f,0.f);
+  protected static final Color linkA = new Color(1.f,0.f,0.f);
+  protected static final Color linkB = new Color(0.f,0.f,1.f);
+  protected static final Color linkBoth = new Color(.75f,0.f,.75f);
+  protected static final ImageFile encampment = new ImageFile("art/encampment.png");
 
   private static class Factory implements GameStateFactory<DrawState> {
 
@@ -92,9 +93,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     return new DrawObject(type, team, id, this);
   }
 
-	protected DrawObject createDrawObject(DrawObject o) {
-		return new DrawObject(o);
-	}
+  protected DrawObject createDrawObject(DrawObject o) {
+    return new DrawObject(o);
+  }
 
   public MapLocation[][] getConvexHullsA() {
     return convexHullsA;
@@ -182,7 +183,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 //					g2.setColor(linkNone);
 //			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
 //		}
+      
 
+      // cow densities
       double maxDensity = 0.0;
       for (int i = 0; i < neutralsDensity.length; i++) {
         for (int j = 0; j < neutralsDensity.length; j++) {
@@ -190,19 +193,44 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
       }
 
+      
+      
       for (int i = 0; i < neutralsDensity.length; i++) {
         for (int j = 0; j < neutralsDensity.length; j++) {
+          //obtain color by checking proximity to pastrs
+          boolean harvBlue = false, harvRed = false;
+          for (Map.Entry<Integer, DrawObject> gUnitEnt : groundUnits.entrySet())
+          {
+            DrawObject gUnit = gUnitEnt.getValue();
+            double checkRadiusSqr = 0;
+            if(gUnit.getType() == RobotType.SOLDIER) checkRadiusSqr = .1;
+            else if(gUnit.getType() == RobotType.PASTR) checkRadiusSqr = Math.pow(GameConstants.PASTR_RANGE, 1);
+            else continue;
+            MapLocation groundLoc = gUnit.getLocation();
+            //distance check
+            double distSqrToRobot = Math.pow(groundLoc.x - i, 2) + Math.pow(groundLoc.y - j, 2);
+            if(distSqrToRobot <= checkRadiusSqr) {
+              if (gUnit.getTeam() == Team.A) harvRed = true;
+              else harvBlue = true;
+              if(harvBlue && harvRed) continue;
+            }
+          }
           double density = (int)neutralsDensity[i][j];
-          // this is a logarithmic dot display for cow density
-          float greenChannel = (float)(.5 * density / maxDensity + .25);
-          g2.setColor(new Color(0.0f, greenChannel, 0.0f, 1.0f));
+          float lum = (float)(.5 * density / maxDensity + .25);
+          float r = harvRed ? lum : 0;
+          float b = harvBlue ? lum : 0;
+          float g = !(harvRed || harvBlue) ? lum : 0;
+          g2.setColor(new Color(r, g, b, 1.0f));
+          // cap at the max possible size
           float maxPossible = 2000;
-          float size = (float) Math.sqrt(density / maxPossible);
+          float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
+          // make appear at the center
           float offset = ((1.0f - size) / 2);
-          g2.fill(new Ellipse2D.Float(i + offset, j + offset, size, size));
+          g2.fill(new Rectangle2D.Float(i + offset, j + offset, size, size));
         }
       }
-		
+
+      /*
       for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {
         MapLocation loc = entry.getKey();
         Team team = entry.getValue();
@@ -213,20 +241,17 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 		
         g2.fill(new Rectangle2D.Float(loc.x+0.1f, loc.y+0.1f, .9f, .9f));
       }
-	
-		
-      BufferedImage target = encampment.image;
+      */
+      /*
+      BufferedImage encampSprite = encampment.image;
       for (MapLocation m : getEncampmentLocations()) {
         AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
-        trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
-        g2.drawImage(target, trans, null);
-        //g2.setColor(new Color(0.0f,0.0f,0.0f,1.0f));
-        //g2.fill(new Ellipse2D.Float(m.x, m.y, 1, 1));
+        trans.scale(1.0 / encampSprite.getWidth(), 1.0 / encampSprite.getHeight());
+        g2.drawImage(encampSprite, trans, null);
+        g2.setColor(new Color(1.0f,0.0f,1.0f,1.0f));
       }
+      */
         
-		
-		
-
 //		g2.setColor(new Color(1.f,0.f,0.f,.5f));
 //		MapLocation coreLoc = coreLocs.get(Team.A);
 //		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
