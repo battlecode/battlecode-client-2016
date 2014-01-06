@@ -441,7 +441,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
       } else
       {
         switch (rtype) {
+        case NOISETOWER:
+          
+          break;
         case SOLDIER:
+
           //g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
           g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                     targetLoc.x + 0.5, targetLoc.y + 0.5));
