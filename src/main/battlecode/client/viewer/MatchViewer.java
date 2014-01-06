@@ -150,8 +150,10 @@ public class MatchViewer {
             dbg.setEnabled(bufferedMatch.isPaused());
             AbstractDrawObject<AbstractAnimation> robot = br.getRobotByID(dbg.getFocusID());
             info.setTargetID(dbg.getFocusID());
+            int clampedXLoc = Math.max(0, Math.min((int)dbg.getX(), br.getDrawState().neutralsDensity.length));
+            int clampedYLoc = Math.max(0, Math.min((int)dbg.getY(), br.getDrawState().neutralsDensity[0].length));
             info.updateDebugChanges(robot, br.getDrawState()
-                                    .neutralsDensity[(int)dbg.getX()][(int)dbg.getY()]);
+                                    .neutralsDensity[clampedXLoc][clampedYLoc]);
           }
         };
       bc.addPaintObserver(paintObserver);
