@@ -103,9 +103,9 @@ public class InfoPanel extends JPanel {
 
   private void setEnergon(double amount, double shields) {
     if (shields > 0.0)
-      energon.setText(String.format(" Energon: %.1f Shields: %.1f", amount, shields));
+      energon.setText(String.format(" Health: %.1f Shields: %.1f", amount, shields));
     else
-      energon.setText(String.format(" Energon: %.1f ", amount));
+      energon.setText(String.format(" Health: %.1f ", amount));
   }
 
   private void setFlux(double amount) {
