@@ -58,10 +58,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
   private int teleportRounds;
   private MapLocation teleportLoc;
   private RobotType rtype = null;
-  private static final double medbayRadius = Math.sqrt(RobotType.MEDBAY.attackRadiusMaxSquared);
-  private static final double shieldsRadius = Math.sqrt(RobotType.SHIELDS.attackRadiusMaxSquared);
-  private static final double soldierRadius = Math.sqrt(RobotType.SOLDIER.attackRadiusMaxSquared);
-  private static final double artilleryRadius = Math.sqrt(GameConstants.ARTILLERY_SPLASH_RADIUS_SQUARED);
+  private static final double medbayRadius = 0;//= Math.sqrt(RobotType.MEDBAY.attackRadiusMaxSquared);
+  private static final double shieldsRadius = 0;//Math.sqrt(RobotType.SHIELDS.attackRadiusMaxSquared);
+  private static final double soldierRadius = 0;//Math.sqrt(RobotType.SOLDIER.attackRadiusMaxSquared);
+  private static final double artilleryRadius = 0;//Math.sqrt(GameConstants.ARTILLERY_SPLASH_RADIUS_SQUARED);
   private static final Color shieldColor = new Color(150,150,255,150);
   private static final Color regenColor = new Color(150,255,150,150);
   private final DrawState overallstate;
@@ -128,10 +128,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
     
   private int getViewRange() {
-    return info.type.sensorRadiusSquared + 
-      ((overallstate.getResearchProgress(getTeam(), 
-                                         Upgrade.VISION.ordinal()) == 1.0) 
-       ? GameConstants.VISION_UPGRADE_BONUS : 0);
+    return info.type.sensorRadiusSquared;
   }
 
   public void drawRangeHatch(Graphics2D g2) {
@@ -445,11 +442,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
       {
         switch (rtype) {
         case SOLDIER:
-          g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
+          //g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
+          g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
+                                    targetLoc.x + 0.5, targetLoc.y + 0.5));
+
           break;
-        case ARTILLERY:
         case HQ:
-          if (roundsUntilAttackIdle == RobotType.ARTILLERY.attackDelay-1)
+          if (true)//roundsUntilAttackIdle == RobotType.ARTILLERY.attackDelay-1)
           {
             BufferedImage target;
             if (getTeam() == Team.A) {
@@ -468,14 +467,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
             g2.draw(new Ellipse2D.Double(targetLoc.x+.5-artilleryRadius,targetLoc.y+.5-artilleryRadius,2*artilleryRadius,2*artilleryRadius));
           }
             		
-          break;
-        case MEDBAY:
-          g2.setColor(regenColor);
-          g2.fill(new Ellipse2D.Double(getDrawX()+.5-medbayRadius,getDrawY()+.5-medbayRadius,2*medbayRadius,2*medbayRadius));
-          break;
-        case SHIELDS:
-          g2.setColor(shieldColor);
-          g2.fill(new Ellipse2D.Double(getDrawX()+.5-shieldsRadius,getDrawY()+.5-shieldsRadius,2*shieldsRadius,2*shieldsRadius));
           break;
         }
       }

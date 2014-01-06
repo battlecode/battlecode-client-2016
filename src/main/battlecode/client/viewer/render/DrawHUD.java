@@ -37,11 +37,6 @@ class DrawHUD {
     	RobotType.WALL,
     	RobotType.PASTR,
     	RobotType.NOISETOWER,
-    	RobotType.GENERATOR,
-    	RobotType.SUPPLIER,
-    	RobotType.ARTILLERY,
-    	RobotType.MEDBAY,
-    	RobotType.SHIELDS
     };
     private static final ImageFile [][] rImages = new ImageFile[3][9];		
 

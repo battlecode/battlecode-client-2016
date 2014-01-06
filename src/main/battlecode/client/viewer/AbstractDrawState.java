@@ -356,26 +356,26 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
     
   public void visitMineSignal(MineSignal s) {
-    if (s.shouldAdd()) {
-      if (mineLocs.get(s.getMineLoc()) == null)
-        mineLocs.put(s.getMineLoc(), s.getMineTeam());
-    } else {
-      mineLocs.remove(s.getMineLoc());
-    }
+    // if (s.shouldAdd()) {
+    //   if (mineLocs.get(s.getMineLoc()) == null)
+    //     mineLocs.put(s.getMineLoc(), s.getMineTeam());
+    // } else {
+    //   mineLocs.remove(s.getMineLoc());
+    // }
   }
     
   public void visitMinelayerSignal(MinelayerSignal s) {
-    if (s.isDefusing())
-      getRobot(s.getRobotID()).setAction(
-        researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
-        ? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING,
-        s.getTarget());
-    else if (s.isLaying())
-      getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
+    // if (s.isDefusing())
+    //   getRobot(s.getRobotID()).setAction(
+    //     researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
+    //     ? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING,
+    //     s.getTarget());
+    // else if (s.isLaying())
+    //   getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
   }
     
   public void visitCaptureSignal(CaptureSignal s) {
-    getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_ROUND_DELAY, ActionType.CAPTURING);
+    //getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_ROUND_DELAY, ActionType.CAPTURING);
     		
   }
 
