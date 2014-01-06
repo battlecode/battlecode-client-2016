@@ -232,7 +232,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
   public void drawImmediate(Graphics2D g2, boolean drawOutline, boolean isHUD) {
-
+    Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
+    c = c.brighter().brighter().brighter();
     // these animations should be drawn in the HUD, and they expect
     // the origin of the Grpahics2D to be this robot's position
     for (AbstractAnimation.AnimationType type : preDrawOrder) {
@@ -341,9 +342,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
         } else {
           trans.scale((1.0 / image.getWidth()) * this.getRelativeSize(), (1.0 / image.getHeight()) * this.getRelativeSize());
         }
+        
         //PASTR capture ranges
         if (getType() == RobotType.PASTR)
         {
+          g2.setColor(c);
+          g2.setStroke(broadcastStroke);
           int size = (int)(Math.pow(GameConstants.PASTR_RANGE, .5) * 2);
           g2.draw(new Ellipse2D.Float(-.5f * (size - 1), -.5f * (size - 1), size, size));
         }
@@ -374,8 +378,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       {
         if (movementAction == ActionType.MOVING)
         {
-          Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
-          c = c.brighter().brighter().brighter();
           g2.setColor(c);
           g2.setStroke(thickStroke);
           g2.draw(new Line2D.Double(0.5, 0.5,
