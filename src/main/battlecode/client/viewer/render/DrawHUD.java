@@ -34,7 +34,7 @@ class DrawHUD {
     
     private static final RobotType[] drawnTypes = new RobotType[] {
     	RobotType.SOLDIER,
-    	RobotType.WALL,
+    	//RobotType.WALL, not currently in the game
     	RobotType.PASTR,
     	RobotType.NOISETOWER,
     };
