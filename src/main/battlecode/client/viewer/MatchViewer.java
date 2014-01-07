@@ -152,7 +152,8 @@ public class MatchViewer {
             info.setTargetID(dbg.getFocusID());
             int clampedXLoc = Math.max(0, Math.min((int)dbg.getX(), br.getDrawState().neutralsDensity.length - 1));
             int clampedYLoc = Math.max(0, Math.min((int)dbg.getY(), br.getDrawState().neutralsDensity[0].length - 1));
-            info.updateDebugChanges(robot, br.getDrawState()
+            info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
+                                    br.getDrawState()
                                     .neutralsDensity[clampedXLoc][clampedYLoc]);
           }
         };

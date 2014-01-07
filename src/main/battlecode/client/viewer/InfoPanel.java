@@ -59,10 +59,11 @@ public class InfoPanel extends JPanel {
   }
 
   public void updateDebugChanges(AbstractDrawObject<AbstractAnimation> robot,
-                                 double density) {
+                                 int x, int y, double density) {
     if (robot == null) {
       clear();
-      robotID.setText(Double.toString(density));
+      robotID.setText("Cows: " + Double.toString(density));
+      indicatorStrings[0].setText("Location: " + Integer.toString(x) + ", " + Integer.toString(y));
       //robotID.setText("No robot selected");
     }
     else {
