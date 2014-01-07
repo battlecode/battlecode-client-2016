@@ -630,7 +630,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 			final float efZStart = 0.5f;
 			final float efZWidth = 0.25f;
             if (RenderConfiguration.showEnergon()) {
-                float frac = (float) (obj.getEnergon() / obj.getType().maxEnergon);
+                float frac = (float) (obj.getEnergon() / obj.getType().maxHealth);
                 final Color3f max = new Color3f(0.0f, 1.0f, 0.0f);
                 final Color3f min = new Color3f(1.0f, 0.0f, 0.0f);
                 energonColor.interpolate(min, max, frac);

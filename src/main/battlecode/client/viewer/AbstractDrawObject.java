@@ -290,7 +290,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         attackAction = ActionType.TRANSFORMING;
         //roundsUntilIdle = type.wakeDelay();
         info = new RobotInfo(type, info.team);
-        maxEnergon = type.maxEnergon;
+        maxEnergon = type.maxHealth;
     }
 
     public void setAttacking(MapLocation target, RobotLevel height) {

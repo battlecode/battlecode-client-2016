@@ -79,7 +79,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   public DrawObject(RobotType type, Team team, int id, DrawState state) {
     super(type, team, id);
     img = preEvolve = ir.getResource(info, getAvatarPath(info));
-    maxEnergon = type.maxEnergon;
+    maxEnergon = type.maxHealth;
     rtype = type;
     overallstate = state;
   }
