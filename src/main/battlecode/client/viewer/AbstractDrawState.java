@@ -247,7 +247,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitAttackSignal(AttackSignal s) {
     getRobot(s.getRobotID()).setAttacking(s.getTargetLoc(), s.getTargetHeight());
-        
   }
     
   public void visitHatSignal(HatSignal s) {

@@ -410,11 +410,9 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
   private void drawAction(Graphics2D g2) {
-    if ((roundsUntilAttackIdle>0 
-         || attackAction == ActionType.ATTACKING) && RenderConfiguration.showAttack()
-//        		|| rtype == RobotType.SHIELDS 
-//        		|| rtype == RobotType.MEDBAY
-      ) {
+    if ((roundsUntilAttackIdle>0 || attackAction == ActionType.ATTACKING)
+        && RenderConfiguration.showAttack())
+    {
       g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
       g2.setStroke(mediumStroke);
             
@@ -423,8 +421,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         if(targetLoc==null) {
           // scorcher
 //    				g2.draw(new Arc2D.Double(getDrawX()-scorcherRadius+.5,getDrawY()-scorcherRadius+.5,2*scorcherRadius,2*scorcherRadius,90-RobotType.SCORCHER.attackAngle/2.+attackDir.ordinal()*(-45),RobotType.SCORCHER.attackAngle,Arc2D.PIE));
-        }
-        else {
+        } else {
           BufferedImage target;
           if (getTeam() == Team.A) {
             target = crosshair.image;
@@ -440,14 +437,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
           g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                     targetLoc.x + 0.5, targetLoc.y + 0.5));
         }
-      } else
-      {
+      } else {
         switch (rtype) {
         case NOISETOWER:
-          
-          break;
         case SOLDIER:
-
           //g2.draw(new Ellipse2D.Double(getDrawX()+.5-soldierRadius,getDrawY()+.5-soldierRadius,2*soldierRadius,2*soldierRadius));
           g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                     targetLoc.x + 0.5, targetLoc.y + 0.5));
