@@ -4,6 +4,7 @@ import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
@@ -351,8 +352,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
           int size = (int)(Math.pow(GameConstants.PASTR_RANGE, .5) * 2);
           g2.draw(new Ellipse2D.Float(-.5f * (size - 1), -.5f * (size - 1), size, size));
         }
+        RenderingHints aaOn = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+                                                 RenderingHints.VALUE_ANTIALIAS_ON);
+        RenderingHints aaOff = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+                                                  RenderingHints.VALUE_ANTIALIAS_OFF);
+        g2.setRenderingHints(aaOn);
         g2.drawImage(image, trans, null);
-                
+        g2.setRenderingHints(aaOff);
         // hats
         if (RenderConfiguration.showHats()) {
           double hatscale = 1.5;

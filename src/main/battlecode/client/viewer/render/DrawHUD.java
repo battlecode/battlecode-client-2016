@@ -251,8 +251,8 @@ class DrawHUD {
 				double percent = Math.min(ds.getTeamResources(r.getTeam())/(float)GameConstants.WIN_QTY, 1.0);
 				int height = (int)(underImg.getHeight()*percent);
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
-        g2.setColor(Color.white);
-				g2.fillRect(0, 0, underImg.getWidth(), (int)(.01 * underImg.getHeight()));
+                                g2.setColor(Color.white);
+				g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
 				g2.setTransform(pushed2);
 //				if (r!=null)
 //					r.drawImmediate(g2, false, true);
