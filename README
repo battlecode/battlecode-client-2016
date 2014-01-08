@@ -3,6 +3,8 @@ Battlecode Client
 
 BUILDING
 
+NOTE: If you are a competitor, you can download the installer that does all these steps for you. See http://www.battlecode.org/contestants/releases/.
+
 !!! Now that the 3D viewer is up and running, you'll need a couple more jars, specifically:
 - jogl.all.jar
 - gluegen-rt.jar
