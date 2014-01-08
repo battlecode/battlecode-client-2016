@@ -117,6 +117,11 @@ public class DrawMap {
     g2.drawImage(prerender, null, null);
         
     g2.setTransform(pushed);
+    g2.setStroke(new BasicStroke(.15f));
+    g2.setColor(new Color(.625f, 1.0f, 0.0f));
+    g2.fill(new Rectangle2D.Float(0.0f, 0.0f, 100000.0f, 10000.0f));
+
+    
     if (RenderConfiguration.showGridlines()) {
       g2.setColor(new Color(0.4f, 0.4f, 0.4f, 1.0f));
       g2.setStroke(gridStroke);
@@ -131,7 +136,7 @@ public class DrawMap {
         gridline.y1 = gridline.y2 = i;
         g2.draw(gridline);
       }
-    }
+   }
   }
 
 
