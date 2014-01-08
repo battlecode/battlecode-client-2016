@@ -192,13 +192,21 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           maxDensity = Math.max(maxDensity, neutralsDensity[i][j]);
         }
       }
-
       
+      double thresholdDensity = Math.max(1 / (1 - GameConstants.NEUTRALS_TURN_DECAY), .1 * maxDensity);
+      if (RenderConfiguration.threshCows()) {
+        maxDensity -= thresholdDensity;
+      }
       
-      for (int i = 0; i < neutralsDensity.length; i++) {
+      for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
         for (int j = 0; j < neutralsDensity.length; j++) {
           //obtain color by checking proximity to pastrs
           boolean harvBlue = false, harvRed = false;
+          double density = (int)neutralsDensity[i][j];
+          if(RenderConfiguration.threshCows()) {
+            if(density < thresholdDensity) continue;
+            else density -= thresholdDensity;
+          }
           for (Map.Entry<Integer, DrawObject> gUnitEnt : groundUnits.entrySet())
           {
             DrawObject gUnit = gUnitEnt.getValue();
@@ -215,7 +223,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
               if(harvBlue && harvRed) continue;
             }
           }
-          double density = (int)neutralsDensity[i][j];
           float lum = (float)(.5 * density / maxDensity + .25);
           float r = harvRed ? lum : 0;
           float b = harvBlue ? lum : 0;
