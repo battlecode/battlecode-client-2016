@@ -14,6 +14,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.Transparency;
+import java.awt.GraphicsEnvironment;
 import java.util.Collection;
 
 import battlecode.client.util.ImageFile;
@@ -79,6 +81,7 @@ public class DrawMap {
   public void prerenderMap(battlecode.world.GameMap m) {
     Graphics2D g2 = prerender.createGraphics();
 
+    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
     for (int x = 0; x < mapWidth; x++) {
       for (int y = 0; y < mapHeight; y++) {
         for (int sx = 0; sx < subtileHeight; sx++) {
@@ -93,7 +96,6 @@ public class DrawMap {
         }
       }
     }
-   
     g2.dispose();
   }
 
@@ -111,17 +113,18 @@ public class DrawMap {
 
   public void draw(Graphics2D g2, DrawState ds) {
     AffineTransform pushed = g2.getTransform();
+
+    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+    
+    g2.setStroke(new BasicStroke(.15f));
+    g2.setColor(new Color(.625f, 1.0f, 0.0f));
+    g2.fill(new Rectangle2D.Float(0.0f, 0.0f, mapWidth, mapHeight));
     
     g2.scale(1.0 / locPixelWidth, 1.0 / locPixelWidth);
 
     g2.drawImage(prerender, null, null);
-        
-    g2.setTransform(pushed);
-    g2.setStroke(new BasicStroke(.15f));
-    g2.setColor(new Color(.625f, 1.0f, 0.0f));
-    g2.fill(new Rectangle2D.Float(0.0f, 0.0f, 100000.0f, 10000.0f));
-
     
+    g2.setTransform(pushed);
     if (RenderConfiguration.showGridlines()) {
       g2.setColor(new Color(0.4f, 0.4f, 0.4f, 1.0f));
       g2.setStroke(gridStroke);
@@ -174,8 +177,13 @@ public class DrawMap {
                                                 subtileYPixels);
       }
     
-    prerender = RenderConfiguration.createCompatibleImage(locPixelWidth * mapWidth,
-                                                          locPixelWidth * mapHeight);
+    prerender = GraphicsEnvironment.getLocalGraphicsEnvironment()
+      .getDefaultScreenDevice()
+      .getDefaultConfiguration()
+      .createCompatibleImage(locPixelWidth * mapWidth, locPixelWidth * mapHeight,
+                             Transparency.TRANSLUCENT);
+    //RenderConfiguration.createCompatibleImage(
+                                                      
     
     subtileIndices = new byte[subtileHeight * mapHeight * subtileHeight * mapWidth];
     for (int i = 0; i < subtileHeight * mapHeight * subtileHeight * mapWidth; i++) {
