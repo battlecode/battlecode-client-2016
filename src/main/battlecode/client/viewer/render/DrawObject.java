@@ -340,6 +340,9 @@ class DrawObject extends AbstractDrawObject<Animation> {
         // direction sheet is North 0, clockwise
         int sheetIndex = (dir.ordinal() - Direction.EAST.ordinal() + 8) % 8;
         int soldierHeight = image.getHeight();
+        if (!isAttacking()) {
+          sheetIndex += 8;
+        }
         image = image.getSubimage(sheetIndex * soldierHeight, 0,
                                   soldierHeight, soldierHeight);
       }
@@ -417,9 +420,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
     drawImmediate(g2, drawOutline, true);
   }
 
+  private boolean isAttacking() {
+    return roundsUntilAttackIdle>0 || attackAction == ActionType.ATTACKING;
+  }
+
   private void drawAction(Graphics2D g2) {
-    if ((roundsUntilAttackIdle>0 || attackAction == ActionType.ATTACKING)
-        && RenderConfiguration.showAttack())
+    if (isAttacking() && RenderConfiguration.showAttack())
     {
       g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
       g2.setStroke(mediumStroke);
