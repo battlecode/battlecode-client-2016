@@ -27,6 +27,7 @@ import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.Upgrade;
+import battlecode.common.Direction;
 
 import java.util.ArrayList;
 
@@ -327,16 +328,22 @@ class DrawObject extends AbstractDrawObject<Animation> {
 //                g2.setColor(new Color(frac,0,.5f+.5f*frac));
         g2.fill(rect);
       }
-			
-      AffineTransform trans;
-			
-      if (getType() == RobotType.SOLDIER)
-        trans = AffineTransform.getRotateInstance((dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
-      else 
-        trans = AffineTransform.getRotateInstance(0, 0.5, 0.5);//(dir.ordinal() - 2) * Math.PI / 4, 0.5, 0.5);
+
+       // could be used for rotations or such, remember origin for rotation
+      AffineTransform trans = new AffineTransform();
 
       assert preEvolve != null;
       BufferedImage image = getTypeSprite();
+      // load soldier from a horizontal sprite sheet
+      if (getType() == RobotType.SOLDIER) {
+        // sprite sheet is East 0, clockwise
+        // direction sheet is North 0, clockwise
+        int sheetIndex = (dir.ordinal() - Direction.EAST.ordinal() + 8) % 8;
+        int soldierHeight = image.getHeight();
+        image = image.getSubimage(sheetIndex * soldierHeight, 0,
+                                  soldierHeight, soldierHeight);
+      }
+      
       if (image != null) {
         if (isHUD) {
           trans.scale(1.0 / image.getWidth(), 1.0 / image.getHeight());
@@ -345,14 +352,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
         }
         
         //PASTR capture ranges
-        if (getType() == RobotType.PASTR)
-        {
+        if (getType() == RobotType.PASTR) {
           g2.setColor(c);
           g2.setStroke(broadcastStroke);
           int size = (int)(Math.pow(GameConstants.PASTR_RANGE, .5) * 2);
           g2.draw(new Ellipse2D.Float(-.5f * (size - 1), -.5f * (size - 1), size, size));
         }
+        
         g2.drawImage(image, trans, null);
+
         // hats
         if (RenderConfiguration.showHats()) {
           double hatscale = 1.5;

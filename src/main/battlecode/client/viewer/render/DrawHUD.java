@@ -38,7 +38,8 @@ class DrawHUD {
     	RobotType.PASTR,
     	RobotType.NOISETOWER,
     };
-    private static final ImageFile [][] rImages = new ImageFile[3][9];		
+  // [team][types]
+    private static final ImageFile [][] rImages = new ImageFile[3][3];		
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -274,6 +275,10 @@ class DrawHUD {
 			for (int x=0; x<drawnTypes.length; x++)
 			{
 				BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
+                                // assume a non-square sprite means a sprite sheet of squares
+                                if (target.getWidth() != target.getHeight()) {
+                                  target = target.getSubimage(0, 0, target.getHeight(), target.getHeight());
+                                }
 				AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
 				trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
 				g2.drawImage(target, trans, null);

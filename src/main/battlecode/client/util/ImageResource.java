@@ -21,3 +21,4 @@ public class ImageResource<E> {
 		return img;
 	}
 }
+
