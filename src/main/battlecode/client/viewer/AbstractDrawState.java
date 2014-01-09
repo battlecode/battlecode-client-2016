@@ -145,6 +145,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       for (int t = 0; t < researchProgress.length; t++)
         for (int r = 0; r < researchProgress[t].length; r++)
           researchProgress[t][r] = src.researchProgress[t][r];
+
+      // these are never modified just created by parser
+      neutralsDensity = src.neutralsDensity;
     }
 
   public DrawObject getHQ(Team t) {
