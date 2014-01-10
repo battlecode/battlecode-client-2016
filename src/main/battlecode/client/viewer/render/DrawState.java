@@ -207,21 +207,30 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             if(density < thresholdDensity) continue;
             else density -= thresholdDensity;
           }
-          for (Map.Entry<Integer, DrawObject> gUnitEnt : groundUnits.entrySet())
-          {
-            DrawObject gUnit = gUnitEnt.getValue();
-            double checkRadiusSqr = 0;
-            if(gUnit.getType() == RobotType.SOLDIER) checkRadiusSqr = .1;
-            else if(gUnit.getType() == RobotType.PASTR) checkRadiusSqr = Math.pow(GameConstants.PASTR_RANGE, 1);
-            else continue;
-            MapLocation groundLoc = gUnit.getLocation();
-            //distance check
-            double distSqrToRobot = Math.pow(groundLoc.x - i, 2) + Math.pow(groundLoc.y - j, 2);
-            if(distSqrToRobot <= checkRadiusSqr) {
-              if (gUnit.getTeam() == Team.A) harvRed = true;
-              else harvBlue = true;
-              if(harvBlue && harvRed) continue;
-            }
+          if (neutralsTeamSet) {
+              switch (neutralsTeam[i][j]) {
+                case 1: harvRed = true; break;
+                case 2: harvBlue = true; break;
+                case 3: harvRed = true; harvBlue = true;
+                default: break;
+              }
+          } else {
+              for (Map.Entry<Integer, DrawObject> gUnitEnt : groundUnits.entrySet())
+              {
+                DrawObject gUnit = gUnitEnt.getValue();
+                double checkRadiusSqr = 0;
+                if(gUnit.getType() == RobotType.SOLDIER) checkRadiusSqr = .1;
+                else if(gUnit.getType() == RobotType.PASTR) checkRadiusSqr = Math.pow(GameConstants.PASTR_RANGE, 1);
+                else continue;
+                MapLocation groundLoc = gUnit.getLocation();
+                //distance check
+                double distSqrToRobot = Math.pow(groundLoc.x - i, 2) + Math.pow(groundLoc.y - j, 2);
+                if(distSqrToRobot <= checkRadiusSqr) {
+                  if (gUnit.getTeam() == Team.A) harvRed = true;
+                  else harvBlue = true;
+                  if(harvBlue && harvRed) continue;
+                }
+              }
           }
           float lum = (float)(.5 * density / maxDensity + .25);
           float r = harvRed ? lum : 0;
