@@ -44,7 +44,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 	};
 	
 	private final ButtonGroup matchOptionsGroup;
-	private final DefaultListModel lstMatchesModel;
 	
 	private final JTextField txtLoadFile, txtSaveFile, txtHost;
 	private final JButton btnLoadBrowse, btnSaveBrowse, btnOK, btnCancel;
@@ -52,11 +51,12 @@ public class MatchDialog extends JDialog implements ActionListener {
 	private final JCheckBox chkGlClient, chkLockstep, chkSave;
 	private final JCheckBox chkShowMinimap, chkAnalyzeFile;
 	private final JFileChooser dlgChooser;
-	private final JList lstMatches;
+	private final JList<String> lstMatches;
+        private final DefaultListModel<String> lstMatchesModel;
 	private final JLabel lblVersion;
 	
 	private final EnumMap<Choice, JRadioButton> choices;
-	private final EnumMap<Parameter, JComboBox> parameters;
+	private final EnumMap<Parameter, JComboBox<String>> parameters;
 	
 	private final MatchInputFinder finder;
 	
@@ -140,7 +140,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 
 		// Initialize stuff.
 		choices = new EnumMap<Choice, JRadioButton>(Choice.class);
-		parameters = new EnumMap<Parameter, JComboBox>(Parameter.class);
+		parameters = new EnumMap<Parameter, JComboBox<String>>(Parameter.class);
 		finder = new MatchInputFinder();
 		matchOptionsGroup = new ButtonGroup();
 		dlgChooser = new JFileChooser();
@@ -271,9 +271,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 		add(new JSeparator(), "1, 11, 8, 11, f, c");
 		
 		// Create match parameter dropdown boxes.
-		parameters.put(Parameter.TEAM_A, new JComboBox());
-		parameters.put(Parameter.TEAM_B, new JComboBox());
-		parameters.put(Parameter.MAP, new JComboBox());
+		parameters.put(Parameter.TEAM_A, new JComboBox<String>());
+		parameters.put(Parameter.TEAM_B, new JComboBox<String>());
+		parameters.put(Parameter.MAP, new JComboBox<String>());
 		
 		// Initialize match parameter dropdown boxes.
 		for (int i = 0; i < parameters.size(); i++) {
@@ -288,9 +288,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 					String.format("1, %d, 2, %d", offset, offset));
 		}
 		
-		lstMatchesModel = new DefaultListModel();
+		lstMatchesModel = new DefaultListModel<String>();
 		
-		lstMatches = new JList(lstMatchesModel);
+		lstMatches = new JList<String>(lstMatchesModel);
 		lstMatches.setVisibleRowCount(-1);
 		lstMatches.setLayoutOrientation(JList.VERTICAL);
 		lstMatches.setAutoscrolls(true);
@@ -402,7 +402,10 @@ public class MatchDialog extends JDialog implements ActionListener {
 				lstMatchesModel.remove(index);
 				if (index - 1 >= 0)
 					lstMatches.setSelectedIndex(index - 1);
-			}
+			} else if (lstMatchesModel.getSize() == 1) {
+                          // if there is only one, they are trying to clear it
+                          lstMatchesModel.remove(0);
+                        }
 		}
 		
 		// Load from file browse: show the file dialog, fill the path field
@@ -607,7 +610,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 			}
 
 			// Clear dropdowns.
-			for (Map.Entry<Parameter, JComboBox> entries : parameters.entrySet())
+			for (Map.Entry<Parameter, JComboBox<String>> entries : parameters.entrySet())
 				entries.getValue().removeAllItems();
 			
 			Set<String> items = new HashSet<String>();
