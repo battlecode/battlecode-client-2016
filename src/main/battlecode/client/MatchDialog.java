@@ -51,12 +51,12 @@ public class MatchDialog extends JDialog implements ActionListener {
 	private final JCheckBox chkGlClient, chkLockstep, chkSave;
 	private final JCheckBox chkShowMinimap, chkAnalyzeFile;
 	private final JFileChooser dlgChooser;
-	private final JList<String> lstMatches;
-        private final DefaultListModel<String> lstMatchesModel;
+	private final JList lstMatches;
+        private final DefaultListModel lstMatchesModel;
 	private final JLabel lblVersion;
 	
 	private final EnumMap<Choice, JRadioButton> choices;
-	private final EnumMap<Parameter, JComboBox<String>> parameters;
+	private final EnumMap<Parameter, JComboBox> parameters;
 	
 	private final MatchInputFinder finder;
 	
@@ -140,7 +140,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 
 		// Initialize stuff.
 		choices = new EnumMap<Choice, JRadioButton>(Choice.class);
-		parameters = new EnumMap<Parameter, JComboBox<String>>(Parameter.class);
+		parameters = new EnumMap<Parameter, JComboBox>(Parameter.class);
 		finder = new MatchInputFinder();
 		matchOptionsGroup = new ButtonGroup();
 		dlgChooser = new JFileChooser();
@@ -271,9 +271,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 		add(new JSeparator(), "1, 11, 8, 11, f, c");
 		
 		// Create match parameter dropdown boxes.
-		parameters.put(Parameter.TEAM_A, new JComboBox<String>());
-		parameters.put(Parameter.TEAM_B, new JComboBox<String>());
-		parameters.put(Parameter.MAP, new JComboBox<String>());
+		parameters.put(Parameter.TEAM_A, new JComboBox());
+		parameters.put(Parameter.TEAM_B, new JComboBox());
+		parameters.put(Parameter.MAP, new JComboBox());
 		
 		// Initialize match parameter dropdown boxes.
 		for (int i = 0; i < parameters.size(); i++) {
@@ -288,9 +288,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 					String.format("1, %d, 2, %d", offset, offset));
 		}
 		
-		lstMatchesModel = new DefaultListModel<String>();
+		lstMatchesModel = new DefaultListModel();
 		
-		lstMatches = new JList<String>(lstMatchesModel);
+		lstMatches = new JList(lstMatchesModel);
 		lstMatches.setVisibleRowCount(-1);
 		lstMatches.setLayoutOrientation(JList.VERTICAL);
 		lstMatches.setAutoscrolls(true);
@@ -610,7 +610,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 			}
 
 			// Clear dropdowns.
-			for (Map.Entry<Parameter, JComboBox<String>> entries : parameters.entrySet())
+			for (Map.Entry<Parameter, JComboBox> entries : parameters.entrySet())
 				entries.getValue().removeAllItems();
 			
 			Set<String> items = new HashSet<String>();
