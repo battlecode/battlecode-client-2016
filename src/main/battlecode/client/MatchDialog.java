@@ -44,7 +44,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 	};
 	
 	private final ButtonGroup matchOptionsGroup;
-	private final DefaultListModel lstMatchesModel;
 	
 	private final JTextField txtLoadFile, txtSaveFile, txtHost;
 	private final JButton btnLoadBrowse, btnSaveBrowse, btnOK, btnCancel;
@@ -53,6 +52,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 	private final JCheckBox chkShowMinimap, chkAnalyzeFile;
 	private final JFileChooser dlgChooser;
 	private final JList lstMatches;
+        private final DefaultListModel lstMatchesModel;
 	private final JLabel lblVersion;
 	
 	private final EnumMap<Choice, JRadioButton> choices;
@@ -402,7 +402,10 @@ public class MatchDialog extends JDialog implements ActionListener {
 				lstMatchesModel.remove(index);
 				if (index - 1 >= 0)
 					lstMatches.setSelectedIndex(index - 1);
-			}
+			} else if (lstMatchesModel.getSize() == 1) {
+                          // if there is only one, they are trying to clear it
+                          lstMatchesModel.remove(0);
+                        }
 		}
 		
 		// Load from file browse: show the file dialog, fill the path field

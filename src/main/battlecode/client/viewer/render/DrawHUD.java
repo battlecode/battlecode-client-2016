@@ -38,7 +38,8 @@ class DrawHUD {
     	RobotType.PASTR,
     	RobotType.NOISETOWER,
     };
-    private static final ImageFile [][] rImages = new ImageFile[3][9];		
+  // [team][types]
+    private static final ImageFile [][] rImages = new ImageFile[3][3];		
 
     static {
         numberText = new ImageFile("art/numbers.png");
@@ -251,8 +252,8 @@ class DrawHUD {
 				double percent = Math.min(ds.getTeamResources(r.getTeam())/(float)GameConstants.WIN_QTY, 1.0);
 				int height = (int)(underImg.getHeight()*percent);
 				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
-        g2.setColor(Color.white);
-				g2.fillRect(0, 0, underImg.getWidth(), (int)(.01 * underImg.getHeight()));
+                                g2.setColor(Color.white);
+				g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
 				g2.setTransform(pushed2);
 //				if (r!=null)
 //					r.drawImmediate(g2, false, true);
@@ -274,6 +275,10 @@ class DrawHUD {
 			for (int x=0; x<drawnTypes.length; x++)
 			{
 				BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
+                                // assume a non-square sprite means a sprite sheet of squares
+                                if (target.getWidth() != target.getHeight()) {
+                                  target = target.getSubimage(0, 0, target.getHeight(), target.getHeight());
+                                }
 				AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
 				trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
 				g2.drawImage(target, trans, null);

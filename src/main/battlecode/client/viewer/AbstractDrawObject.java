@@ -108,7 +108,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected double shields = 0;
 	protected double flux = 0;
 	protected double maxEnergon;
-    protected int roundsUntilAttackIdle;
+        protected int roundsUntilAttackIdle;
     protected int roundsUntilMovementIdle;
     protected int roundsUntilActionIdle;
     protected int totalActionRounds;
@@ -353,7 +353,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     public void updateRound() {
-
         if (roundsUntilMovementIdle == 0) {
             movementAction = ActionType.IDLE;
             moving = 0;

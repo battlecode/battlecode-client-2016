@@ -164,7 +164,7 @@ public class MatchPlayer implements Observer, ActionListener {
     }
 
     private void timerTick() {
-        controller.updateRoundLabel(timeline);
+      controller.updateRoundLabel(timeline);
         if (isPlaying) {
             if (timeline.getRound() == maxPlayRound) {
                 isStepping = false;

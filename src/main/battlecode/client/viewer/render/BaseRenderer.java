@@ -75,20 +75,29 @@ public abstract class BaseRenderer {
     case 'E':
       RenderConfiguration.toggleEnergon();
       break;
-    case 'L':
-      RenderConfiguration.toggleFlux();
-      break;
     case 'G':
       RenderConfiguration.toggleGridlines();
       break;
     case 'H':
       RenderConfiguration.toggleDrawHeight();
       break;
+    case 'I':
+      RenderConfiguration.toggleActionLines();
+      break;
     case 'K':
       RenderConfiguration.toggleAttack();
       break;
+    case 'L':
+      RenderConfiguration.toggleFlux();
+      break;
+    case 'M':
+      RenderConfiguration.toggleAmbientMusic();
+      break;
     case 'N':
       RenderConfiguration.toggleBlocks();
+      break;
+    case 'O':
+      RenderConfiguration.toggleShowHats();
       break;
     case 'P':
       RenderConfiguration.toggleTeleport();
@@ -102,6 +111,9 @@ public abstract class BaseRenderer {
     case 'T':
       RenderConfiguration.toggleTransfers();
       break;
+    case 'U':
+      RenderConfiguration.toggleCows();
+      break;
     case 'X':
       RenderConfiguration.toggleExplosions();
       break;
@@ -111,16 +123,8 @@ public abstract class BaseRenderer {
     case 'J':
       toggleSlowDown();
       break;
-    case 'I':
-      RenderConfiguration.toggleActionLines();
-      break;
-    case 'O':
-      RenderConfiguration.toggleShowHats();
     case 'S':
       skipRounds(100);
-      break;
-    case 'M':
-      RenderConfiguration.toggleAmbientMusic();
       break;
     default:
       return;
