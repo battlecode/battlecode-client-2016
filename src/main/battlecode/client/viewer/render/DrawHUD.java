@@ -13,25 +13,22 @@ import java.util.List;
 import java.util.Map;
 
 class DrawHUD {
-
-  private static final int numArchons = 1;
-  private static final float slotSize = 0.8f / (numArchons + 1);
+  private static final float slotSize = 0.8f / 2;
   private static final Font footerFont;
-	
+
   private static final ImageFile bg = new ImageFile("art/hud_bg.png");
-  private static final ImageFile unitUnder = new ImageFile("art/hud_unit_underlay.png");
   private static final ImageFile gameText = new ImageFile("art/game.png");
   private static ImageFile numberText;
   private static BufferedImage[] numbers;
-	private static BufferedMatch match;
-	private ImageFile avatar;
+  private static BufferedMatch match;
+  private ImageFile avatar;
 
   private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
   private static final ImageFile rDefusion = new ImageFile("art/defusion.png");
   private static final ImageFile rVision = new ImageFile("art/vision.png");
   private static final ImageFile rFusion = new ImageFile("art/fusion.png");
   private static final ImageFile rNuke = new ImageFile("art/nuke.png");
-    
+
   private static final RobotType[] drawnTypes = new RobotType[] {
     RobotType.SOLDIER,
     //RobotType.WALL, not currently in the game
@@ -51,15 +48,15 @@ class DrawHUD {
         // e.printStackTrace();
       }
     }
-		Font font;
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(14.f);
-		} catch(Exception e) {
-			font = new Font("Serif",Font.PLAIN,18);
-		}
-		footerFont = font;
-		
-		for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B})
+    Font font;
+    try {
+      font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(14.f);
+    } catch(Exception e) {
+      font = new Font("Serif",Font.PLAIN,18);
+    }
+    footerFont = font;
+
+    for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B})
       for (int x=0; x<drawnTypes.length; x++)
       {
         RobotType rt = drawnTypes[x];
@@ -126,6 +123,7 @@ class DrawHUD {
     trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
     g2.drawImage(bgImg, trans, null);
     AffineTransform pushed = g2.getTransform();
+    // draw the names
     {
       g2.translate(width / 2, 0.9);
       g2.scale(width / 4.5, width / 4.5);
@@ -168,7 +166,8 @@ class DrawHUD {
 				g2.drawString(teamName, 0, 0);
       }
       g2.setTransform(pushed2);
-
+      
+      // match information
       if (footerText.startsWith("GAME")) { // Game Number
         g2.translate(-2, 0);
         g2.drawImage(gameText.image, textScale, null);
@@ -206,7 +205,6 @@ class DrawHUD {
     g2.setTransform(pushed);
     g2.translate(0.5f * (width - spriteScale),
                  0.5f * (slotSize - spriteScale));
-		//System.out.println("drawing");
     try {
       // TODO
       // CORY FIX IT
@@ -220,19 +218,12 @@ class DrawHUD {
 
 	public void drawRobot(Graphics2D g2, DrawObject r) {
     AffineTransform pushed = g2.getTransform();
-    {
-      g2.scale(spriteScale, spriteScale);
-      AffineTransform pushed2 = g2.getTransform();
-			{
-				BufferedImage underImg = unitUnder.image;
-				g2.translate(-0.5, -0.5);
-				g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-				g2.drawImage(underImg, null, null);
-			}
-			g2.setTransform(pushed2);
-			if (r!=null)
-				r.drawImmediate(g2, false, true);
-    }
+    g2.scale(spriteScale, spriteScale);
+    AffineTransform pushed2 = g2.getTransform();
+    
+    g2.setTransform(pushed2);
+    if (r!=null) r.drawImmediateNoScale(g2, false);
+
     g2.setTransform(pushed);
     g2.translate(0, slotSize);
 	}
@@ -244,7 +235,7 @@ class DrawHUD {
       g2.scale(spriteScale, spriteScale);
       AffineTransform pushed2 = g2.getTransform();
 			{
-				BufferedImage underImg = unitUnder.image;
+				BufferedImage underImg = bg.image;
 				g2.translate(-0.5, -0.5);
 				g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
 				if (r.getTeam() == Team.A) g2.setColor(Color.red);
