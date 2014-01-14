@@ -30,14 +30,9 @@ public class AmbientPlayer {
 			else{
 				getAmbientClip(i).setActive(true);
 				getAmbientClip(i).setGain(1.0f);
+        getAmbientClip(i).play();
 			}
-			getAmbientClip(i).play();
-			
 		}
-    	
-    	
-		
-		
 	}
 	
 	
