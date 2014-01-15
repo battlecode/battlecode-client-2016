@@ -404,22 +404,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
                 || movementAction != ActionType.MOVING) {
             drawX = drawY = 0;
         } else {
-            // HACK: implement a secondary counter for movment cooldown
-			/*
-            if (action == ActionType.TRANSFORMING || getType().isBuilding())
-            return;
-             */
-
-
-            float dist = (float) moving * roundsUntilMovementIdle / moveDelay();
-            dist = 0.5f; // hack for now until we do intermediate round rendering
-            drawX = -dist * dir.dx;
-            drawY = -dist * dir.dy;
-            /*
-            if (info.type.isAirborne()) {
-            drawY -= 0.4f;
-            }
-             */
+          float dist = (float) moving * roundsUntilMovementIdle / moveDelay();
+          drawX = -dist * dir.dx;
+          drawY = -dist * dir.dy;
         }
     }
 

@@ -198,12 +198,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.translate(getDrawX(), getDrawY());
       drawImmediate(g2, focused);
 
-      /*
-        if (auraAnimation != null && RenderConfiguration.showSpawnRadii()) {
-        auraAnimation.draw(g2);
-        }
-      */
-
       if (broadcast != 0x00 && RenderConfiguration.showBroadcast()) {
         g2.setStroke(broadcastStroke);
         double drdR = visualBroadcastRadius * 0.05; // dradius/dRound
