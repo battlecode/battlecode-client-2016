@@ -199,7 +199,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
       }
       
       for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
-        for (int j = 0; j < neutralsDensity.length; j++) {
+        for (int j = 0; j < neutralsDensity[0].length; j++) {
           //obtain color by checking proximity to pastrs
           boolean harvBlue = false, harvRed = false;
           double density = (int)neutralsDensity[i][j];
