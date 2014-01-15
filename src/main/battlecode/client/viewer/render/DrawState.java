@@ -187,8 +187,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
       // cow densities
       double maxDensity = 0.0;
-      for (int i = 0; i < neutralsDensity.length; i++) {
-        for (int j = 0; j < neutralsDensity.length; j++) {
+      for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
+        for (int j = 0; j < neutralsDensity[0].length; j++) {
           maxDensity = Math.max(maxDensity, neutralsDensity[i][j]);
         }
       }
