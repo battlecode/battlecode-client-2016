@@ -233,6 +233,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
               }
           }
           float lum = (float)(.5 * density / maxDensity + .25);
+          lum = Math.max(Math.min(lum, 1.0f), 0.0f);
           float r = harvRed ? lum : 0;
           float b = harvBlue ? lum : 0;
           float g = !(harvRed || harvBlue) ? lum : 0;
