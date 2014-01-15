@@ -13,8 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 class DrawHUD {
-  private static final float slotSize = 0.8f / 2;
+  // space between hud items in units of TBD
+  private static final float slotSize = .4f;
+  // for the names of teams
   private static final Font footerFont;
+  // percent of client window that is  hud
+  private static final float clientRatio = 2.0f / 9.0f;
 
   private static final ImageFile bg = new ImageFile("art/hud_bg.png");
   private static final ImageFile gameText = new ImageFile("art/game.png");
@@ -22,12 +26,6 @@ class DrawHUD {
   private static BufferedImage[] numbers;
   private static BufferedMatch match;
   private ImageFile avatar;
-
-  private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
-  private static final ImageFile rDefusion = new ImageFile("art/defusion.png");
-  private static final ImageFile rVision = new ImageFile("art/vision.png");
-  private static final ImageFile rFusion = new ImageFile("art/fusion.png");
-  private static final ImageFile rNuke = new ImageFile("art/nuke.png");
 
   private static final RobotType[] drawnTypes = new RobotType[] {
     RobotType.SOLDIER,
@@ -70,16 +68,17 @@ class DrawHUD {
   private float spriteScale;
   private String footerText = "";
   private int points = 0;
+  // would like to know where these numbers came from
   private static final AffineTransform textScale =
     AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
   private static final AffineTransform textScaleSmall =
     AffineTransform.getScaleInstance(1 / 256.0, 1 / 256.0);
-
+  public static final float textSmallWidth = .75f/4;
   public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
     this.ds = ds;
     this.team = team;
 		this.match = match;
-    setRatioWidth(2.0f / 9.0f);
+    setRatioWidth(clientRatio);
   }
 
   public float getRatioWidth() {
@@ -99,7 +98,7 @@ class DrawHUD {
     footerText = text;
   }
   // stuff for win display
-  int aWins = 0, bWins = 0;
+  public int aWins = 0, bWins = 0;
 
   public void setWins(int a, int b) {
     aWins = a;
@@ -116,8 +115,6 @@ class DrawHUD {
 	}
 
   public void draw(Graphics2D g2) {
-    //g2.setColor(Color.BLACK);
-    //g2.fill(bgFill);
     AffineTransform trans = AffineTransform.getScaleInstance(bgFill.width, bgFill.height);
     BufferedImage bgImg = bg.image;
     trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
@@ -206,8 +203,6 @@ class DrawHUD {
     g2.translate(0.5f * (width - spriteScale),
                  0.5f * (slotSize - spriteScale));
     try {
-      // TODO
-      // CORY FIX IT
       DrawObject hq = ds.getHQ(team);
       drawRobot(g2,hq);
       drawTeamResource(g2, hq);
@@ -216,6 +211,7 @@ class DrawHUD {
     }
   }
 
+  // draws the robots at the top then translates down
 	public void drawRobot(Graphics2D g2, DrawObject r) {
     AffineTransform pushed = g2.getTransform();
     g2.scale(spriteScale, spriteScale);
@@ -231,163 +227,57 @@ class DrawHUD {
 	public void drawTeamResource(Graphics2D g2, DrawObject r) {
 		if (r==null) return;
     AffineTransform pushed = g2.getTransform();
-    {
-      g2.scale(spriteScale, spriteScale);
-      AffineTransform pushed2 = g2.getTransform();
-			{
-				BufferedImage underImg = bg.image;
-				g2.translate(-0.5, -0.5);
-				g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
-				if (r.getTeam() == Team.A) g2.setColor(Color.red);
-				else g2.setColor(Color.blue);
-				double percent = Math.min(ds.getTeamResources(r.getTeam())/(float)GameConstants.WIN_QTY, 1.0);
-				int height = (int)(underImg.getHeight()*percent);
-				g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
-        g2.setColor(Color.white);
-				g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
-				g2.setTransform(pushed2);
-//				if (r!=null)
-//					r.drawImmediate(g2, false, true);
-				String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
-				while (resource.length() < 8) resource = "0"+resource;
-				g2.translate(-.3, .5);
-        for (int i = 0; i < 8; i++) {
-          g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
-          g2.translate(0.75/4, 0);
-        }
-			}
-			
-			
-			g2.setTransform(pushed2);
-			g2.translate(-0.5, -2.0);
-			int[] counts = ds.getRobotCounts(r.getTeam());
-
-			g2.translate(0.1, 0);
-			for (int x=0; x<drawnTypes.length; x++)
-			{
-				BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
-        // assume a non-square sprite means a sprite sheet of squares
-        if (target.getWidth() != target.getHeight()) {
-          target = target.getSubimage(0, 0, target.getHeight(), target.getHeight());
-        }
-				AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-				trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
-				g2.drawImage(target, trans, null);
-				
-				String number = counts[drawnTypes[x].ordinal()]+"";
-				while (number.length() < 3) number = "0"+number;
-				g2.translate(0.0, 0.4);
-        for (int i = 0; i < 3; i++) {
-          g2.drawImage(numbers[Integer.decode(number.substring(i, i + 1))], textScaleSmall, null);
-          g2.translate(0.75/4, 0);
-        }
-        g2.translate(-0.75/4*3, 0);
-
-				g2.translate(0.65, -0.4);
-				if (x == 2)
-          g2.translate(-1.95, 0.7);
-			}
-			
-			
-			BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
-																										rVision.image,
-																										rDefusion.image,
-																										rPickaxe.image,
-																										rNuke.image, };
-
-			g2.setTransform(pushed2);
-			g2.translate(-0.5, 0.75);
-			final double upgradewidth = 0.7;
-			final double upgradescale = upgradewidth/0.65;
-			g2.translate(0.65*3/2-upgradewidth, 0);
-			g2.scale(upgradescale, upgradescale);
-			int c = 0;
-			for (int u = 0; u < Upgrade.values().length; u++) {
-        double research = ds.getResearchProgress(r.getTeam(), u);
-        if (research > 0) {
-          if (u == rImage.length-1)
-          {
-            g2.setTransform(pushed2);
-            g2.translate(-0.5, 0.75);
-            g2.translate(0.65*3/2-upgradewidth, 0);
-            g2.scale(upgradescale, upgradescale);
-								
-								
-            BufferedImage target = rImage[u];
-            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-            double finalsize = research>0.5 ? research+0.15 : 0.65;
-            trans.scale(finalsize / target.getWidth(), finalsize / target.getHeight());
-            g2.translate(0.65-finalsize/2, 1.2);
-//								g2.translate(-finalsize+0.65, -finalsize+0.65);
-            g2.drawImage(target, trans, null);
-								
-            g2.scale(finalsize/0.65, finalsize/0.65);
-            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-            g2.setColor(Color.gray);
-            g2.fill(rect);
-            double frac = Math.min(research, 1);
-            rect.width = frac / 2;
-            g2.setColor(Color.green);
-            g2.fill(rect);
-								
-            int roundsleft = (int)((1.00001-research)*Upgrade.NUKE.numRounds);
-            if (roundsleft < 55)
-            {
-              g2.setTransform(pushed2);
-              g2.translate(-0.5, 0.75);
-              g2.scale(upgradescale, upgradescale);
-              g2.translate(0, 1.6);
-									
-									
-              String resource = ""+roundsleft;
-              while (resource.length() < 2) resource = "0"+resource;
-              for (int i = 0; i < 2; i++) {
-                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
-                g2.translate(0.75/4, 0);
-              }
-            }
-          } else
-          {
-            BufferedImage target = rImage[u];
-            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-            trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
-            g2.drawImage(target, trans, null);
-								
-            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-            g2.setColor(Color.gray);
-            g2.fill(rect);
-            double frac = Math.min(research, 1);
-            rect.width = frac / 2;
-            g2.setColor(Color.green);
-            g2.fill(rect);
-								
-            g2.translate(0.65, 0);
-            if (c == 1 || c == 3)
-              g2.translate(-0.65*2, 0.6);
-            c++;
-          }
-							
-							
-							
-//							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-//							g2.setColor(Color.gray);
-//							g2.fill(rect);
-//							double frac = Math.min(research, 1);
-//							rect.width = frac / 2;
-//							g2.setColor(Color.green);
-//							g2.fill(rect);
-//
-//							g2.translate(0.65, 0);
-//							if (c == 2)
-//									g2.translate(-0.65*3, 0.6);
-//							c++;
-        }
-			}
-
-			
+    g2.scale(spriteScale, spriteScale);
+    BufferedImage underImg = bg.image;
+    // milk points
+    AffineTransform pushed2 = g2.getTransform();
+    g2.translate(-0.5, -0.5); // unknown reason, but works
+    if (r.getTeam() == Team.A) g2.setColor(Color.red);
+    else g2.setColor(Color.blue);
+    float percent = Math.min((float)ds.getTeamResources(r.getTeam())/(float)GameConstants.WIN_QTY, 1.0f);
+    g2.fill(new Rectangle2D.Float(0, 1.0f - percent, 2.0f, percent));
+    g2.setColor(Color.white);
+    g2.fill(new Rectangle2D.Float(0, 0, 2.0f, .05f));
+    g2.setTransform(pushed2); //reset after weird translate
+      
+    String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
+    while (resource.length() < 8) resource = "0"+resource;
+    g2.translate(-.3, .5);
+    for (int i = 0; i < 8; i++) {
+      g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+      g2.translate(textSmallWidth, 0);
     }
+    g2.setTransform(pushed2); // reset after text			
+
+    g2.translate(-0.5, -2.0); // move under the milk resource
+    g2.translate(0.1, 0);
+    
+    int[] counts = ds.getRobotCounts(r.getTeam());
+    for (int x=0; x<drawnTypes.length; x++)
+    {
+      BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
+      // assume a non-square sprite means a sprite sheet of squares
+      if (target.getWidth() != target.getHeight()) {
+        target = target.getSubimage(0, 0, target.getHeight(), target.getHeight());
+      }
+      AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+      trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
+      g2.drawImage(target, trans, null);
+				
+      String number = counts[drawnTypes[x].ordinal()]+"";
+      while (number.length() < 3) number = "0"+number;
+      g2.translate(0.0, 0.4);
+      for (int i = 0; i < 3; i++) {
+        g2.drawImage(numbers[Integer.decode(number.substring(i, i + 1))], textScaleSmall, null);
+        g2.translate(textSmallWidth, 0);
+      }
+      g2.translate(-textSmallWidth*3, 0);
+
+      g2.translate(0.65, -0.4);
+      if (x == 2)
+        g2.translate(-1.95, 0.7);
+    }
+			
     g2.setTransform(pushed);
-    g2.translate(0, slotSize);
-	}
-	
+  }
 }
