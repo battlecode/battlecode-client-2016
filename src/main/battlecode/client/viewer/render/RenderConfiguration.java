@@ -10,7 +10,7 @@ public class RenderConfiguration {
 
   private static boolean broadcast = true;
   private static boolean attack = true;
-  private static boolean discrete = false;
+  private static boolean discrete = true;
   private static boolean energon = true;
   private static boolean flux = true;
   private static boolean gridlines = true;

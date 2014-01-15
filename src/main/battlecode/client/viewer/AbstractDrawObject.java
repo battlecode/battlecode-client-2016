@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
+  protected static int moveDelay;
 	private static Random hatGenerator = new Random();
 	private static final int numHats;
 	static {
@@ -147,8 +148,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
     private static final double sq2 = Math.sqrt(2.);
 
-    protected int moveDelay() {
-    	return 1;
+    protected int getMoveDelay() {
+    	return moveDelay;
     }
 
 	public int getID() {
@@ -309,16 +310,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		animations.put(ENERGON_TRANSFER,anim);
 	}
 
-    public void setMoving(boolean isMovingForward) {
-        movementAction = ActionType.MOVING;
-        moving = (isMovingForward ? 1 : -1);
-        roundsUntilMovementIdle = moveDelay();
-        updateDrawLoc();
-    }
-
     public void setMoving(boolean isMovingForward, int delay) {
         movementAction = ActionType.MOVING;
         moving = (isMovingForward ? 1 : -1);
+        moveDelay = delay;
         roundsUntilMovementIdle = delay;
         updateDrawLoc();
     }
@@ -404,7 +399,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
                 || movementAction != ActionType.MOVING) {
             drawX = drawY = 0;
         } else {
-          float dist = (float) moving * roundsUntilMovementIdle / moveDelay();
+          // still waiting perfection of delay system
+          //float dist = ((float) moving * (roundsUntilMovementIdle - 1)) / moveDelay;
+          float dist = .5f;
           drawX = -dist * dir.dx;
           drawY = -dist * dir.dy;
         }
