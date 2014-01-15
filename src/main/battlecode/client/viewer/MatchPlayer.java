@@ -198,6 +198,7 @@ public class MatchPlayer implements Observer, ActionListener {
 
     private void doPause() {
         isPlaying = false;
+        if(timer!=null) timer.stop();
         controller.setPlayEnabled(true);
     }
 
@@ -208,6 +209,7 @@ public class MatchPlayer implements Observer, ActionListener {
     private void doPlay(int round) {
         maxPlayRound = round;
         isPlaying = true;
+        if(timer!=null) timer.start();
         controller.setPlayEnabled(false);
         runSpeed = 1;
     }
