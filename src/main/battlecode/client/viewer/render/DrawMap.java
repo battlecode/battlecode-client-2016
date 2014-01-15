@@ -41,6 +41,8 @@ public class DrawMap {
   private BufferedImage prerender;
   private BufferedImage roadPrerender;
 
+  private BufferedImage mapBG;
+
   // for storing the loaded voids
   //private BufferedImage[] tiles;
   //private byte[][] tileIndices;
@@ -72,7 +74,7 @@ public class DrawMap {
 //    if (!RenderConfiguration.getInstance().isTournamentMode()) {
     prerenderMap(map);
 //    }
-    gridStroke = new BasicStroke(0.1f / RenderConfiguration.getInstance().getSpriteSize());
+    gridStroke = new BasicStroke(0.3f / RenderConfiguration.getInstance().getSpriteSize());
 
   }
 
@@ -82,8 +84,14 @@ public class DrawMap {
 
   public void prerenderMap(battlecode.world.GameMap m) {
     Graphics2D g2 = prerender.createGraphics();
-
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+
+    for (int x = 0; x < mapWidth; x += mapBG.getWidth() / locPixelWidth) {
+      for (int y = 0; y < mapHeight; y += mapBG.getHeight() / locPixelWidth) {
+        g2.drawImage(mapBG, null, x * locPixelWidth, y * locPixelWidth);
+      }
+    }
+
     for (int x = 0; x < mapWidth; x++) {
       for (int y = 0; y < mapHeight; y++) {
         for (int sx = 0; sx < subtileHeight; sx++) {
@@ -120,17 +128,13 @@ public class DrawMap {
 
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
     
-    g2.setStroke(new BasicStroke(.15f));
-    g2.setColor(new Color(.625f, 1.0f, 0.0f));
-    g2.fill(new Rectangle2D.Float(0.0f, 0.0f, mapWidth, mapHeight));
-    
     g2.scale(1.0 / locPixelWidth, 1.0 / locPixelWidth);
-
+   
     g2.drawImage(prerender, null, null);
     
     g2.setTransform(pushed);
     if (RenderConfiguration.showGridlines()) {
-      g2.setColor(new Color(0.4f, 0.4f, 0.4f, 1.0f));
+      g2.setColor(new Color(0.7f, 0.7f, 0.7f, 1.0f));
       g2.setStroke(gridStroke);
       Line2D.Float gridline = new Line2D.Float(0, 0, 0, mapHeight);
       for (int i = 1; i < mapWidth; i += 1) {
@@ -155,6 +159,8 @@ public class DrawMap {
 
   public void loadMapArt()  {
     TerrainTile[][] map = m.getTerrainMatrix();
+
+    mapBG = (new ImageFile ("art/map_bg.png")).image;
 
     // set up the road tiles
     ImageFile roadImg = new ImageFile("art/roads.png"); // actual rendering
@@ -188,7 +194,6 @@ public class DrawMap {
       .getDefaultConfiguration()
       .createCompatibleImage(locPixelWidth * mapWidth, locPixelWidth * mapHeight,
                              Transparency.TRANSLUCENT);
-    //RenderConfiguration.createCompatibleImage(
                                                       
     
     subtileIndices = new byte[subtileHeight * mapHeight * subtileHeight * mapWidth];
