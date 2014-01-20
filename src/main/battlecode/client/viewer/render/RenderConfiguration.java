@@ -27,7 +27,7 @@ public class RenderConfiguration {
   private static boolean hats = true;
   // the next two are related, only thresh cows if they are shown
   private static boolean cows = true;
-  private static boolean threshCows = true;
+  private static boolean threshCows = false;
 
   private static boolean ground = true;
   private static boolean air	= true;

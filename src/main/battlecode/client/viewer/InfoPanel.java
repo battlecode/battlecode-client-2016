@@ -14,6 +14,7 @@ public class InfoPanel extends JPanel {
   private JLabel[] indicatorStrings;
   private JLabel robotID;
   private JLabel bytecodes;
+  private JLabel delay;
   private JLabel energon;
   private JLabel flux;
   private JLabel location;
@@ -36,6 +37,8 @@ public class InfoPanel extends JPanel {
     flux = newLabel();
     layoutConstraints.gridx++;
     bytecodes = newLabel();
+    layoutConstraints.gridx++;
+    delay = newLabel();
     layoutConstraints.gridx++;
     location = newLabel();
     layoutConstraints.gridx++;
@@ -91,6 +94,7 @@ public class InfoPanel extends JPanel {
     setEnergon(robot.getEnergon(), robot.getShields());
     setFlux(robot.getFlux());
     setBytecodesUsed(robot.getBytecodesUsed());
+    setActionDelay(robot.getActionDelay());
     location.setText(String.format(" Location: %s ",robot.getLocation()));
     direction.setText("");
     //direction.setText(robot.getDirection().toString());
@@ -116,6 +120,10 @@ public class InfoPanel extends JPanel {
 
   private void setBytecodesUsed(int bytecodesUsed) {
     bytecodes.setText(" Bytecodes used: " + bytecodesUsed + " ");
+  }
+
+  private void setActionDelay(double actionDelay) {
+    delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
   }
 
   private void setIndicatorString(int index, String str) {

@@ -422,6 +422,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
   }
 
+  public void visitActionDelaySignal(ActionDelaySignal s) {
+    int[] robotIDs = s.getRobotIDs();
+    double[] actionDelays = s.getActionDelays();
+    for (int i = 0; i < robotIDs.length; i++) {
+      getRobot(robotIDs[i]).setActionDelay(actionDelays[i]);
+    }
+  }
+
   public void visitLoadSignal(LoadSignal s) {
     getRobot(s.passengerID).load();
   }

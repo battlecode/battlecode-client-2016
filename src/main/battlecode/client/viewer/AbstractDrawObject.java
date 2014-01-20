@@ -70,6 +70,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         broadcast = copy.broadcast;
         controlBits = copy.controlBits;
         bytecodesUsed = copy.bytecodesUsed;
+        actionDelay = copy.actionDelay;
         System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
                 GameConstants.NUMBER_OF_INDICATOR_STRINGS);
         turnedOn = copy.turnedOn;
@@ -120,6 +121,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
+    protected double actionDelay = 0;
     protected final int visualBroadcastRadius = 2;
     protected boolean turnedOn = true;
 	protected boolean loaded = false;
@@ -216,6 +218,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return bytecodesUsed;
     }
 
+    public double getActionDelay() {
+        return actionDelay;
+    }
+
     public ActionType getAttackAction() {
         return attackAction;
     }
@@ -271,6 +277,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public void setBytecodesUsed(int used) {
         bytecodesUsed = used;
+    }
+
+    public void setActionDelay(double delay) {
+        actionDelay = delay;
     }
 
 	public void setRegen() { regen = 2; }
