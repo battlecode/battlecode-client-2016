@@ -287,7 +287,6 @@ public class GameRenderer extends BaseRenderer {
     g2.translate(unitOffX, unitOffY);
     if (timeline.getRound() >= 0) {
       drawHUD(g2);
-      drawMap.redraw();
       drawState(g2, isGraphicsStable);
     }
     g2.setTransform(pushed);

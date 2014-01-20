@@ -78,10 +78,6 @@ public class DrawMap {
 
   }
 
-  public void redraw() {
-    prerenderMap(this.m);
-  }
-
   public void prerenderMap(battlecode.world.GameMap m) {
     Graphics2D g2 = prerender.createGraphics();
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
