@@ -37,6 +37,13 @@ public class InfoPanel extends JPanel {
     flux = newLabel();
     layoutConstraints.gridx++;
     bytecodes = newLabel();
+
+    // hack to prevent constant width adjustment due to bytecode count changes
+    FontMetrics fm = bytecodes.getFontMetrics(bytecodes.getFont());
+    Dimension bytecodesSize = new Dimension(fm.stringWidth(" Bytecodes used: 10000 "), fm.getHeight());
+    bytecodes.setMinimumSize(bytecodesSize);
+    bytecodes.setPreferredSize(bytecodesSize);
+
     layoutConstraints.gridx++;
     delay = newLabel();
     layoutConstraints.gridx++;
@@ -119,7 +126,7 @@ public class InfoPanel extends JPanel {
   }
 
   private void setBytecodesUsed(int bytecodesUsed) {
-    bytecodes.setText(" Bytecodes used: " + bytecodesUsed + " ");
+    bytecodes.setText(String.format(" Bytecodes used: %d ", bytecodesUsed));
   }
 
   private void setActionDelay(double actionDelay) {
