@@ -37,16 +37,18 @@ public class InfoPanel extends JPanel {
     flux = newLabel();
     layoutConstraints.gridx++;
     bytecodes = newLabel();
+    layoutConstraints.gridx++;
 
     // hack to prevent constant width adjustment due to bytecode count changes
+    /*
     FontMetrics fm = bytecodes.getFontMetrics(bytecodes.getFont());
     Dimension bytecodesSize = new Dimension(fm.stringWidth(" Bytecodes used: 10000 "), fm.getHeight());
     bytecodes.setMinimumSize(bytecodesSize);
     bytecodes.setPreferredSize(bytecodesSize);
+    */
 
-    layoutConstraints.gridx++;
-    delay = newLabel();
-    layoutConstraints.gridx++;
+    //delay = newLabel();
+    //layoutConstraints.gridx++;
     location = newLabel();
     layoutConstraints.gridx++;
     direction = newLabel();
@@ -130,7 +132,7 @@ public class InfoPanel extends JPanel {
   }
 
   private void setActionDelay(double actionDelay) {
-    delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
+    //delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
   }
 
   private void setIndicatorString(int index, String str) {
