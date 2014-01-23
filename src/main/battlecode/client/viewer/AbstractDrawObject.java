@@ -287,7 +287,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   }
 
   public void setAttacking(MapLocation target, RobotLevel height) {
-    actionType= ActionType.ATTACKING;
+    actionType = ActionType.ATTACKING;
     actionDelay += info.type.attackDelay;
     targetLoc = target;
 		attackDir = dir;
@@ -338,13 +338,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     } else {
       actionDelay--;
     }
-
+    
     updateDrawLoc();
 
     broadcast = (broadcast << 1) & 0x000FFFFF;
 		if(regen>0) regen--;
-    //objectTenure++;
-    //if (burnAmount > 0) burnAmount--;
 
     Iterator<Map.Entry<AbstractAnimation.AnimationType, Animation>> it = animations.entrySet().iterator();
     Map.Entry<AbstractAnimation.AnimationType, Animation> entry;

@@ -330,7 +330,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     if (!RenderConfiguration.isTournamentMode()) {
       getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());
     }
-        
   }
 
   public void visitControlBitsSignal(ControlBitsSignal s) {
@@ -340,34 +339,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitMovementOverrideSignal(MovementOverrideSignal s) {
     getRobot(s.getRobotID()).setLocation(s.getNewLoc());
-        
   }
-
+  
   public void visitMovementSignal(MovementSignal s) {
     DrawObject obj = getRobot(s.getRobotID());
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
     obj.setMoving(s.isMovingForward(), s.getDelay());
-  }
-    
-  public void visitMineSignal(MineSignal s) {
-    // if (s.shouldAdd()) {
-    //   if (mineLocs.get(s.getMineLoc()) == null)
-    //     mineLocs.put(s.getMineLoc(), s.getMineTeam());
-    // } else {
-    //   mineLocs.remove(s.getMineLoc());
-    // }
-  }
-    
-  public void visitMinelayerSignal(MinelayerSignal s) {
-    // if (s.isDefusing())
-    //   getRobot(s.getRobotID()).setAction(
-    //     researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
-    //     ? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING,
-    //     s.getTarget());
-    // else if (s.isLaying())
-    //   getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
   }
     
   public void visitCaptureSignal(CaptureSignal s) {

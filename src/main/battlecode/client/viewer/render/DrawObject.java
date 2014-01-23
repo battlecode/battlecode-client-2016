@@ -353,7 +353,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
   private boolean isAttacking() {
-    return actionDelay >= 1 && actionType == ActionType.ATTACKING;
+    return actionType == ActionType.ATTACKING;
   }
 
   private void drawAction(Graphics2D g2) {
@@ -426,13 +426,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
   public void updateRound() {
     super.updateRound();
-
-    if (teleportRounds > 0) {
-      teleportRounds--;
-      if (teleportLoc == null && teleportRounds % 3 == 2) {
-        dir = dir.rotateRight().rotateRight();
-      }
-    }
   }
 
   public void activateTeleporter() {
