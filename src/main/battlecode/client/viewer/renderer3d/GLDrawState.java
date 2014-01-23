@@ -418,55 +418,54 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             float extraDist = 0.1f;
             float maxHeight = GLDrawMap.MAP_SCALE * 32;
-            {
-                if (obj.getMovementAction() == ActionType.MOVING) {
-                    float delay = 0;
-                    float distFrac = (float) (obj.timeUntilIdle() + 1) / delay;
 
-                    if (distFrac > 1.0f) {
-                        distFrac = 1.0f;
-                    } else if (distFrac < 0.0f) {
-                        distFrac = 0.0f;
-                    }
-                    distFrac = 1.0f - distFrac;
+            if (obj.getAction() == ActionType.MOVING) {
+              float delay = 0;
+              float distFrac = (float) (obj.timeUntilIdle() + 1) / delay;
 
-                    float actualZ;
+              if (distFrac > 1.0f) {
+                distFrac = 1.0f;
+              } else if (distFrac < 0.0f) {
+                distFrac = 0.0f;
+              }
+              distFrac = 1.0f - distFrac;
 
-                    //distfrac is the fraction of the total time traveled
+              float actualZ;
 
-                    MapLocation currentSquare = obj.getLocation().subtract(obj.getDirection());
-                    //This is used to get the z position of the obj location
-                    MapLocation frontSquare = obj.getLocation();
+              //distfrac is the fraction of the total time traveled
 
-                    float srcZ = map.getTerrainHeight(x, y);
+              MapLocation currentSquare = obj.getLocation().subtract(obj.getDirection());
+              //This is used to get the z position of the obj location
+              MapLocation frontSquare = obj.getLocation();
 
-                    float destZ = map.getTerrainHeight((frontSquare.x - oriX), (frontSquare.y - oriY));
-                    float deltaZ = (destZ - srcZ);
+              float srcZ = map.getTerrainHeight(x, y);
 
-                    actualZ = srcZ + distFrac * deltaZ;
-                    //obj.setString(0, new String("S " + x + " " + y + " " + srcZ + " " + destZ + " " + distFrac));
+              float destZ = map.getTerrainHeight((frontSquare.x - oriX), (frontSquare.y - oriY));
+              float deltaZ = (destZ - srcZ);
 
-                    gl.glTranslatef(0.0f, actualZ + extraDist, 0.0f);
-                } else {
-                    gl.glTranslatef(0.0f, map.getTerrainHeight(x, y) + extraDist, 0.0f);
-                    //	obj.setString(0, new String("N " + map.getTerrainHeight(x, y) + " " + x + " " + y ));
-                }
+              actualZ = srcZ + distFrac * deltaZ;
+              //obj.setString(0, new String("S " + x + " " + y + " " + srcZ + " " + destZ + " " + distFrac));
 
-                //This is to get the units to tilt properly
-                float xPosZ = map.getTerrainHeight(x + 1, y);
-                float xNegZ = map.getTerrainHeight(x - 1, y);
-                float yPosZ = map.getTerrainHeight(x, y + 1);
-                float yNegZ = map.getTerrainHeight(x, y - 1);
+              gl.glTranslatef(0.0f, actualZ + extraDist, 0.0f);
+            } else {
+              gl.glTranslatef(0.0f, map.getTerrainHeight(x, y) + extraDist, 0.0f);
+              //	obj.setString(0, new String("N " + map.getTerrainHeight(x, y) + " " + x + " " + y ));
             }
+
+            //This is to get the units to tilt properly
+            float xPosZ = map.getTerrainHeight(x + 1, y);
+            float xNegZ = map.getTerrainHeight(x - 1, y);
+            float yPosZ = map.getTerrainHeight(x, y + 1);
+            float yNegZ = map.getTerrainHeight(x, y - 1);
 
             // draw selection box
             if (id == debug.getFocusID()) {
-                gl.glLineWidth(2.0f);
-                gl.glPushMatrix();
-                gl.glScalef(0.5f, 0.5f, 0.5f);
-                gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                drawBox(gl);
-                gl.glPopMatrix();
+              gl.glLineWidth(2.0f);
+              gl.glPushMatrix();
+              gl.glScalef(0.5f, 0.5f, 0.5f);
+              gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+              drawBox(gl);
+              gl.glPopMatrix();
             }
 
             // draw channeler drain
@@ -505,7 +504,7 @@ public class GLDrawState extends AbstractDrawState<GLDrawObject> {
 
             gl.glDisable(GL2.GL_LIGHTING);
             // draw crosshair if shooting
-            if (obj.getAttackAction() == ActionType.ATTACKING) {
+            if (obj.getAction() == ActionType.ATTACKING) {
                 boolean drawArch = true;
                 MapLocation target = obj.getTargetLoc();
 				// aha, target is sometimes null!! I'm not sure why, though ~shewu
