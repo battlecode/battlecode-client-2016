@@ -235,10 +235,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
         g2.setStroke(outlineStroke);
         g2.draw(outline);
       }
+      
+      drawBroadcast(g2);
     }
-       
-    drawBroadcast(g2);
-
+    
     g2.setTransform(pushed); // pop
   }
 

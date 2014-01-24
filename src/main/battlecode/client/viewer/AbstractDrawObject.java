@@ -306,6 +306,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     actionType = ActionType.MOVING;
     moving = (isMovingForward ? 1 : -1);
     actionDelay += delay;
+    totalActionRounds = delay;
     updateDrawLoc();
   }
     
@@ -369,8 +370,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
       drawX = drawY = 0;
     } else {
       // still waiting perfection of delay system
-      //float dist = ((float) moving * (roundsUntilMovementIdle - 1)) / moveDelay;
-      float dist = .5f;
+      // float dist = .5f;
+      float dist = (float)Math.max(Math.min(moving * (actionDelay / totalActionRounds), 1), 0);
+      //System.out.println("moving: " + moving + "actionDelay: " + actionDelay + "total " + totalActionRounds);
       drawX = -dist * dir.dx;
       drawY = -dist * dir.dy;
     }
