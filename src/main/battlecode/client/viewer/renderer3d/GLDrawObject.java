@@ -87,7 +87,8 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 
     // get the time until idle
     public int timeUntilIdle() {
-		return roundsUntilMovementIdle;
+      // not actually, but it will do for now
+      return (int)actionDelay;
     }
 
     public void draw(GL gl, GLU glu, boolean focused) {

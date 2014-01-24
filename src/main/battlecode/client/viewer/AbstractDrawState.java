@@ -299,12 +299,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     int[] robotIDs = s.getRobotIDs();
     double[] shield = s.getShield();
     for (int i = 0; i < robotIDs.length; i++) {
-//            int team = getRobot(robotIDs[i]).getTeam().ordinal();
-//            if (team < 2)
-//                teamHP[team] -= getRobot(robotIDs[i]).getEnergon();
       getRobot(robotIDs[i]).setShields(shield[i]);
-//            if (team < 2)
-//                teamHP[team] += energon[i];
     }
   }
 
@@ -335,7 +330,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     if (!RenderConfiguration.isTournamentMode()) {
       getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());
     }
-        
   }
 
   public void visitControlBitsSignal(ControlBitsSignal s) {
@@ -345,51 +339,23 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitMovementOverrideSignal(MovementOverrideSignal s) {
     getRobot(s.getRobotID()).setLocation(s.getNewLoc());
-        
   }
-
+  
   public void visitMovementSignal(MovementSignal s) {
     DrawObject obj = getRobot(s.getRobotID());
-    boolean teleported = !obj.loc.isAdjacentTo(s.getNewLoc());
-    //TODO: this should probably be from a teleported signal
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
-    if (teleported) {
-      obj.setTeleport(obj.loc, s.getNewLoc());
-    } else {
-      obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-      obj.setMoving(s.isMovingForward(), s.getDelay());
-    }
-        
-  }
-    
-  public void visitMineSignal(MineSignal s) {
-    // if (s.shouldAdd()) {
-    //   if (mineLocs.get(s.getMineLoc()) == null)
-    //     mineLocs.put(s.getMineLoc(), s.getMineTeam());
-    // } else {
-    //   mineLocs.remove(s.getMineLoc());
-    // }
-  }
-    
-  public void visitMinelayerSignal(MinelayerSignal s) {
-    // if (s.isDefusing())
-    //   getRobot(s.getRobotID()).setAction(
-    //     researchProgress[getRobot(s.getRobotID()).getTeam().ordinal()][Upgrade.DEFUSION.ordinal()] == 1.0 
-    //     ? GameConstants.MINE_DEFUSE_DEFUSION_DELAY : GameConstants.MINE_DEFUSE_DELAY, ActionType.DEFUSING,
-    //     s.getTarget());
-    // else if (s.isLaying())
-    //   getRobot(s.getRobotID()).setAction(GameConstants.MINE_LAY_DELAY, ActionType.MINING);
+    obj.setDirection(oldloc.directionTo(s.getNewLoc()));
+    obj.setMoving(s.isMovingForward(), s.getDelay());
   }
     
   public void visitCaptureSignal(CaptureSignal s) {
-    //getRobot(s.getParentID()).setAction(GameConstants.CAPTURE_ROUND_DELAY, ActionType.CAPTURING);
-    		
+    AbstractDrawObject robot = getRobot(s.getParentID());
+    robot.setAction(s.getType().captureTurns, ActionType.CAPTURING);
   }
 
   public void visitSetDirectionSignal(SetDirectionSignal s) {
     getRobot(s.getRobotID()).setDirection(s.getDirection());
-        
   }
 
   public DrawObject spawnRobot(SpawnSignal s) {
@@ -444,9 +410,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   public void visitRegenSignal(RegenSignal s) {
-//		getRobot(s.robotID).setRegen();
-//		getRobot(s.robotID).setAction(1, ActionType.REGENING);
-    getRobot(s.robotID).setAttacking(null, null);
+    // getRobot(s.robotID).setRegen();
   }
 
   public void visitTurnOffSignal(TurnOffSignal s) {
