@@ -310,7 +310,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           g2.translate(0.0, -(research-350)*0.45);
           g2.translate(0.0, -1);
           BufferedImage bi = t==Team.A ? rNuker.image : rNukeb.image;
-          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()) * o.getRelativeSize(), (1.0 / bi.getWidth()) * o.getRelativeSize());
+          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()), (1.0 / bi.getWidth()));
           g2.drawImage(bi, trans, null);
         } else if (research > 375)
         {
@@ -319,13 +319,13 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           g2.translate(0.0, -(404-research)*0.45);
           g2.translate(0.0, -1);
           BufferedImage bi = t==Team.A ? rNuker2.image : rNukeb2.image;
-          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()) * o.getRelativeSize(), (1.0 / bi.getWidth()) * o.getRelativeSize());
+          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()), (1.0 / bi.getWidth()));
           g2.drawImage(bi, trans, null);
           if (research == 404)
           {
             double scale = 6.0;
             BufferedImage ei = rexplode.image;
-            trans = AffineTransform.getScaleInstance((scale / ei.getWidth()) * o.getRelativeSize(), (scale / ei.getWidth()) * o.getRelativeSize());
+            trans = AffineTransform.getScaleInstance((scale / ei.getWidth()), (scale / ei.getWidth()));
             g2.translate(-(scale-1.0)/2, -(scale-1.0)/2-2);
             g2.drawImage(ei, trans, null);
           }

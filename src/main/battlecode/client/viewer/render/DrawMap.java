@@ -202,15 +202,21 @@ public class DrawMap {
         {
           continue;
         }
-        boolean top = (y - 1 >= 0) && (map[x][y - 1] == typeHere);
-        boolean bot = (y + 1 < mapHeight) && (map[x][y + 1] == typeHere);
-        boolean left = (x - 1 >= 0) && (map[x - 1][y] == typeHere);
-        boolean right = (x + 1 < mapWidth) && (map[x + 1][y] == typeHere);
+        // to prevent reading out of array
+        boolean topInBounds = (y - 1 >= 0);
+        boolean botInBounds = (y + 1 < mapHeight);
+        boolean leftInBounds = (x - 1 >= 0);
+        boolean rightInBounds = (x + 1 < mapWidth);
+        // same in adjacent?
+        boolean top =  !topInBounds || (map[x][y - 1] == typeHere); 
+        boolean bot =  !botInBounds || (map[x][y + 1] == typeHere);
+        boolean left = !leftInBounds || (map[x - 1][y] == typeHere);
+        boolean right =  !rightInBounds || (map[x + 1][y] == typeHere);
         // corners
-        boolean topLeft = top && left && (map[x - 1][y - 1] == typeHere);
-        boolean topRight = top && right && (map[x + 1][y - 1] == typeHere);
-        boolean botLeft = bot && left && (map[x - 1][y + 1] == typeHere);
-        boolean botRight = bot && right && (map[x + 1][y + 1] == typeHere);
+        boolean topLeft = top && left && (!topInBounds || !leftInBounds || map[x - 1][y - 1] == typeHere);
+        boolean topRight = top && right && (!topInBounds || !rightInBounds || map[x + 1][y - 1] == typeHere);
+        boolean botLeft = bot && left && (!botInBounds || !leftInBounds || map[x - 1][y + 1] == typeHere);
+        boolean botRight = bot && right && (!botInBounds || !rightInBounds || map[x + 1][y + 1] == typeHere);
          
         if(typeHere == ROAD)
         {
