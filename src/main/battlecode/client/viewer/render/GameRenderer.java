@@ -22,6 +22,7 @@ public class GameRenderer extends BaseRenderer {
   private DrawState ds;
   private MapLocation origin;
   private int maxRounds = 0;
+  private String mapName = "";
   private DebugState debugState;
   private final Color winnerMask = new Color(0, 0, 0, 0.6f);
   private Font debugFont;
@@ -143,6 +144,7 @@ public class GameRenderer extends BaseRenderer {
     origin = map.getMapOrigin();
     sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));
     maxRounds = map.getMaxRounds();
+    mapName = map.getMapName();
 
     unitHeight = drawMap.getMapHeight();
     unitHUDwidth = sideA.getRatioWidth() * unitHeight;
