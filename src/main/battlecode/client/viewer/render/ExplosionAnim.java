@@ -8,17 +8,17 @@ import java.awt.geom.*;
 
 class ExplosionAnim extends Animation {
 
-	private static ImageResource<Integer> ir = new ImageResource<Integer>();
+	protected static ImageResource<Integer> ir = new ImageResource<Integer>();
 
-	private final MapLocation loc;
-	private final double size;
+	protected final MapLocation loc;
+	protected final double size;
 
 	public static enum ExplosionToggle {
 		EXPLOSIONS,
 		DETONATES
 	}
 
-	private ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS; 
+	protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS; 
 
 	public ExplosionAnim() { this(null, 1); }
 

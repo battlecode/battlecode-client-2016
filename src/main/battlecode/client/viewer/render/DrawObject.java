@@ -406,8 +406,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
     return new TeleportAnim(src, loc);
   }
 
-  public ExplosionAnim createDeathExplosionAnim(boolean isArchon) {
-    return new ExplosionAnim();
+  public ExplosionAnim createDeathExplosionAnim(boolean unused) {
+    if(isSuiciding) {
+      return new SuicideAnim(); // a subclass of explosion
+    } else {
+      return new ExplosionAnim();
+    }
   }
 
   public MortarAttackAnim createMortarAttackAnim(MapLocation target) {

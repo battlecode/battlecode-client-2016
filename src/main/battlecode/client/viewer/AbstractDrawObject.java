@@ -21,11 +21,11 @@ import java.util.Random;
 
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected static int moveDelay;
-	private static Random hatGenerator = new Random();
-	private static final int numHats;
-	static {
-		numHats = (new File("art/hats/")).listFiles().length;
-	}
+  private static Random hatGenerator = new Random();
+  private static final int numHats;
+  static {
+    numHats = (new File("art/hats/")).listFiles().length;
+  }
 	
   public static class RobotInfo {
 
@@ -52,8 +52,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public AbstractDrawObject(RobotType type, Team team, int id) {
     info = new RobotInfo(type, team);
-		robotID = id;
-		hats = "";
+    robotID = id;
+    hats = "";
   }
 
   @SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     dir = copy.dir;
     energon = copy.energon;
     shields = copy.shields;
-		flux = copy.flux;
+    flux = copy.flux;
     moving = copy.moving;
     targetLoc = copy.targetLoc;
     broadcast = copy.broadcast;
@@ -73,14 +73,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     System.arraycopy(copy.indicatorStrings, 0, indicatorStrings, 0,
                      GameConstants.NUMBER_OF_INDICATOR_STRINGS);
     turnedOn = copy.turnedOn;
-		loaded = copy.loaded;
-		regen = copy.regen;
+    loaded = copy.loaded;
+    regen = copy.regen;
 		
-		actionType = copy.actionType;
-		totalActionRounds = copy.totalActionRounds;
+    actionType = copy.actionType;
+    totalActionRounds = copy.totalActionRounds;
     actionDelay = copy.actionDelay;
     
-		hats = copy.hats;
+    hats = copy.hats;
 
     for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
       animations.put(entry.getKey(), (Animation) entry.getValue().clone());
@@ -91,15 +91,15 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public abstract Animation createTeleportAnim(MapLocation src, MapLocation teleportLoc);
 
-  public abstract Animation createDeathExplosionAnim(boolean isArchon);
+  public abstract Animation createDeathExplosionAnim(boolean isSuicide);
 
   public abstract Animation createMortarAttackAnim(MapLocation target);
 
   public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
-	public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
+  public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
 	
 	
-	protected String hats;
+  protected String hats;
   protected RobotInfo info;
   protected MapLocation loc;
   protected Direction dir;
@@ -107,8 +107,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected int moving = 0;
   protected double energon = 0;
   protected double shields = 0;
-	protected double flux = 0;
-	protected double maxEnergon;
+  protected double flux = 0;
+  protected double maxEnergon;
   protected int totalActionRounds;
   protected ActionType actionType;
   protected MapLocation targetLoc = null;
@@ -118,10 +118,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected double actionDelay = 0;
   protected final int visualBroadcastRadius = 2;
   protected boolean turnedOn = true;
-	protected boolean loaded = false;
-	protected int regen = 0;
-	protected int robotID;
-	protected Direction attackDir;
+  protected boolean loaded = false;
+  protected int regen = 0;
+  protected int robotID;
+  protected Direction attackDir;
+  protected boolean isSuiciding = false;
+
+
   protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
     private static final long serialVersionUID = 0;
@@ -139,6 +142,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected String[] indicatorStrings =
     new String[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
 
+  public void setSuiciding(boolean is) {
+    isSuiciding = is;
+  }
+
   public void setDirection(Direction d) {
     dir = d;
   }
@@ -148,9 +155,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     return moveDelay;
   }
 
-	public int getID() {
-		return robotID;
-	}
+  public int getID() {
+    return robotID;
+  }
 
   public long getBroadcast() {
     return broadcast;
@@ -196,9 +203,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     return shields;
   }
 
-	public double getFlux() {
-		return flux;
-	}
+  public double getFlux() {
+    return flux;
+  }
 
   public String getIndicatorString(int index) {
     return indicatorStrings[index];
@@ -220,18 +227,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     return actionType;
   }
 
-	public void load() {
-		loaded = true;
-	}
+  public void load() {
+    loaded = true;
+  }
 
-	public void unload(MapLocation loc) {
-		loaded = false;
-		setLocation(loc);
-	}
+  public void unload(MapLocation loc) {
+    loaded = false;
+    setLocation(loc);
+  }
 
-	public boolean inTransport() {
-		return loaded;
-	}
+  public boolean inTransport() {
+    return loaded;
+  }
 
   public void setLocation(MapLocation loc) {
     this.loc = loc;
@@ -249,9 +256,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     this.shields = shields;
   }
 
-	public void setFlux(double f) {
-		flux = f;
-	}
+  public void setFlux(double f) {
+    flux = f;
+  }
 
   public void setTeam(Team team) {
     info = new RobotInfo(info.type, team);
@@ -273,11 +280,11 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     actionDelay = delay;
   }
 
-	public void setRegen() { regen = 2; }
+  public void setRegen() { regen = 2; }
 	
-	public void addHat(int hat) {
-		hats += ""+(char)(((hat%numHats)+numHats)%numHats);
-	}
+  public void addHat(int hat) {
+    hats += ""+(char)(((hat%numHats)+numHats)%numHats);
+  }
 
   public boolean isAlive() {
     Animation deathAnim = animations.get(AbstractAnimation.AnimationType.DEATH_EXPLOSION);
@@ -290,17 +297,17 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     actionType = ActionType.ATTACKING;
     actionDelay += info.type.attackDelay;
     targetLoc = target;
-		attackDir = dir;
+    attackDir = dir;
     //componentType = component;
     //if (info.type == RobotType.CHAINER) {
     //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
     //}
   }
 
-	public void setFluxTransfer(AbstractDrawObject<Animation> target, double amount) {
-		Animation anim = createEnergonTransferAnim(target.getLocation(),target.getType().level,(float)amount,true);
-		animations.put(ENERGON_TRANSFER,anim);
-	}
+  public void setFluxTransfer(AbstractDrawObject<Animation> target, double amount) {
+    Animation anim = createEnergonTransferAnim(target.getLocation(),target.getType().level,(float)amount,true);
+    animations.put(ENERGON_TRANSFER,anim);
+  }
 
   public void setMoving(boolean isMovingForward, int delay) {
     actionType = ActionType.MOVING;
@@ -343,7 +350,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     updateDrawLoc();
 
     broadcast = (broadcast << 1) & 0x000FFFFF;
-		if(regen>0) regen--;
+    if(regen>0) regen--;
 
     Iterator<Map.Entry<AbstractAnimation.AnimationType, Animation>> it = animations.entrySet().iterator();
     Map.Entry<AbstractAnimation.AnimationType, Animation> entry;
@@ -366,7 +373,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   private void updateDrawLoc() {
     if (RenderConfiguration.showDiscrete() 
-       || actionType != ActionType.MOVING) {
+        || actionType != ActionType.MOVING) {
       drawX = drawY = 0;
     } else {
       // still waiting perfection of delay system

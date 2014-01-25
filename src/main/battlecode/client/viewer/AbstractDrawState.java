@@ -271,6 +271,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     getRobot(s.getRobotID()).setBroadcast();
   }
 
+  public void visitSelfDestructSignal(SelfDestructSignal s) {
+    DrawObject robot = getRobot(s.getRobotID());
+    robot.setSuiciding(true);
+  }
+
   public void visitDeathSignal(DeathSignal s) {
     int team = getRobot(s.getObjectID()).getTeam().ordinal();
     DrawObject robot = getRobot(s.getObjectID());
@@ -279,8 +284,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
 
     robot.destroyUnit();
-        
   }
+
 
   public void visitEnergonChangeSignal(EnergonChangeSignal s) {
     int[] robotIDs = s.getRobotIDs();
