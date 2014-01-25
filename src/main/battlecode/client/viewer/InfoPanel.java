@@ -38,7 +38,8 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridx++;
     bytecodes = newLabel();
     layoutConstraints.gridx++;
-
+    delay = newLabel();
+    layoutConstraints.gridx++;
     // hack to prevent constant width adjustment due to bytecode count changes
     /*
     FontMetrics fm = bytecodes.getFontMetrics(bytecodes.getFont());
@@ -65,7 +66,7 @@ public class InfoPanel extends JPanel {
 
   private JLabel newLabel() {
     JLabel l = new JLabel();
-    l.setFont(l.getFont().deriveFont(8f));
+    l.setFont(l.getFont().deriveFont(10f));
     add(l, layoutConstraints);
     return l;
   }
@@ -132,7 +133,7 @@ public class InfoPanel extends JPanel {
   }
 
   private void setActionDelay(double actionDelay) {
-    //delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
+    delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
   }
 
   private void setIndicatorString(int index, String str) {
