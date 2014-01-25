@@ -132,6 +132,7 @@ public class MatchViewer {
     if (proxy.isDebuggingAvailable()) {
       proxy.writeNotification(StartNotification.INSTANCE);
     }
+    
     final BufferedMatch bufferedMatch = new BufferedMatch(proxy);
         
     if (cfg.getBoolean("bc.client.opengl")) {

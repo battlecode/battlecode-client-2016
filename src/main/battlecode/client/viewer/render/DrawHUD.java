@@ -231,7 +231,8 @@ class DrawHUD {
       }
       g2.setTransform(pushed2);
       if (r!=null)
-        r.drawImmediate(g2, false, true);
+        r.drawRobotImage(g2);
+        //r.drawImmediate(g2, false, true);
     }
     g2.setTransform(pushed);
     g2.translate(0, slotSize);
