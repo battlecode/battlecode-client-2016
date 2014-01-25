@@ -125,7 +125,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       try {
         BufferedImage sensorImg = hatchSensor.image;
         BufferedImage attackImg = hatchAttack.image;
-        for (int i = -11; i <= 11; i++) for (int j = -11; j <= 11; j++) {
+        for (int i = -21; i <= 21; i++) for (int j = -21; j <= 21; j++) {
             int distSq = i * i + j * j;
             if (distSq <= viewrange) {
               if (inAngleRange(i, j, info.type.sensorCosHalfTheta)) {
