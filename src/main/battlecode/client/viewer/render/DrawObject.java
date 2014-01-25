@@ -176,8 +176,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
     if (RenderConfiguration.showRangeHatch() && focused) {
       drawRangeHatch(g2);
     }
-    
+
+
+    AffineTransform pushed = g2.getTransform();
+    g2.translate(getDrawX(), getDrawY());
     drawImmediate(g2, focused);
+    g2.setTransform(pushed); // pop    
     
     // these animations shouldn't be drawn in the HUD, and they expect
     // the origin of the Graphics2D to be the MapLocation (0,0)
@@ -190,8 +194,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
   public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD) {
-    AffineTransform pushed = g2.getTransform();
-    g2.translate(getDrawX(), getDrawY());
     
     Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
     c = c.brighter().brighter().brighter();
@@ -238,8 +240,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       
       drawBroadcast(g2);
     }
-    
-    g2.setTransform(pushed); // pop
   }
 
   public void drawStatusBars(Graphics2D g2, boolean focused) {
