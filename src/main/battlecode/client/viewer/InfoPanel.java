@@ -23,6 +23,9 @@ public class InfoPanel extends JPanel {
 
   public InfoPanel() {
     setLayout(new GridBagLayout());
+    Dimension dim = new Dimension(500, 100);
+    setPreferredSize(dim);
+    setMinimumSize(dim);
     indicatorStrings = new JLabel[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
     layoutConstraints = new GridBagConstraints();
     layoutConstraints.fill = GridBagConstraints.HORIZONTAL;

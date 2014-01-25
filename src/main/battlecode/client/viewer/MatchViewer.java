@@ -73,6 +73,7 @@ public class MatchViewer {
     //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
     GridBagLayout l = new GridBagLayout();
     panel.setLayout(l);
+    
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.gridx = 0;
