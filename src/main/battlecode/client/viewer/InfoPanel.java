@@ -43,16 +43,13 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridx++;
     delay = newLabel();
     layoutConstraints.gridx++;
+
     // hack to prevent constant width adjustment due to bytecode count changes
-    /*
     FontMetrics fm = bytecodes.getFontMetrics(bytecodes.getFont());
     Dimension bytecodesSize = new Dimension(fm.stringWidth(" Bytecodes used: 10000 "), fm.getHeight());
     bytecodes.setMinimumSize(bytecodesSize);
     bytecodes.setPreferredSize(bytecodesSize);
-    */
 
-    //delay = newLabel();
-    //layoutConstraints.gridx++;
     location = newLabel();
     layoutConstraints.gridx++;
     direction = newLabel();
