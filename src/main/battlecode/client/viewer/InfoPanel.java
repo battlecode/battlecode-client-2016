@@ -23,9 +23,6 @@ public class InfoPanel extends JPanel {
 
   public InfoPanel() {
     setLayout(new GridBagLayout());
-    Dimension dim = new Dimension(500, 100);
-    setPreferredSize(dim);
-    setMinimumSize(dim);
     indicatorStrings = new JLabel[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
     layoutConstraints = new GridBagConstraints();
     layoutConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -34,23 +31,21 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridy = 0;
     layoutConstraints.weightx = 0.33;
     robotID = newLabel();
+    //forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
     layoutConstraints.gridx++;
     energon = newLabel();
     layoutConstraints.gridx++;
+    //forceMinimumSize(energon, " Health: 100.0 ");
     flux = newLabel();
     layoutConstraints.gridx++;
-    bytecodes = newLabel();
-    layoutConstraints.gridx++;
     delay = newLabel();
+    //forceMinimumSize(delay, " Actiondelay: 100.0 ");
     layoutConstraints.gridx++;
-
-    // hack to prevent constant width adjustment due to bytecode count changes
-    FontMetrics fm = bytecodes.getFontMetrics(bytecodes.getFont());
-    Dimension bytecodesSize = new Dimension(fm.stringWidth(" Bytecodes used: 10000 "), fm.getHeight());
-    bytecodes.setMinimumSize(bytecodesSize);
-    bytecodes.setPreferredSize(bytecodesSize);
-
+    bytecodes = newLabel();
+    //forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
+    layoutConstraints.gridx++;
     location = newLabel();
+    //forceMinimumSize(location, " Location: 99, 99 ");
     layoutConstraints.gridx++;
     direction = newLabel();
 
@@ -69,6 +64,13 @@ public class InfoPanel extends JPanel {
     l.setFont(l.getFont().deriveFont(10f));
     add(l, layoutConstraints);
     return l;
+  }
+
+  private void forceMinimumSize(JLabel label, String str) {
+    FontMetrics fm = label.getFontMetrics(label.getFont());
+    Dimension size = new Dimension(fm.stringWidth(str), fm.getHeight());
+    label.setMinimumSize(size);
+    label.setPreferredSize(size);
   }
 
   public void updateDebugChanges(AbstractDrawObject<AbstractAnimation> robot,
