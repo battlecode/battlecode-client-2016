@@ -134,7 +134,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 	public MatchDialog(JFrame owner) {
 		
 		// Modal JDialog.
-		super(owner, true);
+		super(owner, Dialog.ModalityType.TOOLKIT_MODAL);
 	
 		version = Config.version();
 
