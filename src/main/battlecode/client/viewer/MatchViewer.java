@@ -93,8 +93,6 @@ public class MatchViewer {
     gbc.weighty = 1;
     panel.add(bc, gbc);
 
-
-
     cpanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     controller = cpanel;
 

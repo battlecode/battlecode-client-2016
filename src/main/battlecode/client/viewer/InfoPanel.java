@@ -31,21 +31,21 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridy = 0;
     layoutConstraints.weightx = 0.33;
     robotID = newLabel();
-    //forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
+    forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
     layoutConstraints.gridx++;
     energon = newLabel();
     layoutConstraints.gridx++;
-    //forceMinimumSize(energon, " Health: 100.0 ");
+    forceMinimumSize(energon, " Health: 100.0 ");
     flux = newLabel();
     layoutConstraints.gridx++;
     delay = newLabel();
-    //forceMinimumSize(delay, " Actiondelay: 100.0 ");
+    forceMinimumSize(delay, " Actiondelay: 100.0 ");
     layoutConstraints.gridx++;
     bytecodes = newLabel();
-    //forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
+    forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
     layoutConstraints.gridx++;
     location = newLabel();
-    //forceMinimumSize(location, " Location: 99, 99 ");
+    forceMinimumSize(location, " Location: [99, 99] ");
     layoutConstraints.gridx++;
     direction = newLabel();
 
@@ -119,8 +119,8 @@ public class InfoPanel extends JPanel {
   }
 
   private void setEnergon(double amount, double shields) {
-    if (shields > 0.0)
-      energon.setText(String.format(" Health: %.1f Shields: %.1f", amount, shields));
+    if (amount > Integer.MAX_VALUE / 2)
+      energon.setText(String.format(" Health: lots ", amount));
     else
       energon.setText(String.format(" Health: %.1f ", amount));
   }
