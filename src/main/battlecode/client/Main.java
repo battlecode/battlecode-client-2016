@@ -1,5 +1,6 @@
 package battlecode.client;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentAdapter;
@@ -65,6 +66,8 @@ public class Main {
                         }
                     });
                     frame.pack();
+                    
+                    frame.setMinimumSize(new Dimension(0, 600));
                     frame.setVisible(true);
                 }
             }
