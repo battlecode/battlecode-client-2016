@@ -76,7 +76,7 @@ public class Main {
                             }
                             if (frame.getHeight() < minHeight) {
                                 frame.setMinimumSize(new Dimension(frame.getWidth(), minHeight));
-                                frame.setMinimumSize(new Dimension(0, 0)); // make it resizable
+                                frame.setMinimumSize(null); // make it resizable
                             }
                         }
                     });
