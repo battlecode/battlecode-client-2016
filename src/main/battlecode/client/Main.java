@@ -3,6 +3,7 @@ package battlecode.client;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
@@ -66,8 +67,16 @@ public class Main {
                         }
                     });
                     frame.pack();
-                    
-                    frame.setMinimumSize(new Dimension(0, 600));
+
+                    int minHeight = 600; 
+                    int screenHeight = 0;
+                    if (!GraphicsEnvironment.isHeadless()) {
+                        screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+                    }
+                    if (screenHeight > 0 && screenHeight < minHeight) {
+                        minHeight = screenHeight;
+                    }
+                    frame.setMinimumSize(new Dimension(0, minHeight));
                     frame.setVisible(true);
                 }
             }
