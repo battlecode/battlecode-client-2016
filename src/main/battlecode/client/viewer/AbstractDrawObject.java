@@ -89,8 +89,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     updateDrawLoc();
   }
 
-  public abstract Animation createTeleportAnim(MapLocation src, MapLocation teleportLoc);
-
   public abstract Animation createDeathExplosionAnim(boolean isSuicide);
 
   public abstract Animation createMortarAttackAnim(MapLocation target);

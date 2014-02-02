@@ -18,20 +18,15 @@ public abstract class AbstractAnimation implements Cloneable {
 	
 		public boolean shown() {
 			switch(this) {
-			case ENERGON_TRANSFER:
-				return RenderConfiguration.showTransfers();
 			case DEATH_EXPLOSION:
 				return RenderConfiguration.showExplosions();
 			case AURA:
 				return RenderConfiguration.showSpawnRadii();
 			case MORTAR_ATTACK:
 				return true;
-			case MORTAR_EXPLOSION:
-				return RenderConfiguration.showDetonates();
-			case TELEPORT:
-				return RenderConfiguration.showTeleport();
+                        case ENERGON_TRANSFER:
+                          return true;
 			default:
-				System.out.println("FIXME: AbstractAnimation.AnimationType.shown() missing case");
 				return false;
 			}
 		}

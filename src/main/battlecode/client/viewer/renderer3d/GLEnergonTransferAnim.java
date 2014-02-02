@@ -60,10 +60,6 @@ class GLEnergonTransferAnim extends GLAnimation {
 	}
 
 	public void draw(GL2 gl, GLDrawMap map, MapLocation origin) {
-		if(!RenderConfiguration.showTransfers())
-			return;
-		
-		
 		Vector3f toTarget = new Vector3f();
 		
 		float airHeight = GLDrawMap.MAP_SCALE*32;//map.getTerrainHeight(target.x + 0.5f - origin.x, target.y + 0.5f - origin.y);

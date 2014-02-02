@@ -42,7 +42,8 @@ public abstract class BaseRenderer {
 
   protected void skipRounds(int rounds) {
     GameStateTimeline timeline = getTimeline();
-    timeline.setRound(Math.min(timeline.getRound()+rounds,timeline.getNumRounds()));
+    int newRound = Math.max(Math.min(timeline.getRound()+rounds,timeline.getNumRounds()), 0);
+    timeline.setRound(newRound);
   }
 
   protected final void toggleFastForward() {
@@ -61,13 +62,10 @@ public abstract class BaseRenderer {
 
     switch (actionCommand) {
     case 'A':
-      RenderConfiguration.toggleRangeHatch();
+      RenderConfiguration.toggleSpawnRadii();
       break;
     case 'B':
       RenderConfiguration.toggleBroadcast();
-      break;
-    case 'C':
-      RenderConfiguration.toggleDetonates();
       break;
     case 'D':
       RenderConfiguration.toggleDiscrete();
@@ -75,56 +73,41 @@ public abstract class BaseRenderer {
     case 'E':
       RenderConfiguration.toggleEnergon();
       break;
+    case 'F':
+      toggleFastForward();
+      break;
     case 'G':
       RenderConfiguration.toggleGridlines();
       break;
     case 'H':
-      RenderConfiguration.toggleDrawHeight();
+      RenderConfiguration.toggleActionLines();
       break;
     case 'I':
-      RenderConfiguration.toggleActionLines();
+      skipRounds(-50);
+      break;
+    case 'J':
+      toggleSlowDown();
       break;
     case 'K':
       RenderConfiguration.toggleAttack();
       break;
-    case 'L':
-      RenderConfiguration.toggleFlux();
-      break;
     case 'M':
       RenderConfiguration.toggleAmbientMusic();
-      break;
-    case 'N':
-      RenderConfiguration.toggleBlocks();
       break;
     case 'O':
       RenderConfiguration.toggleShowHats();
       break;
-    case 'P':
-      RenderConfiguration.toggleTeleport();
-      break;
-    case 'Q':
-      RenderConfiguration.toggleTeleportGhosts();
-      break;
     case 'R':
-      RenderConfiguration.toggleSpawnRadii();
+      RenderConfiguration.toggleRangeHatch();
       break;
-    case 'T':
-      RenderConfiguration.toggleTransfers();
+    case 'S':
+      skipRounds(100);
       break;
     case 'U':
       RenderConfiguration.toggleCows();
       break;
     case 'X':
       RenderConfiguration.toggleExplosions();
-      break;
-    case 'F':
-      toggleFastForward();
-      break;
-    case 'J':
-      toggleSlowDown();
-      break;
-    case 'S':
-      skipRounds(100);
       break;
     default:
       return;

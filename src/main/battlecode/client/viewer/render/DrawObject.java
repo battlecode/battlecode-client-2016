@@ -402,9 +402,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
     this.maxEnergon = maxEnergon;
   }
 
-  public TeleportAnim createTeleportAnim(MapLocation src, MapLocation loc) {
-    return new TeleportAnim(src, loc);
-  }
 
   public ExplosionAnim createDeathExplosionAnim(boolean unused) {
     if(isSuiciding) {

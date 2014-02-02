@@ -181,16 +181,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
-    if (!RenderConfiguration.showGround() && !RenderConfiguration.showAir()) {
-      return null;
-    }
-
-    if (!RenderConfiguration.showGround()) {
-      return airUnits.entrySet();
-    }
-    if (!RenderConfiguration.showAir()) {
-      return groundUnits.entrySet();
-    }
     return drawables;
   }
 

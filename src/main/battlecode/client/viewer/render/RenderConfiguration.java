@@ -12,25 +12,16 @@ public class RenderConfiguration {
   private static boolean attack = true;
   private static boolean discrete = true;
   private static boolean energon = true;
-  private static boolean flux = true;
   private static boolean gridlines = true;
-  private static boolean blocks = true;
-  private static boolean detonates = true;
-  private static boolean transfers = true;
   private static boolean explosions = true;
   private static boolean rangeHatch = false;
   private static boolean spawnRadii = true;
   private static boolean ambientMusic = false;
-  private static boolean teleport = true;
-  private static boolean teleportGhosts = true;
   private static boolean actionlines = false;
   private static boolean hats = true;
   // the next two are related, only thresh cows if they are shown
   private static boolean cows = true;
   private static boolean threshCows = false;
-
-  private static boolean ground = true;
-  private static boolean air	= true;
 
   private static boolean tournamentMode = false;
 
@@ -63,33 +54,11 @@ public class RenderConfiguration {
   public static void toggleDiscrete()  { discrete  = !discrete;  }
   public static void toggleEnergon()   { energon   = !energon;   }
   public static void toggleGridlines() { gridlines = !gridlines; }
-  public static void toggleBlocks() { blocks = !blocks; }
-  public static void toggleDetonates() { detonates = !detonates; }
-  public static void toggleTransfers() { transfers = !transfers; }
   public static void toggleExplosions() { explosions = !explosions; }
   public static void toggleRangeHatch() { rangeHatch = !rangeHatch; }
   public static void toggleSpawnRadii() { spawnRadii = !spawnRadii; }
   public static void toggleAmbientMusic(){ambientMusic = !ambientMusic;}
-  public static void toggleTeleport() { teleport = !teleport; }
-  public static void toggleTeleportGhosts() { teleportGhosts = !teleportGhosts; }
-  public static void toggleFlux() { flux = !flux; }
   public static void toggleShowHats() { hats = !hats; }
-
-  public static void toggleDrawHeight() {
-    if(!air && !ground) {
-      ground = true;
-      air = true;
-    } else if(ground && !air) {
-      ground = false;
-      air = true;
-    } else if(air && !ground) {
-      ground = false;
-      air = false;
-    } else {
-      ground = true;
-      air = false;
-    }
-  }
 
   public static void toggleCows() {
     if (!cows) {
@@ -114,18 +83,10 @@ public class RenderConfiguration {
   public static boolean showDiscrete()  { return discrete;  }
   public static boolean showEnergon()   { return energon;   }
   public static boolean showGridlines() { return gridlines; }
-  public static boolean showBlocks() { return blocks; }
-  public static boolean showDetonates() { return detonates; }
-  public static boolean showTransfers() { return transfers; }
   public static boolean showExplosions() { return explosions; }
   public static boolean showRangeHatch() { return rangeHatch; }
   public static boolean showSpawnRadii() { return spawnRadii; }
-  public static boolean showTeleport() { return teleport; }
-  public static boolean showTeleportGhosts() { return teleportGhosts; }
-  public static boolean showFlux() { return flux; }
   public static boolean showHats() { return hats; }
-  public static boolean showGround() { return ground; }
-  public static boolean showAir   () { return air;    }
   public static boolean showCows  () { return cows; }
   public static boolean threshCows  () { return threshCows; }
   

@@ -38,8 +38,6 @@ class ExplosionAnim extends Animation {
 		switch(toggle) {
 		case EXPLOSIONS:
 			return RenderConfiguration.showExplosions();
-		case DETONATES:
-			return RenderConfiguration.showDetonates();
 		default:
 			return false;
 		}
