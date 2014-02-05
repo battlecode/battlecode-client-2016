@@ -23,6 +23,7 @@ class DrawHUD {
   private static final ImageFile gameText = new ImageFile("art/game.png");
   private static ImageFile numberText;
   private static BufferedImage[] numbers;
+  private static BufferedImage negativeSign;
   private static BufferedMatch match;
   private ImageFile avatar;
 
@@ -42,6 +43,7 @@ class DrawHUD {
   private static final ImageFile [][] rImages = new ImageFile[3][3];		
 
   static {
+    negativeSign = (new ImageFile("art/negative.png")).image;
     numberText = new ImageFile("art/numbers.png");
     numbers = new BufferedImage[10];
     for (int i = 0; i < 10; i++) {
@@ -259,10 +261,20 @@ class DrawHUD {
 //				if (r!=null)
 //					r.drawImmediate(g2, false, true);
         String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
-        while (resource.length() < 8) resource = "0"+resource;
+        if (resource.charAt(0) != '-') {
+            while (resource.length() < 8) resource = "0"+resource;
+        } else {
+            resource = resource.substring(1);
+            while (resource.length() < 7) resource = "0"+resource;
+            resource = "-" + resource;
+        }
         g2.translate(-.3, .5);
         for (int i = 0; i < 8; i++) {
-          g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+          if (resource.substring(i, i + 1).equals("-")) {
+            g2.drawImage(negativeSign, textScaleSmall, null);
+          } else {
+            g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+          }
           g2.translate(0.75/4, 0);
         }
       }
