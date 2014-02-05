@@ -70,9 +70,26 @@ class DrawObject extends AbstractDrawObject<Animation> {
     
   static {
     File[] files = (new File("art/hats/")).listFiles();
-    hatImages = new ImageFile[files.length];
-    for (int x=0; x<files.length; x++)
-      hatImages[x] = new ImageFile(files[x].getAbsolutePath());
+	int hatCounter = 0;
+	int nhats = 0;
+
+    for (int x=0; x<files.length; x++) {
+      final String fname = files[x].getAbsolutePath();
+      final String extension = fname.substring(fname.lastIndexOf(".") + 1, fname.length());
+      if (extension.toLowerCase().equals("png")) {
+         ++nhats;
+	  }
+    }
+
+    hatImages = new ImageFile[nhats];
+    for (int x=0; x<files.length; x++) {
+      final String fname = files[x].getAbsolutePath();
+      final String extension = fname.substring(fname.lastIndexOf(".") + 1, fname.length());
+      if (extension.toLowerCase().equals("png")) {
+		 System.out.println("loading hat " + fname);
+         hatImages[hatCounter++] = new ImageFile(fname);
+	  }
+    }
   }
     
 
@@ -312,9 +329,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
       for (int x=0; x<hats.length(); x++)
       {
                 		
-        image = hatImages[(int)hats.charAt(x)].image;
-        g2.translate(0, -hatscale/width*(image.getHeight()-2));
-        g2.drawImage(image, trans, null);
+        try {
+            image = hatImages[(int)hats.charAt(x)].image;
+            g2.translate(0, -hatscale/width*(image.getHeight()-2));
+            g2.drawImage(image, trans, null);
+        } catch (Exception e) {
+			System.out.println("x = " + x);
+			System.out.println("value at x = " + (int)hats.charAt(x));
+			System.out.println("hats string length: " + hats.length());
+			e.printStackTrace();
+        }
                 		
       }
       g2.setTransform(pushed2);

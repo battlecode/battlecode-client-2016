@@ -24,7 +24,16 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   private static Random hatGenerator = new Random();
   private static final int numHats;
   static {
-    numHats = (new File("art/hats/")).listFiles().length;
+    int nhats = 0;
+    File[] files = (new File("art/hats/")).listFiles();
+    for (int x = 0; x < files.length; ++x) {
+        final String fname = files[x].getAbsolutePath();
+        final String extension = fname.substring(fname.lastIndexOf(".") + 1, fname.length());
+        if (extension.toLowerCase().equals("png")) {
+            ++nhats;
+        }
+    }
+    numHats = nhats;
   }
 	
   public static class RobotInfo {
