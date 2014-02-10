@@ -302,7 +302,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public void setAttacking(MapLocation target, RobotLevel height) {
     actionType = ActionType.ATTACKING;
-    actionDelay += info.type.attackDelay;
+    //actionDelay += info.type.attackDelay;
     targetLoc = target;
     attackDir = dir;
     //componentType = component;
@@ -319,7 +319,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public void setMoving(boolean isMovingForward, int delay) {
     actionType = ActionType.MOVING;
     moving = (isMovingForward ? 1 : -1);
-    actionDelay += delay;
+    //actionDelay += delay;
     totalActionRounds = delay;
     updateDrawLoc();
   }
@@ -327,14 +327,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public void setAction(int totalrounds, ActionType type)
   {
     actionType = type;
-    actionDelay += totalrounds;
+    //actionDelay += totalrounds;
     totalActionRounds = totalrounds;
   }
     
   public void setAction(int totalrounds, ActionType type, MapLocation target)
   {
     actionType = type;
-    actionDelay += totalrounds;
+    //actionDelay += totalrounds;
     totalActionRounds = totalrounds;
     targetLoc = target;
   }
@@ -350,8 +350,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     if (actionDelay < 1) {
       actionType = ActionType.IDLE;
       totalActionRounds = 0;
-    } else {
-      actionDelay--;
     }
     
     updateDrawLoc();
