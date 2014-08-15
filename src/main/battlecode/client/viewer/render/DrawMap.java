@@ -198,7 +198,7 @@ public class DrawMap {
     }
     for (int x = 0; x < mapWidth; x++) for (int y = 0; y < mapHeight; y++) {
         TerrainTile typeHere = map[x][y];
-        if (typeHere != ROAD &&  typeHere != VOID)
+        if (typeHere != VOID)
         {
           continue;
         }
@@ -218,29 +218,7 @@ public class DrawMap {
         boolean botLeft = bot && left && (!botInBounds || !leftInBounds || map[x - 1][y + 1] == typeHere);
         boolean botRight = bot && right && (!botInBounds || !rightInBounds || map[x + 1][y + 1] == typeHere);
          
-        if(typeHere == ROAD)
-        {
-          // the bridges
-          subtileIndices[mapIndex(x, y, 1, 0)] = subtileIndices[mapIndex(x, y, 2, 0)]
-            = (byte)((topLeft || topRight) ? 2 : (top ? 1 : 0));
-          subtileIndices[mapIndex(x, y, 1, 3)] = subtileIndices[mapIndex(x, y, 2, 3)]
-            = (byte)((botLeft || botRight) ? 2 : (bot ? 1 : 0));
-          subtileIndices[mapIndex(x, y, 0, 1)] = subtileIndices[mapIndex(x, y, 0, 2)]
-            = (byte)((topLeft || botLeft) ? 2 : (left ? 1 : 0));
-          subtileIndices[mapIndex(x, y, 3, 1)] = subtileIndices[mapIndex(x, y, 3, 2)]
-            = (byte)((topRight || botRight) ? 2 : (right ? 1 : 0));
-          // the center
-          subtileIndices[mapIndex(x, y, 1, 1)] = (byte)((!top && !left) ? 2 : 1);
-          subtileIndices[mapIndex(x, y, 1, 2)] = (byte)((!bot && !left) ? 2 : 1);
-          subtileIndices[mapIndex(x, y, 2, 1)] = (byte)((!top && !right) ? 2 : 1);
-          subtileIndices[mapIndex(x, y, 2, 2)] = (byte)((!bot && !right) ? 2 : 1);
-          // the corners
-          subtileIndices[mapIndex(x, y, 0, 0)] = (byte)(topLeft ? 2 : 0);
-          subtileIndices[mapIndex(x, y, 3, 0)] = (byte)(topRight ? 2 : 0);
-          subtileIndices[mapIndex(x, y, 0, 3)] = (byte)(botLeft ? 2 : 0);
-          subtileIndices[mapIndex(x, y, 3, 3)] = (byte)(botRight ? 2 : 0);
-        }
-        else if(typeHere == VOID)
+        if(typeHere == VOID)
         {
           // inCorners, horiz, vert, outCorners, water
           // bridges
