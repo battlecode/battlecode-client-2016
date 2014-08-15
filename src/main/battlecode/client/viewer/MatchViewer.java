@@ -21,6 +21,7 @@ import battlecode.client.viewer.renderer3d.GLGameCanvas;
 import battlecode.client.viewer.renderer3d.GLGameRenderer;
 import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.serial.notification.StartNotification;
+import battlecode.common.MapLocation;
 import battlecode.server.Config;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -154,8 +155,7 @@ public class MatchViewer {
             int clampedXLoc = Math.max(0, Math.min((int)dbg.getX(), br.getDrawState().neutralsDensity.length - 1));
             int clampedYLoc = Math.max(0, Math.min((int)dbg.getY(), br.getDrawState().neutralsDensity[0].length - 1));
             info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
-                                    br.getDrawState()
-                                    .neutralsDensity[clampedXLoc][clampedYLoc]);
+                                    br.getDrawState().getGameMap().getOre(new MapLocation(clampedXLoc, clampedYLoc)));
           }
         };
       bc.addPaintObserver(paintObserver);
