@@ -35,7 +35,7 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridx++;
     energon = newLabel();
     layoutConstraints.gridx++;
-    forceMinimumSize(energon, " Health: 100.0 ");
+    forceMinimumSize(energon, " Health: 1000.0 ");
     flux = newLabel();
     layoutConstraints.gridx++;
     delay = newLabel();
@@ -45,7 +45,7 @@ public class InfoPanel extends JPanel {
     forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
     layoutConstraints.gridx++;
     location = newLabel();
-    forceMinimumSize(location, " Location: [99, 99] ");
+    forceMinimumSize(location, " Location: [-99999, -99999] ");
     layoutConstraints.gridx++;
     direction = newLabel();
 
