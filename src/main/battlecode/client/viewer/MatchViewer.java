@@ -154,8 +154,9 @@ public class MatchViewer {
             info.setTargetID(dbg.getFocusID());
             int clampedXLoc = Math.max(0, Math.min((int)dbg.getX(), br.getDrawState().neutralsDensity.length - 1));
             int clampedYLoc = Math.max(0, Math.min((int)dbg.getY(), br.getDrawState().neutralsDensity[0].length - 1));
+            // TODO: Alex broke this by making map origin not always 0,0
             info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
-                                    br.getDrawState().getGameMap().getOre(new MapLocation(clampedXLoc, clampedYLoc)));
+                                    br.getDrawState().getGameMap().getOre(clampedXLoc, clampedYLoc));
           }
         };
       bc.addPaintObserver(paintObserver);
