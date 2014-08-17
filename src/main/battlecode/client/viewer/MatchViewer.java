@@ -152,11 +152,13 @@ public class MatchViewer {
             dbg.setEnabled(bufferedMatch.isPaused());
             AbstractDrawObject<AbstractAnimation> robot = br.getRobotByID(dbg.getFocusID());
             info.setTargetID(dbg.getFocusID());
-            int clampedXLoc = Math.max(0, Math.min((int)dbg.getX(), br.getDrawState().neutralsDensity.length - 1));
-            int clampedYLoc = Math.max(0, Math.min((int)dbg.getY(), br.getDrawState().neutralsDensity[0].length - 1));
+            MapLocation origin = br.getDrawState().getGameMap().getMapOrigin();
+            MapLocation corner = new MapLocation(origin.x + br.getDrawState().getGameMap().getWidth() - 1, origin.y + br.getDrawState().getGameMap().getHeight() - 1);
+            int clampedXLoc = Math.max(origin.x, Math.min((int)dbg.getX(), corner.x));
+            int clampedYLoc = Math.max(origin.y, Math.min((int)dbg.getY(), corner.y));
             // TODO: Alex broke this by making map origin not always 0,0
             info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
-                                    br.getDrawState().getGameMap().getOre(clampedXLoc, clampedYLoc));
+                                    br.getDrawState().getGameMap().getOre(new MapLocation(clampedXLoc, clampedYLoc)));
           }
         };
       bc.addPaintObserver(paintObserver);
