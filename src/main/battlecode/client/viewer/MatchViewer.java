@@ -154,9 +154,10 @@ public class MatchViewer {
             info.setTargetID(dbg.getFocusID());
             MapLocation origin = br.getDrawState().getGameMap().getMapOrigin();
             MapLocation corner = new MapLocation(origin.x + br.getDrawState().getGameMap().getWidth() - 1, origin.y + br.getDrawState().getGameMap().getHeight() - 1);
-            int clampedXLoc = Math.max(origin.x, Math.min((int)dbg.getX(), corner.x));
-            int clampedYLoc = Math.max(origin.y, Math.min((int)dbg.getY(), corner.y));
-            // TODO: Alex broke this by making map origin not always 0,0
+            int x = (int) Math.floor(dbg.getX());
+            int y = (int) Math.floor(dbg.getY());
+            int clampedXLoc = Math.max(origin.x, Math.min(x, corner.x));
+            int clampedYLoc = Math.max(origin.y, Math.min(y, corner.y));
             info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
                                     br.getDrawState().getGameMap().getOre(new MapLocation(clampedXLoc, clampedYLoc)));
           }
