@@ -243,7 +243,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
           // make appear at the center
           float offset = ((1.0f - size) / 2);
-          g2.fill(new Rectangle2D.Float(i + offset, j + offset, size, size));
+          g2.fill(new Rectangle2D.Float(origin.x + i + offset, origin.y + j + offset, size, size));
         }
       }
 
