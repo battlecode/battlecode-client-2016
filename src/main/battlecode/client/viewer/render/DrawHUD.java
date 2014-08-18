@@ -34,10 +34,33 @@ class DrawHUD {
   private static final ImageFile rNuke = new ImageFile("art/nuke.png");
     
   private static final RobotType[] drawnTypes = new RobotType[] {
+    RobotType.FURBY,
+    RobotType.COMPUTER,
     RobotType.SOLDIER,
+    RobotType.BASHER,
+    RobotType.BUILDER,
+    RobotType.MINER,
+    RobotType.DRONE,
+    RobotType.TANK,
+    RobotType.COMMANDER,
+    RobotType.LAUNCHER,
+    RobotType.MISSILE,
+
+    RobotType.SUPPLYDEPOT,
+    RobotType.TECHNOLOGYINSTITUTE,
+    RobotType.BARRACKS,
+    RobotType.METABUILDER,
+    RobotType.HELIPAD,
+    RobotType.TRAININGFIELD,
+    RobotType.TANKFACTORY,
+    RobotType.MINERFACTORY,
+    RobotType.ENGINEERINGBAY,
+    RobotType.HANDWASHSTATION,
+    RobotType.BIOMECHATRONICRESEARCHLAB,
+    RobotType.AEROSPACELAB,
   };
   // [team][types]
-  private static final ImageFile [][] rImages = new ImageFile[3][3];		
+  private static final ImageFile [][] rImages = new ImageFile[3][23];
 
   static {
     negativeSign = (new ImageFile("art/negative.png")).image;

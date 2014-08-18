@@ -145,16 +145,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
         for (int i = -21; i <= 21; i++) for (int j = -21; j <= 21; j++) {
             int distSq = i * i + j * j;
             if (distSq <= viewrange) {
-              if (inAngleRange(i, j, info.type.sensorCosHalfTheta)) {
-                AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
-                trans.scale(1.0 / sensorImg.getWidth(), 1.0 / sensorImg.getHeight());
-                g2.drawImage(sensorImg, trans, null);
-              }
+            AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
+            trans.scale(1.0 / sensorImg.getWidth(), 1.0 / sensorImg.getHeight());
+            g2.drawImage(sensorImg, trans, null);
             }
-            if ((info.type.canAttack)
-                && info.type.attackRadiusMinSquared <= distSq
-                && distSq <= info.type.attackRadiusMaxSquared
-                && inAngleRange(i, j, info.type.attackCosHalfTheta)) {
+            if ((info.type.attackPower > 0)
+                && distSq <= info.type.attackRadiusSquared) {
               AffineTransform trans = AffineTransform.getTranslateInstance(i, j);
               trans.scale(1.0 / attackImg.getWidth(), 1.0 / attackImg.getHeight());
               g2.drawImage(attackImg, trans, null);
@@ -297,6 +293,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     AffineTransform trans = new AffineTransform();
     BufferedImage image = getTypeSprite();
     // load soldier from a horizontal sprite sheet
+    /*
     if (getType() == RobotType.SOLDIER) {
       // sprite sheet is East 0, clockwise
       // direction sheet is North 0, clockwise
@@ -308,6 +305,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       image = image.getSubimage(sheetIndex * soldierHeight, 0,
                                 soldierHeight, soldierHeight);
     }
+    */
     if (image == null) {
       System.out.println("missing image for type: " + info.type.toString());
     }
