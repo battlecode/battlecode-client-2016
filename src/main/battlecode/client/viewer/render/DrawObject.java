@@ -232,11 +232,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       drawStatusBars(g2, focused);
     
       drawRobotImage(g2);
-    
-      //PASTR capture ranges
-      if (getType() == RobotType.PASTR) {
-        drawPastrRange(g2, c);
-      }
         
       if ( (RenderConfiguration.showActionLines() || focused) && getType() == RobotType.SOLDIER)
       {
@@ -358,13 +353,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
         }
       }
     }
-  }
-
-  public void drawPastrRange(Graphics2D g2, Color c) {
-    g2.setColor(c);
-    g2.setStroke(broadcastStroke);
-    int size = (int)(Math.pow(GameConstants.PASTR_RANGE, .5) * 2);
-    g2.draw(new Ellipse2D.Float(-.5f * (size - 1), -.5f * (size - 1), size, size));
   }
 
   public void drawImmediate(Graphics2D g2, boolean focused) {

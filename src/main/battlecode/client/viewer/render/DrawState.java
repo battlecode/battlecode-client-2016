@@ -220,7 +220,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
                 DrawObject gUnit = gUnitEnt.getValue();
                 double checkRadiusSqr = 0;
                 if(gUnit.getType() == RobotType.SOLDIER) checkRadiusSqr = .1;
-                else if(gUnit.getType() == RobotType.PASTR) checkRadiusSqr = Math.pow(GameConstants.PASTR_RANGE, 1);
                 else continue;
                 MapLocation groundLoc = gUnit.getLocation();
                 //distance check
