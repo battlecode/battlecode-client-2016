@@ -37,7 +37,6 @@ class DrawHUD {
     RobotType.SOLDIER,
     //RobotType.WALL, not currently in the game
     RobotType.PASTR,
-    RobotType.NOISETOWER,
   };
   // [team][types]
   private static final ImageFile [][] rImages = new ImageFile[3][3];		

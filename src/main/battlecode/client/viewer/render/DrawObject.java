@@ -387,7 +387,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.setStroke(mediumStroke);
             
       switch (info.type) {
-      case NOISETOWER:
       case SOLDIER:
         g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
