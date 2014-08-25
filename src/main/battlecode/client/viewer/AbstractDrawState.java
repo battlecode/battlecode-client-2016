@@ -346,7 +346,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
   public void visitCaptureSignal(CaptureSignal s) {
     AbstractDrawObject robot = getRobot(s.getParentID());
-    robot.setAction(s.getType().captureTurns, ActionType.CAPTURING);
+    robot.setAction(s.getType().buildTurns, ActionType.CAPTURING);
   }
 
   public void visitSetDirectionSignal(SetDirectionSignal s) {
