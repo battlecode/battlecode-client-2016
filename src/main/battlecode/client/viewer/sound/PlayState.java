@@ -76,6 +76,7 @@ public class PlayState extends GameState {
 
     public Void visitResearchChangeSignal(ResearchChangeSignal s) {
     	for(int i=0; i<2; i++) {
+            /*
     		int nukeRound = (int)Math.round(s.progress[i][Upgrade.NUKE.ordinal()] * Upgrade.NUKE.numRounds);
 	    	if (nukeRound > 202 && !nukeFlags[i][0]) {
 	    		scheduleClip(GameSoundBank.NUKE_READY);
@@ -87,6 +88,7 @@ public class PlayState extends GameState {
 	    		scheduleClip(GameSoundBank.NUKE_SIREN);
 	    		nukeFlags[i][2] = true;
 	    	}
+            */
     	}
     	return null;
     }

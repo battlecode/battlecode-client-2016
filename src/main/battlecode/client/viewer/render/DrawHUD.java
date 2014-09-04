@@ -27,11 +27,11 @@ class DrawHUD {
   private static BufferedMatch match;
   private ImageFile avatar;
 
-  private static final ImageFile rPickaxe = new ImageFile("art/pickaxe.png");
-  private static final ImageFile rDefusion = new ImageFile("art/defusion.png");
-  private static final ImageFile rVision = new ImageFile("art/vision.png");
-  private static final ImageFile rFusion = new ImageFile("art/fusion.png");
-  private static final ImageFile rNuke = new ImageFile("art/nuke.png");
+  private static final ImageFile rImprovedBuilding = new ImageFile("art/pickaxe.png");
+  private static final ImageFile rImprovedMining = new ImageFile("art/defusion.png");
+  private static final ImageFile rRegenerativeMachinery = new ImageFile("art/vision.png");
+  private static final ImageFile rNeuromorphics = new ImageFile("art/fusion.png");
+  private static final ImageFile rControlledEcophagy = new ImageFile("art/nuke.png");
     
   private static final RobotType[] drawnTypes = new RobotType[] {
     RobotType.FURBY,
@@ -331,11 +331,11 @@ class DrawHUD {
       }
 			
 			
-      BufferedImage[] rImage = new BufferedImage[]{ rFusion.image,
-                                                    rVision.image,
-                                                    rDefusion.image,
-                                                    rPickaxe.image,
-                                                    rNuke.image, };
+      BufferedImage[] rImage = new BufferedImage[]{ rImprovedBuilding.image,
+                                                    rImprovedMining.image,
+                                                    rRegenerativeMachinery.image,
+                                                    rNeuromorphics.image,
+                                                    rControlledEcophagy.image, };
 
       g2.setTransform(pushed2);
       g2.translate(-0.5, 0.75);
@@ -347,49 +347,6 @@ class DrawHUD {
       for (int u = 0; u < Upgrade.values().length; u++) {
         double research = ds.getResearchProgress(r.getTeam(), u);
         if (research > 0) {
-          if (u == rImage.length-1)
-          {
-            g2.setTransform(pushed2);
-            g2.translate(-0.5, 0.75);
-            g2.translate(0.65*3/2-upgradewidth, 0);
-            g2.scale(upgradescale, upgradescale);
-								
-								
-            BufferedImage target = rImage[u];
-            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-            double finalsize = research>0.5 ? research+0.15 : 0.65;
-            trans.scale(finalsize / target.getWidth(), finalsize / target.getHeight());
-            g2.translate(0.65-finalsize/2, 1.2);
-//								g2.translate(-finalsize+0.65, -finalsize+0.65);
-            g2.drawImage(target, trans, null);
-								
-            g2.scale(finalsize/0.65, finalsize/0.65);
-            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-            g2.setColor(Color.gray);
-            g2.fill(rect);
-            double frac = Math.min(research, 1);
-            rect.width = frac / 2;
-            g2.setColor(Color.green);
-            g2.fill(rect);
-								
-            int roundsleft = (int)((1.00001-research)*Upgrade.NUKE.numRounds);
-            if (roundsleft < 55)
-            {
-              g2.setTransform(pushed2);
-              g2.translate(-0.5, 0.75);
-              g2.scale(upgradescale, upgradescale);
-              g2.translate(0, 1.6);
-									
-									
-              String resource = ""+roundsleft;
-              while (resource.length() < 2) resource = "0"+resource;
-              for (int i = 0; i < 2; i++) {
-                g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
-                g2.translate(0.75/4, 0);
-              }
-            }
-          } else
-          {
             BufferedImage target = rImage[u];
             AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
             trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
@@ -407,22 +364,6 @@ class DrawHUD {
             if (c == 1 || c == 3)
               g2.translate(-0.65*2, 0.6);
             c++;
-          }
-							
-							
-							
-//							Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-//							g2.setColor(Color.gray);
-//							g2.fill(rect);
-//							double frac = Math.min(research, 1);
-//							rect.width = frac / 2;
-//							g2.setColor(Color.green);
-//							g2.fill(rect);
-//
-//							g2.translate(0.65, 0);
-//							if (c == 2)
-//									g2.translate(-0.65*3, 0.6);
-//							c++;
         }
       }
 

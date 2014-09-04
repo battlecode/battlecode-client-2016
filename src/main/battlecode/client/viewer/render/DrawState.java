@@ -296,7 +296,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           obj.draw(g2, id == focusID || id == hoverID);
         }
       }
-        
+
+        /*
       AffineTransform pushed = g2.getTransform();
       for (Team t : new Team[]{Team.A, Team.B})
       {
@@ -332,6 +333,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         	
         	
       }
+        */
         
       if (!debug.isDragging()) {
         debug.setTarget(hoverID, hoverLoc, controlBits);
