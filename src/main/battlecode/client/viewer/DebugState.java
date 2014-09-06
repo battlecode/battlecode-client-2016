@@ -144,7 +144,7 @@ public class DebugState extends Observable implements MouseListener, MouseMotion
     else {
       Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
       RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
-      proxy.writeSignal(new SpawnSignal(spawnLoc, type, team, null));
+      proxy.writeSignal(new SpawnSignal(spawnLoc, type, team, null, 0));
     }
   }
 
