@@ -304,6 +304,7 @@ class DrawHUD {
       g2.translate(-0.5, -2.0);
       int[] counts = ds.getRobotCounts(r.getTeam());
 
+    /*
       g2.translate(0.1, 0);
       for (int x=0; x<drawnTypes.length; x++)
       {
@@ -329,6 +330,7 @@ class DrawHUD {
         if (x == 2)
           g2.translate(-1.95, 0.7);
       }
+        */
 			
 			
       BufferedImage[] rImage = new BufferedImage[]{ rImprovedBuilding.image,
@@ -348,6 +350,9 @@ class DrawHUD {
         double research = ds.getResearchProgress(r.getTeam(), u);
         if (research > 0) {
             BufferedImage target = rImage[u];
+            if (target == null) {
+                System.out.println("DARN at " + u + " " + rImage.length);
+            }
             AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
             trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
             g2.drawImage(target, trans, null);
