@@ -36,6 +36,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected int [] coreIDs = new int [2];
 //	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
+  protected Map<MapLocation, Integer> locationSupply = new HashMap<MapLocation, Integer>();
   protected static MapLocation origin = null;
   protected GameMap gameMap;
   protected int currentRound;
@@ -120,6 +121,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       mineLocs.clear();
       mineLocs.putAll(src.mineLocs);
         
+      locationSupply.clear();
+      locationSupply.putAll(src.locationSupply);
         
       fluxDeposits.clear();
       for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
@@ -182,6 +185,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
     return drawables;
+  }
+
+  protected int getSupplyAtLocation(MapLocation loc) {
+    if (locationSupply.containsKey(loc)) {
+      return locationSupply.get(loc);
+    } else {
+      return 0;
+    }
   }
 
   protected DrawObject getRobot(int id) {
@@ -423,6 +434,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   public void visitNeutralsTeamSignal(NeutralsTeamSignal s) {
     neutralsTeam = s.getTeams();
     neutralsTeamSet = true;
+  }
+
+  public void visitLocationSupplyChangeSignal(LocationSupplyChangeSignal s) {
+    locationSupply.put(s.getLocation(), s.getSupply());
   }
 }
 
