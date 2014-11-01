@@ -37,6 +37,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 //	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
   protected Map<MapLocation, Integer> locationSupply = new HashMap<MapLocation, Integer>();
+  protected Map<MapLocation, Integer> locationOre = new HashMap<MapLocation, Integer>();
   protected static MapLocation origin = null;
   protected GameMap gameMap;
   protected int currentRound;
@@ -123,6 +124,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
       locationSupply.clear();
       locationSupply.putAll(src.locationSupply);
+
+      locationOre.clear();
+      locationOre.putAll(src.locationOre);
         
       fluxDeposits.clear();
       for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
@@ -190,6 +194,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected int getSupplyAtLocation(MapLocation loc) {
     if (locationSupply.containsKey(loc)) {
       return locationSupply.get(loc);
+    } else {
+      return 0;
+    }
+  }
+
+  protected int getOreAtLocation(MapLocation loc) {
+    if (locationOre.containsKey(loc)) {
+      return locationOre.get(loc);
     } else {
       return 0;
     }
@@ -438,6 +450,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitLocationSupplyChangeSignal(LocationSupplyChangeSignal s) {
     locationSupply.put(s.getLocation(), s.getSupply());
+  }
+
+  public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
+    locationOre.put(s.getLocation(), s.getOre());
   }
 }
 
