@@ -272,7 +272,7 @@ class DrawHUD {
         g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
         if (r.getTeam() == Team.A) g2.setColor(Color.red);
         else g2.setColor(Color.blue);
-        double percent = Math.min(ds.getTeamResources(r.getTeam())/(float)GameConstants.WIN_QTY, 1.0);
+        double percent = Math.min(ds.getTeamResources(r.getTeam())/5000, 1.0);
         int height = (int)(underImg.getHeight()*percent);
         g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
         g2.setColor(Color.white);
