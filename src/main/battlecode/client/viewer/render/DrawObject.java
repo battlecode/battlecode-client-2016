@@ -23,7 +23,6 @@ import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.ActionType;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.Upgrade;
@@ -424,7 +423,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     return new MortarAttackAnim(loc, target);
   }
 
-  public EnergonTransferAnim createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux) {
+  public EnergonTransferAnim createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux) {
     return new EnergonTransferAnim(this, loc, amt, isFlux);
   }
 

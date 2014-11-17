@@ -11,13 +11,11 @@ import javax.vecmath.Vector4f;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotLevel;
 
 import battlecode.common.TerrainTile;
 
 class GLEnergonTransferAnim extends GLAnimation {
 	private final MapLocation target;
-	private final RobotLevel targetHeight;
 	private final float amount;
 	private final float distance;
 	
@@ -30,7 +28,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 	/*private static final int NUM_POINTS = 16;
 	private static Vector3f[] points = null;*/
 
-	public GLEnergonTransferAnim(GLDrawObject src, MapLocation target, RobotLevel height, float amount, boolean isFlux) {
+	public GLEnergonTransferAnim(GLDrawObject src, MapLocation target, float amount, boolean isFlux) {
 		super(10);
 		//super((int)Math.round(amount / GameConstants.ENERGON_TRANSFER_RATE));
 
@@ -40,7 +38,6 @@ class GLEnergonTransferAnim extends GLAnimation {
 				points[i] = new Vector3f((float)Math.random(), 0.0f, -0.05f + 0.1f * (float)Math.random());
 			}
 		}*/
-		this.targetHeight = height;
 		this.src = src;
 		this.target = target;
 		this.amount = amount;
@@ -79,7 +76,7 @@ class GLEnergonTransferAnim extends GLAnimation {
 	}
 
 	public Object clone() {
-		GLEnergonTransferAnim clone = new GLEnergonTransferAnim(src, target, targetHeight, amount, color==fluxColor);
+		GLEnergonTransferAnim clone = new GLEnergonTransferAnim(src, target, amount, color==fluxColor);
 		clone.roundsToLive = roundsToLive;
 		return clone;
 	}

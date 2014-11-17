@@ -30,7 +30,6 @@ import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
 import battlecode.client.viewer.renderer3d.GLDrawObject;
 import battlecode.client.viewer.ActionType;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;

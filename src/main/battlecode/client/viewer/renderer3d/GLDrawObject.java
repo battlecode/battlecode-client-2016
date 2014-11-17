@@ -20,7 +20,6 @@ import battlecode.client.viewer.ActionType;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 
@@ -37,7 +36,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     //private GLMortarAttackAnim mortarAttackAnim = null;
 	//private GLExplosionAnim mortarExplosionAnim = null;
 
-    private RobotLevel targetHeight = null;
     // point list of the circle of spawn radius
     public Vector3f[] spawnCircle = null;
    
@@ -47,7 +45,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 
     public GLDrawObject(GLDrawObject copy) {
 		super(copy);
-		targetHeight = copy.targetHeight;
 		if(animations.containsKey(ENERGON_TRANSFER)) {
 			GLEnergonTransferAnim a = (GLEnergonTransferAnim)animations.get(ENERGON_TRANSFER);
 			a.setSource(this);
@@ -55,10 +52,6 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
     }
 
     public static void loadAll() {
-    }
-
-    public RobotLevel getTargetHeight() {
-		return targetHeight;
     }
 
     public GLEnergonTransferAnim getEnergonTransferAnim() {
@@ -106,17 +99,16 @@ class GLDrawObject extends AbstractDrawObject<GLAnimation> {
 		return new GLMortarAttackAnim(loc, target);
 	}
 
-	public GLEnergonTransferAnim createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux) {
-		return new GLEnergonTransferAnim(this,loc,height,amt,isFlux);
+	public GLEnergonTransferAnim createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux) {
+		return new GLEnergonTransferAnim(this,loc,amt,isFlux);
 	}
 
 	public GLExplosionAnim createMortarExplosionAnim(GLAnimation mortarAttackAnim) {
 		return new GLExplosionAnim(false,((GLMortarAttackAnim)mortarAttackAnim).getTargetLoc(), 1.8);
 	}
     
-    public void setAttacking(MapLocation target, RobotLevel height) {
-		super.setAttacking(target, height);
-		targetHeight = height;
+    public void setAttacking(MapLocation target) {
+		super.setAttacking(target);
     }
 
 }

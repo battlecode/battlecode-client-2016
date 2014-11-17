@@ -3,7 +3,6 @@ package battlecode.client.viewer;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotLevel;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.client.util.ImageFile;
@@ -103,7 +102,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public abstract Animation createMortarAttackAnim(MapLocation target);
 
   public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
-  public abstract Animation createEnergonTransferAnim(MapLocation loc, RobotLevel height, float amt, boolean isFlux);
+  public abstract Animation createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux);
 	
 	
   protected String hats;
@@ -300,7 +299,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
       || animations.get(AbstractAnimation.AnimationType.MORTAR_EXPLOSION) != null;
   }
 
-  public void setAttacking(MapLocation target, RobotLevel height) {
+  public void setAttacking(MapLocation target) {
     actionType = ActionType.ATTACKING;
     //actionDelay += info.type.attackDelay;
     targetLoc = target;
@@ -312,7 +311,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   }
 
   public void setFluxTransfer(AbstractDrawObject<Animation> target, double amount) {
-    Animation anim = createEnergonTransferAnim(target.getLocation(),target.getType().level,(float)amount,true);
+    Animation anim = createEnergonTransferAnim(target.getLocation(),(float)amount,true);
     animations.put(ENERGON_TRANSFER,anim);
   }
 

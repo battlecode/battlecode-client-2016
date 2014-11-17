@@ -259,7 +259,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitAttackSignal(AttackSignal s) {
     DrawObject robot = getRobot(s.getRobotID());
-    robot.setAttacking(s.getTargetLoc(), s.getTargetHeight());
+    robot.setAttacking(s.getTargetLoc());
     robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
   }
     
@@ -269,7 +269,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
   public void visitShieldSignal(ShieldSignal s) {
 //    	getRobot(s.robotID).setAction(1, ActionType.SHIELDING);
-    getRobot(s.robotID).setAttacking(null, null);
+    getRobot(s.robotID).setAttacking(null);
   }
 
   public void visitBroadcastSignal(BroadcastSignal s) {
