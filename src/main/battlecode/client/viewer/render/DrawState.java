@@ -186,6 +186,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
       
 
       // cow densities
+    /*
       double maxDensity = 0.0;
       for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
         for (int j = 0; j < neutralsDensity[0].length; j++) {
@@ -245,6 +246,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
           g2.fill(new Rectangle2D.Float(origin.x + i + offset, origin.y + j + offset, size, size));
         }
       }
+    */
 
       /*
       for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {

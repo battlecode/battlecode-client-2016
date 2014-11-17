@@ -44,9 +44,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected RoundStats stats = null;
   protected double[] teamResources = new double[2];
   protected double[][] researchProgress = new double[2][5];
-  public int[][] neutralsDensity = new int[2][2];
-  public int[][] neutralsTeam = new int[2][2];
-  public boolean neutralsTeamSet = false;
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -154,11 +151,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       for (int t = 0; t < researchProgress.length; t++)
         for (int r = 0; r < researchProgress[t].length; r++)
           researchProgress[t][r] = src.researchProgress[t][r];
-
-      // these are never modified just created by parser
-      neutralsDensity = src.neutralsDensity;
-      neutralsTeam = src.neutralsTeam;
-      neutralsTeamSet = src.neutralsTeamSet;
     }
 
   public DrawObject getHQ(Team t) {
@@ -437,15 +429,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     
   public void visitNodeBirthSignal(NodeBirthSignal s) {
     encampments.add(s.location);
-  }
-
-  public void visitNeutralsDensitySignal(NeutralsDensitySignal s) {
-    neutralsDensity = s.getAmounts();
-  }
-
-  public void visitNeutralsTeamSignal(NeutralsTeamSignal s) {
-    neutralsTeam = s.getTeams();
-    neutralsTeamSet = true;
   }
 
   public void visitLocationSupplyChangeSignal(LocationSupplyChangeSignal s) {
