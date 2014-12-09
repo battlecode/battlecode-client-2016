@@ -11,8 +11,6 @@ import battlecode.world.GameMap;
 
 public final class BufferedMatch {
 
-	
-
 	private ClientProxy proxy;
 
 	private MatchHeader header = null;

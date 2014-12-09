@@ -4,6 +4,7 @@ import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.Upgrade;
@@ -356,7 +357,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-    obj.setMoving(s.isMovingForward(), s.getDelay());
+    obj.setMoving(s.isMovingForward());
   }
     
   public void visitCaptureSignal(CaptureSignal s) {
@@ -398,14 +399,21 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         
   }
 
-  public void visitActionDelaySignal(ActionDelaySignal s) {
-    int[] robotIDs = s.getRobotIDs();
-    double[] actionDelays = s.getMovementDelays();
-    for (int i = 0; i < robotIDs.length; i++) {
-      getRobot(robotIDs[i]).setActionDelay(actionDelays[i]);
-    }
+//  public void visitActionDelaySignal(ActionDelaySignal s) {
+//    int[] robotIDs = s.getRobotIDs();
+//    double[] actionDelays = s.getMovementDelays();
+//    for (int i = 0; i < robotIDs.length; i++) {
+//      getRobot(robotIDs[i]).setActionDelay(actionDelays[i]);
+//    }
+//  }
+  
+  public void visitRobotInfoSignal(RobotInfoSignal s){
+	  int robotID = s.getID();
+	  RobotInfo robotInfo = s.getRobotInfo();
+	  getRobot(robotID).setTurnsUntilAttack(robotInfo.turnsUntilAttack);
+	  getRobot(robotID).setTurnsUntilMovement(robotInfo.turnsUntilMovement);
   }
-
+  
   public void visitLoadSignal(LoadSignal s) {
     getRobot(s.passengerID).load();
   }

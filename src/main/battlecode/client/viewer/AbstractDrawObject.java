@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected static int moveDelay;
   private static Random hatGenerator = new Random();
@@ -86,8 +87,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 		
     actionType = copy.actionType;
     totalActionRounds = copy.totalActionRounds;
-    actionDelay = copy.actionDelay;
-    
+    turnsUntilAttack = copy.turnsUntilAttack;
+    turnsUntilMovement = copy.turnsUntilMovement;
+   
     hats = copy.hats;
 
     for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
@@ -121,7 +123,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected int broadcast = 0;
   protected long controlBits = 0;
   protected int bytecodesUsed = 0;
-  protected double actionDelay = 0;
+  protected double turnsUntilAttack = 0;
+  protected double turnsUntilMovement = 0;
   protected final int visualBroadcastRadius = 2;
   protected boolean turnedOn = true;
   protected boolean loaded = false;
@@ -160,6 +163,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected int getMoveDelay() {
     return moveDelay;
   }
+  
 
   public int getID() {
     return robotID;
@@ -225,10 +229,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     return bytecodesUsed;
   }
 
-  public double getActionDelay() {
-    return actionDelay;
-  }
+//  public double getActionDelay() {
+//    return actionDelay;
+//  }
 
+  public double getTurnsUntilAttack(){
+	  return turnsUntilAttack;
+  }
+  
+  public double getTurnsUntilMovement(){
+	  return turnsUntilMovement;
+  }
+  
   public ActionType getAction() {
     return actionType;
   }
@@ -282,8 +294,12 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     bytecodesUsed = used;
   }
 
-  public void setActionDelay(double delay) {
-    actionDelay = delay;
+  public void setTurnsUntilAttack(double delay){
+	  turnsUntilAttack = delay;
+  }
+  
+  public void setTurnsUntilMovement(double delay){
+	  turnsUntilMovement = delay;
   }
 
   public void setRegen() { regen = 2; }
@@ -301,8 +317,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public void setAttacking(MapLocation target) {
     actionType = ActionType.ATTACKING;
-    //actionDelay += info.type.attackDelay;
-    targetLoc = target;
+   targetLoc = target;
     attackDir = dir;
     //componentType = component;
     //if (info.type == RobotType.CHAINER) {
@@ -315,28 +330,26 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     animations.put(ENERGON_TRANSFER,anim);
   }
 
-  public void setMoving(boolean isMovingForward, int delay) {
+  public void setMoving(boolean isMovingForward) {
     actionType = ActionType.MOVING;
     moving = (isMovingForward ? 1 : -1);
-    //actionDelay += delay;
-    totalActionRounds = delay;
+//    totalActionRounds = delay;
     updateDrawLoc();
   }
-    
-  public void setAction(int totalrounds, ActionType type)
-  {
-    actionType = type;
-    //actionDelay += totalrounds;
-    totalActionRounds = totalrounds;
+ 
+  public void setAction(int totalrounds, ActionType type){
+	  actionType = type;
+	  //actionDelay += totalrounds;
+	  totalActionRounds = totalrounds;
   }
-    
-  public void setAction(int totalrounds, ActionType type, MapLocation target)
-  {
-    actionType = type;
-    //actionDelay += totalrounds;
-    totalActionRounds = totalrounds;
-    targetLoc = target;
+
+  public void setAction(int totalrounds, ActionType type, MapLocation target){
+	  actionType = type;
+	  //actionDelay += totalrounds;
+	  totalActionRounds = totalrounds;
+	  targetLoc = target;
   }
+  
   public void destroyUnit() {
     actionType = ActionType.IDLE;
     energon = 0;
@@ -346,7 +359,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   }
 
   public void updateRound() {
-    if (actionDelay < 1) {
+//    if (actionDelay < 1) {
+	if (turnsUntilMovement < 1 && turnsUntilAttack < 1) {
       actionType = ActionType.IDLE;
       totalActionRounds = 0;
     }
@@ -382,7 +396,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     } else {
       // still waiting perfection of delay system
       // float dist = .5f;
-      float dist = (float)Math.max(Math.min(moving * (actionDelay / totalActionRounds), 1), 0);
+      float dist = (float)Math.max(Math.min(moving * (turnsUntilMovement / totalActionRounds), 1), 0);
       //System.out.println("moving: " + moving + "actionDelay: " + actionDelay + "total " + totalActionRounds);
       drawX = -dist * dir.dx;
       drawY = -dist * dir.dy;

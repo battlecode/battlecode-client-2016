@@ -14,7 +14,8 @@ public class InfoPanel extends JPanel {
   private JLabel[] indicatorStrings;
   private JLabel robotID;
   private JLabel bytecodes;
-  private JLabel delay;
+  private JLabel turnsUntilMovement;
+  private JLabel turnsUntilAttack;
   private JLabel energon;
   private JLabel flux;
   private JLabel location;
@@ -38,8 +39,11 @@ public class InfoPanel extends JPanel {
     forceMinimumSize(energon, " Health: 1000.0 ");
     flux = newLabel();
     layoutConstraints.gridx++;
-    delay = newLabel();
-    forceMinimumSize(delay, " Actiondelay: 100.0 ");
+    turnsUntilMovement = newLabel();
+    forceMinimumSize(turnsUntilMovement, " Movement: 100.0 ");
+    layoutConstraints.gridx++;
+    turnsUntilAttack = newLabel();
+    forceMinimumSize(turnsUntilAttack, "Attack: 100,0");
     layoutConstraints.gridx++;
     bytecodes = newLabel();
     forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
@@ -107,7 +111,8 @@ public class InfoPanel extends JPanel {
     setEnergon(robot.getEnergon(), robot.getShields());
     setFlux(robot.getFlux());
     setBytecodesUsed(robot.getBytecodesUsed());
-    setActionDelay(robot.getActionDelay());
+    setTurnsUntilAttack(robot.getTurnsUntilAttack());
+    setTurnsUntilMovement(robot.getTurnsUntilMovement());
     location.setText(String.format(" Location: %s ",robot.getLocation()));
     direction.setText("");
     //direction.setText(robot.getDirection().toString());
@@ -119,7 +124,7 @@ public class InfoPanel extends JPanel {
     }
   }
 
-  private void setEnergon(double amount, double shields) {
+private void setEnergon(double amount, double shields) {
     if (amount > Integer.MAX_VALUE / 2)
       energon.setText(String.format(" Health: lots ", amount));
     else
@@ -135,9 +140,14 @@ public class InfoPanel extends JPanel {
     bytecodes.setText(String.format(" Bytecodes used: %d ", bytecodesUsed));
   }
 
-  private void setActionDelay(double actionDelay) {
-    delay.setText(String.format(" Actiondelay: %.1f ", actionDelay));
+  private void setTurnsUntilMovement(double delay) {
+    turnsUntilMovement.setText(String.format(" Movement: %.1f ", delay));
   }
+  
+  private void setTurnsUntilAttack(double delay){
+	turnsUntilAttack.setText(String.format(" Attack: %.1f ", delay));
+  }
+  
 
   private void setIndicatorString(int index, String str) {
     indicatorStrings[index].setText(str);

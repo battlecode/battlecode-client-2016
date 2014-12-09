@@ -274,7 +274,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
-      float frac = (float)Math.min(1-(actionDelay / Math.max(totalActionRounds,1)), 1);
+      float frac = (float)Math.min(1-(turnsUntilMovement / Math.max(totalActionRounds,1)), 1);
       if (totalActionRounds == 0)
         frac = 1;
       rect.width = frac;
