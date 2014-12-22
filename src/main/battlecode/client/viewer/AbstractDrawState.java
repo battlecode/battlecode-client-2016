@@ -359,6 +359,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
     obj.setMoving(s.isMovingForward());
   }
+
+  public void visitCastSignal(CastSignal s) {
+    //TODO(npinsker): update this with various spells
+    
+    DrawObject obj = getRobot(s.getRobotID());
+    MapLocation oldloc = obj.loc;
+    obj.setLocation(s.getTargetLoc());
+    obj.setDirection(oldloc.directionTo(s.getTargetLoc()));
+    obj.setMoving(true);
+  }
     
   public void visitCaptureSignal(CaptureSignal s) {
     AbstractDrawObject robot = getRobot(s.getParentID());
