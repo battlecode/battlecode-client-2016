@@ -38,7 +38,6 @@ class DrawHUD {
     RobotType.COMPUTER,
     RobotType.SOLDIER,
     RobotType.BASHER,
-    RobotType.BUILDER,
     RobotType.MINER,
     RobotType.DRONE,
     RobotType.TANK,
@@ -49,14 +48,11 @@ class DrawHUD {
     RobotType.SUPPLYDEPOT,
     RobotType.TECHNOLOGYINSTITUTE,
     RobotType.BARRACKS,
-    RobotType.METABUILDER,
     RobotType.HELIPAD,
     RobotType.TRAININGFIELD,
     RobotType.TANKFACTORY,
     RobotType.MINERFACTORY,
-    RobotType.ENGINEERINGBAY,
     RobotType.HANDWASHSTATION,
-    RobotType.BIOMECHATRONICRESEARCHLAB,
     RobotType.AEROSPACELAB,
   };
   // [team][types]

@@ -44,7 +44,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected int currentRound;
   protected RoundStats stats = null;
   protected double[] teamResources = new double[2];
-  protected double[][] researchProgress = new double[2][5];
+  protected double[][] researchProgress = new double[2][4];
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
 
