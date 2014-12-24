@@ -34,7 +34,7 @@ class DrawHUD {
   private static final ImageFile rControlledEcophagy = new ImageFile("art/nuke.png");
     
   private static final RobotType[] drawnTypes = new RobotType[] {
-    RobotType.FURBY,
+    RobotType.BEAVER,
     RobotType.COMPUTER,
     RobotType.SOLDIER,
     RobotType.BASHER,
