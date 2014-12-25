@@ -37,8 +37,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected int [] coreIDs = new int [2];
 //	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
-  protected Map<MapLocation, Integer> locationSupply = new HashMap<MapLocation, Integer>();
-  protected Map<MapLocation, Integer> locationOre = new HashMap<MapLocation, Integer>();
+  protected Map<MapLocation, Double> locationSupply = new HashMap<MapLocation, Double>();
+  protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation, Double>();
   protected static MapLocation origin = null;
   protected GameMap gameMap;
   protected int currentRound;
@@ -184,19 +184,19 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     return drawables;
   }
 
-  protected int getSupplyAtLocation(MapLocation loc) {
+  protected double getSupplyAtLocation(MapLocation loc) {
     if (locationSupply.containsKey(loc)) {
       return locationSupply.get(loc);
     } else {
-      return 0;
+      return 0.0;
     }
   }
 
-  protected int getOreAtLocation(MapLocation loc) {
+  protected double getOreAtLocation(MapLocation loc) {
     if (locationOre.containsKey(loc)) {
       return locationOre.get(loc);
     } else {
-      return 0;
+      return 0.0;
     }
   }
 
