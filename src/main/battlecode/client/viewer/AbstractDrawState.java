@@ -314,15 +314,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
   }
 
-  public void visitFluxChangeSignal(FluxChangeSignal s) {
-//        int[] robotIDs = s.getRobotIDs();
-//        double[] flux = s.flux;
-//        for (int i = 0; i < robotIDs.length; i++) {
-//            getRobot(robotIDs[i]).setFlux(flux[i]);
-//        }
-//        teamResources = s.flux;
+  public void visitTeamOreSignal(TeamOreSignal s) {
     for (int x=0; x<teamResources.length; x++)
-      teamResources[x] = s.flux[x];
+      teamResources[x] = s.ore[x];
   }
 
   public void visitResearchChangeSignal(ResearchChangeSignal s) {
