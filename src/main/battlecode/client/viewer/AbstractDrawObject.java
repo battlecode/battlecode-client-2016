@@ -73,6 +73,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     dir = copy.dir;
     energon = copy.energon;
     shields = copy.shields;
+    supplyLevel = copy.supplyLevel;
+    xp = copy.xp;
+    missileCount = copy.missileCount;
     flux = copy.flux;
     moving = copy.moving;
     targetLoc = copy.targetLoc;
@@ -132,7 +135,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected int robotID;
   protected Direction attackDir;
   protected boolean isSuiciding = false;
-
+  protected double supplyLevel = 0;
+  protected int missileCount = 0;
+  protected int xp = 0;
 
   protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
@@ -205,6 +210,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     return dir;
   }
 
+  public double getSupplyLevel() {
+    return supplyLevel;
+  }
+
+  public int getMissileCount() {
+    return missileCount;
+  }
+
+  public int getXP() {
+    return xp;
+  }
+
   public double getEnergon() {
     return energon;
   }
@@ -266,6 +283,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     broadcast++;
   }
 
+  public void setXP(int xp) {
+    this.xp = xp;
+  }
+
+  public void setSupplyLevel(double supplyLevel) {
+    this.supplyLevel = supplyLevel;
+  }
+
+  public void setMissileCount(int missileCount) {
+    this.missileCount = missileCount;
+  }
+
   public void setEnergon(double energon) {
     this.energon = energon;
   }
@@ -325,7 +354,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     //}
   }
 
-  public void setFluxTransfer(AbstractDrawObject<Animation> target, double amount) {
+  public void setSupplyTransfer(AbstractDrawObject<Animation> target, double amount) {
     Animation anim = createEnergonTransferAnim(target.getLocation(),(float)amount,true);
     animations.put(ENERGON_TRANSFER,anim);
   }
@@ -354,6 +383,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     actionType = ActionType.IDLE;
     energon = 0;
     shields = 0;
+    missileCount = 0;
+    xp = 0;
+    supplyLevel = 0;
     animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
     animations.remove(ENERGON_TRANSFER);
   }

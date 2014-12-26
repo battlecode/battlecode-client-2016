@@ -1,6 +1,7 @@
 package battlecode.client.viewer;
 
 import battlecode.common.GameConstants;
+import battlecode.common.RobotType;
 
 
 import java.awt.*;
@@ -17,7 +18,8 @@ public class InfoPanel extends JPanel {
   private JLabel turnsUntilMovement;
   private JLabel turnsUntilAttack;
   private JLabel energon;
-  private JLabel flux;
+  private JLabel supplyLevel;
+  private JLabel extraInformation;
   private JLabel location;
   private JLabel direction;
   private GridBagConstraints layoutConstraints;
@@ -37,7 +39,8 @@ public class InfoPanel extends JPanel {
     energon = newLabel();
     layoutConstraints.gridx++;
     forceMinimumSize(energon, " Health: 1000.0 ");
-    flux = newLabel();
+    supplyLevel = newLabel();
+    forceMinimumSize(supplyLevel, " Supply: 100000.0 ");
     layoutConstraints.gridx++;
     turnsUntilMovement = newLabel();
     forceMinimumSize(turnsUntilMovement, " Movement: 100.0 ");
@@ -50,6 +53,9 @@ public class InfoPanel extends JPanel {
     layoutConstraints.gridx++;
     location = newLabel();
     forceMinimumSize(location, " Location: [-99999, -99999] ");
+    layoutConstraints.gridx++;
+    extraInformation = newLabel();
+    forceMinimumSize(extraInformation, " 6 missiles ready ");
     layoutConstraints.gridx++;
     direction = newLabel();
 
@@ -109,10 +115,17 @@ public class InfoPanel extends JPanel {
   public void setRobot(AbstractDrawObject<AbstractAnimation> robot) {
     robotID.setText(robotID.getText()+robot.getType()+" ");
     setEnergon(robot.getEnergon(), robot.getShields());
-    setFlux(robot.getFlux());
     setBytecodesUsed(robot.getBytecodesUsed());
     setTurnsUntilAttack(robot.getTurnsUntilAttack());
     setTurnsUntilMovement(robot.getTurnsUntilMovement());
+    setSupplyLevel(robot.getSupplyLevel());
+    if (robot.getType() == RobotType.COMMANDER) {
+        setExtraInformation(String.format("%d XP", robot.getXP()));
+    } else if (robot.getType() == RobotType.LAUNCHER) {
+        setExtraInformation(String.format("%d missiles ready", robot.getMissileCount()));
+    } else {
+        setExtraInformation(".....");
+    }
     location.setText(String.format(" Location: %s ",robot.getLocation()));
     direction.setText("");
     //direction.setText(robot.getDirection().toString());
@@ -131,9 +144,8 @@ private void setEnergon(double amount, double shields) {
       energon.setText(String.format(" Health: %.1f ", amount));
   }
 
-  private void setFlux(double amount) {
-    flux.setText("");
-    //flux.setText(String.format(" Flux: %.1f ", amount));
+  private void setSupplyLevel(double amount) {
+    supplyLevel.setText(String.format(" Supply: %.1f ", amount));
   }
 
   private void setBytecodesUsed(int bytecodesUsed) {
@@ -146,6 +158,10 @@ private void setEnergon(double amount, double shields) {
   
   private void setTurnsUntilAttack(double delay){
 	turnsUntilAttack.setText(String.format(" Attack: %.1f ", delay));
+  }
+
+  private void setExtraInformation(String s) {
+    extraInformation.setText(s);
   }
   
 

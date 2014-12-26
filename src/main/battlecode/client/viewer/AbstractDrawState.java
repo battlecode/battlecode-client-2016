@@ -263,15 +263,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     robot.setAttacking(s.getTargetLoc());
     robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
   }
-    
-  public void visitHatSignal(HatSignal s) {
-    getRobot(s.getRobotID()).addHat(s.hat);
-  }
-    
-  public void visitShieldSignal(ShieldSignal s) {
-//    	getRobot(s.robotID).setAction(1, ActionType.SHIELDING);
-    getRobot(s.robotID).setAttacking(null);
-  }
 
   public void visitBroadcastSignal(BroadcastSignal s) {
     getRobot(s.getRobotID()).setBroadcast();
@@ -292,28 +283,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     robot.destroyUnit();
   }
 
-
-  public void visitEnergonChangeSignal(EnergonChangeSignal s) {
-    int[] robotIDs = s.getRobotIDs();
-    double[] energon = s.getEnergon();
-    for (int i = 0; i < robotIDs.length; i++) {
-      int team = getRobot(robotIDs[i]).getTeam().ordinal();
-      if (team < 2)
-        teamHP[team] -= getRobot(robotIDs[i]).getEnergon();
-      getRobot(robotIDs[i]).setEnergon(energon[i]);
-      if (team < 2)
-        teamHP[team] += energon[i];
-    }
-  }
-    
-  public void visitShieldChangeSignal(ShieldChangeSignal s) {
-    int[] robotIDs = s.getRobotIDs();
-    double[] shield = s.getShield();
-    for (int i = 0; i < robotIDs.length; i++) {
-      getRobot(robotIDs[i]).setShields(shield[i]);
-    }
-  }
-
   public void visitTeamOreSignal(TeamOreSignal s) {
     for (int x=0; x<teamResources.length; x++)
       teamResources[x] = s.ore[x];
@@ -325,10 +294,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         researchProgress[t][r] = s.progress[t][r];
   }
 
-  public void visitTransferFluxSignal(TransferFluxSignal s) {
+  public void visitTransferSupplySignal(TransferSupplySignal s) {
     DrawObject from = getRobot(s.fromID);
     DrawObject to = getRobot(s.toID);
-    //from.setFluxTransfer(to,s.amount);
+    from.setSupplyTransfer(to,s.amount);
   }
 
   public void visitIndicatorStringSignal(IndicatorStringSignal s) {
@@ -363,15 +332,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     obj.setDirection(oldloc.directionTo(s.getTargetLoc()));
     obj.setMoving(true);
   }
-    
-  public void visitCaptureSignal(CaptureSignal s) {
-    AbstractDrawObject robot = getRobot(s.getParentID());
-    robot.setAction(s.getType().buildTurns, ActionType.CAPTURING);
-  }
-
-  public void visitSetDirectionSignal(SetDirectionSignal s) {
-    getRobot(s.getRobotID()).setDirection(s.getDirection());
-  }
 
   public DrawObject spawnRobot(SpawnSignal s) {
     DrawObject spawn = createDrawObject(s.getType(), s.getTeam(), s.getRobotID());
@@ -402,45 +362,16 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
         
   }
-
-//  public void visitActionDelaySignal(ActionDelaySignal s) {
-//    int[] robotIDs = s.getRobotIDs();
-//    double[] actionDelays = s.getMovementDelays();
-//    for (int i = 0; i < robotIDs.length; i++) {
-//      getRobot(robotIDs[i]).setActionDelay(actionDelays[i]);
-//    }
-//  }
   
   public void visitRobotInfoSignal(RobotInfoSignal s){
 	  int robotID = s.getID();
 	  RobotInfo robotInfo = s.getRobotInfo();
 	  getRobot(robotID).setTurnsUntilAttack(robotInfo.turnsUntilAttack);
 	  getRobot(robotID).setTurnsUntilMovement(robotInfo.turnsUntilMovement);
-  }
-  
-  public void visitLoadSignal(LoadSignal s) {
-    getRobot(s.passengerID).load();
-  }
-
-  public void visitUnloadSignal(UnloadSignal s) {
-    getRobot(s.passengerID).unload(s.unloadLoc);
-  }
-
-  public void visitTurnOnSignal(TurnOnSignal s) {
-    for (int i : s.robotIDs)
-      getRobot(i).setPower(true);
-  }
-
-  public void visitRegenSignal(RegenSignal s) {
-    // getRobot(s.robotID).setRegen();
-  }
-
-  public void visitTurnOffSignal(TurnOffSignal s) {
-    getRobot(s.robotID).setPower(false);
-  }
-    
-  public void visitNodeBirthSignal(NodeBirthSignal s) {
-    encampments.add(s.location);
+      getRobot(robotID).setEnergon(robotInfo.health);
+      getRobot(robotID).setSupplyLevel(robotInfo.supplyLevel);
+      getRobot(robotID).setXP(robotInfo.xp);
+      getRobot(robotID).setMissileCount(robotInfo.missileCount);
   }
 
   public void visitLocationSupplyChangeSignal(LocationSupplyChangeSignal s) {

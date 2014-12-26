@@ -42,12 +42,9 @@ import battlecode.world.signal.BroadcastSignal;
 import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.ControlBitsSignal;
 import battlecode.world.signal.DeathSignal;
-import battlecode.world.signal.EnergonChangeSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.MatchObservationSignal;
-import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
-import battlecode.world.signal.SetDirectionSignal;
 import battlecode.world.signal.SpawnSignal;
 
 import com.jogamp.opengl.util.texture.Texture;
