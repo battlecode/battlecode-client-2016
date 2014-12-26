@@ -106,6 +106,9 @@ public abstract class BaseRenderer {
     case 'U':
       RenderConfiguration.toggleCows();
       break;
+    case 'V':
+      RenderConfiguration.toggleIndicatorDots();
+      break;
     case 'X':
       RenderConfiguration.toggleExplosions();
       break;

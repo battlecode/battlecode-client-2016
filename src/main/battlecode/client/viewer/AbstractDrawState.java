@@ -45,6 +45,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected RoundStats stats = null;
   protected double[] teamResources = new double[2];
   protected double[][] researchProgress = new double[2][4];
+  protected List<IndicatorDotSignal> newIndicatorDots = new ArrayList<IndicatorDotSignal>();
+  protected List<IndicatorLineSignal> newIndicatorLines = new ArrayList<IndicatorLineSignal>();
+  protected IndicatorDotSignal [] indicatorDots = new IndicatorDotSignal [0];
+  protected IndicatorLineSignal [] indicatorLines = new IndicatorLineSignal [0];
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -152,6 +156,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       for (int t = 0; t < researchProgress.length; t++)
         for (int r = 0; r < researchProgress[t].length; r++)
           researchProgress[t][r] = src.researchProgress[t][r];
+
+      indicatorDots = src.indicatorDots;
+      indicatorLines = src.indicatorLines;
     }
 
   public DrawObject getHQ(Team t) {
@@ -256,6 +263,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       //	mineFlux(obj);
       //}
     }
+    indicatorDots = newIndicatorDots.toArray(new IndicatorDotSignal [newIndicatorDots.size()]);
+    indicatorLines = newIndicatorLines.toArray(new IndicatorLineSignal [newIndicatorLines.size()]);
+    newIndicatorDots.clear();
+    newIndicatorLines.clear();
   }
 
   public void visitAttackSignal(AttackSignal s) {
@@ -304,6 +315,14 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     if (!RenderConfiguration.isTournamentMode()) {
       getRobot(s.getRobotID()).setString(s.getStringIndex(), s.getNewString());
     }
+  }
+
+  public void visitIndicatorDotSignal(IndicatorDotSignal s) {
+    newIndicatorDots.add(s);
+  }
+
+  public void visitIndicatorLineSignal(IndicatorLineSignal s) {
+    newIndicatorLines.add(s);
   }
 
   public void visitControlBitsSignal(ControlBitsSignal s) {

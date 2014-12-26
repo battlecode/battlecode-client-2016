@@ -1,10 +1,13 @@
 package battlecode.client.viewer.render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -25,6 +28,8 @@ import battlecode.common.Upgrade;
 import battlecode.common.GameConstants;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
+import battlecode.world.signal.IndicatorDotSignal;
+import battlecode.world.signal.IndicatorLineSignal;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
 
@@ -41,6 +46,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
   protected static final Color linkB = new Color(0.f,0.f,1.f);
   protected static final Color linkBoth = new Color(.75f,0.f,.75f);
   protected static final ImageFile encampment = new ImageFile("art/encampment.png");
+  protected static final Stroke indicatorLineStroke = new BasicStroke(0.075f);
 
   private static class Factory implements GameStateFactory<DrawState> {
 
@@ -165,120 +171,25 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         return;
       }
 
-//		AffineTransform pushed2 = g2.getTransform();
-		
-      // Woohoo the power grid!
-//		g2.setStroke(new BasicStroke(.15f));
-//		g2.translate(.5,.5);
-//		for (Link l : links) {
-//			if(l.connected[0])
-//				if(l.connected[1])
-//					g2.setColor(linkBoth);
-//				else
-//					g2.setColor(linkA);
-//			else
-//				if(l.connected[1])
-//					g2.setColor(linkB);
-//				else
-//					g2.setColor(linkNone);
-//			g2.drawLine(l.from.x,l.from.y,l.to.x,l.to.y);
-//		}
-      
-
-      // cow densities
-    /*
-      double maxDensity = 0.0;
-      for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
-        for (int j = 0; j < neutralsDensity[0].length; j++) {
-          maxDensity = Math.max(maxDensity, neutralsDensity[i][j]);
+      for(IndicatorDotSignal s : indicatorDots) {
+        if(RenderConfiguration.showIndicatorDots(s.team)&&(focusID==-1||focusID==s.robotID)) {
+            g2.setColor(new Color(s.red,s.green,s.blue));
+            g2.fill(new Ellipse2D.Double(s.location.x+.1,s.location.y+.1,.8,.8));
         }
       }
-      
-      double thresholdDensity = Math.max(1 / (1 - GameConstants.NEUTRALS_TURN_DECAY), .1 * maxDensity);
-      if (RenderConfiguration.threshCows()) {
-        maxDensity -= thresholdDensity;
-      }
-      
-      for (int i = 0; i < neutralsDensity.length && RenderConfiguration.showCows(); i++) {
-        for (int j = 0; j < neutralsDensity[0].length; j++) {
-          //obtain color by checking proximity to pastrs
-          boolean harvBlue = false, harvRed = false;
-          double density = (int)neutralsDensity[i][j];
-          if(RenderConfiguration.threshCows()) {
-            if(density < thresholdDensity) continue;
-            else density -= thresholdDensity;
-          }
-          if (neutralsTeamSet) {
-              switch (neutralsTeam[i][j]) {
-                case 1: harvRed = true; break;
-                case 2: harvBlue = true; break;
-                case 3: harvRed = true; harvBlue = true;
-                default: break;
-              }
-          } else {
-              for (Map.Entry<Integer, DrawObject> gUnitEnt : groundUnits.entrySet())
-              {
-                DrawObject gUnit = gUnitEnt.getValue();
-                double checkRadiusSqr = 0;
-                if(gUnit.getType() == RobotType.SOLDIER) checkRadiusSqr = .1;
-                else continue;
-                MapLocation groundLoc = gUnit.getLocation();
-                //distance check
-                double distSqrToRobot = Math.pow(groundLoc.x - i, 2) + Math.pow(groundLoc.y - j, 2);
-                if(distSqrToRobot <= checkRadiusSqr) {
-                  if (gUnit.getTeam() == Team.A) harvRed = true;
-                  else harvBlue = true;
-                  if(harvBlue && harvRed) continue;
-                }
-              }
-          }
-          float lum = (float)(.5 * density / maxDensity + .25);
-          lum = Math.max(Math.min(lum, 1.0f), 0.0f);
-          float r = harvRed ? lum : 0;
-          float b = harvBlue ? lum : 0;
-          float g = !(harvRed || harvBlue) ? lum : 0;
-          g2.setColor(new Color(r, g, b, 1.0f));
-          // cap at the max possible size
-          float maxPossible = 2000;
-          float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
-          // make appear at the center
-          float offset = ((1.0f - size) / 2);
-          g2.fill(new Rectangle2D.Float(origin.x + i + offset, origin.y + j + offset, size, size));
+      g2.setStroke(indicatorLineStroke);
+      for(IndicatorLineSignal s : indicatorLines) {
+        if(RenderConfiguration.showIndicatorDots(s.team)) {
+            g2.setColor(new Color(s.red,s.green,s.blue));
+            g2.draw(new Line2D.Double(s.loc1.x+.5,s.loc1.y+.5,s.loc2.x+.5,s.loc2.y+.5));
         }
       }
-    */
-
-      /*
-      for (Entry<MapLocation, Team> entry : mineLocs.entrySet()) {
-        MapLocation loc = entry.getKey();
-        Team team = entry.getValue();
-		
-        if (team == Team.A) g2.setColor(new Color(1.f,0.f,0.f,.5f));
-        else if (team == Team.B) g2.setColor(new Color(0.f,0.f,1.f,.5f));
-        else g2.setColor(new Color(0.1f, 0.1f, 0.1f, 0.5f));
-		
-        g2.fill(new Rectangle2D.Float(loc.x+0.1f, loc.y+0.1f, .9f, .9f));
+      for(IndicatorDotSignal s : indicatorDots) {
+        if(RenderConfiguration.showIndicatorDots(s.team)&&(focusID==-1||focusID==s.robotID)) {
+            g2.setColor(new Color(s.red,s.green,s.blue));
+            g2.fill(new Ellipse2D.Double(s.location.x+.1,s.location.y+.1,.8,.8));
+        }
       }
-      */
-      /*
-      BufferedImage encampSprite = encampment.image;
-      for (MapLocation m : getEncampmentLocations()) {
-        AffineTransform trans = AffineTransform.getTranslateInstance(m.x, m.y);
-        trans.scale(1.0 / encampSprite.getWidth(), 1.0 / encampSprite.getHeight());
-        g2.drawImage(encampSprite, trans, null);
-        g2.setColor(new Color(1.0f,0.0f,1.0f,1.0f));
-      }
-      */
-        
-//		g2.setColor(new Color(1.f,0.f,0.f,.5f));
-//		MapLocation coreLoc = coreLocs.get(Team.A);
-//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
-//		
-//		g2.setColor(new Color(0.f,0.f,1.f,.5f));
-//		coreLoc = coreLocs.get(Team.B);
-//		g2.fill(new Ellipse2D.Float(coreLoc.x-1,coreLoc.y-1,2,2));
-
-//		g2.setTransform(pushed2);
 
       for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
 

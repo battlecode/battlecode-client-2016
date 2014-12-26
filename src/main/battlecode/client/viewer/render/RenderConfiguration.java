@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 
+import battlecode.common.Team;
+
 public class RenderConfiguration {
 
   private static RenderConfiguration instance = null;
@@ -22,6 +24,7 @@ public class RenderConfiguration {
   // the next two are related, only thresh cows if they are shown
   private static boolean cows = false;
   private static boolean threshCows = false;
+  private static int indicatorDotToggles;
 
   private static boolean tournamentMode = false;
 
@@ -59,6 +62,7 @@ public class RenderConfiguration {
   public static void toggleSpawnRadii() { spawnRadii = !spawnRadii; }
   public static void toggleAmbientMusic(){ambientMusic = !ambientMusic;}
   public static void toggleShowHats() { hats = !hats; }
+  public static void toggleIndicatorDots() { indicatorDotToggles++; }
 
   public static void toggleCows() {
     if (!cows) {
@@ -89,6 +93,7 @@ public class RenderConfiguration {
   public static boolean showHats() { return hats; }
   public static boolean showCows  () { return cows; }
   public static boolean threshCows  () { return threshCows; }
+  public static boolean showIndicatorDots(Team t) { return ((indicatorDotToggles>>t.ordinal())&1)!=0; }
   
   public static boolean playAmbientMusic(){return ambientMusic;}
 
