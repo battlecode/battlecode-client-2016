@@ -158,6 +158,8 @@ public class MatchViewer {
             int y = (int) Math.floor(dbg.getY());
             int clampedXLoc = Math.max(origin.x, Math.min(x, corner.x));
             int clampedYLoc = Math.max(origin.y, Math.min(y, corner.y));
+            clampedXLoc = clampedXLoc - origin.x;
+            clampedYLoc = clampedYLoc - origin.y;
             info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
                                     br.getDrawState().getGameMap().getInitialOre(new MapLocation(clampedXLoc, clampedYLoc)) - br.getDrawState().getOreAtLocation(new MapLocation(clampedXLoc, clampedYLoc)),
                                     br.getDrawState().getSupplyAtLocation(new MapLocation(clampedXLoc, clampedYLoc)));

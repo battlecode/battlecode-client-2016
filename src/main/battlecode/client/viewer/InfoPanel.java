@@ -52,12 +52,13 @@ public class InfoPanel extends JPanel {
     forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
     layoutConstraints.gridx++;
     location = newLabel();
-    forceMinimumSize(location, " Location: [-99999, -99999] ");
+    forceMinimumSize(location, " Location: [-99999, 99999] ");
+    layoutConstraints.gridx++;
+    direction = newLabel();
+    forceMinimumSize(direction, " NORTH_EAST ");
     layoutConstraints.gridx++;
     extraInformation = newLabel();
     forceMinimumSize(extraInformation, " 6 missiles ready ");
-    layoutConstraints.gridx++;
-    direction = newLabel();
 
     layoutConstraints.gridx = 0;
     for (int i = 0; i < indicatorStrings.length; i++) {
@@ -88,7 +89,7 @@ public class InfoPanel extends JPanel {
     if (robot == null) {
       clear();
       robotID.setText("Ore: " + ore);
-      indicatorStrings[0].setText("Location: " + Double.toString(x) + ", " + Integer.toString(y));
+      indicatorStrings[0].setText("Location: " + Integer.toString(x) + ", " + Integer.toString(y));
       indicatorStrings[1].setText("Supply on ground: " + Double.toString(supply));
       //robotID.setText("No robot selected");
     }
@@ -128,7 +129,7 @@ public class InfoPanel extends JPanel {
     }
     location.setText(String.format(" Location: %s ",robot.getLocation()));
     direction.setText("");
-    //direction.setText(robot.getDirection().toString());
+    direction.setText(robot.getDirection().toString());
     for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
       String ids = robot.getIndicatorString(i);
       if (ids == null)
