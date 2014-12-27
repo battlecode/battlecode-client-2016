@@ -252,7 +252,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
     if (showEnergon) {
-      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0:1, 1, 0.15f);
+      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = Math.min((float) (energon / maxEnergon), 1);
@@ -264,25 +264,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.fill(rect);
     }
       
-    // action bar, capturing only 2014
-    if (actionType == ActionType.CAPTURING)
-    {
-      Rectangle2D.Float rect;
-      if(showEnergon)
-        rect = new Rectangle2D.Float(0, 1.15f, 1, 0.15f);
-      else
-        rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+    //building progress bar
+    if (aliveRounds < buildDelay){
+    	Rectangle2D.Float rect;
+      rect = new Rectangle2D.Float(0, 0, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
-      float frac = (float)Math.min(1-(turnsUntilMovement / Math.max(totalActionRounds,1)), 1);
-      if (totalActionRounds == 0)
-        frac = 1;
+      float frac = ((float)aliveRounds)/buildDelay;
       rect.width = frac;
-      if (frac < 0)
-        frac = 0;
-      // only one action nowadays
-      g2.setColor(new Color(0.3f, 0.3f, 1.0f));
-      g2.fill(rect);
+      g2.setColor(new Color(1f, 0f, 0f));
+      g2.fill(rect);   	
     }
   }
 

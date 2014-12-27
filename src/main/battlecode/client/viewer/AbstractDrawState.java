@@ -357,6 +357,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     spawn.setLocation(s.getLoc());
 //        spawn.setDirection(s.getDirection());
     spawn.setDirection(Direction.NORTH);
+    spawn.setBuildDelay(s.getDelay());
         
     putRobot(s.getRobotID(), spawn);
     tryAddHQ(spawn);
@@ -370,7 +371,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitSpawnSignal(SpawnSignal s) {
     spawnRobot(s);
-        
   }
 
   public void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
