@@ -183,7 +183,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void draw(Graphics2D g2, boolean focused) {
+  public void draw(Graphics2D g2, boolean focused, boolean lastRow) {
 
     if (RenderConfiguration.showRangeHatch() && focused) {
       drawRangeHatch(g2);
@@ -192,7 +192,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     AffineTransform pushed = g2.getTransform();
     g2.translate(getDrawX(), getDrawY());
-    drawImmediate(g2, focused);
+    drawImmediate(g2, focused, lastRow);
     g2.setTransform(pushed); // pop    
     
     // these animations shouldn't be drawn in the HUD, and they expect
@@ -205,7 +205,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     drawAction(g2);
   }
 
-  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD) {
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD, boolean lastRow) {
     
     Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
     c = c.brighter().brighter().brighter();
@@ -224,7 +224,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       }
 
     } else {
-      drawStatusBars(g2, focused);
+      drawStatusBars(g2, focused, lastRow);
     
       drawRobotImage(g2);
         
@@ -249,10 +249,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void drawStatusBars(Graphics2D g2, boolean focused) {
+  public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
     if (showEnergon) {
-      Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0:1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = Math.min((float) (energon / maxEnergon), 1);
@@ -352,13 +352,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void drawImmediate(Graphics2D g2, boolean focused) {
-    drawImmediate(g2, focused, false);
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow) {
+    drawImmediate(g2, focused, false, lastRow);
   }
 
   // used by the HUD
-  public void drawImmediateNoScale(Graphics2D g2, boolean focused) {
-    drawImmediate(g2, focused, true);
+  public void drawImmediateNoScale(Graphics2D g2, boolean focused, boolean lastRow) {
+    drawImmediate(g2, focused, true, lastRow);
   }
 
   private boolean isAttacking() {
