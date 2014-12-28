@@ -363,7 +363,14 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.setStroke(mediumStroke);
             
       switch (info.type) {
-      case SOLDIER:
+      case BEAVER:
+  		case SOLDIER:
+  		case BASHER:
+  		case MINER:
+  		case DRONE:
+  		case TANK:
+  		case COMMANDER:
+  		case TOWER:
         g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
         break;
@@ -384,6 +391,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
         g2.draw(new Ellipse2D.Double(targetLoc.x+.5-artilleryRadius,targetLoc.y+.5-artilleryRadius,2*artilleryRadius,2*artilleryRadius));
         break;
+      default:
+        	
       }
     }
   }
