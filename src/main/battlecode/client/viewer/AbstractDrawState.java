@@ -1,26 +1,40 @@
 package battlecode.client.viewer;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.Direction;
-import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.common.Upgrade;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
-import battlecode.world.InternalRobot;
-import battlecode.world.signal.*;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import battlecode.world.signal.AttackSignal;
+import battlecode.world.signal.BroadcastSignal;
+import battlecode.world.signal.BytecodesUsedSignal;
+import battlecode.world.signal.CastSignal;
+import battlecode.world.signal.ControlBitsSignal;
+import battlecode.world.signal.DeathSignal;
+import battlecode.world.signal.IndicatorDotSignal;
+import battlecode.world.signal.IndicatorLineSignal;
+import battlecode.world.signal.IndicatorStringSignal;
+import battlecode.world.signal.LocationOreChangeSignal;
+import battlecode.world.signal.LocationSupplyChangeSignal;
+import battlecode.world.signal.MovementOverrideSignal;
+import battlecode.world.signal.MovementSignal;
+import battlecode.world.signal.ResearchChangeSignal;
+import battlecode.world.signal.RobotInfoSignal;
+import battlecode.world.signal.SelfDestructSignal;
+import battlecode.world.signal.SpawnSignal;
+import battlecode.world.signal.TeamOreSignal;
+import battlecode.world.signal.TransferSupplySignal;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
@@ -32,10 +46,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Integer, FluxDepositState> fluxDeposits;
   protected Set<MapLocation> encampments;
   protected double[] teamHP = new double[2];
-//	protected Map<Team, List<DrawObject>> archons;
   protected Map<Team, DrawObject> hqs;
   protected int [] coreIDs = new int [2];
-//	protected Map<Team,MapLocation> coreLocs = new EnumMap<Team,MapLocation>(Team.class);
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
   protected Map<MapLocation, Double> locationSupply = new HashMap<MapLocation, Double>();
   protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation, Double>();
@@ -49,6 +61,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected List<IndicatorLineSignal> newIndicatorLines = new ArrayList<IndicatorLineSignal>();
   protected IndicatorDotSignal [] indicatorDots = new IndicatorDotSignal [0];
   protected IndicatorLineSignal [] indicatorLines = new IndicatorLineSignal [0];
+  protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings 
+  
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
 
@@ -106,6 +120,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public AbstractDrawState() {
     hqs = new EnumMap<Team, DrawObject>(Team.class);
+    totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(RobotType.class));
+    totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(RobotType.class));
+
+    totalRobotTypeCount.get(Team.A).put(RobotType.HQ, 1);
+    totalRobotTypeCount.get(Team.B).put(RobotType.HQ, 1);
+    totalRobotTypeCount.get(Team.A).put(RobotType.TOWER, 6);
+    totalRobotTypeCount.get(Team.B).put(RobotType.TOWER, 6);
   }
 
   protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
@@ -159,6 +180,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
       indicatorDots = src.indicatorDots;
       indicatorLines = src.indicatorLines;
+      
+      totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(src.totalRobotTypeCount.get(Team.A)));
+      totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(src.totalRobotTypeCount.get(Team.B)));
     }
 
   public DrawObject getHQ(Team t) {
@@ -173,6 +197,26 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         counts[e.getValue().getType().ordinal()]++;
     }
     return counts;
+  }
+  
+  public void incrementRobotTypeCount(Team team, RobotType type) {
+    if (totalRobotTypeCount.get(team).containsKey(type)) {
+        totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) + 1);
+    } else {
+        totalRobotTypeCount.get(team).put(type, 1);
+    }
+  }
+  
+  public void decrementRobotTypeCount(Team team, RobotType type){
+  	totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
+  }
+  
+  public int getRobotTypeCount(Team team, RobotType type){
+  	if (totalRobotTypeCount.get(team).containsKey(type)) {
+  		return totalRobotTypeCount.get(team).get(type);
+  	} else {
+  		return 0;
+  	}
   }
 
   public DrawObject getPowerCore(Team t) {
@@ -290,7 +334,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     if (team < 2) {
       teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
     }
-
+    decrementRobotTypeCount(robot.getTeam(), robot.getRobotType());
     robot.destroyUnit();
   }
 
@@ -371,6 +415,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitSpawnSignal(SpawnSignal s) {
     spawnRobot(s);
+    incrementRobotTypeCount(s.getTeam(), s.getType());
   }
 
   public void visitBytecodesUsedSignal(BytecodesUsedSignal s) {

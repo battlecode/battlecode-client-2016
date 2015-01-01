@@ -191,6 +191,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public Team getTeam() {
     return info.team;
   }
+  
+  public RobotType getRobotType(){
+  	return info.type;
+  }
 
   public float getDrawX() {
     return loc.x + drawX;
