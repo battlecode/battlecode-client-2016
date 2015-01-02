@@ -354,7 +354,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
       switch (info.type) {
       case BEAVER:
       case SOLDIER:
-      case BASHER:
       case MINER:
       case DRONE:
       case TANK:
