@@ -12,12 +12,14 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
+import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.ActionType;
@@ -61,6 +63,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   private static final double shieldsRadius = 0;//Math.sqrt(RobotType.SHIELDS.attackRadiusMaxSquared);
   private static final double soldierRadius = 0;//Math.sqrt(RobotType.SOLDIER.attackRadiusMaxSquared);
   private static final double artilleryRadius = 0;//Math.sqrt(GameConstants.ARTILLERY_SPLASH_RADIUS_SQUARED);
+    private static final double bashRadius = Math.sqrt(GameConstants.BASH_RADIUS_SQUARED);
   private static final Color shieldColor = new Color(150,150,255,150);
   private static final Color regenColor = new Color(150,255,150,150);
   private final DrawState overallstate;
@@ -94,7 +97,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
   public DrawObject(RobotType type, Team team, int id, DrawState state) {
     super(type, team, id);
-    img = ir.getResource(info, getAvatarPath(info));
+    img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
     maxEnergon = type.maxHealth;
     overallstate = state;
   }
@@ -115,7 +118,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     for (RobotType type : RobotType.values()) {
       for (Team team : Team.values()) {
         RobotInfo robotInfo = new RobotInfo(type, team);
-        ir.getResource(robotInfo, getAvatarPath(robotInfo));
+        ir.getResource(robotInfo, getAvatarPath(robotInfo), !type.isBuilding);
       }
     }
   }
@@ -291,20 +294,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
     // could be used for rotations or such, remember origin for rotation
     AffineTransform trans = new AffineTransform();
     BufferedImage image = getTypeSprite();
-    // load soldier from a horizontal sprite sheet
-    /*
-    if (getType() == RobotType.SOLDIER) {
-      // sprite sheet is East 0, clockwise
-      // direction sheet is North 0, clockwise
-      int sheetIndex = (dir.ordinal() - Direction.EAST.ordinal() + 8) % 8;
-      int soldierHeight = image.getHeight();
-      if (!isAttacking()) {
-        sheetIndex += 8;
-      }
-      image = image.getSubimage(sheetIndex * soldierHeight, 0,
-                                soldierHeight, soldierHeight);
-    }
-    */
     if (image == null) {
       System.out.println("missing image for type: " + info.type.toString());
     }
@@ -373,9 +362,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
             
       switch (info.type) {
       case SOLDIER:
+      case DRONE:
+      case TOWER:
         g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
         break;
+      case BASHER:
+	  g2.draw(new Ellipse2D.Double(getDrawX() + .5 - bashRadius,
+				       getDrawY() + .5 - bashRadius,
+				       bashRadius * 2, bashRadius * 2));
+	  break;
       case HQ:
         BufferedImage target;
         if (getTeam() == Team.A) {
@@ -398,12 +394,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
   private BufferedImage getTypeSprite() {
-    return img.image;
+      if (info.type.isBuilding) {
+	  return img.image;
+      } else {
+	  return ((SpriteSheetFile) img).spriteForDirection(dir);
+      }
   }
 
   public void setTeam(Team team) {
     super.setTeam(team);
-    img = ir.getResource(info, getAvatarPath(info));
+    img = ir.getResource(info, getAvatarPath(info), !info.type.isBuilding);
   }
 
   public void setMaxEnergon(double maxEnergon) {
