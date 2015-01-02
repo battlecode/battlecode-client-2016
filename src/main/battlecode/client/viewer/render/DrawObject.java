@@ -186,7 +186,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void draw(Graphics2D g2, boolean focused) {
+  public void draw(Graphics2D g2, boolean focused, boolean lastRow) {
 
     if (RenderConfiguration.showRangeHatch() && focused) {
       drawRangeHatch(g2);
@@ -195,7 +195,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     AffineTransform pushed = g2.getTransform();
     g2.translate(getDrawX(), getDrawY());
-    drawImmediate(g2, focused);
+    drawImmediate(g2, focused, lastRow);
     g2.setTransform(pushed); // pop    
     
     // these animations shouldn't be drawn in the HUD, and they expect
@@ -208,7 +208,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     drawAction(g2);
   }
 
-  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD) {
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD, boolean lastRow) {
     
     Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
     c = c.brighter().brighter().brighter();
@@ -227,7 +227,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       }
 
     } else {
-      drawStatusBars(g2, focused);
+      drawStatusBars(g2, focused, lastRow);
     
       drawRobotImage(g2);
         
@@ -252,10 +252,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void drawStatusBars(Graphics2D g2, boolean focused) {
+  public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
     if (showEnergon) {
-      Rectangle2D.Float rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = Math.min((float) (energon / maxEnergon), 1);
@@ -267,25 +267,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.fill(rect);
     }
       
-    // action bar, capturing only 2014
-    if (actionType == ActionType.CAPTURING)
-    {
-      Rectangle2D.Float rect;
-      if(showEnergon)
-        rect = new Rectangle2D.Float(0, 1.15f, 1, 0.15f);
-      else
-        rect = new Rectangle2D.Float(0, 1, 1, 0.15f);
+    //building progress bar
+    if (aliveRounds < buildDelay){
+    	Rectangle2D.Float rect;
+      rect = new Rectangle2D.Float(0, 0, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
-      float frac = (float)Math.min(1-(turnsUntilMovement / Math.max(totalActionRounds,1)), 1);
-      if (totalActionRounds == 0)
-        frac = 1;
+      float frac = ((float)aliveRounds)/buildDelay;
       rect.width = frac;
-      if (frac < 0)
-        frac = 0;
-      // only one action nowadays
-      g2.setColor(new Color(0.3f, 0.3f, 1.0f));
-      g2.fill(rect);
+      g2.setColor(new Color(1f, 0f, 0f));
+      g2.fill(rect);   	
     }
   }
 
@@ -341,13 +332,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void drawImmediate(Graphics2D g2, boolean focused) {
-    drawImmediate(g2, focused, false);
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow) {
+    drawImmediate(g2, focused, false, lastRow);
   }
 
   // used by the HUD
-  public void drawImmediateNoScale(Graphics2D g2, boolean focused) {
-    drawImmediate(g2, focused, true);
+  public void drawImmediateNoScale(Graphics2D g2, boolean focused, boolean lastRow) {
+    drawImmediate(g2, focused, true, lastRow);
   }
 
   private boolean isAttacking() {
@@ -361,8 +352,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.setStroke(mediumStroke);
             
       switch (info.type) {
+      case BEAVER:
       case SOLDIER:
+      case BASHER:
+      case MINER:
       case DRONE:
+      case TANK:
+      case COMMANDER:
       case TOWER:
         g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
@@ -389,6 +385,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
                                   targetLoc.x + 0.5, targetLoc.y + 0.5));
         g2.draw(new Ellipse2D.Double(targetLoc.x+.5-artilleryRadius,targetLoc.y+.5-artilleryRadius,2*artilleryRadius,2*artilleryRadius));
         break;
+      default:
+        	
       }
     }
   }

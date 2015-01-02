@@ -138,6 +138,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected double supplyLevel = 0;
   protected int missileCount = 0;
   protected int xp = 0;
+  protected int buildDelay=0;
+  protected int aliveRounds=0;
 
   protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
@@ -188,6 +190,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public Team getTeam() {
     return info.team;
+  }
+  
+  public RobotType getRobotType(){
+  	return info.type;
   }
 
   public float getDrawX() {
@@ -307,6 +313,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     flux = f;
   }
 
+  public void setBuildDelay(int delay){
+  	this.buildDelay = delay;
+  }
+  
   public void setTeam(Team team) {
     info = new RobotInfo(info.type, team);
   }
@@ -392,11 +402,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public void updateRound() {
 //    if (actionDelay < 1) {
-	if (turnsUntilMovement < 1 && turnsUntilAttack < 1) {
-      actionType = ActionType.IDLE;
-      totalActionRounds = 0;
-    }
-    
+		if (turnsUntilMovement < 1 && turnsUntilAttack < 1) {
+	      actionType = ActionType.IDLE;
+	      totalActionRounds = 0;
+	    }
+		
+		aliveRounds += 1;
+		
     updateDrawLoc();
 
     broadcast = (broadcast << 1) & 0x000FFFFF;

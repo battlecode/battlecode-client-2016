@@ -206,7 +206,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
             hoverLoc = obj.getLocation();
             controlBits = obj.getControlBits();
           }
-          obj.draw(g2, id == focusID || id == hoverID);
+          obj.draw(g2, id == focusID || id == hoverID, obj.getLocation().y==origin.y+gameMap.getHeight()-1);
         }
       }
 

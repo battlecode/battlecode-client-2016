@@ -3,6 +3,7 @@ package battlecode.client.viewer.render;
 import battlecode.common.*;
 import battlecode.client.util.*;
 import battlecode.client.viewer.BufferedMatch;
+import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -25,8 +26,7 @@ class DrawHUD {
   private static BufferedImage[] numbers;
   private static BufferedImage negativeSign;
   private static BufferedMatch match;
-  private ImageFile avatar;
-
+ 
   private static final ImageFile rImprovedBuilding = new ImageFile("art/pickaxe.png");
   private static final ImageFile rImprovedMining = new ImageFile("art/defusion.png");
   private static final ImageFile rRegenerativeMachinery = new ImageFile("art/vision.png");
@@ -55,6 +55,8 @@ class DrawHUD {
     RobotType.HANDWASHSTATION,
     RobotType.AEROSPACELAB,
   };
+ 
+  
   // [team][types]
   private static final ImageFile [][] rImages = new ImageFile[3][23];
 
@@ -90,7 +92,6 @@ class DrawHUD {
   private float width;
   private float spriteScale;
   private String footerText = "";
-  private int points = 0;
   private static final AffineTransform textScale =
     AffineTransform.getScaleInstance(1 / 64.0, 1 / 64.0);
   private static final AffineTransform textScaleSmall =
@@ -99,7 +100,7 @@ class DrawHUD {
   public DrawHUD(DrawState ds, Team team, BufferedMatch match) {
     this.ds = ds;
     this.team = team;
-    this.match = match;
+    DrawHUD.match = match;
     setRatioWidth(2.0f / 9.0f);
   }
 
@@ -113,7 +114,6 @@ class DrawHUD {
   }
 
   public void setPointsText(int value) {
-    points = value;
   }
 
   public void setFooterText(String text) {
@@ -127,113 +127,145 @@ class DrawHUD {
     bWins = b;
   }
 
-  public void tryLoadAvatar() {
-    if(avatar==null) {
-      String teamName = team==Team.A ? match.getTeamA() : match.getTeamB();
-      if(teamName!=null) {
-        avatar = new ImageFile("avatars/" + teamName+".png");
-      }
-    }
-  }
-
   public void draw(Graphics2D g2) {
-    //g2.setColor(Color.BLACK);
-    //g2.fill(bgFill);
     AffineTransform trans = AffineTransform.getScaleInstance(bgFill.width, bgFill.height);
     BufferedImage bgImg = bg.image;
     trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
     g2.drawImage(bgImg, trans, null);
-    AffineTransform pushed = g2.getTransform();
-    {
-      g2.translate(width / 2, 0.9);
-      g2.scale(width / 4.5, width / 4.5);
-      AffineTransform pushed2 = g2.getTransform();
-      tryLoadAvatar();
-      if(avatar!=null&&avatar.image!=null && 1 == 0) {
-        g2.setTransform(pushed);
-        g2.translate(0.5f * (width - spriteScale), 0.5f * (slotSize - spriteScale)+7*slotSize);
-        g2.scale(spriteScale,spriteScale);
-        g2.translate(-.5,-.5);
-        g2.scale(2.0/avatar.image.getWidth(),2.0/avatar.image.getHeight());
-        g2.drawImage(avatar.image,null,null);
-      } else {
-        g2.translate(-1.875, -1);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setFont(footerFont);
-        g2.translate(width / 2, .9);
-        //g2.scale(width / 4.5, width / 4.5);
-        FontMetrics fm = g2.getFontMetrics();
-        String teamName;
-        double scaleAmount = 4.5;
-        if (team == Team.A) {
-          g2.setColor(Color.RED);
-          teamName = "Team A";
-          if (match.getTeamA() != null) {
-            teamName = DrawCutScene.getTeamName(match.getTeamA());
-            scaleAmount = fm.stringWidth(teamName) / 16.0;
-          }
-        } else {
-          assert team == Team.B;
-          g2.setColor(Color.BLUE);
-          teamName = "Team B";
-          if (match.getTeamB() != null) {
-            teamName = DrawCutScene.getTeamName(match.getTeamB());
-            scaleAmount = fm.stringWidth(teamName) / 16.0;
-          }
-        }
-        scaleAmount = Math.max(scaleAmount, 4.5);
-        g2.scale(width / scaleAmount, width / scaleAmount);
-        g2.drawString(teamName, 0, 0);
-      }
-      g2.setTransform(pushed2);
-
-      if (footerText.startsWith("GAME")) { // Game Number
-        g2.translate(-2, 0);
-        g2.drawImage(gameText.image, textScale, null);
-
-        // if team A won more than one round, give it a red circle
-        if (aWins > 0) {
-          g2.translate(0.f, 1.25f);
-          g2.setColor(Color.RED);
-          g2.fillOval(0, 0, 1, 1);
-          g2.translate(0.f, -1.25f);
-        }
-
-        g2.translate(3, 0);
-        for (int i = 5; i < footerText.length(); i++) {
-          g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
-          g2.translate(0.5, 0);
-        }
-      } else if (footerText.length() == 4) { // round counter
-        // if team B won more than one round, give it a blue circle
-        if (bWins > 0) {
-          // damn yangs magic offsets -_-
-          g2.translate(0.75f, 1.25f);
-          g2.setColor(Color.BLUE);
-          g2.fillOval(0, 0, 1, 1);
-          g2.translate(-0.75f, -1.25f);
-        }
-
-        g2.translate(-1.5, 0);
-        for (int i = 0; i < 4; i++) {
-          g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
-          g2.translate(0.75, 0);
-        }
-      }
-    }
-    g2.setTransform(pushed);
+    
+    drawFooter(g2);
+        
     g2.translate(0.5f * (width - spriteScale),
                  0.5f * (slotSize - spriteScale));
-    //System.out.println("drawing");
+       
     try {
       // TODO
       // CORY FIX IT
       DrawObject hq = ds.getHQ(team);
       drawRobot(g2,hq);
+//      g2.translate(0, -0.15);
       drawTeamResource(g2, hq);
     } catch (ConcurrentModificationException e) {
       e.printStackTrace();
+    }    
+    g2.translate(0,-0.3);
+    drawCount(g2);
+  }
+  
+  private void drawFooter(Graphics2D g2){
+  	AffineTransform pushed = g2.getTransform();
+
+    g2.translate(width / 2, 0.9);
+    g2.scale(width / 4.5, width / 4.5);
+    AffineTransform pushed2 = g2.getTransform();
+    
+    //draw team name
+    g2.translate(-1.875, -1);
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g2.setFont(footerFont);
+    g2.translate(width / 2, .9);
+    FontMetrics fm = g2.getFontMetrics();
+    String teamName;
+    double scaleAmount = 4.5;
+    if (team == Team.A) {
+    	g2.setColor(Color.RED);
+    	teamName = "Team A";
+    	if (match.getTeamA() != null) {
+    		teamName = DrawCutScene.getTeamName(match.getTeamA());
+    		scaleAmount = fm.stringWidth(teamName) / 16.0;
+    	}
+    } else {
+    	assert team == Team.B;
+    	g2.setColor(Color.BLUE);
+    	teamName = "Team B";
+    	if (match.getTeamB() != null) {
+    		teamName = DrawCutScene.getTeamName(match.getTeamB());
+    		scaleAmount = fm.stringWidth(teamName) / 16.0;
+    	}
     }
+    scaleAmount = Math.max(scaleAmount, 4.5);
+    g2.scale(width / scaleAmount, width / scaleAmount);
+    g2.drawString(teamName, 0, 0);
+    
+    
+    g2.setTransform(pushed2);
+
+    if (footerText.startsWith("GAME")) { // Game Number
+    	g2.translate(-2, 0);
+    	g2.drawImage(gameText.image, textScale, null);
+
+    	// if team A won more than one round, give it a red circle
+    	if (aWins > 0) {
+    		g2.translate(0.f, 1.25f);
+    		g2.setColor(Color.RED);
+    		g2.fillOval(0, 0, 1, 1);
+    		g2.translate(0.f, -1.25f);
+    	}
+
+    	g2.translate(3, 0);
+    	for (int i = 5; i < footerText.length(); i++) {
+    		g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
+    		g2.translate(0.5, 0);
+    	}
+    } else if (footerText.length() == 4) { // round counter
+    	// if team B won more than one round, give it a blue circle
+    	if (bWins > 0) {
+    		// damn yangs magic offsets -_-
+    		g2.translate(0.75f, 1.25f);
+    		g2.setColor(Color.BLUE);
+    		g2.fillOval(0, 0, 1, 1);
+    		g2.translate(-0.75f, -1.25f);
+    	}
+
+    	g2.translate(-1.5, 0);
+    	for (int i = 0; i < 4; i++) {
+    		g2.drawImage(numbers[Integer.decode(footerText.substring(i, i + 1))], textScale, null);
+    		g2.translate(0.75, 0);
+    	}
+    }
+
+    g2.setTransform(pushed);
+  }
+  
+  public void drawCount(Graphics2D g2){       
+    AffineTransform pushed = g2.getTransform();
+  	{
+  		g2.scale(spriteScale, spriteScale);
+      
+      AffineTransform pushed2 = g2.getTransform();
+      g2.translate(-0.5,0);     
+     
+      {
+      	for (int i=0; i < 10; i++){
+      		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
+      	}     	
+      	g2.setTransform(pushed2);
+      	g2.translate(0.5, 0);
+      	for (int i=10; i < 19; i++){
+      		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
+      	} 
+      }
+  	}  
+  	
+  	g2.setTransform(pushed);
+  	
+  }
+  
+  public void drawTypeCount(Graphics2D g2, ImageFile image, int number){ 	
+  	BufferedImage img = image.image;
+  	AffineTransform trans = new AffineTransform();
+  	trans.scale(.3/img.getWidth(), .3/img.getHeight());
+  	g2.drawImage(img, trans, null);
+
+  	AffineTransform pushed = g2.getTransform();
+  	g2.translate(0.4, 0.025);
+  	String numString = String.format("%02d", number);
+  	for (int i = 0; i < 2; i++) {
+  		g2.drawImage(numbers[Integer.decode(numString.substring(i, i + 1))], textScaleSmall, null);
+  		g2.translate(0.75/4, 0);
+  	}
+  	g2.setTransform(pushed);
+  	g2.translate(0, .35);
   }
 
   public void drawRobot(Graphics2D g2, DrawObject r) {
@@ -253,12 +285,13 @@ class DrawHUD {
         //r.drawImmediate(g2, false, true);
     }
     g2.setTransform(pushed);
-    g2.translate(0, slotSize);
+    g2.translate(0, 2*spriteScale);
   }
 	
   public void drawTeamResource(Graphics2D g2, DrawObject r) {
     if (r==null) return;
     AffineTransform pushed = g2.getTransform();
+    double slotHeight;
     {
       g2.scale(spriteScale, spriteScale);
       AffineTransform pushed2 = g2.getTransform();
@@ -298,7 +331,7 @@ class DrawHUD {
 			
       g2.setTransform(pushed2);
       g2.translate(-0.5, -2.0);
-      int[] counts = ds.getRobotCounts(r.getTeam());
+      
 
     /*
       g2.translate(0.1, 0);
@@ -329,49 +362,49 @@ class DrawHUD {
         */
 			
 			
-      BufferedImage[] rImage = new BufferedImage[]{ rImprovedBuilding.image,
-                                                    rImprovedMining.image,
-                                                    rRegenerativeMachinery.image,
-                                                    rNeuromorphics.image,
-                                                    rControlledEcophagy.image, };
-
-      g2.setTransform(pushed2);
-      g2.translate(-0.5, 0.75);
-      final double upgradewidth = 0.7;
-      final double upgradescale = upgradewidth/0.65;
-      g2.translate(0.65*3/2-upgradewidth, 0);
-      g2.scale(upgradescale, upgradescale);
-      int c = 0;
-      for (int u = 0; u < Upgrade.values().length; u++) {
-        double research = ds.getResearchProgress(r.getTeam(), u);
-        if (research > 0) {
-            BufferedImage target = rImage[u];
-            if (target == null) {
-                System.out.println("DARN at " + u + " " + rImage.length);
-            }
-            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-            trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
-            g2.drawImage(target, trans, null);
-								
-            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-            g2.setColor(Color.gray);
-            g2.fill(rect);
-            double frac = Math.min(research, 1);
-            rect.width = frac / 2;
-            g2.setColor(Color.green);
-            g2.fill(rect);
-								
-            g2.translate(0.65, 0);
-            if (c == 1 || c == 3)
-              g2.translate(-0.65*2, 0.6);
-            c++;
-        }
-      }
-
-			
+//      BufferedImage[] rImage = new BufferedImage[]{ rImprovedBuilding.image,
+//                                                    rImprovedMining.image,
+//                                                    rRegenerativeMachinery.image,
+//                                                    rNeuromorphics.image,
+//                                                    rControlledEcophagy.image, };
+//
+//      g2.setTransform(pushed2);
+//      g2.translate(-0.5, 0.75);
+//      final double upgradewidth = 0.7;
+//      final double upgradescale = upgradewidth/0.65;
+//      g2.translate(0.65*3/2-upgradewidth, 0);
+//      g2.scale(upgradescale, upgradescale);
+//      int c = 0;
+//      for (int u = 0; u < Upgrade.values().length; u++) {
+//        double research = ds.getResearchProgress(r.getTeam(), u);
+//        if (research > 0) {
+//            BufferedImage target = rImage[u];
+//            if (target == null) {
+//                System.out.println("DARN at " + u + " " + rImage.length);
+//            }
+//            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
+//            trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
+//            g2.drawImage(target, trans, null);
+//								
+//            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
+//            g2.setColor(Color.gray);
+//            g2.fill(rect);
+//            double frac = Math.min(research, 1);
+//            rect.width = frac / 2;
+//            g2.setColor(Color.green);
+//            g2.fill(rect);
+//								
+//            g2.translate(0.65, 0);
+//            if (c == 1 || c == 3)
+//              g2.translate(-0.65*2, 0.6);
+//            c++;
+//        }
+//      }
+//
+//			
     }
     g2.setTransform(pushed);
-    g2.translate(0, slotSize);
+    g2.translate(0, .4);
   }
 	
 }
