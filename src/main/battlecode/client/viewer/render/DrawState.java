@@ -81,7 +81,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     currentRound = -1;
     convexHullsA = new MapLocation[0][];
     convexHullsB = new MapLocation[0][];
-
   }
 
   private DrawState(GameMap map) {
@@ -209,8 +208,10 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	      float g = lum;
 	      g2.setColor(new Color(r, g, b, .7f));
 	      // cap at the max possible size
-	      float maxPossible = 100;
+	      float maxSize = .5f;
+	      float maxPossible = gameMap.getMaxInitialOre();
 	      float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
+	      size *= maxSize;
 	      // make appear at the center
 	      float offset = ((1.0f - size) / 2);
 	      g2.fill(new Rectangle2D.Float(x + offset, y + offset, size, size));
