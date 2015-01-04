@@ -24,7 +24,6 @@ import battlecode.client.viewer.GameStateFactory;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.common.Upgrade;
 import battlecode.common.GameConstants;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
