@@ -17,6 +17,7 @@ import battlecode.common.Team;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.AttackSignal;
+import battlecode.world.signal.BashSignal;
 import battlecode.world.signal.BroadcastSignal;
 import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.CastSignal;
@@ -304,6 +305,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     robot.setAttacking(s.getTargetLoc());
     robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
   }
+    
+    public void visitBashSignal(BashSignal s) {
+	DrawObject robot = getRobot(s.getRobotID());
+	robot.setAttacking(robot.getLocation());
+    }
 
   public void visitBroadcastSignal(BroadcastSignal s) {
     getRobot(s.getRobotID()).setBroadcast();
