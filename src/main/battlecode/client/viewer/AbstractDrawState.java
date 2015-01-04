@@ -26,10 +26,8 @@ import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LocationOreChangeSignal;
-import battlecode.world.signal.LocationSupplyChangeSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
-import battlecode.world.signal.ResearchChangeSignal;
 import battlecode.world.signal.RobotInfoSignal;
 import battlecode.world.signal.SelfDestructSignal;
 import battlecode.world.signal.SpawnSignal;
@@ -49,7 +47,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Team, DrawObject> hqs;
   protected int [] coreIDs = new int [2];
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
-  protected Map<MapLocation, Double> locationSupply = new HashMap<MapLocation, Double>();
   protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation, Double>();
   protected static MapLocation origin = null;
   protected GameMap gameMap;
@@ -145,9 +142,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       mineLocs.clear();
       mineLocs.putAll(src.mineLocs);
         
-      locationSupply.clear();
-      locationSupply.putAll(src.locationSupply);
-
       locationOre.clear();
       locationOre.putAll(src.locationOre);
         
@@ -233,14 +227,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
     return drawables;
-  }
-
-  protected double getSupplyAtLocation(MapLocation loc) {
-    if (locationSupply.containsKey(loc)) {
-      return locationSupply.get(loc);
-    } else {
-      return 0.0;
-    }
   }
 
   protected double getOreAtLocation(MapLocation loc) {
@@ -343,12 +329,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       teamResources[x] = s.ore[x];
   }
 
-  public void visitResearchChangeSignal(ResearchChangeSignal s) {
-    for (int t = 0; t < researchProgress.length; t++)
-      for (int r = 0; r < researchProgress[t].length; r++)
-        researchProgress[t][r] = s.progress[t][r];
-  }
-
   public void visitTransferSupplySignal(TransferSupplySignal s) {
     DrawObject from = getRobot(s.fromID);
     DrawObject to = getRobot(s.toID);
@@ -436,10 +416,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       getRobot(robotID).setSupplyLevel(robotInfo.supplyLevel);
       getRobot(robotID).setXP(robotInfo.xp);
       getRobot(robotID).setMissileCount(robotInfo.missileCount);
-  }
-
-  public void visitLocationSupplyChangeSignal(LocationSupplyChangeSignal s) {
-    locationSupply.put(s.getLocation(), s.getSupply());
   }
 
   public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
