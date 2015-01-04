@@ -167,10 +167,56 @@ public class DrawState extends AbstractDrawState<DrawObject> {
       long controlBits = 0;
       Iterable<Map.Entry<Integer, DrawObject>> drawableSet = getDrawableSet();
 
+
       if (drawableSet == null) {
         return;
       }
 
+      // ore densities
+      double maxDensity = 0.0;
+      for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows(); i++) {
+	  for (int j = 0; j < gameMap.getHeight(); j++) {
+	      int x = i + gameMap.getMapOrigin().x;
+	      int y = j + gameMap.getMapOrigin().y;
+	      double density =  gameMap.getInitialOre(new MapLocation(x, y))
+		- getOreAtLocation(new MapLocation(x, y));
+		    
+	      maxDensity = Math.max(maxDensity, density);
+        }
+      }
+      double thresholdDensity = Math.max(5, .1 * maxDensity);
+      if (RenderConfiguration.threshCows()) {
+        maxDensity -= thresholdDensity;
+      }
+      for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows(); i++) {
+	  for (int j = 0; j < gameMap.getHeight(); j++) {
+	      int x = i + gameMap.getMapOrigin().x;
+	      int y = j + gameMap.getMapOrigin().y;
+	      
+	      double density =  gameMap.getInitialOre(new MapLocation(x, y))
+		  - getOreAtLocation(new MapLocation(x, y));
+		    
+	      if(RenderConfiguration.threshCows()) {
+		  if(density < thresholdDensity) continue;
+		  else density -= thresholdDensity;
+	      }
+	      //I'm leaving the different coloring code intact in case we
+	      // think of something cool
+	      float lum = (float)(.5 * density / maxDensity + .25);
+	      lum = Math.max(Math.min(lum, 1.0f), 0.0f);
+	      lum = .5f;
+	      float r = lum;
+	      float b = lum;
+	      float g = lum;
+	      g2.setColor(new Color(r, g, b, .7f));
+	      // cap at the max possible size
+	      float maxPossible = 100;
+	      float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
+	      // make appear at the center
+	      float offset = ((1.0f - size) / 2);
+	      g2.fill(new Rectangle2D.Float(x + offset, y + offset, size, size));
+	  }
+      }
       for(IndicatorDotSignal s : indicatorDots) {
         if(RenderConfiguration.showIndicatorDots(s.team)&&(focusID==-1||focusID==s.robotID)) {
             g2.setColor(new Color(s.red,s.green,s.blue));
