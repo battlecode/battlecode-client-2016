@@ -277,6 +277,27 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.setColor(new Color(1f, 0f, 0f));
       g2.fill(rect);   	
     }
+    
+    //add a box around robot if supply is 0
+    if(supplyLevel<1){
+    	g2.setColor(new Color(0.95f,0.95f,0.95f));
+    	Rectangle2D.Float rectLeft;
+    	rectLeft = new Rectangle2D.Float(0.02f,0,0.1f, 1);   	
+    	g2.fill(rectLeft);
+    	rectLeft = new Rectangle2D.Float(0.12f,0,0.2f,0.1f);
+    	g2.fill(rectLeft);
+    	rectLeft = new Rectangle2D.Float(0.12f,0.9f,0.2f,0.1f);
+    	g2.fill(rectLeft);
+    	
+    	Rectangle2D.Float rectRight;
+    	rectRight = new Rectangle2D.Float(0.88f,0,0.1f, 1);   	
+    	g2.fill(rectRight);
+    	rectRight = new Rectangle2D.Float(0.68f,0,0.2f,0.1f);
+    	g2.fill(rectRight);
+    	rectRight = new Rectangle2D.Float(0.68f,0.9f,0.2f,0.1f);
+    	g2.fill(rectRight);
+    	
+    }
   }
 
   // draw translated to robot location
