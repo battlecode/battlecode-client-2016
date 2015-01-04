@@ -27,7 +27,6 @@ import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.common.Upgrade;
 import battlecode.common.Direction;
 
 import java.util.ArrayList;
