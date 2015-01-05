@@ -202,13 +202,13 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	      // think of something cool
 	      float lum = (float)(.5 * density / maxDensity + .25);
 	      lum = Math.max(Math.min(lum, 1.0f), 0.0f);
-	      lum = .5f;
+	      lum = 1.0f;
 	      float r = lum;
 	      float b = lum;
 	      float g = lum;
 	      g2.setColor(new Color(r, g, b, .7f));
 	      // cap at the max possible size
-	      float maxSize = .5f;
+	      float maxSize = .45f;
 	      float maxPossible = gameMap.getMaxInitialOre();
 	      float size = (float) Math.min(Math.sqrt(density / maxPossible), 1.0f);
 	      size *= maxSize;
