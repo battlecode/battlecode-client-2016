@@ -188,7 +188,7 @@ public final class BufferedMatch {
 			teamB = (String) metadata.get("team-b", null);
 			mapNames = (String[]) metadata.get("maps", null);
 		}
-		System.out.println("metadata: " + teamA + " " + teamB);
+		//System.out.println("metadata: " + teamA + " " + teamB);
 	}
 
 	public String getTeamA() { return teamA; }

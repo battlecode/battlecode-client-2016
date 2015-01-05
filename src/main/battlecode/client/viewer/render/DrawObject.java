@@ -87,7 +87,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       final String fname = files[x].getAbsolutePath();
       final String extension = fname.substring(fname.lastIndexOf(".") + 1, fname.length());
       if (extension.toLowerCase().equals("png")) {
-		 System.out.println("loading hat " + fname);
+		 //System.out.println("loading hat " + fname);
          hatImages[hatCounter++] = new ImageFile(fname);
 	  }
     }
