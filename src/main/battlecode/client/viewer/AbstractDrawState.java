@@ -415,13 +415,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   
   public void visitRobotInfoSignal(RobotInfoSignal s){
 	  int robotID = s.getID();
-	  RobotInfo robotInfo = s.getRobotInfo();
-	  getRobot(robotID).setTurnsUntilAttack(robotInfo.weaponDelay);
-	  getRobot(robotID).setTurnsUntilMovement(robotInfo.coreDelay);
-      getRobot(robotID).setEnergon(robotInfo.health);
-      getRobot(robotID).setSupplyLevel(robotInfo.supplyLevel);
-      getRobot(robotID).setXP(robotInfo.xp);
-      getRobot(robotID).setMissileCount(robotInfo.missileCount);
+	  getRobot(robotID).setTurnsUntilAttack(s.weaponDelay);
+	  getRobot(robotID).setTurnsUntilMovement(s.coreDelay);
+      getRobot(robotID).setEnergon(s.health);
+      getRobot(robotID).setSupplyLevel(s.supplyLevel);
+      getRobot(robotID).setXP(s.xp);
+      getRobot(robotID).setMissileCount(s.missileCount);
   }
 
   public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
