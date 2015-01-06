@@ -145,7 +145,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 		matchOptionsGroup = new ButtonGroup();
 		dlgChooser = new JFileChooser();
 		dlgChooser.setFileFilter(new FileFilter() {
-
 			public boolean accept(File f) {
 				if (f.getName().endsWith(".rms") || f.isDirectory())
 					return true;
@@ -413,11 +412,11 @@ public class MatchDialog extends JDialog implements ActionListener {
 			File dir = new File(txtLoadFile.getText());
 			if (dir.exists()) {
 				if (dir.isDirectory())
-					dlgChooser.setCurrentDirectory(dir);
+				    dlgChooser.setCurrentDirectory(dir);
 				else 
 					dlgChooser.setCurrentDirectory(dir.getParentFile());
 			}
-			dlgChooser.showOpenDialog(this);
+			dlgChooser.showSaveDialog(this);
 			File f = dlgChooser.getSelectedFile();
 			if (f != null)
 				txtLoadFile.setText(f.getAbsolutePath());
@@ -432,7 +431,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 				else 
 					dlgChooser.setCurrentDirectory(dir.getParentFile());
 			}
-			dlgChooser.showOpenDialog(this);
+			dlgChooser.showSaveDialog(this);
 			File f = dlgChooser.getSelectedFile();
 			if (f != null)
 				txtSaveFile.setText(f.getAbsolutePath());
