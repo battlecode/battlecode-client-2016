@@ -23,6 +23,7 @@ import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.serial.notification.StartNotification;
 import battlecode.common.MapLocation;
 import battlecode.server.Config;
+import battlecode.world.GameMap;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -152,7 +153,12 @@ public class MatchViewer {
             dbg.setEnabled(bufferedMatch.isPaused());
             AbstractDrawObject<AbstractAnimation> robot = br.getRobotByID(dbg.getFocusID());
             info.setTargetID(dbg.getFocusID());
-            MapLocation origin = br.getDrawState().getGameMap().getMapOrigin();
+	    AbstractDrawState ds = br.getDrawState();
+	    GameMap gm  = ds.getGameMap();
+	    if (gm == null) {
+		return;
+	    }
+            MapLocation origin = gm.getMapOrigin();
             MapLocation corner = new MapLocation(origin.x + br.getDrawState().getGameMap().getWidth() - 1, origin.y + br.getDrawState().getGameMap().getHeight() - 1);
             int x = (int) Math.floor(dbg.getX());
             int y = (int) Math.floor(dbg.getY());
