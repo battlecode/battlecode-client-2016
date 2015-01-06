@@ -132,7 +132,7 @@ class DrawHUD {
     AffineTransform trans = AffineTransform.getScaleInstance(bgFill.width, bgFill.height);
     BufferedImage bgImg = bg.image;
     trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
-    g2.drawImage(bgImg, trans, null);
+    //g2.drawImage(bgImg, trans, null);
     
     drawFooter(g2);
         
@@ -282,8 +282,8 @@ class DrawHUD {
       }
       g2.setTransform(pushed2);
       if (r!=null)
-        r.drawRobotImage(g2);
-        //r.drawImmediate(g2, false, true);
+	  //r.drawRobotImage(g2);
+	  r.drawImmediate(g2, false, true, false);
     }
     g2.setTransform(pushed);
     g2.translate(0, 2*spriteScale);
@@ -306,7 +306,7 @@ class DrawHUD {
         int height = (int)(underImg.getHeight()*percent);
         g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
         g2.setColor(Color.white);
-        g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
+        //g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
         g2.setTransform(pushed2);
 //				if (r!=null)
 //					r.drawImmediate(g2, false, true);

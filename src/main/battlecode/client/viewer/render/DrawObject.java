@@ -246,8 +246,9 @@ class DrawObject extends AbstractDrawObject<Animation> {
         g2.setStroke(outlineStroke);
         g2.draw(outline);
       }
-      
-      drawBroadcast(g2);
+      if (!isHUD) {
+	  drawBroadcast(g2);
+      }
     }
   }
 
