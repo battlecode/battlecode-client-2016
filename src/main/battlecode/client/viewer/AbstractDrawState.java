@@ -23,10 +23,12 @@ import battlecode.world.signal.BytecodesUsedSignal;
 import battlecode.world.signal.CastSignal;
 import battlecode.world.signal.ControlBitsSignal;
 import battlecode.world.signal.DeathSignal;
+import battlecode.world.signal.HealthChangeSignal;
 import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LocationOreChangeSignal;
+import battlecode.world.signal.MissileCountSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
 import battlecode.world.signal.RobotInfoSignal;
@@ -34,6 +36,7 @@ import battlecode.world.signal.SelfDestructSignal;
 import battlecode.world.signal.SpawnSignal;
 import battlecode.world.signal.TeamOreSignal;
 import battlecode.world.signal.TransferSupplySignal;
+import battlecode.world.signal.XPSignal;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
 
@@ -412,15 +415,35 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
         
   }
-  
+
+  public void visitHealthChange(HealthChangeSignal s){
+    int[] robotIDs = s.getRobotIDs();
+    double[] health = s.getHealth();
+    for (int i = 0; i < robotIDs.length; i++) {
+      DrawObject robot = getRobot(robotIDs[i]);
+      robot.setEnergon(health[i]);
+    }
+  }
+
   public void visitRobotInfoSignal(RobotInfoSignal s){
-	  int robotID = s.getID();
-	  getRobot(robotID).setTurnsUntilAttack(s.weaponDelay);
-	  getRobot(robotID).setTurnsUntilMovement(s.coreDelay);
-      getRobot(robotID).setEnergon(s.health);
-      getRobot(robotID).setSupplyLevel(s.supplyLevel);
-      getRobot(robotID).setXP(s.xp);
-      getRobot(robotID).setMissileCount(s.missileCount);
+    int[] robotIDs = s.getRobotIDs();
+    double[] coreDelays = s.getCoreDelays();
+    double[] weaponDelays = s.getWeaponDelays();
+    double[] supplyLevels = s.getSupplyLevels();
+    for (int i = 0; i < robotIDs.length; i++) {
+      DrawObject robot = getRobot(robotIDs[i]);
+      robot.setTurnsUntilMovement(coreDelays[i]);
+      robot.setTurnsUntilAttack(weaponDelays[i]);
+      robot.setSupplyLevel(supplyLevels[i]);
+    }
+  }
+
+  public void visitXPSignal(XPSignal s) {
+    getRobot(s.getRobotID()).setXP(s.getXP());
+  }
+
+  public void visitMissileCountSignal(MissileCountSignal s) {
+    getRobot(s.getRobotID()).setMissileCount(s.getMissileCount());
   }
 
   public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
