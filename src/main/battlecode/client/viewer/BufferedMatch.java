@@ -113,7 +113,11 @@ public final class BufferedMatch {
 			else if (obj instanceof ExtensibleMetadata) {
 				handleExtensibleMetadata((ExtensibleMetadata) obj);
 			}
+			else if (obj instanceof GameStats) {
+				handleGameStats((GameStats) obj);
+			}
 			else if (obj instanceof MatchFooter) {
+                handleMatchFooter((MatchFooter) obj);
 				break;
 			}
 		}
@@ -172,6 +176,29 @@ public final class BufferedMatch {
 		stats.add(roundStats);
 	}
 
+    // TODO: we could be doing more with these.
+    // For the final competition, we should show this information on the screen.
+    // For now, this will just print to console the results of the game.
+    private void handleGameStats(GameStats gameStats) {
+        DominationFactor dom = gameStats.getDominationFactor();
+        String s = "";
+        if (dom == DominationFactor.DESTROYED)
+            s = "The winning team won by destruction.";
+        else if (dom == DominationFactor.PWNED)
+            s = "The winning team won on tiebreakers (more towers remaining).";
+        else if (dom == DominationFactor.OWNED)
+            s = "The winning team won on tiebreakers (more HQ health).";
+        else if (dom == DominationFactor.BEAT)
+            s = "The winning team won on tiebreakers (more TOWER health).";
+        else if (dom == DominationFactor.BARELY_BEAT)
+            s = "The winning team won due to superior sanitation.";
+        else if (dom == DominationFactor.BARELY_BARELY_BEAT)
+            s = "The winning team won on tiebreakers (more total ore value).";
+        else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
+            s = "The winning team won arbitrarily.";
+        System.out.println(s);
+    }
+
 	private void handleSignals(Signal[] signals) {
 		if (currentBreak == null) {
 			currentBreak = new ArrayList<Signal>();
@@ -188,7 +215,11 @@ public final class BufferedMatch {
 			teamB = (String) metadata.get("team-b", null);
 			mapNames = (String[]) metadata.get("maps", null);
 		}
-		//System.out.println("metadata: " + teamA + " " + teamB);
+		System.out.println("metadata: " + teamA + " " + teamB);
+	}
+
+	private void handleMatchFooter(MatchFooter matchFooter) {
+		System.out.println("Team " + matchFooter.getWinner() + " wins!");
 	}
 
 	public String getTeamA() { return teamA; }
