@@ -123,11 +123,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     hqs = new EnumMap<Team, DrawObject>(Team.class);
     totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(RobotType.class));
     totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(RobotType.class));
-
-    totalRobotTypeCount.get(Team.A).put(RobotType.HQ, 1);
-    totalRobotTypeCount.get(Team.B).put(RobotType.HQ, 1);
-    totalRobotTypeCount.get(Team.A).put(RobotType.TOWER, 6);
-    totalRobotTypeCount.get(Team.B).put(RobotType.TOWER, 6);
   }
 
   protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
@@ -404,6 +399,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitSpawnSignal(SpawnSignal s) {
     spawnRobot(s);
+    if (s.getType() == RobotType.TOWER) {
+	System.out.println(s.getType().toString()
+			   + ", " + s.getRobotID());
+    }
     incrementRobotTypeCount(s.getTeam(), s.getType());
   }
 
