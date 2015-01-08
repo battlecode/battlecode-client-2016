@@ -226,9 +226,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
       }
 
     } else {
-      drawStatusBars(g2, focused, lastRow);
-    
       drawRobotImage(g2);
+      drawStatusBars(g2, focused, lastRow);
         
       if ( (RenderConfiguration.showActionLines() || focused) && getType() == RobotType.SOLDIER)
       {
@@ -301,6 +300,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
+    public double drawScale() {
+	return info.type.isBuilding ? 1.5 : 1.0;
+    }
+
   // draw translated to robot location
   public void drawRobotImage(Graphics2D g2) {
     // could be used for rotations or such, remember origin for rotation
@@ -309,7 +312,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
     if (image == null) {
       System.out.println("missing image for type: " + info.type.toString());
     }
-    trans.scale(1.0 / image.getWidth(), 1.0 / image.getHeight());
+    double size = drawScale();
+    double recentering = -1 * (size - 1.0) / 2;
+    trans.translate(recentering, recentering);
+    trans.scale(size / image.getWidth(), size / image.getHeight());
+
     g2.drawImage(image, trans, null);
 
     // hats
