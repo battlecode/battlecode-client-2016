@@ -34,27 +34,27 @@ class DrawHUD {
   private static final ImageFile rControlledEcophagy = new ImageFile("art/nuke.png");
     
   private static final RobotType[] drawnTypes = new RobotType[] {
-    RobotType.BEAVER,
-    RobotType.COMPUTER,
-    RobotType.SOLDIER,
-    RobotType.BASHER,
-    RobotType.MINER,
-    RobotType.DRONE,
-    RobotType.TANK,
-    RobotType.COMMANDER,
-    RobotType.LAUNCHER,
-    RobotType.MISSILE,
-    
-    RobotType.TOWER,
-    RobotType.SUPPLYDEPOT,
-    RobotType.TECHNOLOGYINSTITUTE,
-    RobotType.BARRACKS,
-    RobotType.HELIPAD,
-    RobotType.TRAININGFIELD,
-    RobotType.TANKFACTORY,
-    RobotType.MINERFACTORY,
-    RobotType.HANDWASHSTATION,
-    RobotType.AEROSPACELAB,
+      RobotType.TOWER,
+      RobotType.MINERFACTORY,
+      RobotType.SUPPLYDEPOT,
+      RobotType.BARRACKS,
+      RobotType.TANKFACTORY,
+      RobotType.TECHNOLOGYINSTITUTE,
+      RobotType.TRAININGFIELD,
+      RobotType.HELIPAD,
+      RobotType.AEROSPACELAB,
+      RobotType.HANDWASHSTATION,
+
+      RobotType.BEAVER,
+      RobotType.MINER,
+      RobotType.SOLDIER,
+      RobotType.BASHER,
+      RobotType.TANK,
+      RobotType.COMPUTER,
+      RobotType.COMMANDER,
+      RobotType.DRONE,
+      RobotType.LAUNCHER,
+      RobotType.MISSILE,
   };
  
   
