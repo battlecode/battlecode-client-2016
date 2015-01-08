@@ -26,34 +26,39 @@ class DrawHUD {
   private static BufferedImage[] numbers;
   private static BufferedImage negativeSign;
   private static BufferedMatch match;
- 
-  private static final ImageFile rImprovedBuilding = new ImageFile("art/pickaxe.png");
-  private static final ImageFile rImprovedMining = new ImageFile("art/defusion.png");
-  private static final ImageFile rRegenerativeMachinery = new ImageFile("art/vision.png");
-  private static final ImageFile rNeuromorphics = new ImageFile("art/fusion.png");
-  private static final ImageFile rControlledEcophagy = new ImageFile("art/nuke.png");
-    
+   
   private static final RobotType[] drawnTypes = new RobotType[] {
-    RobotType.BEAVER,
-    RobotType.COMPUTER,
+    RobotType.BEAVER, 
+    
     RobotType.SOLDIER,
     RobotType.BASHER,
-    RobotType.MINER,
-    RobotType.DRONE,
     RobotType.TANK,
-    RobotType.COMMANDER,
+    
+    RobotType.DRONE,
     RobotType.LAUNCHER,
     RobotType.MISSILE,
+    
+    RobotType.MINER,
+    
+    RobotType.COMPUTER,  
+    RobotType.COMMANDER,
 
+    RobotType.TOWER,
     RobotType.SUPPLYDEPOT,
-    RobotType.TECHNOLOGYINSTITUTE,
+    
     RobotType.BARRACKS,
-    RobotType.HELIPAD,
-    RobotType.TRAININGFIELD,
     RobotType.TANKFACTORY,
-    RobotType.MINERFACTORY,
-    RobotType.HANDWASHSTATION,
+        
+    RobotType.HELIPAD,
     RobotType.AEROSPACELAB,
+    
+    RobotType.HANDWASHSTATION,
+    
+    RobotType.MINERFACTORY,
+        
+    RobotType.TECHNOLOGYINSTITUTE, 
+    RobotType.TRAININGFIELD,    
+    
   };
  
   
@@ -242,7 +247,7 @@ class DrawHUD {
       	}     	
       	g2.setTransform(pushed2);
       	g2.translate(0.5, 0);
-      	for (int i=10; i < 19; i++){
+      	for (int i=10; i < drawnTypes.length; i++){
       		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
       	} 
       }
@@ -253,8 +258,13 @@ class DrawHUD {
   }
   
   public void drawTypeCount(Graphics2D g2, ImageFile image, int number){ 	
-  	BufferedImage img = image.image;
+  	BufferedImage under = unitUnder.image;
   	AffineTransform trans = new AffineTransform();
+  	trans.scale(.32/under.getWidth(), .32/under.getHeight());
+  	g2.drawImage(under, trans, null);
+  	
+  	BufferedImage img = image.image;
+  	trans = new AffineTransform();
   	trans.scale(.3/img.getWidth(), .3/img.getHeight());
   	g2.drawImage(img, trans, null);
 
