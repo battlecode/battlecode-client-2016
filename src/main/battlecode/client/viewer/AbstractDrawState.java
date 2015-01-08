@@ -399,10 +399,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitSpawnSignal(SpawnSignal s) {
     spawnRobot(s);
-    if (s.getType() == RobotType.TOWER) {
-	System.out.println(s.getType().toString()
-			   + ", " + s.getRobotID());
-    }
     incrementRobotTypeCount(s.getTeam(), s.getType());
   }
 
