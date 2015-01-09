@@ -58,7 +58,6 @@ class DrawHUD {
         
     RobotType.TECHNOLOGYINSTITUTE, 
     RobotType.TRAININGFIELD,    
-    
   };
  
   
@@ -242,12 +241,13 @@ class DrawHUD {
       g2.translate(-0.5,0);     
      
       {
-      	for (int i=0; i < 10; i++){
+	  int i = 0;
+      	for (i=0; i < drawnTypes.length / 2; i++){
       		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
       	}     	
       	g2.setTransform(pushed2);
       	g2.translate(0.5, 0);
-      	for (int i=10; i < drawnTypes.length; i++){
+      	for (; i < drawnTypes.length; i++){
       		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
       	} 
       }
