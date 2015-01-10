@@ -37,7 +37,7 @@ class MortarAttackAnim extends Animation {
 
     public Object clone() {
         MortarAttackAnim clone = new MortarAttackAnim(src, dst);
-        clone.roundsToLive = roundsToLive;
+        clone.curFrame = curFrame;
         return clone;
     }
 

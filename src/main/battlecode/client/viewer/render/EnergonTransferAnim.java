@@ -40,7 +40,7 @@ class EnergonTransferAnim extends Animation {
     public void draw(Graphics2D g2) {
         polygon.reset();
 		polygon.moveTo(src.getDrawX() + 0.5f, src.getDrawY() + 0.5f);
-		float width = Math.min(roundsToLive, lifetime - roundsToLive) / (float)lifetime;
+		float width = Math.min(maxFrame - curFrame, curFrame) / (float)maxFrame;
         float drawX = target.x;
         float drawY = target.y;
         polygon.lineTo(drawX + 0.5f - dx * width,
@@ -55,7 +55,7 @@ class EnergonTransferAnim extends Animation {
 
     public Object clone() {
         EnergonTransferAnim clone = new EnergonTransferAnim(src, target, amount,color==fluxColor);
-        clone.roundsToLive = roundsToLive;
+        clone.curFrame = curFrame;
         return clone;
     }
 }

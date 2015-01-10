@@ -33,19 +33,28 @@ public abstract class AbstractAnimation implements Cloneable {
 
 	}
 
-	protected final int lifetime;
-	protected int roundsToLive;
+	protected final int maxFrame;
+	protected int curFrame;
 
-	protected AbstractAnimation(int roundsToLive) {
-		lifetime = roundsToLive;
-		this.roundsToLive = roundsToLive;
+    protected boolean loops() { return false; }
+
+	protected AbstractAnimation(int maxFrame) {
+	    this.maxFrame = maxFrame;
+	    this.curFrame = 0;
 	}
 
-	public void updateRound() { roundsToLive--; }
+	public void updateRound() {
+	    this.curFrame++;
+	    if (loops()) {
+		curFrame %= maxFrame;
+	    }
+	}
 
-	public boolean isAlive() { return (roundsToLive > 0); }
+	public boolean isAlive() {
+	    return loops() || (curFrame < maxFrame);
+	}
 
-	public int roundAge() { return lifetime - roundsToLive; }
+	public int roundAge() { return curFrame; }
 
 	public abstract Object clone();
 

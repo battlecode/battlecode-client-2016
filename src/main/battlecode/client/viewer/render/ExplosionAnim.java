@@ -6,63 +6,51 @@ import battlecode.client.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 
-class ExplosionAnim extends Animation {
+class ExplosionAnim extends FramedAnimation {
+    public static enum ExplosionToggle {
+	EXPLOSIONS,
+    }
 
-	protected static ImageResource<Integer> ir = new ImageResource<Integer>();
+    protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS; 
 
-	protected final MapLocation loc;
-	protected final double size;
+    public ExplosionAnim() { this(null, 1); }
 
-	public static enum ExplosionToggle {
-		EXPLOSIONS,
-		DETONATES
+    public ExplosionAnim(MapLocation loc) { this(loc, 1); }
+
+    public ExplosionAnim(MapLocation loc, double size) {
+	super(loc, size, 4);
+    }
+
+    protected boolean loops() {
+	return false;
+    }
+
+    int offset() {
+	return 1;
+    }
+
+    public String fileFormatString() {
+	return "art/explode/explode64_f%02d.png";
+    }
+
+    public void setExplosionToggle(ExplosionToggle t) {
+	toggle = t;
+    }
+
+    protected boolean shouldDraw() {
+	switch(toggle) {
+	case EXPLOSIONS:
+	    return RenderConfiguration.showExplosions();
+	default:
+	    return false;
 	}
+    }
 
-	protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS; 
 
-	public ExplosionAnim() { this(null, 1); }
-
-	public ExplosionAnim(MapLocation loc) { this(loc, 1); }
-
-	public ExplosionAnim(MapLocation loc, double size) {
-		super(4);
-		this.loc = loc;
-		this.size = size;
-	}
-
-	public void setExplosionToggle(ExplosionToggle t) {
-		toggle = t;
-	}
-
-	protected boolean shouldDraw() {
-		switch(toggle) {
-		case EXPLOSIONS:
-			return RenderConfiguration.showExplosions();
-		default:
-			return false;
-		}
-	}
-
-	public void draw(Graphics2D g2) {
-		if (shouldDraw()) {
-			int frame = lifetime - roundsToLive;
-			String path = String.format("art/explode/explode64_f%02d.png", frame + 1);
-			java.awt.image.BufferedImage img = ir.getResource(frame, path).image;
-			AffineTransform pushed = g2.getTransform(); {
-				if (loc != null) {
-					g2.translate(loc.x, loc.y);
-				}
-				g2.translate(-0.5*(size - 1), -0.5*(size - 1));
-				g2.scale(size/img.getWidth(), size/img.getHeight());
-				g2.drawImage(img, null, null);
-			} g2.setTransform(pushed);
-		}
-	}
-
-	public Object clone() {
-		ExplosionAnim clone = new ExplosionAnim(loc, size);
-		clone.roundsToLive = roundsToLive;
-		clone.toggle = toggle;
-		return clone;
-	}
+    public Object clone() {
+	ExplosionAnim clone = new ExplosionAnim(loc, size);
+	clone.curFrame = curFrame;
+	clone.toggle = toggle;
+	return clone;
+    }
 }

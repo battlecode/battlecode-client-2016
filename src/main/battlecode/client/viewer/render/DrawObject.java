@@ -454,7 +454,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
   public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {
     ExplosionAnim anim = new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
-    anim.setExplosionToggle(ExplosionAnim.ExplosionToggle.DETONATES);
     return anim;
   }
 

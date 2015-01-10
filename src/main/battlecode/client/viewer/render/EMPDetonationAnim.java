@@ -16,17 +16,18 @@ class EMPDetonationAnim extends Animation {
 		super(duration);
 		loc = center;
 	}
-
+    
+    
 	public void draw(Graphics2D g2) {
 		g2.setColor(new Color(1-roundAge()*dColor, 1, 1, 1-roundAge()*dColor));
 		float r = 25 *
-			(1 - (float) Math.pow((double) roundsToLive / lifetime, 3.5));
+		    (1 - (float) Math.pow((double) (maxFrame - curFrame) / maxFrame, 3.5));
 		g2.fill(new Ellipse2D.Float(loc.x+0.5f-r, loc.y+0.5f-r,	2*r, 2*r));
 	}
 
 	public Object clone() {
 		EMPDetonationAnim clone = new EMPDetonationAnim(loc);
-		clone.roundsToLive = roundsToLive;
+		clone.curFrame = curFrame;
 		return clone;
 	}
 }

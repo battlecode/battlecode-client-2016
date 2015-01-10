@@ -108,7 +108,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
   public abstract Animation createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux);
-	
+
 	
   protected String hats;
   protected RobotInfo info;
