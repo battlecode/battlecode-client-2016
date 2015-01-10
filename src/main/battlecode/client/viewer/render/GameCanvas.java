@@ -12,7 +12,6 @@ import java.util.Observer;
 
 
 import battlecode.client.util.ImageFile;
-import battlecode.client.viewer.renderer3d.GLGameRenderer;
 
 public final class GameCanvas extends BaseCanvas {
 
@@ -97,7 +96,7 @@ public final class GameCanvas extends BaseCanvas {
 //				}
 
                 if (bracketFile == null) {
-                    bracketFile = new ImageFile(String.format("%d.png", GLGameRenderer.BRACKET_INDEX));
+                    //bracketFile = new ImageFile(String.format("%d.png", GLGameRenderer.BRACKET_INDEX));
                 }
                 BufferedImage img = bracketFile.image;
                 if (img != null) {

@@ -17,8 +17,6 @@ import battlecode.client.viewer.render.BaseCanvas;
 import battlecode.client.viewer.render.BaseRenderer;
 import battlecode.client.viewer.render.GameCanvas;
 import battlecode.client.viewer.render.GameRenderer;
-import battlecode.client.viewer.renderer3d.GLGameCanvas;
-import battlecode.client.viewer.renderer3d.GLGameRenderer;
 import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.serial.notification.StartNotification;
 import battlecode.common.MapLocation;
@@ -63,9 +61,6 @@ public class MatchViewer {
   }
 
   public MatchViewer(ClientProxy proxy, boolean lockstepChoice) {
-    if (cfg.getBoolean("bc.client.opengl"))
-      bc = new GLGameCanvas();
-    else
       bc = new GameCanvas();
     System.out.println("Matchviewer 2");
     this.proxy = proxy;
@@ -108,9 +103,6 @@ public class MatchViewer {
   }
 
   public MatchViewer(ClientProxy proxy) {
-    if (cfg.getBoolean("bc.client.opengl"))
-      bc = new GLGameCanvas();
-    else
       bc = new GameCanvas();
 
     this.proxy = proxy;
@@ -137,11 +129,7 @@ public class MatchViewer {
     
     final BufferedMatch bufferedMatch = new BufferedMatch(proxy);
         
-    if (cfg.getBoolean("bc.client.opengl")) {
-      br = new GLGameRenderer(bufferedMatch, bc.getGraphics());
-    } else {
       br = new GameRenderer(bufferedMatch);
-    }
 
     dbg = new DebugState(bufferedMatch.getDebugProxy(), bc.getParent());
     br.setDebugState(dbg);
