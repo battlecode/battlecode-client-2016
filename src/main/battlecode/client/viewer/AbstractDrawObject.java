@@ -440,7 +440,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     } else {
       // still waiting perfection of delay system
       // float dist = .5f;
-      float dist = (float)Math.max(Math.min(moving * (turnsUntilMovement / totalActionRounds), 1), 0);
+	float dist = (float)Math.max(Math.min(moving * (turnsUntilMovement / info.type.movementDelay), 1), 0);
       //System.out.println("moving: " + moving + "actionDelay: " + actionDelay + "total " + totalActionRounds);
       drawX = -dist * dir.dx;
       drawY = -dist * dir.dy;

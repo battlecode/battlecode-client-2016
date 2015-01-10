@@ -28,6 +28,7 @@ import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LocationOreChangeSignal;
+import battlecode.world.signal.MineSignal;
 import battlecode.world.signal.MissileCountSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
@@ -380,13 +381,20 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     obj.setMoving(true);
   }
 
+    public void visitMineSignal(MineSignal s) {
+	return;
+    }
+
   public DrawObject spawnRobot(SpawnSignal s) {
     DrawObject spawn = createDrawObject(s.getType(), s.getTeam(), s.getRobotID());
     spawn.setLocation(s.getLoc());
 //        spawn.setDirection(s.getDirection());
     spawn.setDirection(Direction.NORTH);
     spawn.setBuildDelay(s.getDelay());
-        
+    if (s.getParentID() != 0) {
+	DrawObject parent = getRobot(s.getParentID());
+	parent.setAction(s.getDelay(), ActionType.BUILDING);
+    }
     putRobot(s.getRobotID(), spawn);
     tryAddHQ(spawn);
     int team = getRobot(s.getRobotID()).getTeam().ordinal();

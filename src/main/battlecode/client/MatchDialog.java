@@ -416,7 +416,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 				else 
 					dlgChooser.setCurrentDirectory(dir.getParentFile());
 			}
-			dlgChooser.showSaveDialog(this);
+			dlgChooser.showOpenDialog(this);
 			File f = dlgChooser.getSelectedFile();
 			if (f != null)
 				txtLoadFile.setText(f.getAbsolutePath());

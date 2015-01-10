@@ -38,7 +38,8 @@ public enum ActionType {
     MININGSTOPPING(true, true),
     CAPTURING(true, true),
     REGENING(true, true),
-    SHIELDING(true, true);
+    SHIELDING(true, true),
+    BUILDING(true, true);
 
     private ActionType(boolean hasAttackCooldown, boolean hasMovementCooldown) {
         this.hasAttackCooldown = hasAttackCooldown;
