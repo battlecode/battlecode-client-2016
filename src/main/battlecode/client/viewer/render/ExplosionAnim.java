@@ -17,8 +17,8 @@ class ExplosionAnim extends FramedAnimation {
 
     public ExplosionAnim(MapLocation loc) { this(loc, 1); }
 
-    public ExplosionAnim(MapLocation loc, double size) {
-	super(loc, size, 4);
+    public ExplosionAnim(MapLocation loc, double width) {
+	super(loc, width, 4);
     }
 
     protected boolean loops() {
@@ -48,7 +48,7 @@ class ExplosionAnim extends FramedAnimation {
 
 
     public Object clone() {
-	ExplosionAnim clone = new ExplosionAnim(loc, size);
+	ExplosionAnim clone = new ExplosionAnim(loc, width);
 	clone.curFrame = curFrame;
 	clone.toggle = toggle;
 	return clone;

@@ -7,14 +7,16 @@ import java.awt.*;
 import java.awt.geom.*;
 
 abstract class FramedAnimation extends Animation {
-    static ImageResource<Integer> ir = new ImageResource<Integer>();
+    static ImageResource<String> ir = new ImageResource<String>();
     protected final MapLocation loc;
-    protected final double size;
+    // not the most descriptive name
+    // to let images have arbitrary aspect ratios, this is the width scale
+    protected final double width;
     
-    FramedAnimation(MapLocation loc, double size, int maxFrames) {
+    FramedAnimation(MapLocation loc, double width, int maxFrames) {
 	super(maxFrames);
 	this.loc = loc;
-	this.size = size;
+	this.width = width;
 
     }
     
@@ -29,13 +31,14 @@ abstract class FramedAnimation extends Animation {
     public void draw(Graphics2D g2) {
 	if (shouldDraw()) {
 	    String path = String.format(fileFormatString(), this.curFrame + offset());
-	    java.awt.image.BufferedImage img = ir.getResource(curFrame, path).image;
+	    java.awt.image.BufferedImage img = ir.getResource(path, path).image;
 	    AffineTransform pushed = g2.getTransform(); {
 		if (loc != null) {
 		    g2.translate(loc.x, loc.y);
 		}
-		g2.translate(-0.5*(size - 1), -0.5*(size - 1));
-		g2.scale(size/img.getWidth(), size/img.getHeight());
+		// not sure why I wanted things centered
+		//g2.translate(-0.5*(width - 1), -0.5*(width - 1));
+		g2.scale(width/img.getWidth(), width/img.getWidth());
 		g2.drawImage(img, null, null);
 	    } g2.setTransform(pushed);
 	}

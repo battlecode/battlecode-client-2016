@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +32,7 @@ import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 
 public class DrawState extends AbstractDrawState<DrawObject> {
-
+    private ArrayList<DoodadAnim> doodads;
 	
   private static final ImageFile rNuker = new ImageFile("art/nuker1.png");
   private static final ImageFile rNuker2 = new ImageFile("art/nuker2.png");
@@ -59,6 +60,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     public void copyState(DrawState src, DrawState dst) {
       dst.copyStateFrom(src);
+      dst.doodads = src.doodads;
     }
   }
   public static final GameStateFactory<DrawState> FACTORY = new Factory();
@@ -81,7 +83,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     currentRound = -1;
     convexHullsA = new MapLocation[0][];
     convexHullsB = new MapLocation[0][];
-  }
+ }
 
   private DrawState(GameMap map) {
     this();
@@ -91,7 +93,16 @@ public class DrawState extends AbstractDrawState<DrawObject> {
   private DrawState(DrawState clone) {
     this();
     copyStateFrom(clone);
+    this.doodads = clone.doodads;
   }
+
+    public void setGameMap(GameMap map) {
+	super.setGameMap(map);
+	doodads = new ArrayList<DoodadAnim>();
+	/*doodads.add(new DoodadAnim(new MapLocation(10, 10),
+	  20, DoodadAnim.DoodadType.EXPLOSION));*/
+	
+    }
 
   protected DrawObject createDrawObject(RobotType type, Team team, int id) {
     return new DrawObject(type, team, id, this);
@@ -143,6 +154,14 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     */
   }
 
+    protected void updateRound() {
+	super.updateRound();
+
+	for(DoodadAnim doodad : doodads) {
+	    doodad.updateRound();
+	}
+    }
+
   /**
    * Draws the current game state. This method is always called from the
    * Swing event-dispatch thread, and in particular blocks calls to
@@ -170,6 +189,14 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         return;
       }
 
+      AffineTransform pushed = g2.getTransform();
+      g2.translate(gameMap.getMapOrigin().x,
+		   gameMap.getMapOrigin().y);
+      for (DoodadAnim doodad : doodads) {
+	  doodad.draw(g2);
+      }
+      g2.setTransform(pushed);
+      
       // ore densities
       double maxDensity = 0.0;
       for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows(); i++) {

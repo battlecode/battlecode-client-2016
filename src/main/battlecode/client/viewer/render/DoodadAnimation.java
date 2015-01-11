@@ -7,16 +7,33 @@ import java.awt.*;
 import java.awt.geom.*;
 
 class DoodadAnim extends FramedAnimation {
-    protected int w, h;
+    public static enum DoodadType {
+	AGNAKTOR("art/agnaktor/frame_%03d.png", 2, 1, 19),
+	EXPLOSION("art/explode/explode64_f%02d.png", 1, 1, 9);
+
+	public final String formatString;
+	public final int w;
+	public final int h;
+	public final int frameCount;
+	
+
+	DoodadType(String formatString, int w, int h, int frameCount) {
+	    this.formatString = formatString;
+	    this.w = w;
+	    this.h = h;
+	    this.frameCount = frameCount;
+	    }
+    }
+    
+    public DoodadType type;
     
     public DoodadAnim() { this(null); }
 
-    public DoodadAnim(MapLocation loc) { this(loc, 1, 2, 1); }
+    public DoodadAnim(MapLocation loc) { this(loc, 1, DoodadType.EXPLOSION); }
 
-    public DoodadAnim(MapLocation loc, double size, int w, int h) {
-	super(loc, size, 140);
-	this.w = w;
-	this.h = h;
+    public DoodadAnim(MapLocation loc, double width, DoodadType type) {
+	super(loc, width * type.w, type.frameCount);
+	this.type = type;
     }
 
     protected boolean loops() {
@@ -28,7 +45,7 @@ class DoodadAnim extends FramedAnimation {
     }
 
     public String fileFormatString() {
-	return "art/agnaktor/frame_%03d.png";
+	return type.formatString;
     }
 
     protected boolean shouldDraw() {
@@ -37,7 +54,7 @@ class DoodadAnim extends FramedAnimation {
 
 
     public Object clone() {
-	DoodadAnim clone = new DoodadAnim(loc, size, w, h);
+	DoodadAnim clone = new DoodadAnim(loc, width, type);
 	clone.curFrame = curFrame;
 	return clone;
     }
