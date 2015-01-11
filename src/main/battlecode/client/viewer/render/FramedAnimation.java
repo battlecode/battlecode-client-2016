@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 abstract class FramedAnimation extends Animation {
-    protected ImageResource<Integer> ir = new ImageResource<Integer>();
+    static ImageResource<Integer> ir = new ImageResource<Integer>();
     protected final MapLocation loc;
     protected final double size;
     
