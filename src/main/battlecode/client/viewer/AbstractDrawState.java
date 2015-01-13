@@ -435,8 +435,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     double[] supplyLevels = s.getSupplyLevels();
     for (int i = 0; i < robotIDs.length; i++) {
       DrawObject robot = getRobot(robotIDs[i]);
-      robot.setTurnsUntilMovement(coreDelays[i]);
-      robot.setTurnsUntilAttack(weaponDelays[i]);
+      robot.setMovementDelay(coreDelays[i]);
+      robot.setAttackDelay(weaponDelays[i]);
       robot.setSupplyLevel(supplyLevels[i]);
     }
   }

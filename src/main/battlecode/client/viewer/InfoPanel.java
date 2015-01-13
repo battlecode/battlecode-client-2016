@@ -15,8 +15,8 @@ public class InfoPanel extends JPanel {
   private JLabel[] indicatorStrings;
   private JLabel robotID;
   private JLabel bytecodes;
-  private JLabel turnsUntilMovement;
-  private JLabel turnsUntilAttack;
+  private JLabel movementDelay;
+  private JLabel attackDelay;
   private JLabel energon;
   private JLabel supplyLevel;
   private JLabel extraInformation;
@@ -42,11 +42,11 @@ public class InfoPanel extends JPanel {
     supplyLevel = newLabel();
     forceMinimumSize(supplyLevel, " Supply: 100000.0 ");
     layoutConstraints.gridx++;
-    turnsUntilMovement = newLabel();
-    forceMinimumSize(turnsUntilMovement, " Movement: 100.0 ");
+    movementDelay = newLabel();
+    forceMinimumSize(movementDelay, " Movement: 100.0 ");
     layoutConstraints.gridx++;
-    turnsUntilAttack = newLabel();
-    forceMinimumSize(turnsUntilAttack, "Attack: 100,0");
+    attackDelay = newLabel();
+    forceMinimumSize(attackDelay, "Attack: 100,0");
     layoutConstraints.gridx++;
     bytecodes = newLabel();
     forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
@@ -115,8 +115,8 @@ public class InfoPanel extends JPanel {
     robotID.setText(robotID.getText()+robot.getType()+" ");
     setEnergon(robot.getEnergon(), robot.getShields());
     setBytecodesUsed(robot.getBytecodesUsed());
-    setTurnsUntilAttack(robot.getTurnsUntilAttack());
-    setTurnsUntilMovement(robot.getTurnsUntilMovement());
+    setAttackDelay(robot.getAttackDelay());
+    setMovementDelay(robot.getMovementDelay());
     setSupplyLevel(robot.getSupplyLevel());
     if (robot.getType() == RobotType.COMMANDER) {
         setExtraInformation(String.format("%d XP", robot.getXP()));
@@ -151,12 +151,12 @@ private void setEnergon(double amount, double shields) {
     bytecodes.setText(String.format(" Bytecodes used: %d ", bytecodesUsed));
   }
 
-  private void setTurnsUntilMovement(double delay) {
-    turnsUntilMovement.setText(String.format(" Movement: %.1f ", delay));
+  private void setMovementDelay(double delay) {
+    movementDelay.setText(String.format(" Movement: %.1f ", delay));
   }
   
-  private void setTurnsUntilAttack(double delay){
-	turnsUntilAttack.setText(String.format(" Attack: %.1f ", delay));
+  private void setAttackDelay(double delay){
+	attackDelay.setText(String.format(" Attack: %.1f ", delay));
   }
 
   private void setExtraInformation(String s) {
