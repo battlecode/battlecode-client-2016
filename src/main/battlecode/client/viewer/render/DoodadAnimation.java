@@ -8,7 +8,6 @@ import java.awt.geom.*;
 
 class DoodadAnim extends FramedAnimation {
     public static enum DoodadType {
-	AGNAKTOR("art/agnaktor/frame_%03d.png", 2, 1, 19),
 	EXPLOSION("art/explode/explode64_f%02d.png", 1, 1, 9);
 
 	public final String formatString;

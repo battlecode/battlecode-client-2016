@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractDrawState;
@@ -26,6 +27,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
+import battlecode.common.TerrainTile;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.IndicatorDotSignal;
@@ -99,9 +101,63 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     public void setGameMap(GameMap map) {
 	super.setGameMap(map);
 	doodads = new ArrayList<DoodadAnim>();
-	/*doodads.add(new DoodadAnim(new MapLocation(10, 10),
-	  20, DoodadAnim.DoodadType.EXPLOSION));*/
+	int doodadAttemptCount = 0;
+	Random r = new Random();
+	int w = map.getWidth();
+	int h = map.getHeight();
+	boolean[][] alreadyTaken = new boolean[w][h];
+	DoodadAnim.DoodadType[] dTypes = DoodadAnim.DoodadType .values();
+	for (int d = 0; d < doodadAttemptCount; d++) {
+	    ArrayList<MapLocation> possibleLocs = new ArrayList<MapLocation>();
+	    int doodadIndex = r.nextInt(dTypes.length);
+	    DoodadAnim.DoodadType dType = dTypes[doodadIndex];
+	    for (int i = 0; i < w; i++) {
+		for (int j = 0; j < h; j++) {
+		    if (canPlace(alreadyTaken, i, j, dType.w, dType.h)) {
+			possibleLocs.add(new MapLocation(i, j));
+		    }
+		}
+	    }
+	    int chosenIndex = r.nextInt(possibleLocs.size());
+	    MapLocation chosenLoc = possibleLocs.get(chosenIndex);
+	    doodads.add(new DoodadAnim(new MapLocation(chosenLoc.x,						       chosenLoc.y),
+				       1, dType));
+	    fillFalse(alreadyTaken, chosenLoc.x, chosenLoc.y, dType.w, dType.h);
+	}
+    }
+
+    private void fillFalse(boolean alreadyTaken[][],
+			   int iStart, int jStart, int fillW, int fillH) {
+	for (int i = iStart; i < iStart + fillW; i++) {
+	    for (int j = jStart; j < jStart + fillH; j++) {
+		alreadyTaken[i][j] = false;
+	    }
+	}
 	
+    }
+
+    private boolean canPlace(boolean alreadyTaken[][],
+			     int iStart, int jStart, int w, int h) {
+	TerrainTile[][] mapTiles = gameMap.getTerrainMatrix();
+	boolean allSquares = true;
+	for (int i = iStart; i < (iStart + w); i++) {
+	    if (i >= gameMap.getWidth()) {
+		allSquares = false;
+		break;
+	    }
+	    for (int j = jStart; j < (jStart + h); j++) {
+		if (j >= gameMap.getHeight()
+		    || mapTiles[i][j].isTraversable()
+		    || alreadyTaken[i][j]) {
+		    allSquares = false;
+		    break;
+		}
+	    }
+	    if (!allSquares) {
+		break;
+	    }
+	}
+	return allSquares;
     }
 
   protected DrawObject createDrawObject(RobotType type, Team team, int id) {
