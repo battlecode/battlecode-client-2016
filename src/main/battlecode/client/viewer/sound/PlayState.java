@@ -106,7 +106,9 @@ public class PlayState extends GameState {
         return null;
     }
 
-    protected void updateRound() {
+    protected void preUpdateRound() {}
+
+    protected void postUpdateRound() {
         activeClips.clear();
         Set<GameSoundBank.ClipGroup> tmp = activeClips;
         activeClips = futureClips;
