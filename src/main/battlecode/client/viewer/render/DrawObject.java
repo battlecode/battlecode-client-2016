@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
 class DrawObject extends AbstractDrawObject<Animation> {
-
+    public static final int LAYER_COUNT = 3;
   private static final double diagonalFactor = Math.sqrt(2);
   private static final Stroke thinStroke = new BasicStroke(0.05f);
   private static final Stroke mediumStroke = new BasicStroke(0.075f);
@@ -55,7 +55,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
   private static final ImageFile crosshairBlue = new ImageFile("art/crosshair2.png");
   private static final ImageFile hatchSensor = new ImageFile("art/hatch_sensor.png");
   private static final ImageFile hatchAttack = new ImageFile("art/hatch_attack.png");
+    private static final ImageFile creepRed = new ImageFile("art/creep1.png");
+    private static final ImageFile creepBlue = new ImageFile("art/creep2.png");
   private ImageFile img;
+
   public static final AbstractAnimation.AnimationType[] preDrawOrder = new AbstractAnimation.AnimationType[]{TELEPORT};
   public static final AbstractAnimation.AnimationType[] postDrawOrder = new AbstractAnimation.AnimationType[]{MORTAR_ATTACK, MORTAR_EXPLOSION, ENERGON_TRANSFER};
   private int teleportRounds;
@@ -187,25 +190,39 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
-  public void draw(Graphics2D g2, boolean focused, boolean lastRow) {
-
-    if (RenderConfiguration.showRangeHatch() && focused) {
-      drawRangeHatch(g2);
-    }
-
-
-    AffineTransform pushed = g2.getTransform();
-    g2.translate(getDrawX(), getDrawY());
-    drawImmediate(g2, focused, lastRow);
-    g2.setTransform(pushed); // pop    
-    
-    // these animations shouldn't be drawn in the HUD, and they expect
-    // the origin of the Graphics2D to be the MapLocation (0,0)
-    for (AbstractAnimation.AnimationType type : postDrawOrder) {
-      if (type.shown() && animations.containsKey(type)) {
-        animations.get(type).draw(g2);
-      }
-    }
+    public void draw(Graphics2D g2, boolean focused, boolean lastRow, int layer) {
+	switch(layer) {
+	case 0:
+	    if (RenderConfiguration.showRangeHatch() && focused) {
+		drawRangeHatch(g2);
+	    }
+	    if (info.type.isBuilding) {
+		AffineTransform pushed0 = g2.getTransform();
+		g2.translate(getDrawX(), getDrawY());
+		drawImageTransformed(g2, new AffineTransform(),
+				     (info.team == Team.A ? creepRed.image
+				      : creepBlue.image), 2);
+		g2.setTransform(pushed0); // pop
+	    }
+	    break;
+	case 1:
+	    AffineTransform pushed1 = g2.getTransform();
+	    g2.translate(getDrawX(), getDrawY());
+	    drawImmediate(g2, focused, lastRow);
+	    g2.setTransform(pushed1); // pop
+	    break;
+	case 2:
+	    // these animations shouldn't be drawn in the HUD, and they expect
+	    // the origin of the Graphics2D to be the MapLocation (0,0)
+	    for (AbstractAnimation.AnimationType type : postDrawOrder) {
+		if (type.shown() && animations.containsKey(type)) {
+		    animations.get(type).draw(g2);
+		}
+	    }
+	    break;
+	default:
+	    break;
+	}
   }
 
     public void drawAction(Graphics2D g2, Action a,
@@ -251,7 +268,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     } else {
 	drawRobotImage(g2);
-      drawStatusBars(g2, focused, lastRow);
+	drawStatusBars(g2, focused, lastRow);
         
       for (Action a : actions) {
 	  drawAction(g2, a, focused, isHUD);
@@ -377,6 +394,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	    (info.type == RobotType.COMMANDER ? 3.0 : 1.0);
     }
 
+    public void drawImageTransformed(Graphics2D g2, AffineTransform trans,
+				     BufferedImage im, double size) {
+	double recentering = -1 * (size - 1.0) / 2;
+	trans.translate(recentering, recentering);
+	trans.scale(size / im.getWidth(), size / im.getHeight());
+
+	g2.drawImage(im, trans, null);
+    }
+
   // draw translated to robot location
   public void drawRobotImage(Graphics2D g2) {
     // could be used for rotations or such, remember origin for rotation
@@ -386,11 +412,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
       System.out.println("missing image for type: " + info.type.toString());
     }
     double size = drawScale();
-    double recentering = -1 * (size - 1.0) / 2;
-    trans.translate(recentering, recentering);
-    trans.scale(size / image.getWidth(), size / image.getHeight());
-
-    g2.drawImage(image, trans, null);
+    drawImageTransformed(g2, trans, image, size);
 
     // hats
     if (RenderConfiguration.showHats()) {
@@ -442,9 +464,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
     drawImmediate(g2, focused, true, lastRow);
   }
 
-
-  private void drawAction(Graphics2D g2) {
-  }
 
   private BufferedImage getTypeSprite() {
       if (info.type.isBuilding) {

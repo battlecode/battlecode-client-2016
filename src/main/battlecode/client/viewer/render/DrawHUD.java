@@ -144,11 +144,8 @@ class DrawHUD {
                  0.5f * (slotSize - spriteScale));
        
     try {
-      // TODO
-      // CORY FIX IT
       DrawObject hq = ds.getHQ(team);
       drawRobot(g2,hq);
-//      g2.translate(0, -0.15);
       drawTeamResource(g2, hq);
     } catch (ConcurrentModificationException e) {
       e.printStackTrace();

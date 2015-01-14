@@ -320,23 +320,27 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
       }
 
-      for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
+      for (int layer = 0; layer < DrawObject.LAYER_COUNT; layer++) {
+	  for (Map.Entry<Integer, DrawObject> entry : drawableSet) {
 
-        int id = entry.getKey();
-        DrawObject obj = entry.getValue();
-        if(obj.inTransport()) continue;
+	      int id = entry.getKey();
+	      DrawObject obj = entry.getValue();
+	      if(obj.inTransport()) continue;
 
-        if (id == dragID) {
-          drawDragged(g2, debug, obj);
-        } else {
-          if (Math.abs(debug.getX() - obj.getDrawX() - 0.5) < 0.5
-              && Math.abs(debug.getY() - obj.getDrawY() - 0.5) < 0.5) {
-            hoverID = id;
-            hoverLoc = obj.getLocation();
-            controlBits = obj.getControlBits();
-          }
-          obj.draw(g2, id == focusID || id == hoverID, obj.getLocation().y==origin.y+gameMap.getHeight()-1);
-        }
+	      if (id == dragID) {
+		  drawDragged(g2, debug, obj);
+	      } else {
+		  if (Math.abs(debug.getX() - obj.getDrawX() - 0.5) < 0.5
+		      && Math.abs(debug.getY() - obj.getDrawY() - 0.5) < 0.5) {
+		      hoverID = id;
+		      hoverLoc = obj.getLocation();
+		      controlBits = obj.getControlBits();
+		  }
+		  obj.draw(g2, id == focusID || id == hoverID,
+			   obj.getLocation().y==origin.y+gameMap.getHeight()-1,
+			   layer);
+	      }
+	  }
       }
 
         /*
