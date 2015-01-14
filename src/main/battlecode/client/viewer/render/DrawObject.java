@@ -373,7 +373,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
     public double drawScale() {
-	return info.type.isBuilding ? 1.5 : 1.0;
+	return info.type.isBuilding ? 1.5 :
+	    (info.type == RobotType.COMMANDER ? 3.0 : 1.0);
     }
 
   // draw translated to robot location
