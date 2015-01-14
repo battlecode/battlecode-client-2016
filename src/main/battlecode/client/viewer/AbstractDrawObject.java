@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -59,17 +61,18 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
   }
 
-  public AbstractDrawObject(RobotType type, Team team, int id) {
+    public AbstractDrawObject(int currentRound, RobotType type, Team team, int id) {
+	this.currentRound = currentRound;
     info = new RobotInfo(type, team);
     robotID = id;
     hats = "";
+    actions = new LinkedList<Action>();
   }
 
   @SuppressWarnings("unchecked")
-    public AbstractDrawObject(AbstractDrawObject<Animation> copy) {
-    this(copy.info.type, copy.info.team, copy.getID());
-
-    loc = copy.loc;
+  public AbstractDrawObject(int currentRound, AbstractDrawObject<Animation> copy) {
+      this(currentRound, copy.info.type, copy.info.team, copy.getID());
+      loc = copy.loc;
     dir = copy.dir;
     energon = copy.energon;
     shields = copy.shields;
@@ -78,7 +81,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     missileCount = copy.missileCount;
     flux = copy.flux;
     moving = copy.moving;
-    targetLoc = copy.targetLoc;
     broadcast = copy.broadcast;
     controlBits = copy.controlBits;
     bytecodesUsed = copy.bytecodesUsed;
@@ -88,11 +90,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     loaded = copy.loaded;
     regen = copy.regen;
 
-    //actions = copy.actions;
-    actionType = copy.actionType;
+    actions = (LinkedList<Action>)actions.clone();
     attackDelay = copy.attackDelay;
     movementDelay = copy.movementDelay;
-   
+    
     hats = copy.hats;
 
     for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry : copy.animations.entrySet()) {
@@ -109,7 +110,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public abstract Animation createMortarExplosionAnim(Animation mortarAttackAnim);
   public abstract Animation createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux);
 
-	
   protected String hats;
   protected RobotInfo info;
   protected MapLocation loc;
@@ -121,8 +121,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected double flux = 0;
   protected double maxEnergon;
   protected int totalActionRounds;
-  protected ActionType actionType;
-  protected MapLocation targetLoc = null;
   protected int broadcast = 0;
   protected long controlBits = 0;
     protected int bytecodesUsed = 0;
@@ -140,8 +138,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   protected int xp = 0;
   protected int buildDelay=0;
   protected int aliveRounds=0;
+    protected int currentRound = 0;
     
-    //protected LinkedList<Action> actions = null;
+    protected LinkedList<Action> actions = null;
   protected Map<AbstractAnimation.AnimationType, Animation> animations = new EnumMap<AbstractAnimation.AnimationType, Animation>(AbstractAnimation.AnimationType.class) {
 
     private static final long serialVersionUID = 0;
@@ -197,6 +196,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   	return info.type;
   }
 
+    public float getDrawDX() {
+	return drawX;
+    }
+    
+    public float getDrawDY() {
+	return drawY;
+    }
+
   public float getDrawX() {
     return loc.x + drawX;
   }
@@ -207,10 +214,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public MapLocation getLocation() {
     return loc;
-  }
-
-  public MapLocation getTargetLoc() {
-    return targetLoc;
   }
 
   public Direction getDirection() {
@@ -348,9 +351,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   }
 
   public void setAttacking(MapLocation target) {
-    actionType = ActionType.ATTACKING;
-   targetLoc = target;
-    attackDir = dir;
+      actions.add(new Action(ActionType.ATTACKING, currentRound,
+			     info.type.attackDelay, target));
+      attackDir = dir;
     //componentType = component;
     //if (info.type == RobotType.CHAINER) {
     //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
@@ -362,28 +365,24 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     animations.put(ENERGON_TRANSFER,anim);
   }
 
-  public void setMoving(boolean isMovingForward) {
-    actionType = ActionType.MOVING;
-    moving = (isMovingForward ? 1 : -1);
+      public void setMoving(boolean isMovingForward, int delay) {
+	  actions.add(new Action(ActionType.MOVING, currentRound,
+				 delay));
+	  moving = (isMovingForward ? 1 : -1);
 //    totalActionRounds = delay;
-    updateDrawLoc();
-  }
+	  updateDrawLoc();
+      }
  
   public void setAction(int totalrounds, ActionType type){
-	  actionType = type;
-	  //actionDelay += totalrounds;
-	  totalActionRounds = totalrounds;
+      actions.add(new Action(type, currentRound, totalrounds));
   }
 
   public void setAction(int totalrounds, ActionType type, MapLocation target){
-	  actionType = type;
-	  //actionDelay += totalrounds;
-	  totalActionRounds = totalrounds;
-	  targetLoc = target;
+      actions.add(new Action(type, currentRound, totalrounds, target));
+      
   }
   
   public void destroyUnit() {
-    actionType = ActionType.IDLE;
     energon = 0;
     shields = 0;
     missileCount = 0;
@@ -394,8 +393,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   }
 
   public void updateRound() {
-      if (movementDelay < 1 && attackDelay < 1) {
-	  actionType = ActionType.IDLE;
+      ListIterator<Action> actionIterator = actions.listIterator();
+      while (actionIterator.hasNext()) {
+	  Action a = actionIterator.next();
+	  //System.out.println(currentRound + ", " + (a.roundStarted + a.length));
+	  if (currentRound >= (a.roundStarted + a.length)) {
+	      actionIterator.remove();
+	  }
       }
 		
       aliveRounds += 1;
@@ -421,12 +425,12 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
     if (mortarExplosionAnim != null)
       animations.put(MORTAR_EXPLOSION, mortarExplosionAnim);
-
+    currentRound++;
   }
 
   private void updateDrawLoc() {
     if (RenderConfiguration.showDiscrete() 
-        || actionType != ActionType.MOVING) {
+        || !isDoing(ActionType.MOVING)) {
       drawX = drawY = 0;
     } else {
       // still waiting perfection of delay system
@@ -441,4 +445,13 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
   public void setPower(boolean b) {
     turnedOn = b;
   }
+    protected boolean isDoing(ActionType type) {
+	for (Action a : actions) {
+	    if (a.type == type) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
 }

@@ -21,8 +21,10 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractAnimation;
+import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.ActionType;
+import battlecode.client.viewer.Action;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
@@ -94,16 +96,16 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
     
 
-  public DrawObject(RobotType type, Team team, int id, DrawState state) {
-    super(type, team, id);
+    public DrawObject(int currentRound, RobotType type, Team team, int id, DrawState state) {
+	super(currentRound, type, team, id);
     img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
     maxEnergon = type.maxHealth;
     overallstate = state;
   }
 
 
-  public DrawObject(DrawObject copy) {
-    super(copy);
+    public DrawObject(int currentRound, DrawObject copy) {
+	super(currentRound,  copy);
     img = copy.img;
     maxEnergon = copy.maxEnergon;
     if (animations.containsKey(ENERGON_TRANSFER)) {
@@ -204,13 +206,35 @@ class DrawObject extends AbstractDrawObject<Animation> {
         animations.get(type).draw(g2);
       }
     }
-    drawAction(g2);
   }
+
+    public void drawAction(Graphics2D g2, Action a,
+			   boolean focused, boolean isHUD) {
+	switch (a.type) {
+	case MOVING:
+	    if(!isHUD) {
+		drawMoving(g2, a, focused);
+	    }
+	    break;
+	case ATTACKING:
+	    if(!isHUD) {
+		drawAttacking(g2, a);
+	    }
+	    break;
+	default:
+	}
+    }
+
+    protected void setTeamColor(Graphics2D g2) {
+	g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
+    }
+            
+
 
   public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD, boolean lastRow) {
     
-    Color c = getTeam() == Team.A ? Color.RED : Color.BLUE;
-    c = c.brighter().brighter().brighter();
+      setTeamColor(g2);
+      g2.setStroke(mediumStroke);
     
     for (AbstractAnimation.AnimationType type : preDrawOrder) {
       if (type.shown() && animations.containsKey(type)) {
@@ -226,18 +250,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
       }
 
     } else {
-      drawRobotImage(g2);
+	drawRobotImage(g2);
       drawStatusBars(g2, focused, lastRow);
         
-      if ( (RenderConfiguration.showActionLines() || focused) && getType() == RobotType.SOLDIER)
-      {
-        if (actionType == ActionType.MOVING)
-        {
-          g2.setColor(c);
-          g2.setStroke(thickStroke);
-          g2.draw(new Line2D.Double(0.5, 0.5,
-                                    0.5 - dir.dx, 0.5 - dir.dy));
-        }
+      for (Action a : actions) {
+	  drawAction(g2, a, focused, isHUD);
       }
     
       if (focused) {
@@ -250,6 +267,61 @@ class DrawObject extends AbstractDrawObject<Animation> {
       }
     }
   }
+    public void drawMoving(Graphics2D g2, Action a, boolean focused) {
+	if ( (RenderConfiguration.showActionLines() || focused) )
+      {
+	  setTeamColor(g2);
+	  g2.setStroke(thickStroke);
+	  g2.draw(new Line2D.Double(0.5, 0.5,
+				    0.5 - dir.dx, 0.5 - dir.dy));
+      }
+    }
+
+    public void drawAttacking(Graphics2D g2, Action a) {
+	if (RenderConfiguration.showAttack())
+	{
+	    setTeamColor(g2);
+	    g2.setStroke(mediumStroke);
+	    MapLocation target = new MapLocation(a.target.x - loc.x,
+						 a.target.y - loc.y);
+	    switch (info.type) {
+	    case BEAVER:
+	    case SOLDIER:
+	    case MINER:
+	    case DRONE:
+	    case TANK:
+	    case COMMANDER:
+	    case TOWER:
+		g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
+					  target.x + 0.5, target.y + 0.5));
+		break;
+	    case BASHER:
+		g2.draw(new Ellipse2D.Double(getDrawDX() + .5 - bashRadius,
+					     getDrawDY() + .5 - bashRadius,
+					     bashRadius * 2, bashRadius * 2));
+		break;
+	    case HQ:
+		BufferedImage crosshairImage;
+		if (getTeam() == Team.A) {
+		    crosshairImage = crosshair.image;
+		} else {
+		    crosshairImage = crosshairBlue.image;
+		}
+		if (crosshairImage != null) {
+		    AffineTransform trans = AffineTransform.getTranslateInstance(target.x, target.y);
+		    trans.scale(1.0 / crosshairImage.getWidth(), 1.0 / crosshairImage.getHeight());
+		    g2.drawImage(crosshairImage, trans, null);
+		}
+
+		g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
+					  target.x + 0.5, target.y + 0.5));
+		break;
+	    default:
+        	
+	    }
+	}
+
+    }
 
   public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
@@ -369,53 +441,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
     drawImmediate(g2, focused, true, lastRow);
   }
 
-  private boolean isAttacking() {
-    return actionType == ActionType.ATTACKING;
-  }
 
   private void drawAction(Graphics2D g2) {
-    if (isAttacking() && RenderConfiguration.showAttack())
-    {
-      g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
-      g2.setStroke(mediumStroke);
-            
-      switch (info.type) {
-      case BEAVER:
-      case SOLDIER:
-      case MINER:
-      case DRONE:
-      case TANK:
-      case COMMANDER:
-      case TOWER:
-        g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
-                                  targetLoc.x + 0.5, targetLoc.y + 0.5));
-        break;
-      case BASHER:
-	  g2.draw(new Ellipse2D.Double(getDrawX() + .5 - bashRadius,
-				       getDrawY() + .5 - bashRadius,
-				       bashRadius * 2, bashRadius * 2));
-	  break;
-      case HQ:
-        BufferedImage target;
-        if (getTeam() == Team.A) {
-          target = crosshair.image;
-        } else {
-          target = crosshairBlue.image;
-        }
-        if (target != null) {
-          AffineTransform trans = AffineTransform.getTranslateInstance(targetLoc.x, targetLoc.y);
-          trans.scale(1.0 / target.getWidth(), 1.0 / target.getHeight());
-          g2.drawImage(target, trans, null);
-        }
-
-        g2.draw(new Line2D.Double(getDrawX() + 0.5, getDrawY() + 0.5,
-                                  targetLoc.x + 0.5, targetLoc.y + 0.5));
-        g2.draw(new Ellipse2D.Double(targetLoc.x+.5-artilleryRadius,targetLoc.y+.5-artilleryRadius,2*artilleryRadius,2*artilleryRadius));
-        break;
-      default:
-        	
-      }
-    }
   }
 
   private BufferedImage getTypeSprite() {
@@ -455,10 +482,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
   public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {
     ExplosionAnim anim = new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
     return anim;
-  }
-
-  public void updateRound() {
-    super.updateRound();
   }
 
   public void activateTeleporter() {

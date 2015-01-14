@@ -9,10 +9,11 @@ import battlecode.engine.signal.AutoSignalHandler;
 public abstract class GameState extends AutoSignalHandler {
 
 	public synchronized void apply(RoundDelta rd) {
+	    preUpdateRound();
 		for (Signal signal: rd.getSignals()) {
 			signal.accept(this);
 		}
-		updateRound();
+		postUpdateRound();
 	}
 
 	public synchronized void apply(Signal signal) {
@@ -22,7 +23,8 @@ public abstract class GameState extends AutoSignalHandler {
 	public synchronized void apply(RoundStats stats) {
 	}
 
-	protected abstract void updateRound();
+    protected abstract void preUpdateRound();
+	protected abstract void postUpdateRound();
 
 	//public abstract AbstractDrawObject getDrawObject(int id);
 }

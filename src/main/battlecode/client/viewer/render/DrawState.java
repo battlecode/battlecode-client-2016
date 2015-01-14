@@ -161,11 +161,11 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     }
 
   protected DrawObject createDrawObject(RobotType type, Team team, int id) {
-    return new DrawObject(type, team, id, this);
+      return new DrawObject(currentRound, type, team, id, this);
   }
 
   protected DrawObject createDrawObject(DrawObject o) {
-    return new DrawObject(o);
+      return new DrawObject(currentRound, o);
   }
 
   public MapLocation[][] getConvexHullsA() {
@@ -210,8 +210,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     */
   }
 
-    protected void updateRound() {
-	super.updateRound();
+    protected void postUpdateRound() {
+	super.postUpdateRound();
 
 	for(DoodadAnim doodad : doodads) {
 	    doodad.updateRound();

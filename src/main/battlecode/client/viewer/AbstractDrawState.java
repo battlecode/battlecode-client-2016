@@ -127,6 +127,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
+      currentRound = src.currentRound;
+      
       groundUnits.clear();
       for (Map.Entry<Integer, DrawObject> entry : src.groundUnits.entrySet()) {
         DrawObject copy = createDrawObject(entry.getValue());
@@ -165,7 +167,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
         gameMap = src.gameMap;
       }
 
-      currentRound = src.currentRound;
       for (int x=0; x<teamResources.length; x++)
         teamResources[x] = src.teamResources[x];
       for (int t = 0; t < researchProgress.length; t++)
@@ -268,6 +269,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     return stats;
   }
 
+    public int getCurrentRound() {
+	return currentRound;
+    }
+
   public void setGameMap(GameMap map) {
     gameMap = new GameMap(map);
     origin = gameMap.getMapOrigin();
@@ -277,8 +282,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     return gameMap;
   }
 
-  protected void updateRound() {
-    currentRound++;
+    protected void preUpdateRound() {
+	currentRound++;
+    }
+
+  protected void postUpdateRound() {
     for (Iterator<Map.Entry<Integer, DrawObject>> it = drawables.iterator();
          it.hasNext();) {
       DrawObject obj = it.next().getValue();
@@ -301,8 +309,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public void visitAttackSignal(AttackSignal s) {
     DrawObject robot = getRobot(s.getRobotID());
-    robot.setAttacking(s.getTargetLoc());
     robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
+    robot.setAttacking(s.getTargetLoc());
+
   }
     
     public void visitBashSignal(BashSignal s) {
@@ -368,7 +377,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-    obj.setMoving(s.isMovingForward());
+    obj.setMoving(s.isMovingForward(), s.getDelay());
   }
 
   public void visitCastSignal(CastSignal s) {
@@ -378,7 +387,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getTargetLoc());
     obj.setDirection(oldloc.directionTo(s.getTargetLoc()));
-    obj.setMoving(true);
   }
 
     public void visitMineSignal(MineSignal s) {
