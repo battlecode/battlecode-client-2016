@@ -60,7 +60,7 @@ public class PlayState extends GameState {
     }
 
     private void scheduleClip(GameSoundBank.ClipGroup clip) {
-        futureClips.add(clip);
+        //futureClips.add(clip);
     }
 
     private void scheduleClip(GameSoundBank.ClipGroup clip, float gain) {
