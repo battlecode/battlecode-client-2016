@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 class DrawHUD {
 
@@ -147,6 +148,10 @@ class DrawHUD {
       DrawObject hq = ds.getHQ(team);
       drawRobot(g2,hq);
       drawTeamResource(g2, hq);
+      ArrayList<DrawObject> towers = ds.getTowers(team);
+      for(int i = 0; i < towers.size(); i++) {
+	  //drawRobot(g2, towers.get(i));
+      }
     } catch (ConcurrentModificationException e) {
       e.printStackTrace();
     }    
@@ -267,9 +272,10 @@ class DrawHUD {
 
   	AffineTransform pushed = g2.getTransform();
   	g2.translate(0.4, 0.025);
-  	String numString = String.format("%02d", number);
-  	for (int i = 0; i < 2; i++) {
-  		g2.drawImage(numbers[Integer.decode(numString.substring(i, i + 1))], textScaleSmall, null);
+  	String numString = String.format("%03d", number);
+  	for (int i = 0; i < 3; i++) {
+  		g2.drawImage(numbers[Integer.decode(numString.substring(i, i + 1))],
+			     textScaleSmall, null);
   		g2.translate(0.75/4, 0);
   	}
   	g2.setTransform(pushed);

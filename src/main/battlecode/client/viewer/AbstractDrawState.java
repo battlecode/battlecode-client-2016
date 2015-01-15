@@ -184,6 +184,19 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     return hqs.get(t);
   }
 	
+    public ArrayList<DrawObject> getTowers(Team t) {
+	ArrayList<DrawObject> towers = new ArrayList<DrawObject>();
+	int i = 0;
+	for (DrawObject dobj : groundUnits.values()) {
+	    if (dobj.getType() == RobotType.TOWER
+		&& dobj.getTeam() == t) {
+		towers.add(dobj);
+		i++;
+	    }
+	}
+	return towers;
+    }
+
   public int[] getRobotCounts(Team t) {
     // naive way for now...
     int[] counts = new int[RobotType.values().length];
@@ -281,6 +294,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   public GameMap getGameMap() {
     return gameMap;
   }
+
 
     protected void preUpdateRound() {
 	currentRound++;
