@@ -267,8 +267,8 @@ class DrawHUD {
 
   	AffineTransform pushed = g2.getTransform();
   	g2.translate(0.4, 0.025);
-  	String numString = String.format("%02d", number);
-  	for (int i = 0; i < 2; i++) {
+  	String numString = String.format("%03d", number);
+  	for (int i = 0; i < 3; i++) {
   		g2.drawImage(numbers[Integer.decode(numString.substring(i, i + 1))], textScaleSmall, null);
   		g2.translate(0.75/4, 0);
   	}
