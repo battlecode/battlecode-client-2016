@@ -145,13 +145,18 @@ class DrawHUD {
                  0.5f * (slotSize - spriteScale));
        
     try {
+	double sixth = 1.0 / 6;
       DrawObject hq = ds.getHQ(team);
-      drawRobot(g2,hq);
-      drawTeamResource(g2, hq);
+      drawRobot(g2,hq, 1.0, -2.5 * sixth, 1.75);
       ArrayList<DrawObject> towers = ds.getTowers(team);
-      for(int i = 0; i < towers.size(); i++) {
-	  //drawRobot(g2, towers.get(i));
+      for(int i = 0; i < towers.size() - 1; i++) {
+	  drawRobot(g2, towers.get(i), sixth, 2.0, 0);
       }
+      if (towers.size() > 0) {
+	  drawRobot(g2, towers.get(towers.size() - 1), sixth,
+		    -2 * (towers.size() - 2.25), 2.0);
+		    }
+      drawTeamResource(g2, hq);
     } catch (ConcurrentModificationException e) {
       e.printStackTrace();
     }    
@@ -282,10 +287,11 @@ class DrawHUD {
   	g2.translate(0, .35);
   }
 
-  public void drawRobot(Graphics2D g2, DrawObject r) {
+    public void drawRobot(Graphics2D g2, DrawObject r, double size,
+			  double right, double down) {
     AffineTransform pushed = g2.getTransform();
     {
-      g2.scale(spriteScale, spriteScale);
+	g2.scale(spriteScale * size, spriteScale * size);
       AffineTransform pushed2 = g2.getTransform();
       {
         BufferedImage underImg = unitUnder.image;
@@ -299,7 +305,8 @@ class DrawHUD {
 	  r.drawImmediate(g2, false, true, false);
     }
     g2.setTransform(pushed);
-    g2.translate(0, 2*spriteScale);
+    g2.translate(spriteScale * size * right,
+		 spriteScale * size * down);
   }
 	
   public void drawTeamResource(Graphics2D g2, DrawObject r) {
@@ -311,13 +318,14 @@ class DrawHUD {
       AffineTransform pushed2 = g2.getTransform();
       {
         BufferedImage underImg = unitUnder.image;
-        g2.translate(-0.5, -0.5);
+	int maxHeight = (int)(.5 * underImg.getHeight());
+        g2.translate(-0.5, 0.0);
         g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
         if (r.getTeam() == Team.A) g2.setColor(Color.red);
         else g2.setColor(Color.blue);
         double percent = Math.min(ds.getTeamResources(r.getTeam())/5000, 1.0);
-        int height = (int)(underImg.getHeight()*percent);
-        g2.fillRect(0, underImg.getHeight()-height, underImg.getWidth(), height);
+        int height = (int)(maxHeight * percent);
+        g2.fillRect(0, maxHeight-height, underImg.getWidth(), height);
         g2.setColor(Color.white);
         //g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
         g2.setTransform(pushed2);
