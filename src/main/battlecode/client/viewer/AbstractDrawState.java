@@ -422,7 +422,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     int[] robotIDs = s.getRobotIDs();
     int[] bytecodes = s.getNumBytecodes();
     for (int i = 0; i < robotIDs.length; i++) {
-      getRobot(robotIDs[i]).setBytecodesUsed(bytecodes[i]);
+      DrawObject robot = getRobot(robotIDs[i]);
+      if (robot != null) robot.setBytecodesUsed(bytecodes[i]);
     }
         
   }
@@ -432,7 +433,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     double[] health = s.getHealth();
     for (int i = 0; i < robotIDs.length; i++) {
       DrawObject robot = getRobot(robotIDs[i]);
-      robot.setEnergon(health[i]);
+      if (robot != null) {
+          robot.setEnergon(health[i]);
+      }
     }
   }
 
@@ -443,9 +446,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     double[] supplyLevels = s.getSupplyLevels();
     for (int i = 0; i < robotIDs.length; i++) {
       DrawObject robot = getRobot(robotIDs[i]);
-      robot.setMovementDelay(coreDelays[i]);
-      robot.setAttackDelay(weaponDelays[i]);
-      robot.setSupplyLevel(supplyLevels[i]);
+      if (robot != null) {
+          robot.setMovementDelay(coreDelays[i]);
+          robot.setAttackDelay(weaponDelays[i]);
+          robot.setSupplyLevel(supplyLevels[i]);
+      }
     }
   }
 
