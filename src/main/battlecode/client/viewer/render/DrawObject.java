@@ -51,8 +51,8 @@ class DrawObject extends AbstractDrawObject<Animation> {
   private static final RescaleOp oneHalf = new RescaleOp(new float[]{1f, 1f, 1f, .5f}, new float[4], null);
   private static final ImageResource<RobotInfo> ir = new ImageResource<RobotInfo>();
   private static final ImageResource<String> cir = new ImageResource<String>();
-  private static final ImageFile crosshair = new ImageFile("art/crosshair.png");
-  private static final ImageFile crosshairBlue = new ImageFile("art/crosshair2.png");
+    private static final ImageFile crosshair = new ImageFile("art/crosshair.png");
+    private static final ImageFile crosshairBlue = new ImageFile("art/crosshair2.png");
   private static final ImageFile hatchSensor = new ImageFile("art/hatch_sensor.png");
   private static final ImageFile hatchAttack = new ImageFile("art/hatch_attack.png");
     private static final ImageFile creepRed = new ImageFile("art/creep1.png");
@@ -394,7 +394,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	    (info.type == RobotType.COMMANDER ? 3.0 : 1.0);
     }
 
-    public void drawImageTransformed(Graphics2D g2, AffineTransform trans,
+    public static void drawImageTransformed(Graphics2D g2, AffineTransform trans,
 				     BufferedImage im, double size) {
 	double recentering = -1 * (size - 1.0) / 2;
 	trans.translate(recentering, recentering);

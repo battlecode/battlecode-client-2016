@@ -147,15 +147,16 @@ class DrawHUD {
     try {
 	double sixth = 1.0 / 6;
       DrawObject hq = ds.getHQ(team);
-      drawRobot(g2,hq, 1.0, -2.5 * sixth, 1.75);
-      ArrayList<DrawObject> towers = ds.getTowers(team);
+      drawRobot(g2,hq, 1.0, -2.5 * sixth, (1 + 2 * sixth));
+      ArrayList<DrawObject> towers = new ArrayList<DrawObject>();
+      towers.addAll(ds.getTowers(team).values());
       for(int i = 0; i < towers.size() - 1; i++) {
 	  drawRobot(g2, towers.get(i), sixth, 2.0, 0);
       }
       if (towers.size() > 0) {
 	  drawRobot(g2, towers.get(towers.size() - 1), sixth,
 		    -2 * (towers.size() - 2.25), 2.0);
-		    }
+      }
       drawTeamResource(g2, hq);
     } catch (ConcurrentModificationException e) {
       e.printStackTrace();
@@ -300,9 +301,13 @@ class DrawHUD {
         g2.drawImage(underImg, null, null);
       }
       g2.setTransform(pushed2);
-      if (r!=null)
-	  //r.drawRobotImage(g2);
+      if (r!=null && r.isAlive()) {
 	  r.drawImmediate(g2, false, true, false);
+      } else {
+	  ImageFile boom = new ImageFile("art/explode/explode64_f05.png");
+	  DrawObject.drawImageTransformed(g2, new AffineTransform(),
+					  boom.image, 1.0);
+      }
     }
     g2.setTransform(pushed);
     g2.translate(spriteScale * size * right,
