@@ -25,6 +25,7 @@ public class RenderConfiguration {
   private static boolean cows = true;
   private static boolean threshCows = false;
   private static int indicatorDotToggles;
+  private static boolean supplyTransfers = true;
 
   private static boolean tournamentMode = false;
 
@@ -63,6 +64,7 @@ public class RenderConfiguration {
   public static void toggleAmbientMusic(){ambientMusic = !ambientMusic;}
   public static void toggleShowHats() { hats = !hats; }
   public static void toggleIndicatorDots() { indicatorDotToggles++; }
+  public static void toggleSupplyTransfers() { supplyTransfers = !supplyTransfers; }
 
   public static void toggleCows() {
     if (!cows) {
@@ -94,6 +96,7 @@ public class RenderConfiguration {
   public static boolean showCows  () { return cows; }
   public static boolean threshCows  () { return threshCows; }
   public static boolean showIndicatorDots(Team t) { return ((indicatorDotToggles>>t.ordinal())&1)!=0; }
+  public static boolean showSupplyTransfers() { return supplyTransfers; }
   
   public static boolean playAmbientMusic(){return ambientMusic;}
 

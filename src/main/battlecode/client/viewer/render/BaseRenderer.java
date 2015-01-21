@@ -103,6 +103,9 @@ public abstract class BaseRenderer {
     case 'S':
       skipRounds(100);
       break;
+    case 'T':
+      RenderConfiguration.toggleSupplyTransfers();
+      break;
     case 'U':
       RenderConfiguration.toggleCows();
       break;

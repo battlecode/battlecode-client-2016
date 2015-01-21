@@ -38,19 +38,20 @@ class EnergonTransferAnim extends Animation {
     }
 
     public void draw(Graphics2D g2) {
-        polygon.reset();
-		polygon.moveTo(src.getDrawX() + 0.5f, src.getDrawY() + 0.5f);
-		float width = Math.min(maxFrame - curFrame, curFrame) / (float)maxFrame;
-        float drawX = target.x;
-        float drawY = target.y;
-        polygon.lineTo(drawX + 0.5f - dx * width,
-                drawY + 0.5f - dy * width);
-        polygon.lineTo(drawX + 0.5f + dx * width,
-        		drawY + 0.5f + dy * width);
-        polygon.closePath();
-        g2.setColor(color);
-        g2.fill(polygon);
-
+        if (RenderConfiguration.showSupplyTransfers()) {
+            polygon.reset();
+            polygon.moveTo(src.getDrawX() + 0.5f, src.getDrawY() + 0.5f);
+            float width = Math.min(maxFrame - curFrame, curFrame) / (float)maxFrame;
+            float drawX = target.x;
+            float drawY = target.y;
+            polygon.lineTo(drawX + 0.5f - dx * width,
+                    drawY + 0.5f - dy * width);
+            polygon.lineTo(drawX + 0.5f + dx * width,
+                    drawY + 0.5f + dy * width);
+            polygon.closePath();
+            g2.setColor(color);
+            g2.fill(polygon);
+        }
     }
 
     public Object clone() {
