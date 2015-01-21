@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.Team;
 import battlecode.client.util.ImageFile;
+import battlecode.serial.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -36,9 +37,11 @@ public class DrawCutScene {
     private static final ImageFile imgWinnerLabel = new ImageFile("art/overlay_win.png");
     private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
+    private final String mapName;
     private ImageFile imgWinner;
     private String winner;
     private Color winnerColor;
+    private DominationFactor dom = null;
 	private static final Color neutralColor = Color.WHITE;
 	private static final Color backgroundColor = Color.BLACK;
 	private static final Color teamAColor = Color.RED;
@@ -66,13 +69,14 @@ public class DrawCutScene {
 		}
 	}
 
-    public DrawCutScene(float width, float height, String teamA, String teamB) {
+    public DrawCutScene(float width, float height, String teamA, String teamB, String mapName) {
 
         rect.width = width;
         rect.height = height;
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
         this.teamA = getTeamName(teamA);
 		this.teamB = getTeamName(teamB);
+        this.mapName = mapName;
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT,new File("art/computerfont.ttf")).deriveFont(48.f);
 		} catch(Exception e) {
@@ -101,6 +105,10 @@ public class DrawCutScene {
 			winner = teamB;
 			winnerColor = teamBColor;
 		}
+    }
+
+    public void setDominationFactor(DominationFactor dom) {
+        this.dom = dom;
     }
 
     public void draw(Graphics2D g2) {
@@ -153,9 +161,12 @@ public class DrawCutScene {
 		g2.setColor(teamBColor);
 		drawText.drawTwoLine(teamB,rect.getCenterX(),rect.getCenterY()+textHeight,false);
 		if(imgTeamA.image!=null)
-			drawLogo(g2,imgTeamA.image,rect.getCenterY()-3*textHeight-80);
+			drawLogo(g2,imgTeamA.image,rect.getCenterY()-3*textHeight-50);
 		if(imgTeamB.image!=null)
-			drawLogo(g2,imgTeamB.image,rect.getCenterY()+3*textHeight+80);
+			drawLogo(g2,imgTeamB.image,rect.getCenterY()+3*textHeight+50);
+
+		g2.setColor(neutralColor);
+        drawText.draw("map: " + mapName,rect.getCenterX(),rect.getCenterY()+3*textHeight+80+80+15);
 
 		g2.setTransform(pushed);
     }
@@ -235,6 +246,25 @@ public class DrawCutScene {
 		drawText.draw("WINS!",rect.getCenterX(),rect.getCenterY()+textHeight/2);
 		if(imgWinner != null && imgWinner.image!=null)
 			drawLogo(g2,imgWinner.image,rect.getCenterY()-5*textHeight/2 - 80);
+
+        String s = "?";
+        if (dom == DominationFactor.DESTROYED)
+            s = "DESTRUCTION";
+        else if (dom == DominationFactor.PWNED)
+            s = "more towers remaining";
+        else if (dom == DominationFactor.OWNED)
+            s = "more HQ health";
+        else if (dom == DominationFactor.BEAT)
+            s = "more TOWER health";
+        else if (dom == DominationFactor.BARELY_BEAT)
+            s = "SUPERIOR SANITATION";
+        else if (dom == DominationFactor.BARELY_BARELY_BEAT)
+            s = "more total ore value";
+        else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
+            s = "???";
+        
+		g2.setColor(winnerColor);
+		drawText.draw("Reason: " + s,rect.getCenterX(),rect.getCenterY()+textHeight*5/2);
 		g2.setTransform(pushed);
     }
 

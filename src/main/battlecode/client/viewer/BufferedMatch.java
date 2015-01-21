@@ -22,6 +22,7 @@ public final class BufferedMatch {
 
 	private List<RoundDelta> deltas = new Vector<RoundDelta>();
 	private List<RoundStats> stats = new Vector<RoundStats>();
+    private DominationFactor dominationFactor = null;
 	private List<Signal> currentBreak = null;
 	private boolean paused = false;
 
@@ -70,6 +71,10 @@ public final class BufferedMatch {
 	public MatchFooter getFooter() {
 		return footer;
 	}
+
+    public DominationFactor getDominationFactor() {
+        return dominationFactor;
+    }
 
 	private void readMatch() {
 		Object obj;
@@ -197,6 +202,8 @@ public final class BufferedMatch {
         else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
             s = "The winning team won arbitrarily.";
         System.out.println(s);
+
+        dominationFactor = dom;
     }
 
 	private void handleSignals(Signal[] signals) {

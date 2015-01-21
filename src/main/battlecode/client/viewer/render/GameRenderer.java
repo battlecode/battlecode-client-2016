@@ -48,6 +48,7 @@ public class GameRenderer extends BaseRenderer {
       }
 
       public void footerReceived(BufferedMatch m) {
+        processDominationFactor(m.getDominationFactor());
         processFooter(m.getFooter());
       }
     };
@@ -164,7 +165,7 @@ public class GameRenderer extends BaseRenderer {
               }
             }
             cutScene = new DrawCutScene(unitWidth, unitHeight,
-                                        match.getTeamA(), match.getTeamB());
+                                        match.getTeamA(), match.getTeamB(), mapName);
             //FIXME: commented out for now
 //					try {
 //						String path = "map-backgrounds/" + match.getMapNames()[match.getHeader().getMatchNumber()] + ".xml.png";
@@ -179,6 +180,12 @@ public class GameRenderer extends BaseRenderer {
 //					}
           }
         }).start();
+    }
+  }
+
+  private void processDominationFactor(DominationFactor dom) {
+    if (cutScene != null) {
+      cutScene.setDominationFactor(dom);
     }
   }
 
