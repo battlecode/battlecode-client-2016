@@ -280,9 +280,12 @@ class DrawHUD {
   	g2.translate(0.4, 0.025);
   	String numString = String.format("%03d", number);
   	for (int i = 0; i < 3; i++) {
-  		g2.drawImage(numbers[Integer.decode(numString.substring(i, i + 1))],
+	    int digit = Integer.decode(numString.substring(i, i + 1));
+	    if(digit != 0 || i == 2) {
+		g2.drawImage(numbers[digit],
 			     textScaleSmall, null);
-  		g2.translate(0.75/4, 0);
+	    }
+	    g2.translate(0.75/4, 0);
   	}
   	g2.setTransform(pushed);
   	g2.translate(0, .35);

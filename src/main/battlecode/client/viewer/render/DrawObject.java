@@ -191,8 +191,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
     public void draw(Graphics2D g2, boolean focused, boolean lastRow, int layer) {
-	switch(layer) {
-	case 0:
+	if(layer == 0) {
 	    if (RenderConfiguration.showRangeHatch() && focused) {
 		drawRangeHatch(g2);
 	    }
@@ -204,14 +203,14 @@ class DrawObject extends AbstractDrawObject<Animation> {
 				      : creepBlue.image), 2);
 		g2.setTransform(pushed0); // pop
 	    }
-	    break;
-	case 1:
+	}
+	if(layer == 1 || (layer == 2 && info.type == RobotType.COMMANDER)) {
 	    AffineTransform pushed1 = g2.getTransform();
 	    g2.translate(getDrawX(), getDrawY());
 	    drawImmediate(g2, focused, lastRow);
 	    g2.setTransform(pushed1); // pop
-	    break;
-	case 2:
+	}
+	if(layer == 2) {
 	    // these animations shouldn't be drawn in the HUD, and they expect
 	    // the origin of the Graphics2D to be the MapLocation (0,0)
 	    for (AbstractAnimation.AnimationType type : postDrawOrder) {
@@ -219,9 +218,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
 		    animations.get(type).draw(g2);
 		}
 	    }
-	    break;
-	default:
-	    break;
 	}
   }
 
