@@ -176,6 +176,7 @@ class DrawHUD {
     g2.translate(-1.875, -1);
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g2.setFont(footerFont);
+
     g2.translate(width / 2, .9);
     FontMetrics fm = g2.getFontMetrics();
     String teamName;
@@ -198,6 +199,17 @@ class DrawHUD {
     }
     scaleAmount = Math.max(scaleAmount, 4.5);
     g2.scale(width / scaleAmount, width / scaleAmount);
+
+    // possibly use alternate font
+    boolean isASCII = true;
+    for (int i = 0; i < teamName.length(); ++i) {
+        if ((int) teamName.charAt(i) >= 128) {
+            isASCII = false;
+        }
+    }
+    if (!isASCII) {
+        g2.setFont(new Font("Monospaced", Font.BOLD, 12).deriveFont(14.f));
+    }
     g2.drawString(teamName, 0, 0);
     
     

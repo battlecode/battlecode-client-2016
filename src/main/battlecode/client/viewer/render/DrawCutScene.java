@@ -201,6 +201,18 @@ public class DrawCutScene {
 		
 		public void draw(String s, float centerx, float centery) {
 			GlyphVector glyphs = font.createGlyphVector(renderContext,s);
+
+            // are there non-ascii characters?
+            boolean isASCII = true;
+            for (int i = 0; i < s.length(); ++i) {
+                if ((int) s.charAt(i) >= 128) {
+                    isASCII = false;
+                }
+            }
+            if (!isASCII) {
+                glyphs = (new Font("Monospaced", Font.BOLD, 12)).deriveFont(48.f).createGlyphVector(renderContext, s);
+            }
+
 			// Apparently the x,y coordinates given to drawGlyphVector are the bottom
 			// right corner?
 			g2.drawGlyphVector(glyphs,centerx-metrics.stringWidth(s)/2,centery+metrics.getHeight()/2);
