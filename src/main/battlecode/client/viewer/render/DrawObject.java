@@ -364,7 +364,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
     
     //add a box around robot if supply is 0
-    if(supplyLevel<1 && info.type.needsSupply()){
+    if(supplyLevel<1 && info.type.needsSupply() && RenderConfiguration.showSupplyIndicators()){
     	g2.setColor(new Color(0.95f,0.95f,0.95f));
     	Rectangle2D.Float rectLeft;
     	rectLeft = new Rectangle2D.Float(0.02f,0,0.1f, 1);   	

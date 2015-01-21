@@ -94,6 +94,9 @@ public abstract class BaseRenderer {
     case 'M':
       RenderConfiguration.toggleAmbientMusic();
       break;
+    case 'L':
+      RenderConfiguration.toggleSupplyIndicators();
+      break;
     case 'O':
       RenderConfiguration.toggleShowHats();
       break;
