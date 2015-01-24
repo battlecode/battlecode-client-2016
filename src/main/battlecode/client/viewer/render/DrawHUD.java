@@ -293,7 +293,7 @@ class DrawHUD {
   	String numString = String.format("%03d", number);
   	for (int i = 0; i < 3; i++) {
 	    int digit = Integer.decode(numString.substring(i, i + 1));
-	    if(digit != 0 || i == 2) {
+	    if((digit != 0) || (i == 1 && number >= 100) || (i == 2 && number >= 10)) {
 		g2.drawImage(numbers[digit],
 			     textScaleSmall, null);
 	    }
