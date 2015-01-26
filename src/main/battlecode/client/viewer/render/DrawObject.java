@@ -386,8 +386,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
   }
 
     public double drawScale() {
-	return info.type.isBuilding ? 1.5 :
-	    (info.type == RobotType.COMMANDER ? 3.0 : 1.0);
+    	if (info.type == RobotType.COMMANDER)
+    		return 2.0;
+    	if (info.type == RobotType.TOWER)
+    		return 2.0;
+    	if (info.type.isBuilding)
+    		return 1.5;
+    	if (info.type == RobotType.LAUNCHER)
+    		return 1.25;
+    	return 1;
     }
 
     public static void drawImageTransformed(Graphics2D g2, AffineTransform trans,
