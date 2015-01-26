@@ -65,8 +65,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected List<IndicatorLineSignal> newIndicatorLines = new ArrayList<IndicatorLineSignal>();
   protected IndicatorDotSignal [] indicatorDots = new IndicatorDotSignal [0];
   protected IndicatorLineSignal [] indicatorLines = new IndicatorLineSignal [0];
-    protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings
-
+  protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings
+  protected Map<Team, ArrayList<RobotType>> buildingArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
+  protected Map<Team, ArrayList<RobotType>> unitArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
   
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
@@ -129,6 +130,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     towers.put(Team.B, new HashMap<Integer, DrawObject>());
     totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(RobotType.class));
     totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(RobotType.class));
+    buildingArray.put(Team.A, new ArrayList<RobotType>());
+    buildingArray.put(Team.B, new ArrayList<RobotType>());
+    unitArray.put(Team.A, new ArrayList<RobotType>());
+    unitArray.put(Team.B, new ArrayList<RobotType>());    
   }
 
   protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
@@ -191,6 +196,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       
       totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(src.totalRobotTypeCount.get(Team.A)));
       totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(src.totalRobotTypeCount.get(Team.B)));
+      buildingArray.put(Team.A, new ArrayList<RobotType>(src.buildingArray.get(Team.A)));
+      buildingArray.put(Team.B, new ArrayList<RobotType>(src.buildingArray.get(Team.B)));
+      unitArray.put(Team.A, new ArrayList<RobotType>(src.unitArray.get(Team.A)));
+      unitArray.put(Team.B, new ArrayList<RobotType>(src.unitArray.get(Team.B)));
     }
 
   public DrawObject getHQ(Team t) {
@@ -212,11 +221,17 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
   
   public void incrementRobotTypeCount(Team team, RobotType type) {
-    if (totalRobotTypeCount.get(team).containsKey(type)) {
-        totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) + 1);
-    } else {
-        totalRobotTypeCount.get(team).put(type, 1);
-    }
+  	if (type != RobotType.TOWER && type != RobotType.HQ)
+  		if (totalRobotTypeCount.get(team).containsKey(type)) {
+  			totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) + 1);
+  		} else {
+  			totalRobotTypeCount.get(team).put(type, 1);
+  			if (type.isBuilding){
+  				buildingArray.get(team).add(type);
+  			}else{
+  				unitArray.get(team).add(type);
+  			}
+  		}
   }
   
   public void decrementRobotTypeCount(Team team, RobotType type){
@@ -230,7 +245,15 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   		return 0;
   	}
   }
+  
+  public ArrayList<RobotType> getAppearedUnitTypes(Team team){
+  	return new ArrayList<>(unitArray.get(team));
+  }
 
+  public ArrayList<RobotType> getAppearedBuildingTypes(Team team){
+  	return new ArrayList<>(buildingArray.get(team));
+  }
+  
   public DrawObject getPowerCore(Team t) {
     int id = coreIDs[t.ordinal()];
     if(id!=0)

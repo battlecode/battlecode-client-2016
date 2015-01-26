@@ -10,6 +10,7 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -28,42 +29,42 @@ class DrawHUD {
   private static BufferedImage negativeSign;
   private static BufferedMatch match;
    
-  private static final RobotType[] drawnTypes = new RobotType[] {
-    RobotType.BEAVER, 
-    
-    RobotType.SOLDIER,
-    RobotType.BASHER,
-    RobotType.TANK,
-    
-    RobotType.DRONE,
-    RobotType.LAUNCHER,
-    RobotType.MISSILE,
-    
-    RobotType.MINER,
-    
-    RobotType.COMPUTER,  
-    RobotType.COMMANDER,
-
-    RobotType.TOWER,
-    RobotType.SUPPLYDEPOT,
-    
-    RobotType.BARRACKS,
-    RobotType.TANKFACTORY,
-        
-    RobotType.HELIPAD,
-    RobotType.AEROSPACELAB,
-    
-    RobotType.HANDWASHSTATION,
-    
-    RobotType.MINERFACTORY,
-        
-    RobotType.TECHNOLOGYINSTITUTE, 
-    RobotType.TRAININGFIELD,    
-  };
+//  private static final RobotType[] drawnTypes = new RobotType[] {
+//    RobotType.BEAVER, 
+//    
+//    RobotType.SOLDIER,
+//    RobotType.BASHER,
+//    RobotType.TANK,
+//    
+//    RobotType.DRONE,
+//    RobotType.LAUNCHER,
+//    RobotType.MISSILE,
+//    
+//    RobotType.MINER,
+//    
+//    RobotType.COMPUTER,  
+//    RobotType.COMMANDER,
+//
+//    RobotType.TOWER,
+//    RobotType.SUPPLYDEPOT,
+//    
+//    RobotType.BARRACKS,
+//    RobotType.TANKFACTORY,
+//        
+//    RobotType.HELIPAD,
+//    RobotType.AEROSPACELAB,
+//    
+//    RobotType.HANDWASHSTATION,
+//    
+//    RobotType.MINERFACTORY,
+//        
+//    RobotType.TECHNOLOGYINSTITUTE, 
+//    RobotType.TRAININGFIELD,    
+//  };
  
   
   // [team][types]
-  private static final ImageFile [][] rImages = new ImageFile[3][23];
+  private static final Map<Team, Map<RobotType, ImageFile>> rImages = new HashMap<Team, Map<RobotType, ImageFile>>();
 
   static {
     negativeSign = (new ImageFile("art/negative.png")).image;
@@ -84,13 +85,12 @@ class DrawHUD {
     }
     footerFont = font;
 		
-    for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B})
-      for (int x=0; x<drawnTypes.length; x++)
-      {
-        RobotType rt = drawnTypes[x];
-	// TODO figure out why the red team images were "NEUTRAL"
-        rImages[t.ordinal()][x] = new ImageFile("art/" + rt.toString().toLowerCase() + (t == Team.NEUTRAL ? "1" : (t == Team.A ? "1" : "2")) + ".png");
-      }
+    for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B}){
+    	rImages.put(t, new HashMap<RobotType, ImageFile>());
+    	for (RobotType rt: RobotType.values()){
+    		rImages.get(t).put(rt, new ImageFile("art/" + rt.toString().toLowerCase() + (t == Team.NEUTRAL ? "1" : (t == Team.A ? "1" : "2")) + ".png"));
+    	}
+    }
   }
   private final DrawState ds;
   private final Team team;
@@ -261,15 +261,15 @@ class DrawHUD {
       g2.translate(-0.5,0);     
      
       {
-	  int i = 0;
-      	for (i=0; i < drawnTypes.length / 2; i++){
-      		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
-      	}     	
+      	for (RobotType rt : ds.getAppearedUnitTypes(team)){
+      		drawTypeCount(g2, rImages.get(team).get(rt), ds.getRobotTypeCount(team, rt)); 
+      	}
+      	   	
       	g2.setTransform(pushed2);
       	g2.translate(0.5, 0);
-      	for (; i < drawnTypes.length; i++){
-      		drawTypeCount(g2, rImages[team==Team.B?1:2][i], ds.getRobotTypeCount(team, drawnTypes[i])); 	
-      	} 
+      	for (RobotType rt : ds.getAppearedBuildingTypes(team)){
+      		drawTypeCount(g2, rImages.get(team).get(rt), ds.getRobotTypeCount(team, rt)); 
+      	}
       }
   	}  
   	
