@@ -235,7 +235,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
   
   public void decrementRobotTypeCount(Team team, RobotType type){
-  	totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
+  	if (type != RobotType.TOWER && type != RobotType.HQ)
+  		totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
   }
   
   public int getRobotTypeCount(Team team, RobotType type){
