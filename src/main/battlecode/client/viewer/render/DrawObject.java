@@ -369,7 +369,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
     //building progress bar
     if (aliveRounds < buildDelay){
     	Rectangle2D.Float rect;
-      rect = new Rectangle2D.Float(0, 0, 1, 0.15f);
+      rect = new Rectangle2D.Float(0, lastRow?0.7f:1.15f, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = ((float)aliveRounds)/buildDelay;
