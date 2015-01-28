@@ -1,6 +1,7 @@
 package battlecode.client.viewer.render;
 
 import battlecode.client.viewer.AbstractDrawObject.RobotInfo;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,7 +13,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-
+import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
@@ -244,7 +245,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             
 
 
-  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD, boolean lastRow) {
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean isHUD, boolean lastRow, boolean drawXP) {
     
       setTeamColor(g2);
       g2.setStroke(mediumStroke);
@@ -264,7 +265,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     } else {
 	drawRobotImage(g2);
-	drawStatusBars(g2, focused, lastRow);
+	drawStatusBars(g2, focused, lastRow, drawXP);
         
       for (Action a : actions) {
 	  drawAction(g2, a, focused, isHUD);
@@ -336,18 +337,32 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     }
 
-  public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow) {
+  public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow, boolean drawXP) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
     if (showEnergon) {
-      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
+      Rectangle2D.Float rect = getType()==RobotType.COMMANDER ? new Rectangle2D.Float(-0.2f, lastRow?0.85f:1, 1.2f, 0.2f) : 
+      	new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = Math.min((float) (energon / maxEnergon), 1);
-      rect.width = frac;
+      rect.width = frac*(getType()==RobotType.COMMANDER?1.4f:1f);
       if (frac < 0)
         frac = 0;
       g2.setColor(new Color(Math.min(1 - 0.5f * frac, 1.5f - 1.5f * frac),
                             Math.min(1.5f * frac, 0.5f + 0.5f * frac), 0));
+      g2.fill(rect);
+      
+    }
+    
+    if (drawXP && info.type == RobotType.COMMANDER){
+    	Rectangle2D.Float rect = new Rectangle2D.Float(-0.2f, -0.2f, 1.2f, 0.2f);
+      g2.setColor(Color.BLACK);
+      g2.fill(rect);
+      float frac = Math.min((float) (xp / 2000.0), 1);
+      rect.width = frac*1.4f;
+      if (frac < 0)
+        frac = 0;
+      g2.setColor(frac<0.5?Color.red:frac<0.75?Color.orange:frac<1?Color.yellow:Color.white);
       g2.fill(rect);
     }
       
@@ -387,11 +402,13 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
     public double drawScale() {
     	if (info.type == RobotType.COMMANDER)
-    		return 2.0;
+    		return xp>=2000?3.0:(xp>=1500?2.5:(xp>1000?2.0:1.5));
     	if (info.type == RobotType.TOWER)
     		return 2.0;
-    	if (info.type.isBuilding)
+    	if (info.type == RobotType.HQ)
     		return 1.5;
+    	if (info.type.isBuilding)
+    		return 1.3;
     	if (info.type == RobotType.LAUNCHER)
     		return 1.25;
     	return 1;
@@ -458,8 +475,12 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
   }
 
+  public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow, boolean drawXP) {
+    drawImmediate(g2, focused, false, lastRow, drawXP);
+  }
+  
   public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow) {
-    drawImmediate(g2, focused, false, lastRow);
+    drawImmediate(g2, focused, false, lastRow, true);
   }
 
   // used by the HUD

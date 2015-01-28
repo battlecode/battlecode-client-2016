@@ -49,9 +49,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Integer, FluxDepositState> fluxDeposits;
   protected Set<MapLocation> encampments;
   protected double[] teamHP = new double[2];
-    protected Map<Team, DrawObject> hqs;
-    protected Map<Team, Map<Integer, DrawObject>> towers
-    = new EnumMap<Team, Map<Integer, DrawObject>>(Team.class); // includes dead towers
+  protected Map<Team, DrawObject> hqs;
+  protected Map<Team, Map<Integer, DrawObject>> towers
+  = new EnumMap<Team, Map<Integer, DrawObject>>(Team.class); // includes dead towers
+  protected Map<Team, DrawObject> commanders;
   protected int [] coreIDs = new int [2];
   protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
   protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation, Double>();
@@ -68,6 +69,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings
   protected Map<Team, ArrayList<RobotType>> buildingArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
   protected Map<Team, ArrayList<RobotType>> unitArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
+  
   
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
@@ -126,6 +128,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public AbstractDrawState() {
     hqs = new EnumMap<Team, DrawObject>(Team.class);
+    commanders = new EnumMap<Team, DrawObject>(Team.class);
     towers.put(Team.A, new HashMap<Integer, DrawObject>());
     towers.put(Team.B, new HashMap<Integer, DrawObject>());
     totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(RobotType.class));
@@ -204,6 +207,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   public DrawObject getHQ(Team t) {
     return hqs.get(t);
+  }
+  
+  public DrawObject getCommander(Team t){
+  	return commanders.get(t);
   }
 	
     public Map<Integer, DrawObject> getTowers(Team t) {
@@ -305,10 +312,17 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     if (hq.getType() == RobotType.HQ)
       hqs.put(hq.getTeam(),hq);
   }
+  
   protected void tryAddTower(DrawObject t) {
       if (t.getType() == RobotType.TOWER) {
 	  towers.get(t.getTeam()).put(t.getID(), t);
       }
+  }
+  
+  protected void tryAddCommander(DrawObject t){
+  	if(t.getType() == RobotType.COMMANDER){
+  		commanders.put(t.getTeam(), t);
+  	}
   }
 
 
@@ -380,7 +394,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   public void visitDeathSignal(DeathSignal s) {
-      DrawObject robot = getRobot(s.getObjectID());      
+     DrawObject robot = getRobot(s.getObjectID());      
     int team = robot.getTeam().ordinal();
 
     if (team < 2) {
@@ -458,6 +472,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     putRobot(s.getRobotID(), spawn);
     tryAddHQ(spawn);
     tryAddTower(spawn);
+    tryAddCommander(spawn);
     int team = getRobot(s.getRobotID()).getTeam().ordinal();
     if (team < 2) {
       teamHP[team] += getRobot(s.getRobotID()).getEnergon();
