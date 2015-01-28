@@ -69,6 +69,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings
   protected Map<Team, ArrayList<RobotType>> buildingArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
   protected Map<Team, ArrayList<RobotType>> unitArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
+  protected int [] teamStrength = new int[2];
   
   
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
@@ -193,6 +194,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       for (int t = 0; t < researchProgress.length; t++)
         for (int r = 0; r < researchProgress[t].length; r++)
           researchProgress[t][r] = src.researchProgress[t][r];
+      for (int x=0; x<teamStrength.length; x++)
+      	teamStrength[x] = src.teamStrength[x];
 
       indicatorDots = src.indicatorDots;
       indicatorLines = src.indicatorLines;
@@ -216,6 +219,10 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     public Map<Integer, DrawObject> getTowers(Team t) {
 	return towers.get(t);
     }
+    
+  public int getTeamStrength(Team t){
+  	return teamStrength[t.ordinal()];
+  }
 
   public int[] getRobotCounts(Team t) {
     // naive way for now...
@@ -239,11 +246,13 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   				unitArray.get(team).add(type);
   			}
   		}
+  	teamStrength[team.ordinal()] += type.strengthWeight;
   }
   
   public void decrementRobotTypeCount(Team team, RobotType type){
   	if (type != RobotType.TOWER && type != RobotType.HQ)
   		totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
+  	teamStrength[team.ordinal()] -= type.strengthWeight;
   }
   
   public int getRobotTypeCount(Team team, RobotType type){

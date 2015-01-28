@@ -347,22 +347,19 @@ class DrawHUD {
 				else g2.setColor(Color.blue);
 				double percent = Math.min(ds.getTeamResources(r.getTeam())/5000, 1.0);
 				int height = (int)(maxHeight * percent);
-				g2.fillRect(0, maxHeight-height, underImg.getWidth(), height);
-				g2.setColor(Color.white);
-				//g2.fillRect(0, 0, underImg.getWidth(), (int)(.05 * underImg.getHeight()));
-				g2.setTransform(pushed2);
-				//				if (r!=null)
-				//					r.drawImmediate(g2, false, true);
-				String resource = (int)(ds.getTeamResources(r.getTeam()))+"";
+				g2.fillRect(0, maxHeight-height, underImg.getWidth()/2, height);
+				
+				g2.setTransform(pushed2);			
+				String resource = (int)(ds.getTeamResources(r.getTeam())%10000)+"";
 				if (resource.charAt(0) != '-') {
-					while (resource.length() < 8) resource = "0"+resource;
+					while (resource.length() < 4) resource = "0"+resource;
 				} else {
 					resource = resource.substring(1);
-					while (resource.length() < 7) resource = "0"+resource;
+					while (resource.length() < 3) resource = "0"+resource;
 					resource = "-" + resource;
 				}
 				g2.translate(-.3, .5);
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 4; i++) {
 					if (resource.substring(i, i + 1).equals("-")) {
 						g2.drawImage(negativeSign, textScaleSmall, null);
 					} else {
@@ -371,81 +368,42 @@ class DrawHUD {
 					g2.translate(0.75/4, 0);
 				}
 			}
-
-
+			
 			g2.setTransform(pushed2);
-			g2.translate(-0.5, -2.0);
-
-
-			/*
-      g2.translate(0.1, 0);
-      for (int x=0; x<drawnTypes.length; x++)
-      {
-        BufferedImage target = rImages[r.getTeam().ordinal()][x].image;
-        // assume a non-square sprite means a sprite sheet of squares
-        if (target.getWidth() != target.getHeight()) {
-          target = target.getSubimage(0, 0, target.getHeight(), target.getHeight());
-        }
-        AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-        trans.scale(0.4 / target.getWidth(), 0.4 / target.getHeight());
-        g2.drawImage(target, trans, null);
-
-        String number = counts[drawnTypes[x].ordinal()]+"";
-        while (number.length() < 3) number = "0"+number;
-        g2.translate(0.0, 0.4);
-        for (int i = 0; i < 3; i++) {
-          g2.drawImage(numbers[Integer.decode(number.substring(i, i + 1))], textScaleSmall, null);
-          g2.translate(0.75/4, 0);
-        }
-        g2.translate(-0.75/4*3, 0);
-
-        g2.translate(0.65, -0.4);
-        if (x == 2)
-          g2.translate(-1.95, 0.7);
-      }
-			 */
-
-
-			//      BufferedImage[] rImage = new BufferedImage[]{ rImprovedBuilding.image,
-			//                                                    rImprovedMining.image,
-			//                                                    rRegenerativeMachinery.image,
-			//                                                    rNeuromorphics.image,
-			//                                                    rControlledEcophagy.image, };
-			//
-			//      g2.setTransform(pushed2);
-			//      g2.translate(-0.5, 0.75);
-			//      final double upgradewidth = 0.7;
-			//      final double upgradescale = upgradewidth/0.65;
-			//      g2.translate(0.65*3/2-upgradewidth, 0);
-			//      g2.scale(upgradescale, upgradescale);
-			//      int c = 0;
-			//      for (int u = 0; u < Upgrade.values().length; u++) {
-			//        double research = ds.getResearchProgress(r.getTeam(), u);
-			//        if (research > 0) {
-			//            BufferedImage target = rImage[u];
-			//            if (target == null) {
-			//                System.out.println("DARN at " + u + " " + rImage.length);
-			//            }
-			//            AffineTransform trans = AffineTransform.getTranslateInstance(0,0);
-			//            trans.scale(0.65 / target.getWidth(), 0.65 / target.getHeight());
-			//            g2.drawImage(target, trans, null);
-			//								
-			//            Rectangle2D.Double rect = new Rectangle2D.Double(0.1, 0.05, 0.5, 0.05f);
-			//            g2.setColor(Color.gray);
-			//            g2.fill(rect);
-			//            double frac = Math.min(research, 1);
-			//            rect.width = frac / 2;
-			//            g2.setColor(Color.green);
-			//            g2.fill(rect);
-			//								
-			//            g2.translate(0.65, 0);
-			//            if (c == 1 || c == 3)
-			//              g2.translate(-0.65*2, 0.6);
-			//            c++;
-			//        }
-			//      }
-			//
-			//			
+			{
+				BufferedImage underImg = unitUnder.image;
+				int maxHeight = (int)(.5 * underImg.getHeight());
+				g2.translate(0.5, 0.0);
+				g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
+				if (r.getTeam() == Team.A) g2.setColor(Color.red);
+				else g2.setColor(Color.blue);
+				double percent = Math.min(ds.getTeamStrength(r.getTeam())/1000.0, 1.0);
+				int height = (int)(maxHeight * percent);
+				g2.fillRect(0, maxHeight-height, underImg.getWidth()/2, height);
+				
+				g2.setTransform(pushed2);		
+				g2.translate(1, 0.0);
+				String resource = (int)(ds.getTeamStrength(r.getTeam())%10000)+"";
+				if (resource.charAt(0) != '-') {
+					while (resource.length() < 4) resource = "0"+resource;
+				} else {
+					resource = resource.substring(1);
+					while (resource.length() < 3) resource = "0"+resource;
+					resource = "-" + resource;
+				}
+				g2.translate(-.3, .5);
+				for (int i = 0; i < 4; i++) {
+					if (resource.substring(i, i + 1).equals("-")) {
+						g2.drawImage(negativeSign, textScaleSmall, null);
+					} else {
+						g2.drawImage(numbers[Integer.decode(resource.substring(i, i + 1))], textScaleSmall, null);
+					}
+					g2.translate(0.75/4, 0);
+				}
+			}
+			
+			
+			
 		}
 		g2.setTransform(pushed);
 		g2.translate(0, .4);
