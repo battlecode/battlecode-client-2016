@@ -1,11 +1,12 @@
 Battlecode Client
----
+=================
 
-BUILDING
+Building
+--------
 
-NOTE: If you are a competitor, you can download the installer that does all these steps for you. See http://www.battlecode.org/contestants/releases/.
+*NOTE: If you are a competitor, you can download the installer that does all these steps for you. See http://www.battlecode.org/contestants/releases/.*
 
-!!! Now that the 3D viewer is up and running, you'll need a couple more jars, specifically:
+First, you must get:
 - jogl.all.jar
 - gluegen-rt.jar
 
@@ -31,3 +32,7 @@ You have to build the server before the client. This process builds both. You ne
 
 Enjoy your new build!
 
+Basic Guide to the Codebase
+---------------------------
+
+TODO
