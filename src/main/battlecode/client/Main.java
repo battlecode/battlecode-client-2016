@@ -11,21 +11,26 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import battlecode.analysis.AwesomenessAnalyzer;
-import battlecode.client.ClientProxy;
-import battlecode.client.StreamClientProxy;
 import battlecode.client.viewer.MatchViewer;
 import battlecode.client.MatchDialog.Choice;
 import battlecode.client.MatchDialog.Parameter;
 import battlecode.serial.MatchInfo;
 import battlecode.server.Config;
 import battlecode.server.Server;
-import battlecode.server.ServerFactory;
-import battlecode.server.State;
+import battlecode.server.controller.Controller;
+import battlecode.server.controller.LocalController;
+import battlecode.server.proxy.FileProxy;
+import battlecode.server.proxy.Proxy;
+import battlecode.server.serializer.JavaSerializer;
+import battlecode.server.serializer.Serializer;
+import battlecode.server.serializer.XStreamSerializer;
 
 public class Main {
 
@@ -130,8 +135,26 @@ public class Main {
                 Server server = null;
 
                 try {
-                    server = ServerFactory.createLocalServer(options,
-                            (LocalProxy) theProxy, saveFile);
+                    // Set up the server
+                    Controller controller = new LocalController(options, LocalProxy.INSTANCE);
+
+                    List<Proxy> proxies = new LinkedList<Proxy>();
+
+                    if (saveFile != null) {
+                        final Serializer serializer;
+                        if (options.getBoolean("bc.server.output-xml")) {
+                            serializer = new XStreamSerializer();
+                        } else {
+                            serializer = new JavaSerializer();
+                        }
+                        proxies.add(new FileProxy(saveFile, serializer));
+                    }
+
+                    server = new Server(options, Server.Mode.LOCAL, controller,
+                            proxies.toArray(new Proxy[0]));
+
+                    controller.addObserver(server);
+
                 } catch (IOException e) {
                     return;
                 }

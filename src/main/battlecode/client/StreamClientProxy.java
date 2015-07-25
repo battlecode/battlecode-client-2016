@@ -6,7 +6,7 @@ import battlecode.engine.signal.Signal;
 
 import java.io.*;
 import battlecode.server.Config;
-import battlecode.server.proxy.XStreamProxy;
+import battlecode.server.serializer.XStreamSerializer;
 
 public final class StreamClientProxy implements ClientProxy {
 
@@ -18,7 +18,7 @@ public final class StreamClientProxy implements ClientProxy {
 
 	public StreamClientProxy(InputStream stream) throws IOException {
 		if(Config.getGlobalConfig().getBoolean("bc.server.output-xml")) {
-			ois = XStreamProxy.getXStream().createObjectInputStream(stream);	
+			ois = XStreamSerializer.getXStream().createObjectInputStream(stream);
 		}
 		else {
 			ois = new ObjectInputStream(stream);
