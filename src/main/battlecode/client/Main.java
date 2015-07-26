@@ -150,6 +150,8 @@ public class Main {
                         proxies.add(new FileProxy(saveFile, serializer));
                     }
 
+                    proxies.add(LocalProxy.INSTANCE);
+
                     server = new Server(options, Server.Mode.LOCAL, controller,
                             proxies.toArray(new Proxy[0]));
 
