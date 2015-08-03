@@ -9,7 +9,7 @@ import battlecode.serial.notification.Notification;
 import battlecode.server.proxy.Proxy;
 import battlecode.engine.signal.Signal;
 
-public class LocalProxy extends Proxy implements ClientProxy {
+public class LocalProxy implements Proxy, ClientProxy {
 
 	public static final LocalProxy INSTANCE = new LocalProxy(); 
 	
@@ -31,13 +31,13 @@ public class LocalProxy extends Proxy implements ClientProxy {
 		notifier = new Notifier();
 	}
 
-	protected OutputStream getOutputStream() throws IOException {
-		return null;
-	}
-
+	@Override
 	public void writeObject(Object o) throws IOException {
 		queue.add(o);
 	}
+
+	@Override
+	public void close() throws IOException {}
 
 	public Object readObject() throws EOFException {
 		synchronized (queue) {
