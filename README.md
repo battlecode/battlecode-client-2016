@@ -1,36 +1,7 @@
 Battlecode Client
 =================
 
-Building
---------
-
 *NOTE: If you are a competitor, you can download the installer that does all these steps for you. See http://www.battlecode.org/contestants/releases/.*
-
-First, you must get:
-- jogl.all.jar
-- gluegen-rt.jar
-
-All of these jars can be found on http://jogamp.org
-
-You have to build the server before the client. This process builds both. You need an existing battlecode distribution for the updated jogl.jar file, and everything else.
-
-1. cd into your workspace
-2. git clone https://github.com/battlecode/battlecode-server.git
-3. cd battlecode-server
-4. mkdir -p ~/.ant/lib
-5. ant download-ivy
-6. ant retrieve
-7. ant jar
-8. cp battlecode-server.jar battlecode_distro/
-9. cd ..
-10. git clone https://github.com/battlecode/battlecode-client.git
-11. ant retrieve
-12. cp ../battlecode-server/battlecode-server.jar lib/
-13. cp battlecode_distro/jogl.jar lib/
-14. ant jar
-15. cp battlecode-client.jar battlecode_distro/
-
-Enjoy your new build!
 
 Basic Guide to the Codebase
 ---------------------------
