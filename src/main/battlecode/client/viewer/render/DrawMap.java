@@ -154,8 +154,6 @@ public class DrawMap {
   }
 
   public void loadMapArt()  {
-    TerrainTile[][] map = m.getTerrainMatrix();
-
     mapBG = (new ImageFile ("art/map_bg.png")).image;
 
     // set up the road tiles
@@ -196,12 +194,8 @@ public class DrawMap {
     for (int i = 0; i < subtileHeight * mapHeight * subtileHeight * mapWidth; i++) {
         subtileIndices[i] = 0; // default value
     }
+    /*
     for (int x = 0; x < mapWidth; x++) for (int y = 0; y < mapHeight; y++) {
-        TerrainTile typeHere = map[x][y];
-        if (typeHere != VOID)
-        {
-          continue;
-        }
         // to prevent reading out of array
         boolean topInBounds = (y - 1 >= 0);
         boolean botInBounds = (y + 1 < mapHeight);
@@ -251,6 +245,7 @@ public class DrawMap {
             }
         }
       }
+    */
     roadImg.unload();
   }
 }

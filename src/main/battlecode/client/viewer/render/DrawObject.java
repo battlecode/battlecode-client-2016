@@ -205,7 +205,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 		g2.setTransform(pushed0); // pop
 	    }
 	}
-	if(layer == 1 || (layer == 2 && info.type == RobotType.COMMANDER)) {
+	if(layer == 1) {
 	    AffineTransform pushed1 = g2.getTransform();
 	    g2.translate(getDrawX(), getDrawY());
 	    drawImmediate(g2, focused, lastRow);
@@ -298,23 +298,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
 	    g2.setStroke(mediumStroke);
 	    MapLocation target = new MapLocation(a.target.x - loc.x,
 						 a.target.y - loc.y);
-	    switch (info.type) {
-	    case BEAVER:
-	    case SOLDIER:
-	    case MINER:
-	    case DRONE:
-	    case TANK:
-	    case COMMANDER:
-	    case TOWER:
 		g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
 					  target.x + 0.5, target.y + 0.5));
-		break;
-	    case BASHER:
-		g2.draw(new Ellipse2D.Double(getDrawDX() + .5 - bashRadius,
-					     getDrawDY() + .5 - bashRadius,
-					     bashRadius * 2, bashRadius * 2));
-		break;
-	    case HQ:
+        // old code to draw HQ attack
+        /*
 		BufferedImage crosshairImage;
 		if (getTeam() == Team.A) {
 		    crosshairImage = crosshair.image;
@@ -330,9 +317,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
 		g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
 					  target.x + 0.5, target.y + 0.5));
 		break;
-	    default:
-        	
-	    }
+        */
 	}
 
     }
@@ -340,30 +325,17 @@ class DrawObject extends AbstractDrawObject<Animation> {
   public void drawStatusBars(Graphics2D g2, boolean focused, boolean lastRow, boolean drawXP) {
     boolean showEnergon = RenderConfiguration.showEnergon() || focused;
     if (showEnergon) {
-      Rectangle2D.Float rect = getType()==RobotType.COMMANDER ? new Rectangle2D.Float(-0.2f, lastRow?0.85f:1, 1.2f, 0.2f) : 
-      	new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
+      Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow?0.85f:1, 1, 0.15f);
       g2.setColor(Color.BLACK);
       g2.fill(rect);
       float frac = Math.min((float) (energon / maxEnergon), 1);
-      rect.width = frac*(getType()==RobotType.COMMANDER?1.4f:1f);
+      rect.width = frac;
       if (frac < 0)
         frac = 0;
       g2.setColor(new Color(Math.min(1 - 0.5f * frac, 1.5f - 1.5f * frac),
                             Math.min(1.5f * frac, 0.5f + 0.5f * frac), 0));
       g2.fill(rect);
       
-    }
-    
-    if (drawXP && info.type == RobotType.COMMANDER){
-    	Rectangle2D.Float rect = new Rectangle2D.Float(-0.2f, -0.2f, 1.2f, 0.2f);
-      g2.setColor(Color.BLACK);
-      g2.fill(rect);
-      float frac = Math.min((float) (xp / 2000.0), 1);
-      rect.width = frac*1.4f;
-      if (frac < 0)
-        frac = 0;
-      g2.setColor(frac<0.5?Color.red:frac<0.75?Color.orange:frac<1?Color.yellow:Color.white);
-      g2.fill(rect);
     }
       
     //building progress bar
@@ -377,40 +349,11 @@ class DrawObject extends AbstractDrawObject<Animation> {
       g2.setColor(new Color(1f, 0f, 0f));
       g2.fill(rect);   	
     }
-    
-    //add a box around robot if supply is 0
-    if(supplyLevel<1 && info.type.needsSupply() && RenderConfiguration.showSupplyIndicators()){
-    	g2.setColor(new Color(0.95f,0.95f,0.95f));
-    	Rectangle2D.Float rectLeft;
-    	rectLeft = new Rectangle2D.Float(0.02f,0,0.1f, 1);   	
-    	g2.fill(rectLeft);
-    	rectLeft = new Rectangle2D.Float(0.12f,0,0.2f,0.1f);
-    	g2.fill(rectLeft);
-    	rectLeft = new Rectangle2D.Float(0.12f,0.9f,0.2f,0.1f);
-    	g2.fill(rectLeft);
-    	
-    	Rectangle2D.Float rectRight;
-    	rectRight = new Rectangle2D.Float(0.88f,0,0.1f, 1);   	
-    	g2.fill(rectRight);
-    	rectRight = new Rectangle2D.Float(0.68f,0,0.2f,0.1f);
-    	g2.fill(rectRight);
-    	rectRight = new Rectangle2D.Float(0.68f,0.9f,0.2f,0.1f);
-    	g2.fill(rectRight);
-    	
-    }
   }
 
     public double drawScale() {
-    	if (info.type == RobotType.COMMANDER)
-    		return xp>=2000?3.0:(xp>=1500?2.5:(xp>1000?2.0:1.5));
-    	if (info.type == RobotType.TOWER)
-    		return 2.0;
-    	if (info.type == RobotType.HQ)
-    		return 1.5;
     	if (info.type.isBuilding)
     		return 1.3;
-    	if (info.type == RobotType.LAUNCHER)
-    		return 1.25;
     	return 1;
     }
 

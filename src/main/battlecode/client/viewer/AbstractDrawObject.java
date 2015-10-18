@@ -352,7 +352,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
   public void setAttacking(MapLocation target) {
       actions.add(new Action(ActionType.ATTACKING, currentRound,
-			     info.type.attackDelay, target));
+			     (int) info.type.attackDelay, target));
       attackDir = dir;
     //componentType = component;
     //if (info.type == RobotType.CHAINER) {

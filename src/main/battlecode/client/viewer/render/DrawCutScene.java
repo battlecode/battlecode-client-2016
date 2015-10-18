@@ -266,12 +266,8 @@ public class DrawCutScene {
             s = "more towers remaining";
         else if (dom == DominationFactor.OWNED)
             s = "more HQ health";
-        else if (dom == DominationFactor.BEAT)
-            s = "more TOWER health";
         else if (dom == DominationFactor.BARELY_BEAT)
             s = "SUPERIOR SANITATION";
-        else if (dom == DominationFactor.BARELY_BARELY_BEAT)
-            s = "more total ore value";
         else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
             s = "???";
         
