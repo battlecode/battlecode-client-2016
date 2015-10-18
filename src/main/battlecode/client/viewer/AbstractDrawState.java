@@ -45,23 +45,15 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   protected abstract DrawObject createDrawObject(DrawObject o);
   protected Map<Integer, DrawObject> groundUnits;
-  protected Map<Integer, DrawObject> airUnits;
-  protected Map<Integer, FluxDepositState> fluxDeposits;
-  protected Set<MapLocation> encampments;
-  protected double[] teamHP = new double[2];
-  protected Map<Team, DrawObject> hqs;
-  protected Map<Team, Map<Integer, DrawObject>> towers
-  = new EnumMap<Team, Map<Integer, DrawObject>>(Team.class); // includes dead towers
-  protected Map<Team, DrawObject> commanders;
-  protected int [] coreIDs = new int [2];
-  protected Map<MapLocation,Team> mineLocs = new HashMap<MapLocation, Team>();
+  protected double[] teamHP = new double[4];
+  protected int [] coreIDs = new int [4];
   protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation, Double>();
   protected static MapLocation origin = null;
   protected GameMap gameMap;
   protected int currentRound;
   protected RoundStats stats = null;
-  protected double[] teamResources = new double[2];
-  protected double[][] researchProgress = new double[2][4];
+  protected double[] teamResources = new double[4];
+  protected double[][] researchProgress = new double[4][4];
   protected List<IndicatorDotSignal> newIndicatorDots = new ArrayList<IndicatorDotSignal>();
   protected List<IndicatorLineSignal> newIndicatorLines = new ArrayList<IndicatorLineSignal>();
   protected IndicatorDotSignal [] indicatorDots = new IndicatorDotSignal [0];
@@ -69,121 +61,46 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   protected Map<Team, Map<RobotType, Integer>> totalRobotTypeCount = new EnumMap<Team, Map<RobotType, Integer>>(Team.class); // includes inactive buildings
   protected Map<Team, ArrayList<RobotType>> buildingArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
   protected Map<Team, ArrayList<RobotType>> unitArray = new EnumMap<Team, ArrayList<RobotType>>(Team.class);
-  protected int [] teamStrength = new int[2];
+  protected int [] teamStrength = new int[4];
   
   
   protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
     new Iterable<Map.Entry<Integer, DrawObject>>() {
 
     public Iterator<Map.Entry<Integer, DrawObject>> iterator() {
-      return new UnitIterator();
+      return groundUnits.entrySet().iterator();
     }
   };
-
-  private class UnitIterator implements Iterator<Map.Entry<Integer, DrawObject>> {
-
-    private Iterator<Map.Entry<Integer, DrawObject>> it =
-      groundUnits.entrySet().iterator();
-    private boolean ground = true;
-
-    public boolean hasNext() {
-      return it.hasNext() || (ground && !airUnits.isEmpty());
-    }
-
-    public Map.Entry<Integer, DrawObject> next() {
-      if (!it.hasNext() && ground) {
-        ground = false;
-        it = airUnits.entrySet().iterator();
-      }
-      return it.next();
-    }
-
-    public void remove() {
-      it.remove();
-    }
-  };
-
-  protected class Link {
-    public MapLocation from;
-    public MapLocation to;
-    public boolean [] connected;
-
-    public Link(MapLocation from, MapLocation to) {
-      this.from = from;
-      this.to = to;
-      connected = new boolean [2];
-    }
-
-    public Link(Link l) {
-      this.from = l.from;
-      this.to = l.to;
-      this.connected = new boolean [2];
-      System.arraycopy(l.connected,0,this.connected,0,2);
-    }
-  }
-
-  private Map<MapLocation, List<MapLocation>> neighbors = null;
-  private Map<MapLocation, Team> nodeTeams = new HashMap<MapLocation,Team>();
-  protected List<Link> links = new ArrayList<Link>();
-
 
   public AbstractDrawState() {
-    hqs = new EnumMap<Team, DrawObject>(Team.class);
-    commanders = new EnumMap<Team, DrawObject>(Team.class);
-    towers.put(Team.A, new HashMap<Integer, DrawObject>());
-    towers.put(Team.B, new HashMap<Integer, DrawObject>());
     totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>(RobotType.class));
     totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>(RobotType.class));
+    totalRobotTypeCount.put(Team.NEUTRAL, new EnumMap<RobotType, Integer>(RobotType.class));
+    totalRobotTypeCount.put(Team.ZOMBIE, new EnumMap<RobotType, Integer>(RobotType.class));
     buildingArray.put(Team.A, new ArrayList<RobotType>());
     buildingArray.put(Team.B, new ArrayList<RobotType>());
+    buildingArray.put(Team.NEUTRAL, new ArrayList<RobotType>());
+    buildingArray.put(Team.ZOMBIE, new ArrayList<RobotType>());
     unitArray.put(Team.A, new ArrayList<RobotType>());
     unitArray.put(Team.B, new ArrayList<RobotType>());    
+    unitArray.put(Team.NEUTRAL, new ArrayList<RobotType>());    
+    unitArray.put(Team.ZOMBIE, new ArrayList<RobotType>());    
   }
 
   protected synchronized void copyStateFrom(AbstractDrawState<DrawObject> src) {
       currentRound = src.currentRound;
-      
+
       groundUnits.clear();
-      for(Map<Integer, DrawObject> towerMap : towers.values()) {
-	  for(Integer id : towerMap.keySet()) {
-	      towerMap.put(id, null);
-	  }
-      }
       for (Map.Entry<Integer, DrawObject> entry : src.groundUnits.entrySet()) {
         DrawObject copy = createDrawObject(entry.getValue());
         groundUnits.put(entry.getKey(), copy);
-        tryAddHQ(copy);
-	tryAddTower(copy);
       }
-      airUnits.clear();
-      for (Map.Entry<Integer, DrawObject> entry : src.airUnits.entrySet()) {
-        DrawObject copy = createDrawObject(entry.getValue());
-        airUnits.put(entry.getKey(), copy);
-      }
-
       
-
-      mineLocs.clear();
-      mineLocs.putAll(src.mineLocs);
-        
       locationOre.clear();
       locationOre.putAll(src.locationOre);
         
-      fluxDeposits.clear();
-      for (Map.Entry<Integer, FluxDepositState> entry : src.fluxDeposits.entrySet()) {
-        fluxDeposits.put(entry.getKey(), new FluxDepositState(entry.getValue()));
-      }
       coreIDs = src.coreIDs;
       stats = src.stats;
-
-      nodeTeams = new HashMap<MapLocation,Team>(src.nodeTeams);
-	
-      neighbors = src.neighbors;
-
-      links.clear();
-      for(Link l : src.links) {
-        links.add(new Link(l));
-      }
 	
       if (src.gameMap != null) {
         gameMap = src.gameMap;
@@ -207,18 +124,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       unitArray.put(Team.A, new ArrayList<RobotType>(src.unitArray.get(Team.A)));
       unitArray.put(Team.B, new ArrayList<RobotType>(src.unitArray.get(Team.B)));
     }
-
-  public DrawObject getHQ(Team t) {
-    return hqs.get(t);
-  }
-  
-  public DrawObject getCommander(Team t){
-  	return commanders.get(t);
-  }
-	
-    public Map<Integer, DrawObject> getTowers(Team t) {
-	return towers.get(t);
-    }
     
   public int getTeamStrength(Team t){
   	return teamStrength[t.ordinal()];
@@ -235,23 +140,21 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
   
   public void incrementRobotTypeCount(Team team, RobotType type) {
-  	if (type != RobotType.TOWER && type != RobotType.HQ)
-  		if (totalRobotTypeCount.get(team).containsKey(type)) {
-  			totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) + 1);
-  		} else {
-  			totalRobotTypeCount.get(team).put(type, 1);
-  			if (type.isBuilding){
-  				buildingArray.get(team).add(type);
-  			}else{
-  				unitArray.get(team).add(type);
-  			}
-  		}
+    if (totalRobotTypeCount.get(team).containsKey(type)) {
+        totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) + 1);
+    } else {
+        totalRobotTypeCount.get(team).put(type, 1);
+        if (type.isBuilding){
+            buildingArray.get(team).add(type);
+        }else{
+            unitArray.get(team).add(type);
+        }
+    }
   	teamStrength[team.ordinal()] += type.strengthWeight;
   }
   
   public void decrementRobotTypeCount(Team team, RobotType type){
-  	if (type != RobotType.TOWER && type != RobotType.HQ)
-  		totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
+    totalRobotTypeCount.get(team).put(type, totalRobotTypeCount.get(team).get(type) - 1);
   	teamStrength[team.ordinal()] -= type.strengthWeight;
   }
   
@@ -278,10 +181,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     else
       return null;
   }
-	
-  public Set<MapLocation> getEncampmentLocations() {
-    return encampments;
-  }
 
   protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
     return drawables;
@@ -297,43 +196,19 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 
   protected DrawObject getRobot(int id) {
     DrawObject obj = groundUnits.get(id);
-    if (obj == null) {
-      obj = airUnits.get(id);
-      assert obj != null : "Robot #" + id + " not found";
-    }
+    assert obj != null : "Robot #" + id + " not found";
     return obj;
   }
 
   protected void removeRobot(int id) {
     DrawObject previous = groundUnits.remove(id);
-    if (previous == null) {
-      previous = airUnits.remove(id);
-      assert previous != null : "Robot #" + id + " not found";
-    }
+    assert previous != null : "Robot #" + id + " not found";
   }
 
   protected void putRobot(int id, DrawObject unit) {
     DrawObject previous = groundUnits.put(id, unit);
     assert previous == null : "Robot #" + id + " already exists";
   }
-
-  protected void tryAddHQ(DrawObject hq) {
-    if (hq.getType() == RobotType.HQ)
-      hqs.put(hq.getTeam(),hq);
-  }
-  
-  protected void tryAddTower(DrawObject t) {
-      if (t.getType() == RobotType.TOWER) {
-	  towers.get(t.getTeam()).put(t.getID(), t);
-      }
-  }
-  
-  protected void tryAddCommander(DrawObject t){
-  	if(t.getType() == RobotType.COMMANDER){
-  		commanders.put(t.getTeam(), t);
-  	}
-  }
-
 
   public RoundStats getRoundStats() {
     return stats;
@@ -363,17 +238,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
       DrawObject obj = it.next().getValue();
       obj.updateRound();
       if (!obj.isAlive()) {
-	  it.remove();
-	  if(obj.getType() == RobotType.TOWER) {
-	      towers.get(obj.getTeam()).put(obj.getID(), null);
-	  }
-        //if (obj.getType() == RobotType.ARCHON) {
-        //	(obj.getTeam() == Team.A ? archonsA : archonsB).remove(obj);
-        //}
+	    it.remove();
       }
-      //if (obj.getType() == RobotType.WOUT) {
-      //	mineFlux(obj);
-      //}
     }
     indicatorDots = newIndicatorDots.toArray(new IndicatorDotSignal [newIndicatorDots.size()]);
     indicatorLines = newIndicatorLines.toArray(new IndicatorLineSignal [newIndicatorLines.size()]);
@@ -414,7 +280,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   public void visitTeamOreSignal(TeamOreSignal s) {
-    for (int x=0; x<teamResources.length; x++)
+    for (int x=0; x<2; x++)
       teamResources[x] = s.ore[x];
   }
 
@@ -479,9 +345,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
 	parent.setAction(s.getDelay(), ActionType.BUILDING);
     }
     putRobot(s.getRobotID(), spawn);
-    tryAddHQ(spawn);
-    tryAddTower(spawn);
-    tryAddCommander(spawn);
     int team = getRobot(s.getRobotID()).getTeam().ordinal();
     if (team < 2) {
       teamHP[team] += getRobot(s.getRobotID()).getEnergon();
@@ -520,13 +383,11 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     int[] robotIDs = s.getRobotIDs();
     double[] coreDelays = s.getCoreDelays();
     double[] weaponDelays = s.getWeaponDelays();
-    double[] supplyLevels = s.getSupplyLevels();
     for (int i = 0; i < robotIDs.length; i++) {
       DrawObject robot = getRobot(robotIDs[i]);
       if (robot != null) {
           robot.setMovementDelay(coreDelays[i]);
           robot.setAttackDelay(weaponDelays[i]);
-          robot.setSupplyLevel(supplyLevels[i]);
       }
     }
   }

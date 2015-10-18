@@ -188,17 +188,13 @@ public final class BufferedMatch {
         DominationFactor dom = gameStats.getDominationFactor();
         String s = "";
         if (dom == DominationFactor.DESTROYED)
-            s = "The winning team won by destruction.";
+            s = "The winning team won by TODO something here.";
         else if (dom == DominationFactor.PWNED)
-            s = "The winning team won on tiebreakers (more towers remaining).";
+            s = "The winning team won on TODO something here.";
         else if (dom == DominationFactor.OWNED)
-            s = "The winning team won on tiebreakers (more HQ health).";
-        else if (dom == DominationFactor.BEAT)
-            s = "The winning team won on tiebreakers (more TOWER health).";
+            s = "The winning team won on TODO something here.";
         else if (dom == DominationFactor.BARELY_BEAT)
-            s = "The winning team won due to superior sanitation.";
-        else if (dom == DominationFactor.BARELY_BARELY_BEAT)
-            s = "The winning team won on tiebreakers (more total ore value).";
+            s = "The winning team won on TODO something here.";
         else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
             s = "The winning team won arbitrarily.";
         System.out.println(s);

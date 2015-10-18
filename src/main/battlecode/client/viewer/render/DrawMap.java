@@ -88,6 +88,7 @@ public class DrawMap {
       }
     }
 
+    /*
     for (int x = 0; x < mapWidth; x++) {
       for (int y = 0; y < mapHeight; y++) {
         for (int sx = 0; sx < subtileHeight; sx++) {
@@ -104,6 +105,7 @@ public class DrawMap {
         }
       }
     }
+    */
     g2.dispose();
   }
 
@@ -154,10 +156,9 @@ public class DrawMap {
   }
 
   public void loadMapArt()  {
-    TerrainTile[][] map = m.getTerrainMatrix();
-
     mapBG = (new ImageFile ("art/map_bg.png")).image;
 
+    /*
     // set up the road tiles
     ImageFile roadImg = new ImageFile("art/roads.png"); // actual rendering
     ImageFile voidImg = new ImageFile("art/innervoid.png"); // actual rendering
@@ -184,6 +185,7 @@ public class DrawMap {
                                                 subtileYPixels,
                                                 subtileYPixels);
       }
+    */
     
     prerender = GraphicsEnvironment.getLocalGraphicsEnvironment()
       .getDefaultScreenDevice()
@@ -191,17 +193,14 @@ public class DrawMap {
       .createCompatibleImage(locPixelWidth * mapWidth, locPixelWidth * mapHeight,
                              Transparency.TRANSLUCENT);
                                                       
-    
+    /*
     subtileIndices = new byte[subtileHeight * mapHeight * subtileHeight * mapWidth];
     for (int i = 0; i < subtileHeight * mapHeight * subtileHeight * mapWidth; i++) {
         subtileIndices[i] = 0; // default value
     }
+    */
+    /*
     for (int x = 0; x < mapWidth; x++) for (int y = 0; y < mapHeight; y++) {
-        TerrainTile typeHere = map[x][y];
-        if (typeHere != VOID)
-        {
-          continue;
-        }
         // to prevent reading out of array
         boolean topInBounds = (y - 1 >= 0);
         boolean botInBounds = (y + 1 < mapHeight);
@@ -251,6 +250,7 @@ public class DrawMap {
             }
         }
       }
-    roadImg.unload();
+    */
+    //roadImg.unload();
   }
 }
