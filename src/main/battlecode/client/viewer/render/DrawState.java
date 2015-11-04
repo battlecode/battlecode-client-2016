@@ -27,7 +27,6 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
-import battlecode.common.TerrainTile;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.IndicatorDotSignal;

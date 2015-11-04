@@ -22,10 +22,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.FluxDepositState;
 import battlecode.common.MapLocation;
 import battlecode.common.Team;
-import battlecode.common.TerrainTile;
 import java.awt.AlphaComposite;
-
-import static battlecode.common.TerrainTile.*;
 
 public class DrawMap {
 
