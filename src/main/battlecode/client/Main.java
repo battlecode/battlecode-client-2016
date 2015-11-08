@@ -28,9 +28,9 @@ import battlecode.server.controller.Controller;
 import battlecode.server.controller.LocalController;
 import battlecode.server.proxy.FileProxy;
 import battlecode.server.proxy.Proxy;
-import battlecode.server.serializer.JavaSerializer;
-import battlecode.server.serializer.Serializer;
-import battlecode.server.serializer.XStreamSerializer;
+import battlecode.server.serializer.JavaSerializerFactory;
+import battlecode.server.serializer.SerializerFactory;
+import battlecode.server.serializer.XStreamSerializerFactory;
 
 public class Main {
 
@@ -141,13 +141,13 @@ public class Main {
                     List<Proxy> proxies = new LinkedList<Proxy>();
 
                     if (saveFile != null) {
-                        final Serializer serializer;
+                        final SerializerFactory serializerFactory;
                         if (options.getBoolean("bc.server.output-xml")) {
-                            serializer = new XStreamSerializer();
+                            serializerFactory = new XStreamSerializerFactory();
                         } else {
-                            serializer = new JavaSerializer();
+                            serializerFactory = new JavaSerializerFactory();
                         }
-                        proxies.add(new FileProxy(saveFile, serializer));
+                        proxies.add(new FileProxy(saveFile, serializerFactory));
                     }
 
                     proxies.add(LocalProxy.INSTANCE);
