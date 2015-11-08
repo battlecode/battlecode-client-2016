@@ -35,7 +35,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 		this.match = match;
 		match.addMatchListener(new MatchListener() {
 			public void headerReceived(BufferedMatch m) {
-				keyFrames = new Vector<E>(1 + m.getHeader().getMap().getMaxRounds() /
+				keyFrames = new Vector<E>(1 + m.getHeader().getMap().getRounds() /
 				                              roundsPerKey);
 				active = true;
 				(new Thread() { public void run() { createKeyFrames(); } }).start();
