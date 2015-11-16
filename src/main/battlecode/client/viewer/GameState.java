@@ -11,13 +11,13 @@ public abstract class GameState extends AutoSignalHandler {
 	public synchronized void apply(RoundDelta rd) {
 	    preUpdateRound();
 		for (Signal signal: rd.getSignals()) {
-			signal.accept(this);
+			visitSignal(signal);
 		}
 		postUpdateRound();
 	}
 
 	public synchronized void apply(Signal signal) {
-		signal.accept(this);
+		visitSignal(signal);
 	}
 
 	public synchronized void apply(RoundStats stats) {
