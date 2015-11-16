@@ -118,13 +118,7 @@ public class InfoPanel extends JPanel {
     setAttackDelay(robot.getAttackDelay());
     setMovementDelay(robot.getMovementDelay());
     setSupplyLevel(robot.getSupplyLevel());
-    if (robot.getType() == RobotType.COMMANDER) {
-        setExtraInformation(String.format("%d XP", robot.getXP()));
-    } else if (robot.getType() == RobotType.LAUNCHER) {
-        setExtraInformation(String.format("%d missiles ready", robot.getMissileCount()));
-    } else {
-        setExtraInformation(".....");
-    }
+    setExtraInformation(".....");
     location.setText(String.format(" Location: %s ",robot.getLocation()));
     direction.setText("");
     direction.setText(robot.getDirection().toString());

@@ -8,9 +8,7 @@ import battlecode.server.Config;
 import battlecode.world.GameMap;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.*;
 
 public class GameRenderer extends BaseRenderer {
 
@@ -144,7 +142,7 @@ public class GameRenderer extends BaseRenderer {
     drawMap = new DrawMap(map);
     origin = map.getMapOrigin();
     sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));
-    maxRounds = map.getMaxRounds();
+    maxRounds = map.getRounds();
     mapName = map.getMapName();
 
     unitHeight = drawMap.getMapHeight();

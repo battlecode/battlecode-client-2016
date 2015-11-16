@@ -1,9 +1,5 @@
 package battlecode.client.viewer;
 
-import java.awt.Graphics2D;
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-
 import battlecode.client.viewer.render.RenderConfiguration;
 
 public abstract class AbstractAnimation implements Cloneable {

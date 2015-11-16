@@ -6,28 +6,39 @@ import battlecode.engine.signal.Signal;
 
 import java.io.*;
 import battlecode.server.Config;
-import battlecode.server.serializer.XStreamSerializer;
+import battlecode.server.serializer.Serializer;
+import battlecode.server.serializer.JavaSerializerFactory;
+import battlecode.server.serializer.XStreamSerializerFactory;
 
 public final class StreamClientProxy implements ClientProxy {
 
-	private ObjectInputStream  ois;
-	private ObjectOutputStream oos = null;
+	private final boolean debug;
+
+    private final Serializer inSerializer;
+    private final Serializer outSerializer;
 
 	private Object peekBuffer;
 	private boolean peeked = false;
 
 	public StreamClientProxy(InputStream stream) throws IOException {
-		if(Config.getGlobalConfig().getBoolean("bc.server.output-xml")) {
-			ois = XStreamSerializer.getXStream().createObjectInputStream(stream);
-		}
-		else {
-			ois = new ObjectInputStream(stream);
-		}
+        debug = false;
+        if (Config.getGlobalConfig().getBoolean("bc.server.output-xml")) {
+            inSerializer = new XStreamSerializerFactory().createSerializer(null, stream);
+        } else {
+            inSerializer = new JavaSerializerFactory().createSerializer(null, stream);
+        }
+        outSerializer = null;
 	}
 
 	public StreamClientProxy(InputStream is, ObjectOutputStream os) throws IOException {
-		this(is);
-		oos = os;
+        debug = true;
+        // This is necessary because we may have different types of serialization coming in and going out.
+        if (Config.getGlobalConfig().getBoolean("bc.server.output-xml")) {
+            inSerializer = new XStreamSerializerFactory().createSerializer(null, is);
+        } else {
+            inSerializer = new JavaSerializerFactory().createSerializer(null, is);
+        }
+        outSerializer = new JavaSerializerFactory().createSerializer(os, null);
 	}
 
 	public StreamClientProxy(String path) throws IOException {
@@ -42,7 +53,7 @@ public final class StreamClientProxy implements ClientProxy {
 		}
 		try {
 
-			Object o = ois.readObject();
+			Object o = inSerializer.deserialize();
 			//System.out.println("SP " + o);
                         return o;
 		}
@@ -64,7 +75,7 @@ public final class StreamClientProxy implements ClientProxy {
 	}
 
 	public boolean isDebuggingAvailable() {
-		return (oos != null);
+		return debug;
 	}
 
 	public void writeNotification(Notification n) {
@@ -78,7 +89,7 @@ public final class StreamClientProxy implements ClientProxy {
 	private void writeObject(Object o) {
 		assert isDebuggingAvailable();
 		try {
-			oos.writeObject(o);
+            outSerializer.serialize(o);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -86,6 +97,8 @@ public final class StreamClientProxy implements ClientProxy {
 	}
 
 	protected void finalize() throws Throwable {
-		if (ois != null) ois.close();
+        if (outSerializer != null) {
+            outSerializer.close();
+        }
 	}
 }

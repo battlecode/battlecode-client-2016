@@ -213,7 +213,7 @@ public class ControlPanel extends JPanel
         gst.getMatch().addMatchListener(new MatchListener() {
 
             public void headerReceived(BufferedMatch match) {
-                slider.setMaximum(match.getHeader().getMap().getMaxRounds());
+                slider.setMaximum(match.getHeader().getMap().getRounds());
                 slider.setEnabled(true);
             }
         });

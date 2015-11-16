@@ -143,25 +143,6 @@ class DrawHUD {
 
 		g2.translate(0.5f * (width - spriteScale),
 				0.5f * (slotSize - spriteScale));
-
-		try {
-			double sixth = 1.0 / 6;
-			DrawObject hq = ds.getHQ(team);
-			drawRobot(g2,hq, 1.0, -2.5 * sixth, (1 + 1.5 * sixth), false);
-			ArrayList<DrawObject> towers = new ArrayList<DrawObject>();
-			towers.addAll(ds.getTowers(team).values());
-			for(int i = 0; i < towers.size() - 1; i++) {
-				drawRobot(g2, towers.get(i), sixth, 2.0, 0, false);
-			}
-			if (towers.size() > 0) {
-				drawRobot(g2, towers.get(towers.size() - 1), sixth,
-						-2 * (towers.size() - 2.25), 2.5, false);
-			}
-			
-			drawTeamResource(g2, hq);
-		} catch (ConcurrentModificationException e) {
-			e.printStackTrace();
-		}    
 		g2.translate(0,-0.3);
 		drawCount(g2);
 	}
@@ -269,8 +250,7 @@ class DrawHUD {
 				g2.setTransform(pushed2);
 				g2.translate(0.5, 0);
 				for (RobotType rt : ds.getAppearedBuildingTypes(team)){
-					if (rt != RobotType.COMMANDER)
-						drawTypeCount(g2, rImages.get(team).get(rt), ds.getRobotTypeCount(team, rt)); 
+                    drawTypeCount(g2, rImages.get(team).get(rt), ds.getRobotTypeCount(team, rt)); 
 				}
 			}
 		}  

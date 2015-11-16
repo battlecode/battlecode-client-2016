@@ -27,7 +27,6 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.common.GameConstants;
-import battlecode.common.TerrainTile;
 import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.IndicatorDotSignal;
@@ -78,13 +77,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
   public DrawState() {
     groundUnits = new LinkedHashMap<Integer, DrawObject>();
-    airUnits = new LinkedHashMap<Integer, DrawObject>();
-    encampments = new HashSet<MapLocation>();
-    towers = new LinkedList<DrawObject>();
-    fluxDeposits = new LinkedHashMap<Integer, FluxDepositState>();
     currentRound = -1;
-    convexHullsA = new MapLocation[0][];
-    convexHullsB = new MapLocation[0][];
  }
 
   private DrawState(GameMap map) {
@@ -138,7 +131,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     private boolean canPlace(boolean alreadyTaken[][],
 			     int iStart, int jStart, int w, int h) {
-	TerrainTile[][] mapTiles = gameMap.getTerrainMatrix();
 	boolean allSquares = true;
 	for (int i = iStart; i < (iStart + w); i++) {
 	    if (i >= gameMap.getWidth()) {
@@ -147,7 +139,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	    }
 	    for (int j = jStart; j < (jStart + h); j++) {
 		if (j >= gameMap.getHeight()
-		    || mapTiles[i][j].isTraversable()
 		    || alreadyTaken[i][j]) {
 		    allSquares = false;
 		    break;
@@ -198,7 +189,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
   private void drawDragged(Graphics2D g2, DebugState debug, DrawObject obj) {
     /*
-      MapLocation loc = obj.getLocation();
+      MapLocation loc = obj.getLoc();
       float dx = debug.getDX(), dy = debug.getDY();
       g2.setColor(dragShadow);
       g2.fill(new Rectangle2D.Float(Math.round(loc.x + dx),
@@ -253,22 +244,9 @@ public class DrawState extends AbstractDrawState<DrawObject> {
       }
       g2.setTransform(pushed);
       
-      // ore densities
+      // ore densities (disabled)
+      /*
       double maxDensity = 0.0;
-      for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows(); i++) {
-	  for (int j = 0; j < gameMap.getHeight(); j++) {
-	      int x = i + gameMap.getMapOrigin().x;
-	      int y = j + gameMap.getMapOrigin().y;
-	      double density =  gameMap.getInitialOre(new MapLocation(x, y))
-		- getOreAtLocation(new MapLocation(x, y));
-		    
-	      maxDensity = Math.max(maxDensity, density);
-        }
-      }
-      double thresholdDensity = Math.max(5, .1 * maxDensity);
-      if (RenderConfiguration.threshCows()) {
-        maxDensity -= thresholdDensity;
-      }
       for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows(); i++) {
 	  for (int j = 0; j < gameMap.getHeight(); j++) {
 	      int x = i + gameMap.getMapOrigin().x;
@@ -300,6 +278,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	      g2.fill(new Rectangle2D.Float(x + offset, y + offset, size, size));
 	  }
       }
+      */
       for(IndicatorDotSignal s : indicatorDots) {
         if(RenderConfiguration.showIndicatorDots(s.team)&&(focusID==-1||focusID==s.robotID)) {
             g2.setColor(new Color(s.red,s.green,s.blue));
@@ -342,44 +321,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	      }
 	  }
       }
-
-        /*
-      AffineTransform pushed = g2.getTransform();
-      for (Team t : new Team[]{Team.A, Team.B})
-      {
-        g2.setTransform(pushed);
-        int research = (int)(1.000001*getResearchProgress(t, Upgrade.NUKE.ordinal())*Upgrade.NUKE.numRounds);
-        if (research > 350 && research<370)
-        {
-          DrawObject o = getHQ(t);
-          g2.translate(o.getDrawX(), o.getDrawY());
-          g2.translate(0.0, -(research-350)*0.45);
-          g2.translate(0.0, -1);
-          BufferedImage bi = t==Team.A ? rNuker.image : rNukeb.image;
-          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()), (1.0 / bi.getWidth()));
-          g2.drawImage(bi, trans, null);
-        } else if (research > 375)
-        {
-          DrawObject o = getHQ(t.opponent());
-          g2.translate(o.getDrawX(), o.getDrawY());
-          g2.translate(0.0, -(404-research)*0.45);
-          g2.translate(0.0, -1);
-          BufferedImage bi = t==Team.A ? rNuker2.image : rNukeb2.image;
-          AffineTransform trans = AffineTransform.getScaleInstance((1.0 / bi.getWidth()), (1.0 / bi.getWidth()));
-          g2.drawImage(bi, trans, null);
-          if (research == 404)
-          {
-            double scale = 6.0;
-            BufferedImage ei = rexplode.image;
-            trans = AffineTransform.getScaleInstance((scale / ei.getWidth()), (scale / ei.getWidth()));
-            g2.translate(-(scale-1.0)/2, -(scale-1.0)/2-2);
-            g2.drawImage(ei, trans, null);
-          }
-        }
-        	
-        	
-      }
-        */
         
       if (!debug.isDragging()) {
         debug.setTarget(hoverID, hoverLoc, controlBits);
