@@ -302,7 +302,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-    obj.setMoving(s.getIsMovingForward(), s.getDelay());
+    obj.setMoving(s.getMovingForward(), s.getDelay());
   }
 
   public void visitCastSignal(CastSignal s) {
