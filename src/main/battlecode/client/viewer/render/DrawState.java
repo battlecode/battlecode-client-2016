@@ -189,7 +189,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
   private void drawDragged(Graphics2D g2, DebugState debug, DrawObject obj) {
     /*
-      MapLocation loc = obj.getLocation();
+      MapLocation loc = obj.getLoc();
       float dx = debug.getDX(), dy = debug.getDY();
       g2.setColor(dragShadow);
       g2.fill(new Rectangle2D.Float(Math.round(loc.x + dx),
