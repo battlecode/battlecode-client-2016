@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 class ExplosionAnim extends FramedAnimation {
-    public static enum ExplosionToggle {
+    public enum ExplosionToggle {
 	EXPLOSIONS,
     }
 

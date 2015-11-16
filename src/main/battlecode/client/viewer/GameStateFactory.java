@@ -4,9 +4,9 @@ import battlecode.world.GameMap;
 
 public interface GameStateFactory<E extends GameState> {
 
-  public abstract E createState(GameMap map);
+  E createState(GameMap map);
 
-  public abstract E cloneState(E state);
+  E cloneState(E state);
 
-  public abstract void copyState(E src, E dst);
+  void copyState(E src, E dst);
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import battlecode.analysis.AwesomenessAnalyzer;
 import battlecode.client.viewer.MatchViewer;
 import battlecode.client.MatchDialog.Choice;
 import battlecode.client.MatchDialog.Parameter;
@@ -113,13 +112,6 @@ public class Main {
             case FILE:
                 try {
                     String filePath = md.getSource();
-
-                    if (md.getAnalyzeChoice()) {
-                        AwesomenessAnalyzer.analyze(md.getSource());
-                        if (new File(filePath + ".analyzed").exists()) {
-                            filePath = filePath + ".analyzed";
-                        }
-                    }
 
                     theProxy = new StreamClientProxy(filePath);
                 } catch (IOException e) {
@@ -219,9 +211,7 @@ public class Main {
             runLocal(options);
             return true;
         }
-        if (battlecode.server.Main.run(options))
-            return true;
-        return false;
+        return battlecode.server.Main.run(options);
     }
 
     public static void main(String[] args) {

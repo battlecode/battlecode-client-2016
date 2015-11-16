@@ -20,11 +20,8 @@ public abstract class GameState extends AutoSignalHandler {
 		visitSignal(signal);
 	}
 
-	public synchronized void apply(RoundStats stats) {
-	}
+	public synchronized void apply(RoundStats stats) {}
 
     protected abstract void preUpdateRound();
 	protected abstract void postUpdateRound();
-
-	//public abstract AbstractDrawObject getDrawObject(int id);
 }

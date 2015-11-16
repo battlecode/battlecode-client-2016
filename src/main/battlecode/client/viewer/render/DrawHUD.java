@@ -363,7 +363,7 @@ class DrawHUD {
 				
 				g2.setTransform(pushed2);		
 				g2.translate(1, 0.0);
-				String resource = (int)(ds.getTeamStrength(r.getTeam())%10000)+"";
+				String resource = ds.getTeamStrength(r.getTeam())%10000 +"";
 				if (resource.charAt(0) != '-') {
 					while (resource.length() < 4) resource = "0"+resource;
 				} else {

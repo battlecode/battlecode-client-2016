@@ -138,7 +138,7 @@ public class GameRenderer extends BaseRenderer {
 
   @SuppressWarnings("unchecked")
   private synchronized void processHeader(MatchHeader header) {
-    GameMap map = (GameMap) header.getMap();
+    GameMap map = header.getMap();
     drawMap = new DrawMap(map);
     origin = map.getMapOrigin();
     sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));
