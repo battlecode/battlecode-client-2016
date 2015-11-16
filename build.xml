@@ -39,7 +39,6 @@
 
     <!-- IVY configuration items -->
     <property name="ivy.install.version" value="2.4.0"/>
-
     <property name="ivy.jar.dir" value="${user.home}/.ant/lib"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar"/>
     <available file="${ivy.jar.file}" property="ivy.jar.exists"/>
@@ -69,7 +68,7 @@
                 src="${ivy.remote.jar}"/>
     </target>
 
-    <target name="init-ivy" depends="download-ivy">
+    <target name="init-ivy" depends="download-ivy" unless="ivy.jar.exists">
         <!-- try to load ivy here from ivy home, in case the user has not
         already dropped it into ant's lib dir (note that the latter copy will
         always take precedence).  We will not fail as long as local lib dir
@@ -85,7 +84,9 @@
 
 	<target name="retrieve" depends="init,init-ivy">
         <ivy:settings file="ivyconf.xml"/>
-        <ivy:retrieve/>
+        <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="compile"/>
+        <ivy:retrieve pattern="lib/src/[artifact]-[revision](-[classifier]).[ext]" conf="sources"/>
+        <ivy:retrieve pattern="lib/doc/[artifact]-[revision](-[classifier]).[ext]" conf="javadoc"/>
 	</target>
 
     <target name="init">
