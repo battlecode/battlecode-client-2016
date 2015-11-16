@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
-import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import battlecode.serial.RoundStats;
@@ -28,15 +26,11 @@ import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 import battlecode.world.signal.IndicatorStringSignal;
 import battlecode.world.signal.LocationOreChangeSignal;
-import battlecode.world.signal.MineSignal;
-import battlecode.world.signal.MissileCountSignal;
 import battlecode.world.signal.MovementOverrideSignal;
 import battlecode.world.signal.MovementSignal;
-import battlecode.world.signal.RobotInfoSignal;
-import battlecode.world.signal.SelfDestructSignal;
+import battlecode.world.signal.RobotDelaySignal;
 import battlecode.world.signal.SpawnSignal;
 import battlecode.world.signal.TeamOreSignal;
-import battlecode.world.signal.TransferSupplySignal;
 import battlecode.world.signal.XPSignal;
 
 public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> extends GameState {
@@ -255,17 +249,12 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
     
     public void visitBashSignal(BashSignal s) {
-	DrawObject robot = getRobot(s.getRobotID());
+      DrawObject robot = getRobot(s.robotID);
 	robot.setAttacking(robot.getLocation());
     }
 
   public void visitBroadcastSignal(BroadcastSignal s) {
     getRobot(s.getRobotID()).setBroadcast();
-  }
-
-  public void visitSelfDestructSignal(SelfDestructSignal s) {
-    DrawObject robot = getRobot(s.getRobotID());
-    robot.setSuiciding(true);
   }
 
   public void visitDeathSignal(DeathSignal s) {
@@ -280,14 +269,9 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
   }
 
   public void visitTeamOreSignal(TeamOreSignal s) {
-    for (int x=0; x<2; x++)
-      teamResources[x] = s.ore[x];
-  }
-
-  public void visitTransferSupplySignal(TransferSupplySignal s) {
-    DrawObject from = getRobot(s.fromID);
-    DrawObject to = getRobot(s.toID);
-    from.setSupplyTransfer(to,s.amount);
+    if (s.team == Team.A || s.team == Team.B) {
+      teamResources[s.team.ordinal()] = s.ore;
+    }
   }
 
   public void visitIndicatorStringSignal(IndicatorStringSignal s) {
@@ -318,7 +302,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     MapLocation oldloc = obj.loc;
     obj.setLocation(s.getNewLoc());
     obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-    obj.setMoving(s.isMovingForward(), s.getDelay());
+    obj.setMoving(s.getIsMovingForward(), s.getDelay());
   }
 
   public void visitCastSignal(CastSignal s) {
@@ -329,10 +313,6 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     obj.setLocation(s.getTargetLoc());
     obj.setDirection(oldloc.directionTo(s.getTargetLoc()));
   }
-
-    public void visitMineSignal(MineSignal s) {
-	return;
-    }
 
   public DrawObject spawnRobot(SpawnSignal s) {
     DrawObject spawn = createDrawObject(s.getType(), s.getTeam(), s.getRobotID());
@@ -379,7 +359,7 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     }
   }
 
-  public void visitRobotInfoSignal(RobotInfoSignal s){
+  public void visitRobotInfoSignal(RobotDelaySignal s){
     int[] robotIDs = s.getRobotIDs();
     double[] coreDelays = s.getCoreDelays();
     double[] weaponDelays = s.getWeaponDelays();
@@ -396,12 +376,8 @@ public abstract class AbstractDrawState<DrawObject extends AbstractDrawObject> e
     getRobot(s.getRobotID()).setXP(s.getXP());
   }
 
-  public void visitMissileCountSignal(MissileCountSignal s) {
-    getRobot(s.getRobotID()).setMissileCount(s.getMissileCount());
-  }
-
   public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
-    locationOre.put(s.getLocation(), s.getOre());
+    locationOre.put(s.getLoc(), s.getOre());
   }
 }
 
