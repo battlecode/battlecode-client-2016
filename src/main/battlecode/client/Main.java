@@ -160,29 +160,6 @@ public class Main {
                 
                 break;
 
-            case REMOTE:
-                try {
-                    Socket socket = new Socket(md.getSource(), 6370);
-
-                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                    String teamA = md.getParameter(Parameter.TEAM_A), teamB = md.getParameter(Parameter.TEAM_B);
-                    String[] maps = md.getAllMaps().toArray(new String[0]);
-                    out.writeObject(new MatchInfo(teamA, teamB, maps));
-                    out.flush();
-
-                    Thread.sleep(1000);
-
-                    theProxy = new StreamClientProxy(socket.getInputStream(), out);
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                break;
-
         }
 
 		System.out.println("opengl = " + md.getGlClientChoice());
