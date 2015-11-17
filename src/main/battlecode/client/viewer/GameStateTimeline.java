@@ -64,7 +64,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 
 	@SuppressWarnings("unchecked")
 	protected void createKeyFrames() {
-		E gs = gsf.createState((battlecode.world.GameMap)match.getHeader().getMap());
+		E gs = gsf.createState(match.getHeader().getMap());
 		keyFrames.addElement(cloneState(gs));
 		roundsProcessed = 0;
 		while (active) {

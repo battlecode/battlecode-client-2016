@@ -4,7 +4,7 @@ import battlecode.client.viewer.render.RenderConfiguration;
 
 public abstract class AbstractAnimation implements Cloneable {
 
-	public static enum AnimationType {
+	public enum AnimationType {
 		ENERGON_TRANSFER,
 		DEATH_EXPLOSION,
 		AURA,

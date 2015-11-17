@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 class DoodadAnim extends FramedAnimation {
-    public static enum DoodadType {
+    public enum DoodadType {
 	EXPLOSION("art/explode/explode64_f%02d.png", 1, 1, 9);
 
 	public final String formatString;

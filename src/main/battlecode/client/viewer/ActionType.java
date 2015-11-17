@@ -41,7 +41,7 @@ public enum ActionType {
     SHIELDING(true, true),
     BUILDING(true, true);
 
-    private ActionType(boolean hasAttackCooldown, boolean hasMovementCooldown) {
+    ActionType(boolean hasAttackCooldown, boolean hasMovementCooldown) {
         this.hasAttackCooldown = hasAttackCooldown;
         this.hasMovementCooldown = hasMovementCooldown;
     }

@@ -4,9 +4,9 @@ import java.io.EOFException;
 
 public interface ClientProxy extends DebugProxy {
 
-	public Object readObject() throws EOFException;
+	Object readObject() throws EOFException;
 
-	public Object peekObject() throws EOFException;
+	Object peekObject() throws EOFException;
 
-	public boolean isDebuggingAvailable();
+	boolean isDebuggingAvailable();
 }

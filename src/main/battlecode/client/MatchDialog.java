@@ -1,5 +1,6 @@
 package battlecode.client;
 
+import battlecode.server.MatchInputFinder;
 import info.clearthought.layout.TableLayout;
 
 import java.awt.*;
@@ -49,7 +50,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 	private final JButton btnLoadBrowse, btnSaveBrowse, btnOK, btnCancel;
 	private final JButton btnAdd, btnRemove;
 	private final JCheckBox chkGlClient, chkLockstep, chkSave;
-	private final JCheckBox chkShowMinimap, chkAnalyzeFile;
+	private final JCheckBox chkShowMinimap;
 	private final JFileChooser dlgChooser;
 	private final JList lstMatches;
         private final DefaultListModel lstMatchesModel;
@@ -65,23 +66,22 @@ public class MatchDialog extends JDialog implements ActionListener {
 	/**
 	 * Represents a user's match type choice.
 	 */
-	public static enum Choice {
+	public enum Choice {
 		LOCAL,
-		FILE,
-		REMOTE
+		FILE
 	}
 	
 	/**
 	 * Represents a match parameter.
 	 */
-	public static enum Parameter {
+	public enum Parameter {
 		TEAM_A("Team A"),
 		TEAM_B("Team B"),
 		MAP("Map");
 		
 		private final String label;
 		
-		private Parameter(String label) {
+		Parameter(String label) {
 			this.label = label;
 		}
 		
@@ -146,9 +146,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 		dlgChooser = new JFileChooser();
 		dlgChooser.setFileFilter(new FileFilter() {
 			public boolean accept(File f) {
-				if (f.getName().endsWith(".rms") || f.isDirectory())
-					return true;
-				return false;
+				return f.getName().endsWith(".rms") || f.isDirectory();
 			}
 
 			public String getDescription() {
@@ -183,7 +181,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 		// Create the match option buttons.
 		choices.put(Choice.LOCAL, new JRadioButton("Run match locally"));
 		choices.put(Choice.FILE, new JRadioButton("Play back from match file"));
-		choices.put(Choice.REMOTE, new JRadioButton("Connect to remote match server"));
 		choices.get(Choice.LOCAL).setSelected(true);
 		
 		// Initialize the match option buttons.
@@ -229,11 +226,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 			}
 		});
 		add(txtHost, "2, 5, 8, 5, f, c");
-		
-		// Analyze file checkbox
-		chkAnalyzeFile = new JCheckBox("Compute awesomeness before playback", false);
-		chkAnalyzeFile.setEnabled(false);
-		add(chkAnalyzeFile, "1, 6, 8, 6, f, c");
 		
 		// Separator.
 		add(new JSeparator(), "1, 7, 8, 7, f, c");
@@ -458,7 +450,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 			lstMatches.setEnabled(true);
 			btnAdd.setEnabled(true);
 			btnRemove.setEnabled(true);
-			chkAnalyzeFile.setEnabled(false);
 		} else if (choices.get(Choice.FILE).isSelected()) {
 			txtHost.setEnabled(false);
 			txtLoadFile.setEnabled(true);
@@ -472,21 +463,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 			lstMatches.setEnabled(false);
 			btnAdd.setEnabled(false);
 			btnRemove.setEnabled(false);
-			chkAnalyzeFile.setEnabled(true);
-		} else if (choices.get(Choice.REMOTE).isSelected()) {
-			txtHost.setEnabled(true);
-			txtLoadFile.setEnabled(false);
-			btnLoadBrowse.setEnabled(false);
-			chkLockstep.setEnabled(false);
-			chkSave.setEnabled(false);
-			btnSaveBrowse.setEnabled(false);
-			txtSaveFile.setEnabled(false);
-			for (JComboBox box : parameters.values())
-				box.setEnabled(true);
-			lstMatches.setEnabled(true);
-			btnAdd.setEnabled(true);
-			btnRemove.setEnabled(true);
-			chkAnalyzeFile.setEnabled(false);
 		}
 		
 		if (chkSave.isSelected() && chkSave.isEnabled()) {
@@ -512,7 +488,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 		p.setProperty("glclient", String.valueOf(chkGlClient.isSelected()));
 		p.setProperty("lockstep", String.valueOf(chkLockstep.isSelected()));
 		p.setProperty("lastVersion", popupVersion);
-		p.setProperty("analyzeFile", String.valueOf(chkAnalyzeFile.isSelected()));
 		p.setProperty("showMinimap", String.valueOf(chkShowMinimap.isSelected()));
 		
 		// Save parameters.
@@ -566,7 +541,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 		chkLockstep.setSelected(
 				Boolean.valueOf(p.getProperty("lockstep", "false")));
 		
-		chkAnalyzeFile.setSelected(Boolean.valueOf(p.getProperty("analyzeFile")));
 		chkShowMinimap.setSelected(Boolean.valueOf(p.getProperty("showMinimap")));
 		
 		// Fill the parameter dropdowns.
@@ -594,15 +568,9 @@ public class MatchDialog extends JDialog implements ActionListener {
 	 * to determine the choices available on the remote host.
 	 */
 	private void populateParameters() {
-		String[][] matchInputs;
-		
-		if (choices.get(Choice.REMOTE).isSelected())
-			matchInputs = finder.findMatchInputsRemotely(getSource());
-		else
-			matchInputs = finder.findMatchInputsLocally();
+		String[][] matchInputs = finder.findMatchInputsLocally();
 		
 		if (matchInputs != null) {
-
 
 			for(String [] s : matchInputs) {
 				java.util.Arrays.sort(s);
@@ -660,7 +628,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 				maps.add((String) obj);
 		}
 		if (maps.size() == 0)
-			return Collections.<String>singletonList(getParameter(Parameter.MAP));
+			return Collections.singletonList(getParameter(Parameter.MAP));
 		return Collections.unmodifiableList(maps);
 	}
 	
@@ -692,9 +660,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 		
 		if (r == Choice.FILE)
 			return txtLoadFile.getText();
-		else if (r == Choice.REMOTE)
-			return txtHost.getText();
-		
+
 		return null;
 	}
 	
@@ -724,15 +690,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 	 */
 	public boolean getMinimapChoice() {
 		return chkShowMinimap.isEnabled() && chkShowMinimap.isSelected();
-	}
-	
-	/**
-	 * Gets whether or not the user wants to analyze the file before playback.
-	 * 
-	 * @return true if the user wants to analyze the file before playing it back, false otherwise
-	 */
-	public boolean getAnalyzeChoice() {
-		return chkAnalyzeFile.isEnabled() && chkAnalyzeFile.isSelected();
 	}
 	
 	/**
