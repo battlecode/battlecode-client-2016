@@ -1,25 +1,26 @@
 package battlecode.client.viewer;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.text.NumberFormat;
+import java.util.Observable;
+import java.util.Observer;
 
 public class ControlPanel extends JPanel
         implements ActionListener, ChangeListener, Controller {
 
     private static final long serialVersionUID = 0; // don't serialize
     private static final double[][] LAYOUT = {
-        {400, 20, 400},
-        {30, 30, 30}
+            {400, 20, 400},
+            {30, 30, 30}
     };
     private MatchPlayer player;
     private JPanel panel;
@@ -55,22 +56,31 @@ public class ControlPanel extends JPanel
         label = new JLabel(matchCount + "Round 0 of 0");
         label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        if (battlecode.server.Config.getGlobalConfig().getBoolean("bc.client.applet")) {
+        if (battlecode.server.Config.getGlobalConfig().getBoolean("bc.client" +
+                ".applet")) {
             ImageIcon playIconSwap = null, pauseIconSwap = null;
 
             try {
-                String fpath = battlecode.server.Config.getGlobalConfig().get("bc.client.applet.path");
-                playIconSwap = new ImageIcon(new URL(fpath + "art/icons/playback-start.png"));
-                pauseIconSwap = new ImageIcon(new URL(fpath + "art/icons/playback-pause.png"));
+                String fpath = battlecode.server.Config.getGlobalConfig().get
+                        ("bc.client.applet.path");
+                playIconSwap = new ImageIcon(new URL(fpath +
+                        "art/icons/playback-start.png"));
+                pauseIconSwap = new ImageIcon(new URL(fpath +
+                        "art/icons/playback-pause.png"));
 
-                start = createButton(new URL(fpath + "art/icons/skip-backward.png"), "start");
+                start = createButton(new URL(fpath + "art/icons/skip-backward" +
+                        ".png"), "start");
                 play = createButton(pauseIconSwap, "pause");
-                end = createButton(new URL(fpath + "art/icons/skip-forward.png"), "end");
-                next = createButton(new URL(fpath + "art/icons/go-next.png"), "next");
+                end = createButton(new URL(fpath + "art/icons/skip-forward" +
+                        ".png"), "end");
+                next = createButton(new URL(fpath + "art/icons/go-next.png"),
+                        "next");
                 next.setEnabled(false);
 
-                back = createButton(new URL(fpath + "art/icons/seek-backward.png"), "back");
-                step = createButton(new URL(fpath + "art/icons/seek-forward.png"), "step");
+                back = createButton(new URL(fpath + "art/icons/seek-backward" +
+                        ".png"), "back");
+                step = createButton(new URL(fpath + "art/icons/seek-forward" +
+                        ".png"), "step");
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
@@ -94,7 +104,8 @@ public class ControlPanel extends JPanel
         stepSizeField = new JFormattedTextField(stepSizeFmt);
         stepSizeField.setValue(1);
         stepSizeField.setColumns(5);
-        stepSizeField.setMinimumSize(new Dimension(50, stepSizeField.getHeight()));
+        stepSizeField.setMinimumSize(new Dimension(50, stepSizeField
+                .getHeight()));
 
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
@@ -139,13 +150,12 @@ public class ControlPanel extends JPanel
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridheight = 3;
-        add(infoPanel,gbc);
+        add(infoPanel, gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.gridheight = 1;
         add(new JPanel());
-
 
 
         addComponentListener(new ComponentAdapter() {
@@ -157,7 +167,7 @@ public class ControlPanel extends JPanel
             }
         });
 
-        
+
     }
 
     private JButton createButton(String iconPath, String cmd) {
@@ -194,13 +204,13 @@ public class ControlPanel extends JPanel
     }
 
     public void enableNext() {
-		// we need to use invokeLater to avoid a deadlock
-		// in the 3d client
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-	        	next.setEnabled(true);
-			}
-		});
+        // we need to use invokeLater to avoid a deadlock
+        // in the 3d client
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                next.setEnabled(true);
+            }
+        });
     }
 
     public void setPlayer(MatchPlayer player) {
@@ -223,9 +233,9 @@ public class ControlPanel extends JPanel
         if (round >= 0) {
             label.setText("Round " + round + " of " + max);
         }
-		if (max >= slider.getMaximum()) {
-			slider.setMaximum(max);
-		}
+        if (max >= slider.getMaximum()) {
+            slider.setMaximum(max);
+        }
     }
 
     public void updateRoundLabel(GameStateTimeline gst) {

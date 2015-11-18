@@ -1,23 +1,24 @@
 package battlecode.client.viewer.render;
 
-import battlecode.common.*;
+import battlecode.common.MapLocation;
 
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.GeneralPath;
 
 class EnergonTransferAnim extends Animation {
 
-	private static final Color energonColor = Color.GREEN;
-	private static final Color fluxColor = Color.MAGENTA;
+    private static final Color energonColor = Color.GREEN;
+    private static final Color fluxColor = Color.MAGENTA;
 
     private static final GeneralPath polygon = new GeneralPath();
     private final MapLocation target;
     private final float amount;
     private final float dx, dy;
     private DrawObject src;
-	private final Color color;
+    private final Color color;
 
-    public EnergonTransferAnim(DrawObject src, MapLocation target, float amount, boolean isFlux) {
+    public EnergonTransferAnim(DrawObject src, MapLocation target, float
+            amount, boolean isFlux) {
         super(10);
         this.src = src;
         this.target = target;
@@ -29,8 +30,8 @@ class EnergonTransferAnim extends Animation {
         if (len < 0.001f) len = 1;
         dx = Dx / len * maxWidth;
         dy = Dy / len * maxWidth;
-		color = isFlux?fluxColor:energonColor;
-        
+        color = isFlux ? fluxColor : energonColor;
+
     }
 
     public void setSource(DrawObject src) {
@@ -41,7 +42,8 @@ class EnergonTransferAnim extends Animation {
         if (RenderConfiguration.showSupplyTransfers()) {
             polygon.reset();
             polygon.moveTo(src.getDrawX() + 0.5f, src.getDrawY() + 0.5f);
-            float width = Math.min(maxFrame - curFrame, curFrame) / (float)maxFrame;
+            float width = Math.min(maxFrame - curFrame, curFrame) / (float)
+                    maxFrame;
             float drawX = target.x;
             float drawY = target.y;
             polygon.lineTo(drawX + 0.5f - dx * width,
@@ -55,7 +57,8 @@ class EnergonTransferAnim extends Animation {
     }
 
     public Object clone() {
-        EnergonTransferAnim clone = new EnergonTransferAnim(src, target, amount,color==fluxColor);
+        EnergonTransferAnim clone = new EnergonTransferAnim(src, target,
+                amount, color == fluxColor);
         clone.curFrame = curFrame;
         return clone;
     }

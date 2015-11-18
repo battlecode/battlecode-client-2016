@@ -1,10 +1,10 @@
 package battlecode.client.viewer.render;
 
-import battlecode.common.*;
-import battlecode.client.util.*;
+import battlecode.client.util.ImageFile;
+import battlecode.common.MapLocation;
 
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
 
 class MortarAttackAnim extends Animation {
 

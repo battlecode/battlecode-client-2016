@@ -1,25 +1,8 @@
 package battlecode.client;
 
-import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import battlecode.client.viewer.MatchViewer;
 import battlecode.client.MatchDialog.Choice;
 import battlecode.client.MatchDialog.Parameter;
+import battlecode.client.viewer.MatchViewer;
 import battlecode.serial.MatchInfo;
 import battlecode.server.Config;
 import battlecode.server.Server;
@@ -31,6 +14,14 @@ import battlecode.server.serializer.JavaSerializerFactory;
 import battlecode.server.serializer.SerializerFactory;
 import battlecode.server.serializer.XStreamSerializerFactory;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 public class Main {
 
     public static JFrame createFrame() {
@@ -39,12 +30,15 @@ public class Main {
         return frame;
     }
 
-    public static void showViewer(final JFrame frame, final MatchViewer viewer) {
-        final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+    public static void showViewer(final JFrame frame, final MatchViewer
+            viewer) {
+        final GraphicsDevice[] devices = GraphicsEnvironment
+                .getLocalGraphicsEnvironment().getScreenDevices();
         // if tournament mode and 2 monitors run viewer on monitor 2 and minimap
         // on monitor one, else run only viewer
 
-        final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer.usingTwoScreens())
+        final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer
+                .usingTwoScreens())
                 ? devices[1] : devices[0];
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -69,17 +63,22 @@ public class Main {
                         public void componentShown(ComponentEvent e) {
                             frame.pack();
 
-                            // resize the frame: we want the height of the frame to be >= 600 (unless the screen can't fit it)
-                            int minHeight = 600; 
+                            // resize the frame: we want the height of the
+                            // frame to be >= 600 (unless the screen can't
+                            // fit it)
+                            int minHeight = 600;
                             int screenHeight = 0;
                             if (!GraphicsEnvironment.isHeadless()) {
-                                screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+                                screenHeight = (int) Toolkit
+                                        .getDefaultToolkit().getScreenSize()
+                                        .getHeight();
                             }
                             if (screenHeight > 0 && screenHeight < minHeight) {
                                 minHeight = screenHeight;
                             }
                             if (frame.getHeight() < minHeight) {
-                                frame.setMinimumSize(new Dimension(frame.getWidth(), minHeight));
+                                frame.setMinimumSize(new Dimension(frame
+                                        .getWidth(), minHeight));
                                 frame.setMinimumSize(null); // make it resizable
                             }
                         }
@@ -128,7 +127,8 @@ public class Main {
 
                 try {
                     // Set up the server
-                    Controller controller = new LocalController(options, LocalProxy.INSTANCE);
+                    Controller controller = new LocalController(options,
+                            LocalProxy.INSTANCE);
 
                     List<Proxy> proxies = new LinkedList<Proxy>();
 
@@ -156,34 +156,39 @@ public class Main {
                 serverThread = new Thread(server);
 
                 server.update(null, new MatchInfo(
-                        md.getParameter(Parameter.TEAM_A), md.getParameter(Parameter.TEAM_B), md.getAllMaps().toArray(new String[md.getAllMaps().size()])));
-                
+                        md.getParameter(Parameter.TEAM_A), md.getParameter
+                        (Parameter.TEAM_B), md.getAllMaps().toArray(new
+                        String[md.getAllMaps().size()])));
+
                 break;
 
         }
 
-		System.out.println("opengl = " + md.getGlClientChoice());
-		System.out.println("minimap = " + md.getGlClientChoice());
+        System.out.println("opengl = " + md.getGlClientChoice());
+        System.out.println("minimap = " + md.getGlClientChoice());
         options.setBoolean("bc.client.opengl", md.getGlClientChoice());
         //options.setBoolean("bc.client.opengl", true);
         options.setBoolean("bc.client.minimap", md.getMinimapChoice());
-        Main.showViewer(createFrame(), new MatchViewer(theProxy, md.getLockstepChoice()));
+        Main.showViewer(createFrame(), new MatchViewer(theProxy, md
+                .getLockstepChoice()));
         if (serverThread != null)
             serverThread.start();
     }
 
     public static boolean run(Config options) {
-				if (options.get("bc.client.match") != null && !options.get("bc.client.match").trim().equals("")) {
-						ClientProxy theProxy;
-						try {
-								theProxy = new StreamClientProxy(options.get("bc.client.match"));
-						} catch (IOException e) {
-								e.printStackTrace();
-								return false;
-						}
-						Main.showViewer(createFrame(), new MatchViewer(theProxy, true));
-						return true;
-				}
+        if (options.get("bc.client.match") != null && !options.get("bc.client" +
+                ".match").trim().equals("")) {
+            ClientProxy theProxy;
+            try {
+                theProxy = new StreamClientProxy(options.get("bc.client" +
+                        ".match"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            Main.showViewer(createFrame(), new MatchViewer(theProxy, true));
+            return true;
+        }
         if (options.get("bc.server.mode").equalsIgnoreCase("LOCAL")) {
             runLocal(options);
             return true;
@@ -200,5 +205,5 @@ public class Main {
             System.exit(64);
         }
     }
-    
+
 }

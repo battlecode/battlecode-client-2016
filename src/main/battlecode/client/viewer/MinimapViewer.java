@@ -1,20 +1,13 @@
 package battlecode.client.viewer;
 
-import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.JFrame;
-
 import battlecode.client.viewer.render.BaseCanvas;
 import battlecode.client.viewer.render.BaseRenderer;
 import battlecode.client.viewer.render.GameCanvas;
 import battlecode.client.viewer.render.GameRenderer;
 import battlecode.common.Team;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MinimapViewer {
 
@@ -31,7 +24,8 @@ public class MinimapViewer {
 
         if (fullscreen) {
             frame.setUndecorated(true);
-            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
+            GraphicsDevice gd = GraphicsEnvironment
+                    .getLocalGraphicsEnvironment().getScreenDevices()[1];
             Rectangle secondWindow = gd.getDefaultConfiguration().getBounds();
             frame.setBounds(secondWindow);
         } else {
@@ -66,7 +60,8 @@ public class MinimapViewer {
     public void setTimeline(GameStateTimeline master) {
         renderer = new GameRenderer(master.getMatch());
         renderer.getTimeline().setMasterTimeline(master);
-        renderer.setDebugState(new DebugState(master.getMatch().getDebugProxy(), canvas));
+        renderer.setDebugState(new DebugState(master.getMatch().getDebugProxy
+                (), canvas));
         canvas.setRenderer(renderer);
     }
 
