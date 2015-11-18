@@ -1,14 +1,16 @@
 package battlecode.client.viewer;
 
 import battlecode.client.DebugProxy;
-
-import battlecode.serial.*;
-import battlecode.serial.notification.*;
+import battlecode.serial.MatchHeader;
+import battlecode.serial.notification.PauseNotification;
+import battlecode.serial.notification.ResumeNotification;
+import battlecode.serial.notification.RunNotification;
 import battlecode.server.Config;
 
-
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 
 public class MatchPlayer implements Observer, ActionListener {
 
@@ -17,7 +19,8 @@ public class MatchPlayer implements Observer, ActionListener {
         @Override
         public void headerReceived(BufferedMatch match) {
             battlecode.serial.MatchHeader h = match.getHeader();
-            label = "Game " + (h.getMatchNumber() + 1) + " of " + h.getMatchCount() + ": ";
+            label = "Game " + (h.getMatchNumber() + 1) + " of " + h
+                    .getMatchCount() + ": ";
         }
 
         @Override
@@ -26,7 +29,8 @@ public class MatchPlayer implements Observer, ActionListener {
             MatchHeader h = m.getHeader();
             if (h.getMatchNumber() + 1 < h.getMatchCount()) {
                 if (m.isEarlyTermination()) {
-                    label = "[Best of " + m.getHeader().getMatchCount() + "] " + label;
+                    label = "[Best of " + m.getHeader().getMatchCount() + "] " +
+                            "" + label;
                 } else {
                     controller.enableNext();
                 }
@@ -56,13 +60,14 @@ public class MatchPlayer implements Observer, ActionListener {
     private int stepSize = 1;
     // value that determines the delay in ticks between timer ticks
     private volatile static MatchPlayer currentPlayer = null;
-    public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig().getInt("bc.client.viewer-delay");
+    public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig()
+            .getInt("bc.client.viewer-delay");
 
-	private int delta = DEFAULT_TIME_DELTA;
-	private int fastForward = 1; 
+    private int delta = DEFAULT_TIME_DELTA;
+    private int fastForward = 1;
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
-            DebugProxy dp, boolean lockstepChoice) {
+                       DebugProxy dp, boolean lockstepChoice) {
 //System.out.println("Start");
         //  	OBJFile.convertToBCMs();
         viewer = v;
@@ -98,22 +103,22 @@ public class MatchPlayer implements Observer, ActionListener {
         currentPlayer = this;
     }
 
-		public void slowdown() {
-				if (fastForward < 2)
-						fastForward += 1;
-			timer.setDelay(fastForward * delta);
-		}
+    public void slowdown() {
+        if (fastForward < 2)
+            fastForward += 1;
+        timer.setDelay(fastForward * delta);
+    }
 
-		public void speedup() {
-				if (fastForward > 0)
-						fastForward -= 1;
-			timer.setDelay(fastForward * delta);
-		}
+    public void speedup() {
+        if (fastForward > 0)
+            fastForward -= 1;
+        timer.setDelay(fastForward * delta);
+    }
 
-	public void toggleFastForward() {
-			fastForward = (fastForward + 1) % 3;
-			timer.setDelay(fastForward * delta);
-	}
+    public void toggleFastForward() {
+        fastForward = (fastForward + 1) % 3;
+        timer.setDelay(fastForward * delta);
+    }
 
     // get the latest match player
     public static MatchPlayer getCurrent() {
@@ -135,16 +140,17 @@ public class MatchPlayer implements Observer, ActionListener {
 
     // set the number of ticks before a round switches
     public void setTimeDelta(int max) {
-				delta = max;
-				timer.setDelay(fastForward * delta);
-		}
+        delta = max;
+        timer.setDelay(fastForward * delta);
+    }
 
     private void requestRounds() {
         if (timeline.isActive() && !match.isFinished()) {
             if (timeline.getRound() + 2 > roundsRequested) {
                 roundsRequested = timeline.getRound() + 2;
                 if (proxy != null) {
-                    proxy.writeNotification(new RunNotification(roundsRequested));
+                    proxy.writeNotification(new RunNotification
+                            (roundsRequested));
                 }
             }
         }
@@ -164,7 +170,7 @@ public class MatchPlayer implements Observer, ActionListener {
     }
 
     private void timerTick() {
-      controller.updateRoundLabel(timeline);
+        controller.updateRoundLabel(timeline);
         if (isPlaying) {
             if (timeline.getRound() == maxPlayRound) {
                 isStepping = false;
@@ -189,27 +195,28 @@ public class MatchPlayer implements Observer, ActionListener {
         }
     }
 
-		public void togglePause() {
-				if (isPlaying)
-						doPause();
-				else
-						doPlay();
-		}
+    public void togglePause() {
+        if (isPlaying)
+            doPause();
+        else
+            doPlay();
+    }
 
     private void doPause() {
         isPlaying = false;
-        if(timer!=null) timer.stop();
+        if (timer != null) timer.stop();
         controller.setPlayEnabled(true);
     }
 
     private void doPlay() {
-        doPlay(match.isFinished() ? match.getRoundsAvailable() : Integer.MAX_VALUE);
+        doPlay(match.isFinished() ? match.getRoundsAvailable() : Integer
+                .MAX_VALUE);
     }
 
     private void doPlay(int round) {
         maxPlayRound = round;
         isPlaying = true;
-        if(timer!=null) timer.start();
+        if (timer != null) timer.start();
         controller.setPlayEnabled(false);
         runSpeed = 1;
     }
@@ -248,7 +255,8 @@ public class MatchPlayer implements Observer, ActionListener {
                 if (isStepping) {
                     pauseServer();
                 }
-                timeline.setRound(timeline.getRound() - controller.getStepSize());
+                timeline.setRound(timeline.getRound() - controller
+                        .getStepSize());
             } else if ("step".equals(e.getActionCommand())) {
                 doStep(controller.getStepSize());
             }

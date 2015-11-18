@@ -1,11 +1,11 @@
 package battlecode.client;
 
-import battlecode.serial.notification.Notification;
 import battlecode.engine.signal.Signal;
+import battlecode.serial.notification.Notification;
 
 public interface DebugProxy {
 
-	void writeNotification(Notification n);
+    void writeNotification(Notification n);
 
-	void writeSignal(Signal s);
+    void writeSignal(Signal s);
 }

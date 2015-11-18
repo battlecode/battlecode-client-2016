@@ -1,17 +1,12 @@
 package battlecode.client.viewer.render;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import battlecode.client.util.ImageFile;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
-
-
-import battlecode.client.util.ImageFile;
 
 public final class GameCanvas extends BaseCanvas {
 
@@ -49,23 +44,25 @@ public final class GameCanvas extends BaseCanvas {
         Observer observer = new Observer() {
 
             public void update(Observable o, Object arg) {
-                if (renderer.getTimeline()!=null&&renderer.getTimeline().isActive()) {
+                if (renderer.getTimeline() != null && renderer.getTimeline()
+                        .isActive()) {
                     forceRepaint();
                 }
             }
         };
-		if(renderer.getTimeline()!=null)
-	        renderer.getTimeline().addObserver(observer);
+        if (renderer.getTimeline() != null)
+            renderer.getTimeline().addObserver(observer);
 
         battlecode.client.viewer.DebugState dbg = renderer.getDebugState();
-		if(dbg!=null) {
-        	addMouseListener(dbg);
-        	addMouseMotionListener(dbg);
-        	dbg.addObserver(observer);
-		}
+        if (dbg != null) {
+            addMouseListener(dbg);
+            addMouseMotionListener(dbg);
+            dbg.addObserver(observer);
+        }
 
         repaint();
     }
+
     public static ImageFile bracketFile = null;
     public final BaseRenderer bracketRenderer = new GameRenderer() {
 
@@ -78,11 +75,13 @@ public final class GameCanvas extends BaseCanvas {
                 g2.fill(new Rectangle(0, 0, d.width, d.height));
 
 
-//				System.out.println("Invoking python script to move pngs around");
+//				System.out.println("Invoking python script to move pngs
+// around");
 //				
 //				Process c = null;
 //				try {
-//					c = Runtime.getRuntime().exec("python move_pngs_around.py");
+//					c = Runtime.getRuntime().exec("python move_pngs_around
+// .py");
 //				} catch (IOException e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
@@ -96,20 +95,25 @@ public final class GameCanvas extends BaseCanvas {
 //				}
 
                 if (bracketFile == null) {
-                    //bracketFile = new ImageFile(String.format("%d.png", GLGameRenderer.BRACKET_INDEX));
+                    //bracketFile = new ImageFile(String.format("%d.png",
+                    // GLGameRenderer.BRACKET_INDEX));
                 }
                 BufferedImage img = bracketFile.image;
                 if (img != null) {
                     float scale = Math.min((float) d.width / img.getWidth(),
                             (float) d.height / img.getHeight());
-                    AffineTransform trans = AffineTransform.getTranslateInstance(0.5 * (d.width - scale * img.getWidth()), 0.5 * (d.height - scale * img.getHeight()));
+                    AffineTransform trans = AffineTransform
+                            .getTranslateInstance(0.5 * (d.width - scale *
+                                    img.getWidth()), 0.5 * (d.height - scale
+                                    * img.getHeight()));
                     trans.scale(scale, scale);
                     g2.drawImage(img, trans, null);
                 }
             }
         }
     };
-    private final battlecode.client.util.SettableObservable paintObservable = new battlecode.client.util.SettableObservable();
+    private final battlecode.client.util.SettableObservable paintObservable =
+            new battlecode.client.util.SettableObservable();
 
     public void addPaintObserver(Observer o) {
         paintObservable.addObserver(o);
@@ -132,7 +136,8 @@ public final class GameCanvas extends BaseCanvas {
     public void forceRepaint() {
         if (!gotPreferredSize) {
             Dimension preferredSize = renderer.getPreferredSize();
-            if (preferredSize.getHeight() != 0 && preferredSize.getWidth() != 0) {
+            if (preferredSize.getHeight() != 0 && preferredSize.getWidth() !=
+                    0) {
                 setPreferredSize(preferredSize);
                 gotPreferredSize = true;
                 setVisible(true);

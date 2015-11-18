@@ -1,56 +1,56 @@
 package battlecode.client.viewer.render;
 
-import battlecode.common.*;
-import battlecode.client.util.*;
-
-import java.awt.*;
-import java.awt.geom.*;
+import battlecode.common.MapLocation;
 
 class ExplosionAnim extends FramedAnimation {
     public enum ExplosionToggle {
-	EXPLOSIONS,
+        EXPLOSIONS,
     }
 
-    protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS; 
+    protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS;
 
-    public ExplosionAnim() { this(null, 1); }
+    public ExplosionAnim() {
+        this(null, 1);
+    }
 
-    public ExplosionAnim(MapLocation loc) { this(loc, 1); }
+    public ExplosionAnim(MapLocation loc) {
+        this(loc, 1);
+    }
 
     public ExplosionAnim(MapLocation loc, double width) {
-	super(loc, width, 4);
+        super(loc, width, 4);
     }
 
     protected boolean loops() {
-	return false;
+        return false;
     }
 
     int offset() {
-	return 1;
+        return 1;
     }
 
     public String fileFormatString() {
-	return "art/explode/explode64_f%02d.png";
+        return "art/explode/explode64_f%02d.png";
     }
 
     public void setExplosionToggle(ExplosionToggle t) {
-	toggle = t;
+        toggle = t;
     }
 
     protected boolean shouldDraw() {
-	switch(toggle) {
-	case EXPLOSIONS:
-	    return RenderConfiguration.showExplosions();
-	default:
-	    return false;
-	}
+        switch (toggle) {
+            case EXPLOSIONS:
+                return RenderConfiguration.showExplosions();
+            default:
+                return false;
+        }
     }
 
 
     public Object clone() {
-	ExplosionAnim clone = new ExplosionAnim(loc, width);
-	clone.curFrame = curFrame;
-	clone.toggle = toggle;
-	return clone;
+        ExplosionAnim clone = new ExplosionAnim(loc, width);
+        clone.curFrame = curFrame;
+        clone.toggle = toggle;
+        return clone;
     }
 }

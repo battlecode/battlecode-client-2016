@@ -1,10 +1,13 @@
 package battlecode.client.viewer.sound;
 
-import battlecode.common.*;
-import battlecode.serial.*;
-import battlecode.client.viewer.*;
-import battlecode.world.signal.*;
+import battlecode.client.viewer.GameState;
+import battlecode.client.viewer.GameStateFactory;
+import battlecode.common.RobotType;
+import battlecode.common.Team;
 import battlecode.world.GameMap;
+import battlecode.world.signal.AttackSignal;
+import battlecode.world.signal.DeathSignal;
+import battlecode.world.signal.SpawnSignal;
 
 import java.util.*;
 
@@ -25,6 +28,7 @@ public class PlayState extends GameState {
             dst.copyStateFrom(src);
         }
     }
+
     public static final GameStateFactory<PlayState> FACTORY = new Factory();
 
     private static class EMPInfo {
@@ -32,18 +36,19 @@ public class PlayState extends GameState {
         public double energon = 100;
         public int evolveTenure = 0;
     }
+
     private Set<GameSoundBank.ClipGroup> activeClips;
     private Set<GameSoundBank.ClipGroup> futureClips;
     private Map<Integer, RobotType> robotTypes;
     private int intensityLevel = 0;
     private boolean[][] nukeFlags = new boolean[Team.values().length][3];
-    
+
 
     public PlayState() {
         activeClips = new HashSet<GameSoundBank.ClipGroup>();
         futureClips = new HashSet<GameSoundBank.ClipGroup>();
         robotTypes = new HashMap<Integer, RobotType>();
-      
+
     }
 
     private PlayState(PlayState clone) {
@@ -52,11 +57,12 @@ public class PlayState extends GameState {
     }
 
     private synchronized void copyStateFrom(PlayState src) {
-    	this.intensityLevel = src.intensityLevel;
-    	
-    	for(int i=0; i<this.nukeFlags.length; i++) {
-    		this.nukeFlags[i] = Arrays.copyOf(src.nukeFlags[i], src.nukeFlags[i].length);
-    	}
+        this.intensityLevel = src.intensityLevel;
+
+        for (int i = 0; i < this.nukeFlags.length; i++) {
+            this.nukeFlags[i] = Arrays.copyOf(src.nukeFlags[i], src
+                    .nukeFlags[i].length);
+        }
     }
 
     private void scheduleClip(GameSoundBank.ClipGroup clip) {
@@ -68,8 +74,10 @@ public class PlayState extends GameState {
         clip.setGain(gain);
     }
 
-    private void scheduleClip(GameSoundBank.ClipGroup clip, float minGain, float maxGain) {
-        scheduleClip(clip, ((float) Math.random()) * (maxGain - minGain) + minGain);
+    private void scheduleClip(GameSoundBank.ClipGroup clip, float minGain,
+                              float maxGain) {
+        scheduleClip(clip, ((float) Math.random()) * (maxGain - minGain) +
+                minGain);
     }
 
     public Void visitAttackSignal(AttackSignal s) {
@@ -91,22 +99,24 @@ public class PlayState extends GameState {
 
     public Void visitDeathSignal(DeathSignal s) {
         scheduleClip(GameSoundBank.DEATH);
-    	//System.out.println("Death: " + robotTypes.get(s.getObjectID()) + " " + RobotType.ARCHON);
-    
-    	//if(robotTypes.get(s.getObjectID()) == RobotType.ARCHON){
-    	//	intensityLevel += 100;
-    	//}
+        //System.out.println("Death: " + robotTypes.get(s.getObjectID()) + "
+        // " + RobotType.ARCHON);
+
+        //if(robotTypes.get(s.getObjectID()) == RobotType.ARCHON){
+        //	intensityLevel += 100;
+        //}
         return null;
     }
 
     public Void visitSpawnSignal(SpawnSignal s) {
         scheduleClip(GameSoundBank.SNIPE, -10.f);
-    	//System.out.println( s.getType());
+        //System.out.println( s.getType());
         robotTypes.put(s.getRobotID(), s.getType());
         return null;
     }
 
-    protected void preUpdateRound() {}
+    protected void preUpdateRound() {
+    }
 
     protected void postUpdateRound() {
         activeClips.clear();
@@ -116,20 +126,18 @@ public class PlayState extends GameState {
     }
 
     public void play() {
-    	if(intensityLevel > 100){
-    		
-    		if(intensityLevel > 400){
-    			AmbientPlayer.playAmbient(3);
-    		}
-    		else{
-    			AmbientPlayer.playAmbient(2);
-    		}
-    	}
-    	else{
-    		AmbientPlayer.playAmbient(1);
-    	}
-    	
-    	
+        if (intensityLevel > 100) {
+
+            if (intensityLevel > 400) {
+                AmbientPlayer.playAmbient(3);
+            } else {
+                AmbientPlayer.playAmbient(2);
+            }
+        } else {
+            AmbientPlayer.playAmbient(1);
+        }
+
+
         for (GameSoundBank.ClipGroup clipGroup : activeClips) {
             clipGroup.play();
         }

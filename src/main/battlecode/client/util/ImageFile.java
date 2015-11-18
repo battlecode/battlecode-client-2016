@@ -1,11 +1,11 @@
 package battlecode.client.util;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-
-import java.awt.image.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import javax.imageio.*;
 
 public class ImageFile extends DataFile {
 
@@ -19,10 +19,13 @@ public class ImageFile extends DataFile {
         //System.out.println("loading FILE " + file.getName());
         try {
             BufferedImage tmp = ImageIO.read(file);
-            image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tmp.getWidth(), tmp.getHeight(),
-                    Transparency.TRANSLUCENT);
+            image = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice().getDefaultConfiguration()
+                    .createCompatibleImage(tmp.getWidth(), tmp.getHeight(),
+                            Transparency.TRANSLUCENT);
             /*
-            System.out.println(file + (image.getCapabilities(null).isAccelerated() ?
+            System.out.println(file + (image.getCapabilities(null)
+            .isAccelerated() ?
             " accelerated" : " not accelerated") +
             ", transparency: " + image.getTransparency());
              */
@@ -39,10 +42,13 @@ public class ImageFile extends DataFile {
         //System.out.println("loading URL " + file.getPath());
         try {
             BufferedImage tmp = ImageIO.read(file);
-            image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tmp.getWidth(), tmp.getHeight(),
-                    Transparency.TRANSLUCENT);
+            image = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice().getDefaultConfiguration()
+                    .createCompatibleImage(tmp.getWidth(), tmp.getHeight(),
+                            Transparency.TRANSLUCENT);
             /*
-            System.out.println(file + (image.getCapabilities(null).isAccelerated() ?
+            System.out.println(file + (image.getCapabilities(null)
+            .isAccelerated() ?
             " accelerated" : " not accelerated") +
             ", transparency: " + image.getTransparency());
              */
