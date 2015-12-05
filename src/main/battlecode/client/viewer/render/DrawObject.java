@@ -70,8 +70,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
     // .SOLDIER.attackRadiusMaxSquared);
     private static final double artilleryRadius = 0;//Math.sqrt(GameConstants
     // .ARTILLERY_SPLASH_RADIUS_SQUARED);
-    private static final double bashRadius = Math.sqrt(GameConstants
-            .BASH_RADIUS_SQUARED);
     private static final Color shieldColor = new Color(150, 150, 255, 150);
     private static final Color regenColor = new Color(150, 255, 150, 150);
     private final DrawState overallstate;
