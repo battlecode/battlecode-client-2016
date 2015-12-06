@@ -48,7 +48,7 @@ public class DrawMap {
     public DrawMap(battlecode.world.GameMap map) {
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
-        origin = map.getMapOrigin();
+        origin = map.getOrigin();
 
         this.m = map;
 
@@ -74,27 +74,6 @@ public class DrawMap {
             }
         }
 
-    /*
-    for (int x = 0; x < mapWidth; x++) {
-      for (int y = 0; y < mapHeight; y++) {
-        for (int sx = 0; sx < subtileHeight; sx++) {
-          for (int sy = 0; sy < subtileHeight; sy++) {
-            byte index = subtileIndices[mapIndex(x, y, sx, sy)];
-            byte atlasSelect = (1 << atlasChoiceBit);
-            byte indexMask = (byte)(atlasSelect - (byte)1);
-            BufferedImage tileset[][] = ((index & atlasSelect) != 0) ?
-            voidTiles : roadTiles;
-            index &= indexMask;
-            g2.drawImage(tileset[sx + (subtileHeight * index)][sy], null,
-                         (subtileHeight * x + sx) * locPixelWidth /
-                         subtileHeight,
-                         (subtileHeight * y + sy) * locPixelWidth /
-                         subtileHeight);
-          }
-        }
-      }
-    }
-    */
         g2.dispose();
     }
 
@@ -147,113 +126,11 @@ public class DrawMap {
     public void loadMapArt() {
         mapBG = (new ImageFile("art/map_bg.png")).image;
 
-    /*
-    // set up the road tiles
-    ImageFile roadImg = new ImageFile("art/roads.png"); // actual rendering
-    ImageFile voidImg = new ImageFile("art/innervoid.png"); // actual rendering
-    BufferedImage roadAtlas = roadImg.image;
-    BufferedImage voidAtlas = voidImg.image;
-    locPixelWidth = roadAtlas.getWidth() / roadTileCount;
-    int subtileYPixels = locPixelWidth / subtileHeight;
-      
-    assert roadAtlas.getWidth() % roadTileCount == 0; // the road Atlas has 3
-     images side by side
-
-    roadTiles = new BufferedImage[roadSubtileWidth][subtileHeight];
-    voidTiles = new BufferedImage[innerVoidSubtileWidth][subtileHeight];
-    
-    
-    for (int y = 0; y < subtileHeight; y++) for (int x = 0; x <
-    roadSubtileWidth; x++) {
-        roadTiles[x][y] = roadAtlas.getSubimage(x * subtileYPixels,
-                                                y * subtileYPixels,
-                                                subtileYPixels,
-                                                subtileYPixels);
-              }
-    for (int y = 0; y < subtileHeight; y++) for (int x = 0; x <
-    innerVoidSubtileWidth; x++) {
-        voidTiles[x][y] = voidAtlas.getSubimage(x * subtileYPixels,
-                                                y * subtileYPixels,
-                                                subtileYPixels,
-                                                subtileYPixels);
-      }
-    */
-
         prerender = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()
                 .getDefaultConfiguration()
                 .createCompatibleImage(locPixelWidth * mapWidth,
                         locPixelWidth * mapHeight,
                         Transparency.TRANSLUCENT);
-                                                      
-    /*
-    subtileIndices = new byte[subtileHeight * mapHeight * subtileHeight *
-    mapWidth];
-    for (int i = 0; i < subtileHeight * mapHeight * subtileHeight * mapWidth;
-     i++) {
-        subtileIndices[i] = 0; // default value
-    }
-    */
-    /*
-    for (int x = 0; x < mapWidth; x++) for (int y = 0; y < mapHeight; y++) {
-        // to prevent reading out of array
-        boolean topInBounds = (y - 1 >= 0);
-        boolean botInBounds = (y + 1 < mapHeight);
-        boolean leftInBounds = (x - 1 >= 0);
-        boolean rightInBounds = (x + 1 < mapWidth);
-        // same in adjacent?
-        boolean top =  !topInBounds || (map[x][y - 1] == typeHere); 
-        boolean bot =  !botInBounds || (map[x][y + 1] == typeHere);
-        boolean left = !leftInBounds || (map[x - 1][y] == typeHere);
-        boolean right =  !rightInBounds || (map[x + 1][y] == typeHere);
-        // corners
-        boolean topLeft = top && left && (!topInBounds || !leftInBounds ||
-        map[x - 1][y - 1] == typeHere);
-        boolean topRight = top && right && (!topInBounds || !rightInBounds ||
-         map[x + 1][y - 1] == typeHere);
-        boolean botLeft = bot && left && (!botInBounds || !leftInBounds ||
-        map[x - 1][y + 1] == typeHere);
-        boolean botRight = bot && right && (!botInBounds || !rightInBounds ||
-         map[x + 1][y + 1] == typeHere);
-         
-        if(typeHere == VOID)
-        {
-          // inCorners, horiz, vert, outCorners, water
-          // bridges
-          subtileIndices[mapIndex(x, y, 1, 0)] = subtileIndices[mapIndex(x,
-          y, 2, 0)]
-            = (byte)(top ? 4 : 3);
-          subtileIndices[mapIndex(x, y, 1, 3)] = subtileIndices[mapIndex(x,
-          y, 2, 3)]
-            = (byte)(bot ? 4 : 3);
-          subtileIndices[mapIndex(x, y, 0, 1)] = subtileIndices[mapIndex(x,
-          y, 0, 2)]
-            = (byte)(left ? 4 : 3);
-          subtileIndices[mapIndex(x, y, 3, 1)] = subtileIndices[mapIndex(x,
-          y, 3, 2)]
-            = (byte)(right ? 4 : 3);
-          // center
-          subtileIndices[mapIndex(x, y, 1, 1)]
-            = subtileIndices[mapIndex(x, y, 1, 2)]
-            = subtileIndices[mapIndex(x, y, 2, 1)]
-            = subtileIndices[mapIndex(x, y, 2, 2)]
-            = 4; // always water
-          
-          subtileIndices[mapIndex(x, y, 0, 0)]
-            = (byte)(topLeft ? 4 : (left ? (top ? 0 : 1) : (top ? 2 : 3)));
-          subtileIndices[mapIndex(x, y, 3, 0)]
-            = (byte)(topRight ? 4 : (right ? (top ? 0 : 1) : (top ? 2 : 3)));
-          subtileIndices[mapIndex(x, y, 0, 3)] 
-            = (byte)(botLeft ? 4 : (left ? (bot ? 0 : 1) : (bot ? 2 : 3)));
-          subtileIndices[mapIndex(x, y, 3, 3)]
-            = (byte)(botRight ? 4 : (right ? (bot ? 0 : 1) : (bot ? 2 : 3)));
-          
-          for (int sx = 0; sx < 4; sx++) for (int sy = 0; sy < 4; sy++) {
-              subtileIndices[mapIndex(x, y, sx, sy)] |= (1 << atlasChoiceBit);
-            }
-        }
-      }
-    */
-        //roadImg.unload();
     }
 }

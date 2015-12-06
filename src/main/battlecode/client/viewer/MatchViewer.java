@@ -136,7 +136,7 @@ public class MatchViewer {
                     if (gm == null) {
                         return;
                     }
-                    MapLocation origin = gm.getMapOrigin();
+                    MapLocation origin = gm.getOrigin();
                     MapLocation corner = new MapLocation(origin.x + br
                             .getDrawState().getGameMap().getWidth() - 1,
                             origin.y + br.getDrawState().getGameMap()
@@ -146,7 +146,10 @@ public class MatchViewer {
                     int clampedXLoc = Math.max(origin.x, Math.min(x, corner.x));
                     int clampedYLoc = Math.max(origin.y, Math.min(y, corner.y));
                     info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
-                            0); // TODO make the last part display rubble
+                            br.getDrawState().getPartsAtLocation(clampedXLoc,
+                                    clampedYLoc),
+                            br.getDrawState().getRubbleAtLocation
+                                    (clampedXLoc, clampedYLoc));
                 }
             };
             bc.addPaintObserver(paintObserver);

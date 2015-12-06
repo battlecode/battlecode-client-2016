@@ -149,7 +149,7 @@ public class GameRenderer extends BaseRenderer {
     private synchronized void processHeader(MatchHeader header) {
         GameMap map = header.getMap();
         drawMap = new DrawMap(map);
-        origin = map.getMapOrigin();
+        origin = map.getOrigin();
         sideA.setFooterText("GAME " + (header.getMatchNumber() + 1));
         maxRounds = map.getRounds();
         mapName = map.getMapName();

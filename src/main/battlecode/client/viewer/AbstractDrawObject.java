@@ -362,10 +362,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         actions.add(new Action(ActionType.ATTACKING, currentRound,
                 (int) info.type.attackDelay, target));
         attackDir = dir;
-        //componentType = component;
-        //if (info.type == RobotType.CHAINER) {
-        //	animations.put(MORTAR_ATTACK,createMortarAttackAnim(target));
-        //}
     }
 
     public void setSupplyTransfer(AbstractDrawObject<Animation> target,
@@ -375,11 +371,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         animations.put(ENERGON_TRANSFER, anim);
     }
 
-    public void setMoving(boolean isMovingForward, int delay) {
+    public void setMoving(int delay) {
         actions.add(new Action(ActionType.MOVING, currentRound,
                 delay));
-        moving = (isMovingForward ? 1 : -1);
-//    totalActionRounds = delay;
+        moving = 1;
         updateDrawLoc();
     }
 
@@ -407,8 +402,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         ListIterator<Action> actionIterator = actions.listIterator();
         while (actionIterator.hasNext()) {
             Action a = actionIterator.next();
-            //System.out.println(currentRound + ", " + (a.roundStarted + a
-            // .length));
             if (currentRound >= (a.roundStarted + a.length)) {
                 actionIterator.remove();
             }

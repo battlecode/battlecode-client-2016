@@ -88,6 +88,25 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         Random r = new Random();
         int w = map.getWidth();
         int h = map.getHeight();
+
+        origin = gameMap.getOrigin();
+
+        rubble = new double[map.getWidth()][map.getHeight()];
+        for (int i = 0; i < rubble.length; ++i) {
+            for (int j = 0; j < rubble[i].length; ++j) {
+                rubble[i][j] = map.initialRubbleAtLocation(i + origin.x, j +
+                        origin.y);
+            }
+        }
+
+        parts = new double[map.getWidth()][map.getHeight()];
+        for (int i = 0; i < parts.length; ++i) {
+            for (int j = 0; j < parts[i].length; ++j) {
+                parts[i][j] = map.initialPartsAtLocation(i + origin.x, j +
+                        origin.y);
+            }
+        }
+
         boolean[][] alreadyTaken = new boolean[w][h];
         DoodadAnim.DoodadType[] dTypes = DoodadAnim.DoodadType.values();
         for (int d = 0; d < doodadAttemptCount; d++) {
@@ -229,8 +248,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
 
         AffineTransform pushed = g2.getTransform();
-        g2.translate(gameMap.getMapOrigin().x,
-                gameMap.getMapOrigin().y);
+        g2.translate(gameMap.getOrigin().x,
+                gameMap.getOrigin().y);
         for (DoodadAnim doodad : doodads) {
             doodad.draw(g2);
         }
@@ -242,8 +261,8 @@ public class DrawState extends AbstractDrawState<DrawObject> {
       for (int i = 0; i < gameMap.getWidth() && RenderConfiguration.showCows
       (); i++) {
 	  for (int j = 0; j < gameMap.getHeight(); j++) {
-	      int x = i + gameMap.getMapOrigin().x;
-	      int y = j + gameMap.getMapOrigin().y;
+	      int x = i + gameMap.getOrigin().x;
+	      int y = j + gameMap.getOrigin().y;
 	      
 	      double density =  gameMap.getInitialOre(new MapLocation(x, y))
 		  - getOreAtLocation(new MapLocation(x, y));
@@ -273,6 +292,15 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 	  }
       }
       */
+        // draw rubble
+        for (int i = 0; i < gameMap.getWidth(); ++i) {
+            for (int j = 0; j < gameMap.getHeight(); ++j) {
+                int x = i + gameMap.getOrigin().x;
+                int y = j + gameMap.getOrigin().y;
+
+
+            }
+        }
         for (IndicatorDotSignal s : indicatorDots) {
             if (RenderConfiguration.showIndicatorDots(s.team) && (focusID ==
                     -1 || focusID == s.robotID)) {

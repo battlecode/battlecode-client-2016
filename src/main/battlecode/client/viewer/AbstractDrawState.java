@@ -22,8 +22,8 @@ public abstract class AbstractDrawState<DrawObject extends
     protected Map<Integer, DrawObject> groundUnits;
     protected double[] teamHP = new double[4];
     protected int[] coreIDs = new int[4];
-    protected Map<MapLocation, Double> locationOre = new HashMap<MapLocation,
-            Double>();
+    protected double[][] rubble = new double[0][0];
+    protected double[][] parts = new double[0][0];
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
@@ -55,22 +55,18 @@ public abstract class AbstractDrawState<DrawObject extends
             };
 
     public AbstractDrawState() {
-        totalRobotTypeCount.put(Team.A, new EnumMap<RobotType, Integer>
-                (RobotType.class));
-        totalRobotTypeCount.put(Team.B, new EnumMap<RobotType, Integer>
-                (RobotType.class));
-        totalRobotTypeCount.put(Team.NEUTRAL, new EnumMap<RobotType, Integer>
-                (RobotType.class));
-        totalRobotTypeCount.put(Team.ZOMBIE, new EnumMap<RobotType, Integer>
-                (RobotType.class));
-        buildingArray.put(Team.A, new ArrayList<RobotType>());
-        buildingArray.put(Team.B, new ArrayList<RobotType>());
-        buildingArray.put(Team.NEUTRAL, new ArrayList<RobotType>());
-        buildingArray.put(Team.ZOMBIE, new ArrayList<RobotType>());
-        unitArray.put(Team.A, new ArrayList<RobotType>());
-        unitArray.put(Team.B, new ArrayList<RobotType>());
-        unitArray.put(Team.NEUTRAL, new ArrayList<RobotType>());
-        unitArray.put(Team.ZOMBIE, new ArrayList<RobotType>());
+        totalRobotTypeCount.put(Team.A, new EnumMap<>(RobotType.class));
+        totalRobotTypeCount.put(Team.B, new EnumMap<>(RobotType.class));
+        totalRobotTypeCount.put(Team.NEUTRAL, new EnumMap<>(RobotType.class));
+        totalRobotTypeCount.put(Team.ZOMBIE, new EnumMap<>(RobotType.class));
+        buildingArray.put(Team.A, new ArrayList<>());
+        buildingArray.put(Team.B, new ArrayList<>());
+        buildingArray.put(Team.NEUTRAL, new ArrayList<>());
+        buildingArray.put(Team.ZOMBIE, new ArrayList<>());
+        unitArray.put(Team.A, new ArrayList<>());
+        unitArray.put(Team.B, new ArrayList<>());
+        unitArray.put(Team.NEUTRAL, new ArrayList<>());
+        unitArray.put(Team.ZOMBIE, new ArrayList<>());
     }
 
     protected synchronized void copyStateFrom(AbstractDrawState<DrawObject>
@@ -84,8 +80,27 @@ public abstract class AbstractDrawState<DrawObject extends
             groundUnits.put(entry.getKey(), copy);
         }
 
-        locationOre.clear();
-        locationOre.putAll(src.locationOre);
+        if (src.rubble.length == 0) {
+            rubble = new double[0][0];
+        } else {
+            rubble = new double[src.rubble.length][src.rubble[0].length];
+            for (int i = 0; i < rubble.length; ++i) {
+                for (int j = 0; j < rubble[i].length; ++j) {
+                    rubble[i][j] = src.rubble[i][j];
+                }
+            }
+        }
+
+        if (src.parts.length == 0) {
+            parts = new double[0][0];
+        } else {
+            parts = new double[src.parts.length][src.parts[0].length];
+            for (int i = 0; i < parts.length; ++i) {
+                for (int j = 0; j < parts[i].length; ++j) {
+                    parts[i][j] = src.parts[i][j];
+                }
+            }
+        }
 
         coreIDs = src.coreIDs;
         stats = src.stats;
@@ -170,24 +185,16 @@ public abstract class AbstractDrawState<DrawObject extends
         return new ArrayList<>(buildingArray.get(team));
     }
 
-    public DrawObject getPowerCore(Team t) {
-        int id = coreIDs[t.ordinal()];
-        if (id != 0)
-            return getRobot(id);
-        else
-            return null;
-    }
-
     protected Iterable<Map.Entry<Integer, DrawObject>> getDrawableSet() {
         return drawables;
     }
 
-    protected double getOreAtLocation(MapLocation loc) {
-        if (locationOre.containsKey(loc)) {
-            return locationOre.get(loc);
-        } else {
-            return 0.0;
-        }
+    protected double getRubbleAtLocation(int x, int y) {
+        return rubble[x - origin.x][y - origin.y];
+    }
+
+    protected double getPartsAtLocation(int x, int y) {
+        return parts[x - origin.x][y - origin.y];
     }
 
     protected DrawObject getRobot(int id) {
@@ -216,7 +223,6 @@ public abstract class AbstractDrawState<DrawObject extends
 
     public void setGameMap(GameMap map) {
         gameMap = new GameMap(map);
-        origin = gameMap.getMapOrigin();
     }
 
     public GameMap getGameMap() {
@@ -252,13 +258,24 @@ public abstract class AbstractDrawState<DrawObject extends
 
     }
 
-    public void visitBashSignal(BashSignal s) {
-        DrawObject robot = getRobot(s.robotID);
-        robot.setAttacking(robot.getLocation());
-    }
-
     public void visitBroadcastSignal(BroadcastSignal s) {
         getRobot(s.getRobotID()).setBroadcast();
+    }
+
+    public void visitClearRubbleSignal(ClearRubbleSignal s) {
+        // TODO: put an animation here
+    }
+
+    public void visitRubbleChangeSignal(RubbleChangeSignal s) {
+        int x = s.getLoc().x - origin.x;
+        int y = s.getLoc().y - origin.y;
+        rubble[x][y] = s.getAmount();
+    }
+
+    public void visitPartsChangeSignal(PartsChangeSignal s) {
+        int x = s.getLoc().x - origin.x;
+        int y = s.getLoc().y - origin.y;
+        rubble[x][y] = s.getAmount();
     }
 
     public void visitDeathSignal(DeathSignal s) {
@@ -268,6 +285,11 @@ public abstract class AbstractDrawState<DrawObject extends
         if (team < 2) {
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
         }
+
+        // TODO: might want to make a new signal for this
+        rubble[robot.getLocation().x - origin.x][robot.getLocation().y -
+                origin.y] += robot.getType().maxHealth;
+
         decrementRobotTypeCount(robot.getTeam(), robot.getRobotType());
         robot.destroyUnit();
     }
@@ -307,12 +329,10 @@ public abstract class AbstractDrawState<DrawObject extends
         MapLocation oldloc = obj.loc;
         obj.setLocation(s.getNewLoc());
         obj.setDirection(oldloc.directionTo(s.getNewLoc()));
-        obj.setMoving(s.getMovingForward(), s.getDelay());
+        obj.setMoving(s.getDelay());
     }
 
     public void visitCastSignal(CastSignal s) {
-        //TODO(npinsker): update this with various spells
-
         DrawObject obj = getRobot(s.getRobotID());
         MapLocation oldloc = obj.loc;
         obj.setLocation(s.getTargetLoc());
@@ -380,10 +400,6 @@ public abstract class AbstractDrawState<DrawObject extends
 
     public void visitXPSignal(XPSignal s) {
         getRobot(s.getRobotID()).setXP(s.getXP());
-    }
-
-    public void visitLocationOreChangeSignal(LocationOreChangeSignal s) {
-        locationOre.put(s.getLoc(), s.getOre());
     }
 }
 
