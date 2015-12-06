@@ -286,10 +286,6 @@ public abstract class AbstractDrawState<DrawObject extends
             teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
         }
 
-        // TODO: might want to make a new signal for this
-        rubble[robot.getLocation().x - origin.x][robot.getLocation().y -
-                origin.y] += robot.getType().maxHealth;
-
         decrementRobotTypeCount(robot.getTeam(), robot.getRobotType());
         robot.destroyUnit();
     }
