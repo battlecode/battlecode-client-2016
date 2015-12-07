@@ -10,6 +10,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,38 +30,7 @@ class DrawHUD {
     private static BufferedImage negativeSign;
     private static BufferedMatch match;
 
-    //  private static final RobotType[] drawnTypes = new RobotType[] {
-    //    RobotType.BEAVER,
-    //
-    //    RobotType.SOLDIER,
-    //    RobotType.BASHER,
-    //    RobotType.TANK,
-    //
-    //    RobotType.DRONE,
-    //    RobotType.LAUNCHER,
-    //    RobotType.MISSILE,
-    //
-    //    RobotType.MINER,
-    //
-    //    RobotType.COMPUTER,
-    //    RobotType.COMMANDER,
-    //
-    //    RobotType.TOWER,
-    //    RobotType.SUPPLYDEPOT,
-    //
-    //    RobotType.BARRACKS,
-    //    RobotType.TANKFACTORY,
-    //
-    //    RobotType.HELIPAD,
-    //    RobotType.AEROSPACELAB,
-    //
-    //    RobotType.HANDWASHSTATION,
-    //
-    //    RobotType.MINERFACTORY,
-    //
-    //    RobotType.TECHNOLOGYINSTITUTE,
-    //    RobotType.TRAININGFIELD,
-    //  };
+      private static final RobotType[] drawnTypes = RobotType.values();
 
 
     // [team][types]
@@ -86,12 +57,12 @@ class DrawHUD {
         }
         footerFont = font;
 
-        for (Team t : new Team[]{Team.NEUTRAL, Team.A, Team.B}) {
-            rImages.put(t, new HashMap<RobotType, ImageFile>());
+        for (Team t : new Team[]{Team.ZOMBIE, Team.NEUTRAL, Team.A, Team.B}) {
+            rImages.put(t, new HashMap<>());
             for (RobotType rt : RobotType.values()) {
                 rImages.get(t).put(rt, new ImageFile("art/" + rt.toString()
-                        .toLowerCase() + (t == Team.NEUTRAL ? "1" : (t ==
-                        Team.A ? "1" : "2")) + ".png"));
+                        .toLowerCase() + (t == Team.NEUTRAL || t == Team
+                        .ZOMBIE ? "0" : (t == Team.A ? "1" : "2")) + ".png"));
             }
         }
     }
@@ -149,6 +120,11 @@ class DrawHUD {
 
         g2.translate(0.5f * (width - spriteScale),
                 0.5f * (slotSize - spriteScale));
+        try {
+            drawTeamResource(g2, team);
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+        }
         g2.translate(0, -0.3);
         drawCount(g2);
     }
@@ -252,16 +228,12 @@ class DrawHUD {
             g2.translate(-0.5, 0);
 
             {
-                for (RobotType rt : ds.getAppearedUnitTypes(team)) {
-                    drawTypeCount(g2, rImages.get(team).get(rt), ds
-                            .getRobotTypeCount(team, rt));
-                }
-
-                g2.setTransform(pushed2);
-                g2.translate(0.5, 0);
-                for (RobotType rt : ds.getAppearedBuildingTypes(team)) {
-                    drawTypeCount(g2, rImages.get(team).get(rt), ds
-                            .getRobotTypeCount(team, rt));
+                int[] counts = ds.getRobotCounts(team);
+                for (RobotType rt : RobotType.values()) {
+                    int count = counts[rt.ordinal()];
+                    if (count > 0) {
+                        drawTypeCount(g2, rImages.get(team).get(rt), count);
+                    }
                 }
             }
         }
@@ -323,10 +295,9 @@ class DrawHUD {
                 spriteScale * size * down);
     }
 
-    public void drawTeamResource(Graphics2D g2, DrawObject r) {
-        if (r == null) return;
+    public void drawTeamResource(Graphics2D g2, Team t) {
+        if (t == null) return;
         AffineTransform pushed = g2.getTransform();
-        double slotHeight;
         {
             g2.scale(spriteScale, spriteScale);
             AffineTransform pushed2 = g2.getTransform();
@@ -335,16 +306,16 @@ class DrawHUD {
                 int maxHeight = (int) (.5 * underImg.getHeight());
                 g2.translate(-0.5, 0.0);
                 g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
-                if (r.getTeam() == Team.A) g2.setColor(Color.red);
+                if (t == Team.A) g2.setColor(Color.red);
                 else g2.setColor(Color.blue);
-                double percent = Math.min(ds.getTeamResources(r.getTeam()) /
-                        5000, 1.0);
+                double percent = Math.min(ds.getTeamResources(t) /
+                        500, 1.0);
                 int height = (int) (maxHeight * percent);
                 g2.fillRect(0, maxHeight - height, underImg.getWidth() / 2,
                         height);
 
                 g2.setTransform(pushed2);
-                String resource = (int) (ds.getTeamResources(r.getTeam()) % 10000) + "";
+                String resource = (int) (ds.getTeamResources(t) % 10000) + "";
                 if (resource.charAt(0) != '-') {
                     while (resource.length() < 4) resource = "0" + resource;
                 } else {
@@ -369,15 +340,15 @@ class DrawHUD {
                 int maxHeight = (int) (.5 * underImg.getHeight());
                 g2.translate(0.5, 0.0);
                 g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
-                if (r.getTeam() == Team.A) g2.setColor(Color.red);
+                if (t == Team.A) g2.setColor(Color.red);
                 else g2.setColor(Color.blue);
-                double percent = Math.min(ds.getTeamStrength(r.getTeam()) / 1000.0, 1.0);
+                double percent = Math.min(ds.getTeamStrength(t) / 1000.0, 1.0);
                 int height = (int) (maxHeight * percent);
                 g2.fillRect(0, maxHeight - height, underImg.getWidth() / 2, height);
 
                 g2.setTransform(pushed2);
                 g2.translate(1, 0.0);
-                String resource = ds.getTeamStrength(r.getTeam()) % 10000 + "";
+                String resource = ds.getTeamStrength(t) % 10000 + "";
                 if (resource.charAt(0) != '-') {
                     while (resource.length() < 4) resource = "0" + resource;
                 } else {

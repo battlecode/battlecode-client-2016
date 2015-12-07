@@ -14,10 +14,9 @@ public class InfoPanel extends JPanel {
     private JLabel movementDelay;
     private JLabel attackDelay;
     private JLabel energon;
-    private JLabel supplyLevel;
-    private JLabel extraInformation;
+    private JLabel viperInfectedTurns;
+    private JLabel zombieInfectedTurns;
     private JLabel location;
-    private JLabel direction;
     private GridBagConstraints layoutConstraints;
 
     public InfoPanel() {
@@ -34,28 +33,27 @@ public class InfoPanel extends JPanel {
         forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
         layoutConstraints.gridx++;
         energon = newLabel();
-        layoutConstraints.gridx++;
         forceMinimumSize(energon, " Health: 1000.0 ");
-        supplyLevel = newLabel();
-        forceMinimumSize(supplyLevel, " Supply: 100000.0 ");
         layoutConstraints.gridx++;
         movementDelay = newLabel();
-        forceMinimumSize(movementDelay, " Movement: 100.0 ");
+        forceMinimumSize(movementDelay, " Core delay: 100.0 ");
         layoutConstraints.gridx++;
         attackDelay = newLabel();
-        forceMinimumSize(attackDelay, "Attack: 100,0");
+        forceMinimumSize(attackDelay, "Weapon delay: 100.0");
         layoutConstraints.gridx++;
         bytecodes = newLabel();
         forceMinimumSize(bytecodes, " Bytecodes used: 10000 ");
         layoutConstraints.gridx++;
         location = newLabel();
-        forceMinimumSize(location, " Location: [-99999, 99999] ");
+        forceMinimumSize(location, " Location: [999, 999] ");
         layoutConstraints.gridx++;
-        direction = newLabel();
-        forceMinimumSize(direction, " NORTH_EAST ");
+        zombieInfectedTurns = newLabel();
+        forceMinimumSize(zombieInfectedTurns, " Zombie infection: 99 turns " +
+                "left ");
         layoutConstraints.gridx++;
-        extraInformation = newLabel();
-        forceMinimumSize(extraInformation, " 6 missiles ready ");
+        viperInfectedTurns = newLabel();
+        forceMinimumSize(viperInfectedTurns, " Viper infection: 99 turns " +
+                "left ");
 
         layoutConstraints.gridx = 0;
         for (int i = 0; i < indicatorStrings.length; i++) {
@@ -82,11 +80,12 @@ public class InfoPanel extends JPanel {
     }
 
     public void updateDebugChanges(AbstractDrawObject<AbstractAnimation> robot,
-                                   int x, int y, double ore) {
+                                   int x, int y, double parts, double rubble) {
         if (robot == null) {
             clear();
-            robotID.setText("Ore: " + ore);
-            indicatorStrings[0].setText("Location: " + Integer.toString(x) +
+            robotID.setText("Parts: " + parts);
+            indicatorStrings[1].setText("Rubble: " + rubble);
+            indicatorStrings[2].setText("Location: " + Integer.toString(x) +
                     ", " + Integer.toString(y));
         } else {
             setRobot(robot);
@@ -114,11 +113,9 @@ public class InfoPanel extends JPanel {
         setBytecodesUsed(robot.getBytecodesUsed());
         setAttackDelay(robot.getAttackDelay());
         setMovementDelay(robot.getMovementDelay());
-        setSupplyLevel(robot.getSupplyLevel());
-        setExtraInformation(".....");
+        setZombieInfectedTurns(robot.getZombieInfectedTurns());
+        setViperInfectedTurns(robot.getViperInfectedTurns());
         location.setText(String.format(" Location: %s ", robot.getLocation()));
-        direction.setText("");
-        direction.setText(robot.getDirection().toString());
         for (int i = 0; i < GameConstants.NUMBER_OF_INDICATOR_STRINGS; i++) {
             String ids = robot.getIndicatorString(i);
             if (ids == null)
@@ -134,8 +131,14 @@ public class InfoPanel extends JPanel {
             energon.setText(String.format(" Health: %.1f ", amount));
     }
 
-    private void setSupplyLevel(double amount) {
-        supplyLevel.setText(String.format(" Supply: %.1f ", amount));
+    private void setZombieInfectedTurns(int t) {
+        zombieInfectedTurns.setText(String.format(" Zombie infection: %d " +
+                "turns left ", t));
+    }
+
+    private void setViperInfectedTurns(int t) {
+        viperInfectedTurns.setText(String.format(" Viper infection: %d " +
+                "turns left ", t));
     }
 
     private void setBytecodesUsed(int bytecodesUsed) {
@@ -143,17 +146,12 @@ public class InfoPanel extends JPanel {
     }
 
     private void setMovementDelay(double delay) {
-        movementDelay.setText(String.format(" Movement: %.1f ", delay));
+        movementDelay.setText(String.format(" Core delay: %.1f ", delay));
     }
 
     private void setAttackDelay(double delay) {
-        attackDelay.setText(String.format(" Attack: %.1f ", delay));
+        attackDelay.setText(String.format(" Weapon delay: %.1f ", delay));
     }
-
-    private void setExtraInformation(String s) {
-        extraInformation.setText(s);
-    }
-
 
     private void setIndicatorString(int index, String str) {
         indicatorStrings[index].setText(str);
