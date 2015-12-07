@@ -68,9 +68,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         dir = copy.dir;
         energon = copy.energon;
         shields = copy.shields;
-        supplyLevel = copy.supplyLevel;
-        xp = copy.xp;
-        missileCount = copy.missileCount;
         flux = copy.flux;
         moving = copy.moving;
         broadcast = copy.broadcast;
@@ -131,9 +128,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int robotID;
     protected Direction attackDir;
     protected boolean isSuiciding = false;
-    protected double supplyLevel = 0;
-    protected int missileCount = 0;
-    protected int xp = 0;
+    protected int zombieInfectedTurns = 0;
+    protected int viperInfectedTurns = 0;
     protected int buildDelay = 0;
     protected int aliveRounds = 0;
     protected int currentRound = 0;
@@ -223,18 +219,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return dir;
     }
 
-    public double getSupplyLevel() {
-        return supplyLevel;
-    }
-
-    public int getMissileCount() {
-        return missileCount;
-    }
-
-    public int getXP() {
-        return xp;
-    }
-
     public double getEnergon() {
         return energon;
     }
@@ -267,6 +251,14 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return movementDelay;
     }
 
+    public int getZombieInfectedTurns() {
+        return zombieInfectedTurns;
+    }
+
+    public int getViperInfectedTurns() {
+        return viperInfectedTurns;
+    }
+
     public void load() {
         loaded = true;
     }
@@ -280,6 +272,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         return loaded;
     }
 
+    public void setType(RobotType type) {
+        this.info = new RobotInfo(type, info.team);
+    }
+
     public void setLocation(MapLocation loc) {
         this.loc = loc;
     }
@@ -288,16 +284,12 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         broadcast++;
     }
 
-    public void setXP(int xp) {
-        this.xp = xp;
+    public void setZombieInfectedTurns(int zombieInfectedTurns) {
+        this.zombieInfectedTurns = zombieInfectedTurns;
     }
 
-    public void setSupplyLevel(double supplyLevel) {
-        this.supplyLevel = supplyLevel;
-    }
-
-    public void setMissileCount(int missileCount) {
-        this.missileCount = missileCount;
+    public void setViperInfectedTurns(int viperInfectedTurns) {
+        this.viperInfectedTurns = viperInfectedTurns;
     }
 
     public void setEnergon(double energon) {
@@ -391,9 +383,8 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     public void destroyUnit() {
         energon = 0;
         shields = 0;
-        missileCount = 0;
-        xp = 0;
-        supplyLevel = 0;
+        zombieInfectedTurns = 0;
+        viperInfectedTurns = 0;
         animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
         animations.remove(ENERGON_TRANSFER);
     }
