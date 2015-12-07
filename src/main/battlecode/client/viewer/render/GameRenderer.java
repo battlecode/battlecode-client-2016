@@ -19,7 +19,7 @@ public class GameRenderer extends BaseRenderer {
     private BufferedMatch match;
     private GameStateTimeline<DrawState> timeline;
     private DrawCutScene cutScene;
-    private DrawHUD sideA, sideB;
+    private DrawHUD sideA, sideB, sideZ, sideN;
     private DrawMap drawMap;
     private DrawState ds;
     private MapLocation origin;
@@ -66,10 +66,10 @@ public class GameRenderer extends BaseRenderer {
         ds = new DrawState();
 
         try {
-            System.out.println(match.getTeamA() + " " + match.getTeamB() + " " +
-                    "" + Team.A + " " + Team.B + " " + match.getHeader());
             sideA = new DrawHUD(ds, Team.A, match);
             sideB = new DrawHUD(ds, Team.B, match);
+            sideZ = new DrawHUD(ds, Team.ZOMBIE, match);
+            sideN = new DrawHUD(ds, Team.NEUTRAL, match);
         } catch (Error e) {
             e.printStackTrace();
         }
@@ -246,15 +246,25 @@ public class GameRenderer extends BaseRenderer {
         }
         g2.setTransform(pushed);
         {
-            g2.translate(/*unitWidth - */unitHUDwidth, 0);
+            g2.translate(unitHUDwidth / 2, 0);
+            g2.transform(hudScale);
+            sideZ.draw(g2);
+        }
+        g2.setTransform(pushed);
+        {
+            g2.translate(unitHUDwidth, 0);
             g2.transform(hudScale);
             sideB.setFooterText(String.format("%04d",
                     Math.max(maxRounds - timeline.getRound(), 0)));
             sideB.draw(g2);
         }
         g2.setTransform(pushed);
-
-
+        {
+            g2.translate(unitHUDwidth * 3 / 2, 0);
+            g2.transform(hudScale);
+            sideN.draw(g2);
+        }
+        g2.setTransform(pushed);
     }
 
     public void setDebugState(DebugState dbg) {
