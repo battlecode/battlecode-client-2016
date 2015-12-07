@@ -14,10 +14,7 @@ import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
 
@@ -250,12 +247,13 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         }
         g2.setTransform(pushed);
 
-        // draw rubble
+        // draw rubble and parts
         for (int i = 0; i < gameMap.getWidth(); ++i) {
             for (int j = 0; j < gameMap.getHeight(); ++j) {
                 int x = i + gameMap.getOrigin().x;
                 int y = j + gameMap.getOrigin().y;
 
+                // fill a tile with alpha based on how much rubble there is
                 float lum = (float) Math.sqrt(Math.min(1.0, rubble[i][j] /
                         1000.0f));
                 g2.setColor(new Color(0, 0, 0, lum));
@@ -264,6 +262,15 @@ public class DrawState extends AbstractDrawState<DrawObject> {
                 float offset = ((1.0f - size) / 2);
                 g2.fill(new Rectangle2D.Float(x + offset, y + offset,
                         size, size));
+
+                // draw dots equal to number of parts
+                g2.setColor(new Color(0.8f, 1.0f, 0.6f, 0.7f));
+                for (int r = 0; r < parts[i][j] / 8; ++r) {
+                    for (int c = 0; r * 10 + c < parts[i][j] && c < 8; ++c) {
+                        g2.fill(new Rectangle2D.Float(x + c * 0.1f + 0.12f, y +
+                                r * 0.1f + 0.12f, 0.06f, 0.06f));
+                    }
+                }
             }
         }
 
