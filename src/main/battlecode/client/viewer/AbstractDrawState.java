@@ -164,7 +164,6 @@ public abstract class AbstractDrawState<DrawObject extends
         return gameMap;
     }
 
-
     protected void preUpdateRound() {
         currentRound++;
     }
@@ -190,7 +189,6 @@ public abstract class AbstractDrawState<DrawObject extends
         DrawObject robot = getRobot(s.getRobotID());
         robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
         robot.setAttacking(s.getTargetLoc());
-
     }
 
     public void visitBroadcastSignal(BroadcastSignal s) {
@@ -224,9 +222,9 @@ public abstract class AbstractDrawState<DrawObject extends
         robot.destroyUnit();
     }
 
-    public void visitTeamOreSignal(TeamOreSignal s) {
+    public void visitTeamResourceSignal(TeamResourceSignal s) {
         if (s.team == Team.A || s.team == Team.B) {
-            teamResources[s.team.ordinal()] = s.ore;
+            teamResources[s.team.ordinal()] = s.resource;
         }
     }
 
@@ -260,13 +258,6 @@ public abstract class AbstractDrawState<DrawObject extends
         obj.setLocation(s.getNewLoc());
         obj.setDirection(oldloc.directionTo(s.getNewLoc()));
         obj.setMoving(s.getDelay());
-    }
-
-    public void visitCastSignal(CastSignal s) {
-        DrawObject obj = getRobot(s.getRobotID());
-        MapLocation oldloc = obj.loc;
-        obj.setLocation(s.getTargetLoc());
-        obj.setDirection(oldloc.directionTo(s.getTargetLoc()));
     }
 
     public DrawObject spawnRobot(SpawnSignal s) {
@@ -303,6 +294,19 @@ public abstract class AbstractDrawState<DrawObject extends
 
     }
 
+    public void visitInfectionSignal(InfectionSignal s) {
+        int[] robotIDs = s.getRobotIDs();
+        int[] zombieInfectedTurns = s.getZombieInfectedTurns();
+        int[] viperInfectedTurns = s.getViperInfectedTurns();
+        for (int i = 0; i < robotIDs.length; ++i) {
+            DrawObject robot = getRobot(robotIDs[i]);
+            if (robot != null) {
+                robot.setZombieInfectedTurns(zombieInfectedTurns[i]);
+                robot.setViperInfectedTurns(viperInfectedTurns[i]);
+            }
+        }
+    }
+
     public void visitHealthChange(HealthChangeSignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] health = s.getHealth();
@@ -314,7 +318,7 @@ public abstract class AbstractDrawState<DrawObject extends
         }
     }
 
-    public void visitRobotInfoSignal(RobotDelaySignal s) {
+    public void visitRobotDelaySignal(RobotDelaySignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] coreDelays = s.getCoreDelays();
         double[] weaponDelays = s.getWeaponDelays();
@@ -326,9 +330,14 @@ public abstract class AbstractDrawState<DrawObject extends
             }
         }
     }
+    public void visitTypeChangeSignal(TypeChangeSignal s) {
+        int ID = s.getRobotID();
+        RobotType newType = s.getType();
 
-    public void visitXPSignal(XPSignal s) {
-        getRobot(s.getRobotID()).setXP(s.getXP());
+        DrawObject robot = getRobot(ID);
+        if (robot != null) {
+            robot.setType(newType);
+        }
     }
 }
 
