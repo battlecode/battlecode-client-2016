@@ -1,6 +1,6 @@
 package battlecode.client.viewer;
 
-import battlecode.engine.signal.Signal;
+import battlecode.world.signal.Signal;
 import battlecode.serial.RoundDelta;
 import battlecode.serial.RoundStats;
 
