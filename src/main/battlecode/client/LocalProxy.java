@@ -1,6 +1,6 @@
 package battlecode.client;
 
-import battlecode.engine.signal.Signal;
+import battlecode.world.signal.Signal;
 import battlecode.serial.notification.Notification;
 import battlecode.server.proxy.Proxy;
 
