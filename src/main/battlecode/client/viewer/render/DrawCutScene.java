@@ -2,7 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
 import battlecode.common.Team;
-import battlecode.serial.DominationFactor;
+import battlecode.world.DominationFactor;
 
 import javax.swing.*;
 import java.awt.*;

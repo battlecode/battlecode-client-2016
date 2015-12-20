@@ -1,85 +1,83 @@
 package battlecode.client;
 
-import battlecode.world.signal.Signal;
+import battlecode.serial.ServerEvent;
 import battlecode.serial.notification.Notification;
+import battlecode.serial.notification.NotificationHandler;
 import battlecode.server.proxy.Proxy;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Serves as a bidirectional channel between the server and the client.
+ * The server writes messages to the client with writeEvent, the client
+ * writes messages to the server with writeNotification.
+ */
 public class LocalProxy implements Proxy, ClientProxy {
 
-    public static final LocalProxy INSTANCE = new LocalProxy();
+    private final Queue<ServerEvent> inputQueue;
 
-    private final Queue<Object> queue;
+    private final List<NotificationHandler> outputHandlers;
 
-    private final Notifier notifier;
-
-    private static class Notifier extends Observable {
-        public void notify(Object obj) {
-            this.setChanged();
-            this.notifyObservers(obj);
-            this.clearChanged();
-        }
+    /**
+     * Create a new LocalProxy.
+     */
+    public LocalProxy() {
+        this.outputHandlers = new ArrayList<>();
+        this.inputQueue = new ConcurrentLinkedQueue<>();
     }
 
-    // Can't instantiate.
-    private LocalProxy() {
-        queue = new ConcurrentLinkedQueue<Object>();
-        notifier = new Notifier();
+    public void addOutputHandler(NotificationHandler outputHandler) {
+        this.outputHandlers.add(outputHandler);
     }
 
     @Override
-    public void writeObject(Object o) throws IOException {
-        queue.add(o);
+    public void writeEvent(ServerEvent o) throws IOException {
+        inputQueue.add(o);
     }
 
     @Override
-    public void close() throws IOException {
-    }
+    public void close() throws IOException {}
 
-    public Object readObject() throws EOFException {
-        synchronized (queue) {
-            while (queue.isEmpty())
+    @Override
+    public ServerEvent readEvent() throws EOFException {
+        synchronized (inputQueue) {
+            while (inputQueue.isEmpty())
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
                 }
-            return queue.poll();
+            return inputQueue.poll();
         }
     }
 
-    public Object peekObject() throws EOFException {
+    @Override
+    public ServerEvent peekEvent() throws EOFException {
         assert false : "Local match shouldn't have best-of-3 early termination";
-        synchronized (queue) {
-            while (queue.isEmpty()) {
+        synchronized (inputQueue) {
+            while (inputQueue.isEmpty()) {
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
                 }
             }
-            return queue.peek();
+            return inputQueue.peek();
         }
     }
 
+    @Override
     public boolean isDebuggingAvailable() {
         return true;
     }
 
+    @Override
     public void writeNotification(Notification n) {
-        this.notifier.notify(n);
+        for (NotificationHandler handler : outputHandlers) {
+            n.accept(handler);
+        }
     }
-
-    public void writeSignal(Signal s) {
-        this.notifier.notify(s);
-    }
-
-    public void addObserver(Observer o) {
-        this.notifier.addObserver(o);
-    }
-
 }

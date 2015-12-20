@@ -4,11 +4,9 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.GameStateFactory;
-import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.IndicatorDotSignal;
 import battlecode.world.signal.IndicatorLineSignal;
@@ -182,10 +180,6 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     public double getResearchProgress(Team t, int i) {
         return researchProgress[t.ordinal()][i];
-    }
-
-    public synchronized void apply(RoundStats stats) {
-        this.stats = stats;
     }
 
     public DrawObject getDrawObject(int id) {

@@ -1,7 +1,7 @@
 package battlecode.client.viewer;
 
 import battlecode.client.ClientProxy;
-import battlecode.client.DebugProxy;
+import battlecode.world.DominationFactor;
 import battlecode.world.signal.Signal;
 import battlecode.serial.*;
 import battlecode.serial.notification.Notification;
@@ -11,7 +11,6 @@ import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 public final class BufferedMatch {
 
@@ -24,8 +23,7 @@ public final class BufferedMatch {
     public String teamB = null;
     private String[] mapNames = null;
 
-    private List<RoundDelta> deltas = new Vector<RoundDelta>();
-    private List<RoundStats> stats = new Vector<RoundStats>();
+    private List<RoundDelta> deltas = new ArrayList<>();
     private DominationFactor dominationFactor = null;
     private List<Signal> currentBreak = null;
     private boolean paused = false;
@@ -39,14 +37,10 @@ public final class BufferedMatch {
         assert proxy != null;
         this.proxy = proxy;
 
-        matchListeners = new LinkedList<MatchListener>();
-        matchPausedListeners = new LinkedList<MatchListener>();
+        matchListeners = new LinkedList<>();
+        matchPausedListeners = new LinkedList<>();
 
-        (new Thread() {
-            public void run() {
-                readMatch();
-            }
-        }).start();
+        new Thread(this::readMatch).start();
     }
 
     public MatchHeader getHeader() {
@@ -54,17 +48,13 @@ public final class BufferedMatch {
     }
 
     public int getRoundsAvailable() {
-        return Math.min(deltas.size(), stats.size());
+        return deltas.size();
     }
 
     public RoundDelta getRound(int round) {
         if (round < deltas.size())
             return deltas.get(round);
         return null;
-    }
-
-    public RoundStats getRoundStats(int round) {
-        return stats.get(round);
     }
 
     public List<Signal> getDebugSignals(int round) {
@@ -85,57 +75,57 @@ public final class BufferedMatch {
     }
 
     private void readMatch() {
-        Object obj;
+        ServerEvent event;
         do {
             try {
-                obj = proxy.readObject();
+                event = proxy.readEvent();
             } catch (EOFException e) {
                 //System.err.println("Unexpected end of line at match header");
                 return;
             }
-        } while (!(obj instanceof MatchHeader));
+        } while (!(event instanceof MatchHeader));
         synchronized (this) {
-            header = (MatchHeader) obj;
+            header = (MatchHeader) event;
             for (MatchListener listener : matchListeners) {
                 listener.headerReceived(this);
             }
         }
         deltas.clear();
-        stats.clear();
         while (true) {
             try {
-                obj = proxy.readObject();
+                event = proxy.readEvent();
             } catch (EOFException e) {
                 System.err.println("Unexpected end of line at round " +
                         deltas.size());
                 return;
             }
-            if (obj instanceof Notification) {
-                handleNotification((Notification) obj);
-            } else if (obj instanceof RoundDelta) {
-                handleRoundDelta((RoundDelta) obj);
-            } else if (obj instanceof RoundStats) {
-                handleRoundStats((RoundStats) obj);
-            } else if (obj instanceof Signal[]) {
-                handleSignals((Signal[]) obj);
-            } else if (obj instanceof ExtensibleMetadata) {
-                handleExtensibleMetadata((ExtensibleMetadata) obj);
-            } else if (obj instanceof GameStats) {
-                handleGameStats((GameStats) obj);
-            } else if (obj instanceof MatchFooter) {
-                handleMatchFooter((MatchFooter) obj);
+
+            if (event instanceof RoundDelta) {
+                handleRoundDelta((RoundDelta) event);
+            } else if (event instanceof InjectDelta) {
+                handleInjectDelta((InjectDelta) event);
+            } else if (event instanceof ExtensibleMetadata) {
+                handleExtensibleMetadata((ExtensibleMetadata) event);
+            } else if (event instanceof GameStats) {
+                handleGameStats((GameStats) event);
+            } else if (event instanceof PauseEvent) {
+                handlePauseEvent();
+            } else if (event instanceof MatchFooter) {
+                handleMatchFooter((MatchFooter) event);
                 break;
+            } else {
+                throw new RuntimeException("Unhandled object read: "+event);
             }
         }
         if (!proxy.isDebuggingAvailable()) {
             try {
-                proxy.peekObject();
+                proxy.peekEvent();
             } catch (EOFException e) {
                 earlyTermination = true;
             }
         }
         synchronized (this) {
-            footer = (MatchFooter) obj;
+            footer = (MatchFooter) event;
             for (MatchListener listener : matchListeners) {
                 listener.footerReceived(this);
             }
@@ -145,8 +135,7 @@ public final class BufferedMatch {
         System.out.println("Stop buffering match");
     }
 
-    private void handleNotification(Notification n) {
-        assert (n instanceof PauseNotification);
+    private void handlePauseEvent() {
         paused = true;
         synchronized (matchPausedListeners) {
             for (MatchListener listener : matchPausedListeners) {
@@ -176,10 +165,6 @@ public final class BufferedMatch {
         }
     }
 
-    private void handleRoundStats(RoundStats roundStats) {
-        stats.add(roundStats);
-    }
-
     // TODO: we could be doing more with these.
     // For the final competition, we should show this information on the screen.
     // For now, this will just print to console the results of the game.
@@ -201,9 +186,11 @@ public final class BufferedMatch {
         dominationFactor = dom;
     }
 
-    private void handleSignals(Signal[] signals) {
+    private void handleInjectDelta(InjectDelta delta) {
+        final Signal[] signals = delta.getSignals();
+
         if (currentBreak == null) {
-            currentBreak = new ArrayList<Signal>();
+            currentBreak = new ArrayList<>();
         }
         for (int i = 0; i < signals.length; i++) {
             currentBreak.add(signals[i]);
@@ -263,7 +250,7 @@ public final class BufferedMatch {
         }
     }
 
-    public DebugProxy getDebugProxy() {
+    public ClientProxy getDebugProxy() {
         if (proxy.isDebuggingAvailable()) {
             return proxy;
         } else {
