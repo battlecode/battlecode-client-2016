@@ -4,7 +4,7 @@ import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.*;
 import battlecode.common.MapLocation;
 import battlecode.common.Team;
-import battlecode.serial.DominationFactor;
+import battlecode.world.DominationFactor;
 import battlecode.serial.MatchFooter;
 import battlecode.serial.MatchHeader;
 import battlecode.server.Config;

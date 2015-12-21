@@ -3,11 +3,10 @@ package battlecode.client;
 import battlecode.client.MatchDialog.Choice;
 import battlecode.client.MatchDialog.Parameter;
 import battlecode.client.viewer.MatchViewer;
-import battlecode.serial.MatchInfo;
+import battlecode.server.GameInfo;
+import battlecode.serial.notification.GameNotification;
 import battlecode.server.Config;
 import battlecode.server.Server;
-import battlecode.server.controller.Controller;
-import battlecode.server.controller.LocalController;
 import battlecode.server.proxy.FileProxy;
 import battlecode.server.proxy.Proxy;
 import battlecode.server.serializer.JavaSerializerFactory;
@@ -19,7 +18,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -120,17 +119,13 @@ public class Main {
                 break;
 
             case LOCAL:
+                LocalProxy localProxy = new LocalProxy();
 
-                theProxy = LocalProxy.INSTANCE;
+                final Server server;
 
-                Server server = null;
+                List<Proxy> proxies = new ArrayList<>();
 
                 try {
-                    // Set up the server
-                    Controller controller = new LocalController(options,
-                            LocalProxy.INSTANCE);
-
-                    List<Proxy> proxies = new LinkedList<Proxy>();
 
                     if (saveFile != null) {
                         final SerializerFactory serializerFactory;
@@ -142,35 +137,37 @@ public class Main {
                         proxies.add(new FileProxy(saveFile, serializerFactory));
                     }
 
-                    proxies.add(LocalProxy.INSTANCE);
+                    proxies.add(localProxy);
 
-                    server = new Server(options, Server.Mode.LOCAL, controller,
-                            proxies.toArray(new Proxy[0]));
+                    server = new Server(options, Server.Mode.LOCAL,
+                            proxies.toArray(new Proxy[proxies.size()]));
 
-                    controller.addObserver(server);
+                    localProxy.addOutputHandler(server);
 
                 } catch (IOException e) {
                     return;
                 }
-                LocalProxy.INSTANCE.addObserver(server);
+
                 serverThread = new Thread(server);
 
-                server.update(null, new MatchInfo(
+                new GameNotification(new GameInfo(
                         md.getParameter(Parameter.TEAM_A), md.getParameter
                         (Parameter.TEAM_B), md.getAllMaps().toArray(new
-                        String[md.getAllMaps().size()])));
+                        String[md.getAllMaps().size()])
+                )).accept(server);
+
+                theProxy = localProxy;
 
                 break;
 
         }
 
-        System.out.println("opengl = " + md.getGlClientChoice());
-        System.out.println("minimap = " + md.getGlClientChoice());
         options.setBoolean("bc.client.opengl", md.getGlClientChoice());
-        //options.setBoolean("bc.client.opengl", true);
         options.setBoolean("bc.client.minimap", md.getMinimapChoice());
+
         Main.showViewer(createFrame(), new MatchViewer(theProxy, md
                 .getLockstepChoice()));
+
         if (serverThread != null)
             serverThread.start();
     }

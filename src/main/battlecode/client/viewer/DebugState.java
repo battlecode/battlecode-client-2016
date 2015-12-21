@@ -1,14 +1,12 @@
 package battlecode.client.viewer;
 
-import battlecode.client.DebugProxy;
+import battlecode.client.ClientProxy;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.world.signal.ControlBitsSignal;
-import battlecode.world.signal.DeathSignal;
-import battlecode.world.signal.MovementOverrideSignal;
-import battlecode.world.signal.SpawnSignal;
+import battlecode.serial.notification.InjectNotification;
+import battlecode.world.signal.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +20,7 @@ public class DebugState extends Observable implements MouseListener,
     private static final String CONTROL_BITS_CMD = "Set control bits";
     private static final String KILL_ROBOT_CMD = "Suicide";
 
-    private final DebugProxy proxy;
+    private final ClientProxy proxy;
 
     private JPopupMenu popupMenu;
 
@@ -50,7 +48,7 @@ public class DebugState extends Observable implements MouseListener,
     private MapLocation spawnLoc;
     private long controlBits;
 
-    public DebugState(DebugProxy proxy, Component modalParent) {
+    public DebugState(ClientProxy proxy, Component modalParent) {
         this.proxy = proxy;
         this.modalParent = modalParent;
         SwingUtilities.invokeLater(new Runnable() {
@@ -161,7 +159,7 @@ public class DebugState extends Observable implements MouseListener,
             }
             try {
                 long value = (new java.math.BigInteger(bits, 16)).longValue();
-                proxy.writeSignal(new ControlBitsSignal(targetID, value));
+                proxy.writeNotification(new InjectNotification(new ControlBitsSignal(targetID, value)));
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(modalParent,
                         bits + " is not a valid 8-byte hexadecimal.",
@@ -169,11 +167,11 @@ public class DebugState extends Observable implements MouseListener,
                         JOptionPane.WARNING_MESSAGE);
             }
         } else if (cmd.equals(KILL_ROBOT_CMD)) {
-            proxy.writeSignal(new DeathSignal(targetID));
+            proxy.writeNotification(new InjectNotification(new DeathSignal(targetID)));
         } else {
             Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
             RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
-            proxy.writeSignal(new SpawnSignal(spawnLoc, type, team, null, 0));
+            proxy.writeNotification(new InjectNotification(new SpawnSignal(spawnLoc, type, team, null, 0)));
         }
     }
 
@@ -199,7 +197,7 @@ public class DebugState extends Observable implements MouseListener,
             MapLocation loc = new MapLocation(Math.round(targetLoc.x + getDX()),
                     Math.round(targetLoc.y + getDY()));
             if (!loc.equals(targetLoc)) {
-                proxy.writeSignal(new MovementOverrideSignal(targetID, loc));
+                proxy.writeNotification(new InjectNotification(new MovementOverrideSignal(targetID, loc)));
             }
             dragID = -1;
             forceUpdate();

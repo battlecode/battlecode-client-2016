@@ -5,7 +5,6 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import battlecode.serial.RoundStats;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
 
@@ -27,7 +26,6 @@ public abstract class AbstractDrawState<DrawObject extends
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
-    protected RoundStats stats = null;
     protected double[] teamResources = new double[4];
     protected double[][] researchProgress = new double[4][4];
     protected List<IndicatorDotSignal> newIndicatorDots = new
@@ -83,7 +81,6 @@ public abstract class AbstractDrawState<DrawObject extends
         }
 
         coreIDs = src.coreIDs;
-        stats = src.stats;
 
         if (src.gameMap != null) {
             gameMap = src.gameMap;
@@ -146,10 +143,6 @@ public abstract class AbstractDrawState<DrawObject extends
     protected void putRobot(int id, DrawObject unit) {
         DrawObject previous = groundUnits.put(id, unit);
         assert previous == null : "Robot #" + id + " already exists";
-    }
-
-    public RoundStats getRoundStats() {
-        return stats;
     }
 
     public int getCurrentRound() {

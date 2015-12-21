@@ -2,7 +2,6 @@ package battlecode.client.viewer;
 
 import battlecode.world.signal.Signal;
 import battlecode.serial.RoundDelta;
-import battlecode.serial.RoundStats;
 
 import java.util.List;
 import java.util.Observable;
@@ -92,7 +91,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
                 RoundDelta delta = match.getRound(roundsProcessed);
                 assert delta != null : "Null delta after handling " +
                         roundsProcessed + " rounds";
-                applyDelta(gs, delta, match.getRoundStats(roundsProcessed));
+                applyDelta(gs, delta);
                 if ((roundsProcessed + 1) % roundsPerKey == 0) {
                     keyFrames.addElement(cloneState(gs));
                 }
@@ -128,17 +127,10 @@ public class GameStateTimeline<E extends GameState> extends Observable {
     }
 
     private void applyDelta(E gs, RoundDelta delta) {
-        applyDelta(gs, delta, null);
-    }
-
-    private void applyDelta(E gs, RoundDelta delta, RoundStats stats) {
         long startTime = System.nanoTime();
         gs.apply(delta);
         applyTime += (System.nanoTime() - startTime);
         numApplies++;
-        if (stats != null) {
-            gs.apply(stats);
-        }
     }
 
     private synchronized void syncToDebugSignals() {
@@ -203,7 +195,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
         currentStateAlignedClone = null;
 
         while (currentRound < round) {
-            applyDelta(currentState, match.getRound(currentRound), match.getRoundStats(currentRound));
+            applyDelta(currentState, match.getRound(currentRound));
             currentRound++;
         }
         setChanged();

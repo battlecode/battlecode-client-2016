@@ -1,12 +1,20 @@
 package battlecode.client;
 
+import battlecode.serial.ServerEvent;
+import battlecode.serial.notification.Notification;
+
 import java.io.EOFException;
 
-public interface ClientProxy extends DebugProxy {
+/**
+ * The "reading end" of a battlecode.server.proxy.Proxy.
+ */
+public interface ClientProxy {
 
-    Object readObject() throws EOFException;
+    ServerEvent readEvent() throws EOFException;
 
-    Object peekObject() throws EOFException;
+    ServerEvent peekEvent() throws EOFException;
 
     boolean isDebuggingAvailable();
+
+    void writeNotification(Notification n);
 }

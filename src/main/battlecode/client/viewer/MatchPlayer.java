@@ -1,6 +1,6 @@
 package battlecode.client.viewer;
 
-import battlecode.client.DebugProxy;
+import battlecode.client.ClientProxy;
 import battlecode.serial.MatchHeader;
 import battlecode.serial.notification.PauseNotification;
 import battlecode.serial.notification.ResumeNotification;
@@ -52,7 +52,7 @@ public class MatchPlayer implements Observer, ActionListener {
     private int runSpeed = 1;
     private final MatchViewer viewer;
     private final Controller controller;
-    private DebugProxy proxy;
+    private ClientProxy proxy;
     private GameStateTimeline timeline;
     private BufferedMatch match;
     private javax.swing.Timer timer;
@@ -67,7 +67,7 @@ public class MatchPlayer implements Observer, ActionListener {
     private int fastForward = 1;
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
-                       DebugProxy dp, boolean lockstepChoice) {
+                       ClientProxy dp, boolean lockstepChoice) {
 //System.out.println("Start");
         //  	OBJFile.convertToBCMs();
         viewer = v;
