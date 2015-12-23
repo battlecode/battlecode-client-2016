@@ -10,15 +10,18 @@
       <conf name="compile"/>
       <conf name="sources"/>
       <conf name="javadoc"/>
+      <conf name="test"/>
   </configurations>
 
   <dependencies>
-    <dependency org="junit" name="junit" rev="4.12"/>
 	<!-- 1.1.1-rc6 is not compatible with our native libraries which
 		 are version 1.1.1a
 	<dependency org="net.java.dev.jogl" name="jogl" rev="1.1.1-rc6"/>
 	-->
 	<dependency org="java3d" name="vecmath" rev="1.3.1"/>
 	<dependency org="tablelayout" name="TableLayout" rev="20050920"/>
+
+    <!-- test dependencies -->
+    <dependency org="junit" name="junit" rev="4.12" conf="test->default"/>
   </dependencies>
 </ivy-module>
