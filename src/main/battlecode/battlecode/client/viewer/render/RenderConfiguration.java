@@ -32,7 +32,7 @@ public class RenderConfiguration {
 
     private static boolean tournamentMode = false;
 
-    private float spriteSize = 16;
+    private float spriteSize = 25;
     private float pixelSize = 1.0f / spriteSize;
     private AffineTransform spriteScale;
 

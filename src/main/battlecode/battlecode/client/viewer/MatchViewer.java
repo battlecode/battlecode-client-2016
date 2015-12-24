@@ -71,7 +71,7 @@ public class MatchViewer {
         gbc.weightx = 1;
         panel.add(new JPanel());
 
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.NONE;//was BOTH
         gbc.gridy = 1;
         gbc.gridx = 0;
         gbc.gridwidth = 3;
