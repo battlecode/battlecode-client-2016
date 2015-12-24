@@ -260,7 +260,7 @@ public abstract class AbstractDrawState<DrawObject extends
 //        spawn.setDirection(s.getDirection());
         spawn.setDirection(Direction.NORTH);
         spawn.setBuildDelay(s.getDelay());
-        if (s.getParentID() != 0) {
+        if (s.getParentID() != SpawnSignal.NO_ID) {
             DrawObject parent = getRobot(s.getParentID());
             parent.setAction(s.getDelay(), ActionType.BUILDING);
         }
