@@ -50,7 +50,6 @@ public class MatchViewer {
 
     public MatchViewer(ClientProxy proxy, boolean lockstepChoice) {
         bc = new GameCanvas();
-        System.out.println("Matchviewer 2");
         this.proxy = proxy;
         this.lockstepChoice = lockstepChoice;
         final ControlPanel cpanel = new ControlPanel();
@@ -76,7 +75,6 @@ public class MatchViewer {
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         gbc.weighty = 1;
-        bc.setMinimumSize(new Dimension(0, 600));
         panel.add(bc, gbc);
 
         cpanel.setAlignmentX(Component.LEFT_ALIGNMENT);
