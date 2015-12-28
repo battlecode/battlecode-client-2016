@@ -61,8 +61,7 @@ class DrawHUD {
             rImages.put(t, new HashMap<>());
             for (RobotType rt : RobotType.values()) {
                 rImages.get(t).put(rt, new ImageFile("art/" + rt.toString()
-                        .toLowerCase() + (t == Team.NEUTRAL || t == Team
-                        .ZOMBIE ? "0" : (t == Team.A ? "1" : "2")) + ".png"));
+                        .toLowerCase() + t.ordinal() + ".png"));
             }
         }
     }
