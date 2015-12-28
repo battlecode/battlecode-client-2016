@@ -140,8 +140,15 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     private static String getAvatarPath(String type, Team team) {
-        return "art/" + type + (team == Team.NEUTRAL || team == Team.ZOMBIE ?
-                "0" : (team == Team.A ? "1" : "2")) + ".png";
+        int teamNumber = 0;
+        switch (team) {
+            case A: teamNumber = 1; break;
+            case B: teamNumber = 2; break;
+            case NEUTRAL: teamNumber = 0; break;
+            case ZOMBIE: teamNumber = 3; break;
+            default: teamNumber = 0; break;
+        }
+        return "art/" + type + teamNumber + ".png";
     }
 
     private int getViewRange() {
