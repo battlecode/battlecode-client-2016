@@ -58,18 +58,10 @@ class DrawHUD {
         footerFont = font;
 
         for (Team t : new Team[]{Team.ZOMBIE, Team.NEUTRAL, Team.A, Team.B}) {
-            int teamNumber = 0;
-            switch (t) {
-                case A: teamNumber = 1; break;
-                case B: teamNumber = 2; break;
-                case NEUTRAL: teamNumber = 0; break;
-                case ZOMBIE: teamNumber = 3; break;
-                default: break;
-            }
             rImages.put(t, new HashMap<>());
             for (RobotType rt : RobotType.values()) {
                 rImages.get(t).put(rt, new ImageFile("art/" + rt.toString()
-                        .toLowerCase() + teamNumber + ".png"));
+                        .toLowerCase() + t.ordinal() + ".png"));
             }
         }
     }
