@@ -38,7 +38,7 @@ public class SpriteSheetFile extends ImageFile {
                 sprites[i] = new BufferedImage(image.getWidth(),
                         image.getHeight(),
                         BufferedImage.TYPE_INT_ARGB);
-                double rotationRequired = Math.toRadians(i * 45);
+                double rotationRequired = Math.toRadians(0); // disable rotation
                 double locationX = image.getWidth() / 2;
                 double locationY = image.getHeight() / 2;
                 AffineTransform tx = AffineTransform.getRotateInstance

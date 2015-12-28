@@ -61,25 +61,6 @@ public class Main {
 
                         public void componentShown(ComponentEvent e) {
                             frame.pack();
-
-                            // resize the frame: we want the height of the
-                            // frame to be >= 600 (unless the screen can't
-                            // fit it)
-                            int minHeight = 600;
-                            int screenHeight = 0;
-                            if (!GraphicsEnvironment.isHeadless()) {
-                                screenHeight = (int) Toolkit
-                                        .getDefaultToolkit().getScreenSize()
-                                        .getHeight();
-                            }
-                            if (screenHeight > 0 && screenHeight < minHeight) {
-                                minHeight = screenHeight;
-                            }
-                            if (frame.getHeight() < minHeight) {
-                                frame.setMinimumSize(new Dimension(frame
-                                        .getWidth(), minHeight));
-                                frame.setMinimumSize(null); // make it resizable
-                            }
                         }
                     });
 
