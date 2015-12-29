@@ -12,8 +12,6 @@ public abstract class BaseRenderer {
 
     public abstract AbstractDrawState getDrawState();
 
-    public abstract void setMatchStarter(Runnable starter);
-
     public abstract void setCanvasSize(Dimension dim);
 
     public abstract void beginIntroCutScene(long targetMillis);
@@ -114,7 +112,6 @@ public abstract class BaseRenderer {
                 RenderConfiguration.toggleExplosions();
                 break;
             default:
-                return;
         }
     }
 

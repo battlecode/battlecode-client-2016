@@ -1,13 +1,11 @@
 package battlecode.client.viewer.render;
 
-import battlecode.client.resources.ResourceLoader;
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
-import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
@@ -18,9 +16,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.io.File;
-import java.util.Arrays;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
@@ -36,7 +31,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             float[]{0.5f, 0.5f}, 0.25f);
     private static final Shape outline = new Rectangle2D.Float(0, 0, 1, 1);
     private static final ImageResource<RobotInfo> ir = new
-            ImageResource<RobotInfo>();
+            ImageResource<>();
     private static final ImageFile hatchSensor = new ImageFile
             ("art/hatch_sensor.png");
     private static final ImageFile hatchAttack = new ImageFile
@@ -331,8 +326,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
             rect = new Rectangle2D.Float(0, lastRow ? 0.7f : 1.15f, 1, 0.15f);
             g2.setColor(Color.BLACK);
             g2.fill(rect);
-            float frac = ((float) aliveRounds) / buildDelay;
-            rect.width = frac;
+            rect.width = ((float) aliveRounds) / buildDelay;
             g2.setColor(new Color(1f, 0f, 0f));
             g2.fill(rect);
         }
@@ -457,7 +451,6 @@ class DrawObject extends AbstractDrawObject<Animation> {
     }
 
     public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {
-        ExplosionAnim anim = new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
-        return anim;
+        return new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
     }
 }

@@ -8,7 +8,7 @@ public class ImageResource<E> {
     private Map<E, ImageFile> cache;
 
     public ImageResource() {
-        cache = new HashMap<E, ImageFile>();
+        cache = new HashMap<>();
     }
 
     public ImageFile getResource(E key, String path) {

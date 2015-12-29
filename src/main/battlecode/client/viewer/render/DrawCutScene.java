@@ -24,13 +24,6 @@ public class DrawCutScene {
 
     public Step step = Step.INTRO;
     private final Rectangle2D.Float rect = new Rectangle2D.Float();
-    private Color darkMask = new Color(0, 0, 0, 0.75f);
-    private volatile float fade = 0.75f;
-    private volatile Timer fadeTimer;
-    private static final ImageFile imgVersus = new ImageFile("art/overlay_vs" +
-            ".png");
-    private static final ImageFile imgWinnerLabel = new ImageFile
-            ("art/overlay_win.png");
     private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
     private final String mapName;
@@ -42,9 +35,7 @@ public class DrawCutScene {
     private static final Color backgroundColor = Color.BLACK;
     private static final Color teamAColor = Color.RED;
     private static final Color teamBColor = Color.BLUE;
-    private volatile long targetEnd;
     private volatile boolean visible = false;
-    private static String teamPath = null;
     private static Map<Integer, String> teamNames = Collections.emptyMap();
     private Font font;
 
@@ -84,10 +75,6 @@ public class DrawCutScene {
         imgTeamB = new ImageFile("avatars/" + teamB + ".png");
     }
 
-    public void setTargetEnd(long millis) {
-        targetEnd = millis;
-    }
-
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
@@ -109,31 +96,17 @@ public class DrawCutScene {
     }
 
     public void draw(Graphics2D g2) {
-        //System.out.println("Cutscene Drawing");
         if (visible) {
             switch (step) {
                 case INTRO:
-                    //System.out.println("Drawing Intro");
                     drawIntro(g2);
                     break;
                 case OUTRO:
-                    //System.out.println("Drawing Outro");
                     drawOutro(g2);
                     break;
                 default:
-                    //System.out.println("Buh WHa?");
                     break;
             }
-        }
-    }
-
-    private void drawImage(BufferedImage img, Graphics2D g2) {
-        if (img != null) {
-            double scale = rect.width / img.getWidth();
-            AffineTransform trans = AffineTransform.getScaleInstance(scale,
-                    scale);
-            trans.translate(-img.getWidth() / 2, -img.getHeight() / 2);
-            g2.drawImage(img, trans, null);
         }
     }
 
@@ -219,8 +192,7 @@ public class DrawCutScene {
             }
 
             // Apparently the x,y coordinates given to drawGlyphVector are
-            // the bottom
-            // right corner?
+            // the bottom right corner?
             g2.drawGlyphVector(glyphs, centerx - metrics.stringWidth(s) / 2,
                     centery + metrics.getHeight() / 2);
         }
@@ -288,33 +260,9 @@ public class DrawCutScene {
         g2.setTransform(pushed);
     }
 
-    public void fadeOut() {
-        fade = 0.f;
-        /*
-        final long startTime = System.currentTimeMillis();
-        final float startFade = fade;
-        fadeTimer = new Timer(40, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("timer "+Thread.currentThread());
-				fade = startFade + (System.currentTimeMillis() - startTime) / 5000.0f;
-                if (fade >= 1) {
-                    fade = 1;
-                    fadeTimer.stop();
-                    fadeTimer = null;
-                }
-            }
-        });
-        fadeTimer.start();
-		*/
-    }
+    public void fadeOut() {}
 
     protected void finalize() throws Throwable {
-        try {
-            //imgTeamA.unload(); //TODO: switch over to weak references
-            //imgTeamB.unload();
-        } finally {
-            super.finalize();
-        }
+        super.finalize();
     }
 }

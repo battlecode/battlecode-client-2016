@@ -19,24 +19,24 @@ public abstract class AbstractDrawState<DrawObject extends
     protected abstract DrawObject createDrawObject(DrawObject o);
 
     protected Map<Integer, DrawObject> groundUnits;
-    protected double[] teamHP = new double[4];
+    protected final double[] teamHP = new double[4];
     protected int[] coreIDs = new int[4];
     protected double[][] rubble = new double[0][0];
     protected double[][] parts = new double[0][0];
     protected static MapLocation origin = null;
     protected GameMap gameMap;
     protected int currentRound;
-    protected double[] teamResources = new double[4];
-    protected double[][] researchProgress = new double[4][4];
-    protected List<IndicatorDotSignal> newIndicatorDots = new
-            ArrayList<IndicatorDotSignal>();
-    protected List<IndicatorLineSignal> newIndicatorLines = new
-            ArrayList<IndicatorLineSignal>();
+    protected final double[] teamResources = new double[4];
+    protected final double[][] researchProgress = new double[4][4];
+    protected final List<IndicatorDotSignal> newIndicatorDots = new
+            ArrayList<>();
+    protected final List<IndicatorLineSignal> newIndicatorLines = new
+            ArrayList<>();
     protected IndicatorDotSignal[] indicatorDots = new IndicatorDotSignal[0];
     protected IndicatorLineSignal[] indicatorLines = new IndicatorLineSignal[0];
-    protected int[] teamStrength = new int[4];
+    protected final int[] teamStrength = new int[4];
 
-    protected Iterable<Map.Entry<Integer, DrawObject>> drawables =
+    protected final Iterable<Map.Entry<Integer, DrawObject>> drawables =
             new Iterable<Map.Entry<Integer, DrawObject>>() {
 
                 public Iterator<Map.Entry<Integer, DrawObject>> iterator() {
@@ -63,9 +63,7 @@ public abstract class AbstractDrawState<DrawObject extends
         } else {
             rubble = new double[src.rubble.length][src.rubble[0].length];
             for (int i = 0; i < rubble.length; ++i) {
-                for (int j = 0; j < rubble[i].length; ++j) {
-                    rubble[i][j] = src.rubble[i][j];
-                }
+                System.arraycopy(src.rubble[i], 0, rubble[i], 0, rubble[i].length);
             }
         }
 
@@ -74,9 +72,7 @@ public abstract class AbstractDrawState<DrawObject extends
         } else {
             parts = new double[src.parts.length][src.parts[0].length];
             for (int i = 0; i < parts.length; ++i) {
-                for (int j = 0; j < parts[i].length; ++j) {
-                    parts[i][j] = src.parts[i][j];
-                }
+                System.arraycopy(src.parts[i], 0, parts[i], 0, parts[i].length);
             }
         }
 
@@ -86,13 +82,10 @@ public abstract class AbstractDrawState<DrawObject extends
             gameMap = src.gameMap;
         }
 
-        for (int x = 0; x < teamResources.length; x++)
-            teamResources[x] = src.teamResources[x];
+        System.arraycopy(src.teamResources, 0, teamResources, 0, teamResources.length);
         for (int t = 0; t < researchProgress.length; t++)
-            for (int r = 0; r < researchProgress[t].length; r++)
-                researchProgress[t][r] = src.researchProgress[t][r];
-        for (int x = 0; x < teamStrength.length; x++)
-            teamStrength[x] = src.teamStrength[x];
+            System.arraycopy(src.researchProgress[t], 0, researchProgress[t], 0, researchProgress[t].length);
+        System.arraycopy(src.teamStrength, 0, teamStrength, 0, teamStrength.length);
 
         indicatorDots = src.indicatorDots;
         indicatorLines = src.indicatorLines;
@@ -135,18 +128,9 @@ public abstract class AbstractDrawState<DrawObject extends
         return obj;
     }
 
-    protected void removeRobot(int id) {
-        DrawObject previous = groundUnits.remove(id);
-        assert previous != null : "Robot #" + id + " not found";
-    }
-
     protected void putRobot(int id, DrawObject unit) {
         DrawObject previous = groundUnits.put(id, unit);
         assert previous == null : "Robot #" + id + " already exists";
-    }
-
-    public int getCurrentRound() {
-        return currentRound;
     }
 
     public void setGameMap(GameMap map) {
@@ -178,32 +162,38 @@ public abstract class AbstractDrawState<DrawObject extends
         newIndicatorLines.clear();
     }
 
+    @SuppressWarnings("unused")
     public void visitAttackSignal(AttackSignal s) {
         DrawObject robot = getRobot(s.getRobotID());
         robot.setDirection(robot.getLocation().directionTo(s.getTargetLoc()));
         robot.setAttacking(s.getTargetLoc());
     }
 
+    @SuppressWarnings("unused")
     public void visitBroadcastSignal(BroadcastSignal s) {
         getRobot(s.getRobotID()).setBroadcast();
     }
 
+    @SuppressWarnings("unused")
     public void visitClearRubbleSignal(ClearRubbleSignal s) {
         // TODO: put an animation here
     }
 
+    @SuppressWarnings("unused")
     public void visitRubbleChangeSignal(RubbleChangeSignal s) {
         int x = s.getLoc().x - origin.x;
         int y = s.getLoc().y - origin.y;
         rubble[x][y] = s.getAmount();
     }
 
+    @SuppressWarnings("unused")
     public void visitPartsChangeSignal(PartsChangeSignal s) {
         int x = s.getLoc().x - origin.x;
         int y = s.getLoc().y - origin.y;
         rubble[x][y] = s.getAmount();
     }
 
+    @SuppressWarnings("unused")
     public void visitDeathSignal(DeathSignal s) {
         DrawObject robot = getRobot(s.getObjectID());
         int team = robot.getTeam().ordinal();
@@ -215,12 +205,14 @@ public abstract class AbstractDrawState<DrawObject extends
         robot.destroyUnit();
     }
 
+    @SuppressWarnings("unused")
     public void visitTeamResourceSignal(TeamResourceSignal s) {
         if (s.team == Team.A || s.team == Team.B) {
             teamResources[s.team.ordinal()] = s.resource;
         }
     }
 
+    @SuppressWarnings("unused")
     public void visitIndicatorStringSignal(IndicatorStringSignal s) {
         if (!RenderConfiguration.isTournamentMode()) {
             getRobot(s.getRobotID()).setString(s.getStringIndex(), s
@@ -228,23 +220,28 @@ public abstract class AbstractDrawState<DrawObject extends
         }
     }
 
+    @SuppressWarnings("unused")
     public void visitIndicatorDotSignal(IndicatorDotSignal s) {
         newIndicatorDots.add(s);
     }
 
+    @SuppressWarnings("unused")
     public void visitIndicatorLineSignal(IndicatorLineSignal s) {
         newIndicatorLines.add(s);
     }
 
+    @SuppressWarnings("unused")
     public void visitControlBitsSignal(ControlBitsSignal s) {
         getRobot(s.getRobotID()).setControlBits(s.getControlBits());
 
     }
 
+    @SuppressWarnings("unused")
     public void visitMovementOverrideSignal(MovementOverrideSignal s) {
         getRobot(s.getRobotID()).setLocation(s.getNewLoc());
     }
 
+    @SuppressWarnings("unused")
     public void visitMovementSignal(MovementSignal s) {
         DrawObject obj = getRobot(s.getRobotID());
         MapLocation oldloc = obj.loc;
@@ -273,10 +270,12 @@ public abstract class AbstractDrawState<DrawObject extends
         return spawn;
     }
 
+    @SuppressWarnings("unused")
     public void visitSpawnSignal(SpawnSignal s) {
         spawnRobot(s);
     }
 
+    @SuppressWarnings("unused")
     public void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
         int[] robotIDs = s.getRobotIDs();
         int[] bytecodes = s.getNumBytecodes();
@@ -287,6 +286,7 @@ public abstract class AbstractDrawState<DrawObject extends
 
     }
 
+    @SuppressWarnings("unused")
     public void visitInfectionSignal(InfectionSignal s) {
         int[] robotIDs = s.getRobotIDs();
         int[] zombieInfectedTurns = s.getZombieInfectedTurns();
@@ -300,6 +300,7 @@ public abstract class AbstractDrawState<DrawObject extends
         }
     }
 
+    @SuppressWarnings("unused")
     public void visitHealthChange(HealthChangeSignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] health = s.getHealth();
@@ -311,6 +312,7 @@ public abstract class AbstractDrawState<DrawObject extends
         }
     }
 
+    @SuppressWarnings("unused")
     public void visitRobotDelaySignal(RobotDelaySignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] coreDelays = s.getCoreDelays();
@@ -323,6 +325,8 @@ public abstract class AbstractDrawState<DrawObject extends
             }
         }
     }
+
+    @SuppressWarnings("unused")
     public void visitTypeChangeSignal(TypeChangeSignal s) {
         int ID = s.getRobotID();
         RobotType newType = s.getType();

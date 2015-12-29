@@ -92,14 +92,6 @@ public class DebugState extends Observable implements MouseListener,
         return focusID;
     }
 
-    public int getTargetID() {
-        return targetID;
-    }
-
-    public void setFocusID(int id) {
-        focusID = id;
-    }
-
     public void setTarget(int id, MapLocation loc, long controlBits) {
         targetID = id;
         targetLoc = loc;
@@ -149,35 +141,39 @@ public class DebugState extends Observable implements MouseListener,
     }
 
     private void doPopupAction(String cmd) {
-        if (cmd.equals(CONTROL_BITS_CMD)) {
-            String bits = (String) JOptionPane.showInputDialog(modalParent,
-                    "Set control bits to (8-byte hexadecimal):", "Input",
-                    JOptionPane.PLAIN_MESSAGE, null, null,
-                    String.format("%016X", controlBits));
-            if (bits == null) {
-                return;
-            }
-            try {
-                long value = (new java.math.BigInteger(bits, 16)).longValue();
-                proxy.writeNotification(new InjectNotification(new ControlBitsSignal(targetID, value)));
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(modalParent,
-                        bits + " is not a valid 8-byte hexadecimal.",
-                        "Invalid input",
-                        JOptionPane.WARNING_MESSAGE);
-            }
-        } else if (cmd.equals(KILL_ROBOT_CMD)) {
-            proxy.writeNotification(new InjectNotification(new DeathSignal(targetID)));
-        } else {
-            Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
-            RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
-            proxy.writeNotification(new InjectNotification(new SpawnSignal(spawnLoc, type, team, null, 0)));
+        switch (cmd) {
+            case CONTROL_BITS_CMD:
+                String bits = (String) JOptionPane.showInputDialog(modalParent,
+                        "Set control bits to (8-byte hexadecimal):", "Input",
+                        JOptionPane.PLAIN_MESSAGE, null, null,
+                        String.format("%016X", controlBits));
+                if (bits == null) {
+                    return;
+                }
+                try {
+                    long value = (new java.math.BigInteger(bits, 16)).longValue();
+                    proxy.writeNotification(new InjectNotification(new ControlBitsSignal(targetID, value)));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(modalParent,
+                            bits + " is not a valid 8-byte hexadecimal.",
+                            "Invalid input",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+                break;
+            case KILL_ROBOT_CMD:
+                proxy.writeNotification(new InjectNotification(new DeathSignal(targetID)));
+                break;
+            default:
+                Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
+                RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
+                proxy.writeNotification(new InjectNotification(new SpawnSignal(spawnLoc, type, team, null, 0)));
+                break;
         }
     }
 
     public void mousePressed(MouseEvent e) {
         if (enabled) {
-            if (tryPopupMenu(e) == false) {
+            if (!tryPopupMenu(e)) {
                 if (targetID != -1) {
                     x0 = p.x;
                     y0 = p.y;

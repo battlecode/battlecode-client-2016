@@ -3,15 +3,12 @@ package battlecode.client.viewer;
 import battlecode.world.signal.Signal;
 import battlecode.serial.RoundDelta;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Vector;
+import java.util.*;
 
 public class GameStateTimeline<E extends GameState> extends Observable {
 
     private GameStateFactory<E> gsf;
-    private Vector<E> keyFrames;
+    private List<E> keyFrames;
     private final int roundsPerKey;
 
     protected BufferedMatch match;
@@ -39,7 +36,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
         this.match = match;
         match.addMatchListener(new MatchListener() {
             public void headerReceived(BufferedMatch m) {
-                keyFrames = new Vector<E>(1 + m.getHeader().getMap()
+                keyFrames = new ArrayList<>(1 + m.getHeader().getMap()
                         .getRounds() /
                         roundsPerKey);
                 active = true;
@@ -80,7 +77,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
     @SuppressWarnings("unchecked")
     protected void createKeyFrames() {
         E gs = gsf.createState(match.getHeader().getMap());
-        keyFrames.addElement(cloneState(gs));
+        keyFrames.add(cloneState(gs));
         roundsProcessed = 0;
         while (active) {
             int roundsAvailable = match.getRoundsAvailable();
@@ -93,7 +90,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
                         roundsProcessed + " rounds";
                 applyDelta(gs, delta);
                 if ((roundsProcessed + 1) % roundsPerKey == 0) {
-                    keyFrames.addElement(cloneState(gs));
+                    keyFrames.add(cloneState(gs));
                 }
                 roundsProcessed++;
                 synchronized (this) {
@@ -215,13 +212,11 @@ public class GameStateTimeline<E extends GameState> extends Observable {
     }
 
     public void setMasterTimeline(final GameStateTimeline gst) {
-        gst.addObserver(new Observer() {
-            public void update(Observable o, Object arg) {
-                if (gst.isActive()) {
-                    setRound(gst.getRound());
-                } else {
-                    terminate();
-                }
+        gst.addObserver((o, arg) -> {
+            if (gst.isActive()) {
+                setRound(gst.getRound());
+            } else {
+                terminate();
             }
         });
     }

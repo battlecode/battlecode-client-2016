@@ -22,10 +22,6 @@ class DoodadAnim extends FramedAnimation {
 
     public DoodadType type;
 
-    public DoodadAnim() {
-        this(null);
-    }
-
     public DoodadAnim(MapLocation loc) {
         this(loc, 1, DoodadType.EXPLOSION);
     }

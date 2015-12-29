@@ -16,12 +16,7 @@ public class TournamentTimer {
     private BaseRenderer br;
     private volatile boolean continueCued = false;
     public static volatile boolean waitBetweenMatches;
-    private Runnable spaceBarListener = new Runnable() {
-
-        public void run() {
-            continueCued = true;
-        }
-    };
+    private Runnable spaceBarListener = () -> continueCued = true;
     Team winner = Team.NEUTRAL;
     int aWins = 0, bWins = 0;
     private Thread thread = new Thread() {

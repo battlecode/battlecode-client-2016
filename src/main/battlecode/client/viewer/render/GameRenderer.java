@@ -26,7 +26,6 @@ public class GameRenderer extends BaseRenderer {
     private int maxRounds = 0;
     private String mapName = "";
     private DebugState debugState;
-    private final Color winnerMask = new Color(0, 0, 0, 0.6f);
     private Font debugFont;
     private float spriteSize = RenderConfiguration.getInstance()
             .getSpriteSize();
@@ -36,9 +35,7 @@ public class GameRenderer extends BaseRenderer {
     private Dimension canvasSize = null;
     private final Rectangle2D.Float clipRect = new Rectangle2D.Float();
     private AffineTransform hudScale;
-    private ImageFile teamA, teamB, winnerImage;
     private FramerateTracker fps = new FramerateTracker(30);
-    private int targetID = -1;
     static private boolean loadedPrefsAlready = false;
     private final MatchListener ml = new MatchListener() {
 
@@ -55,7 +52,6 @@ public class GameRenderer extends BaseRenderer {
             processFooter(m.getFooter());
         }
     };
-    private Runnable matchStarter = null;
 
     public GameRenderer() {
     }
@@ -74,7 +70,7 @@ public class GameRenderer extends BaseRenderer {
             e.printStackTrace();
         }
 
-        timeline = new GameStateTimeline<DrawState>(match, DrawState.FACTORY,
+        timeline = new GameStateTimeline<>(match, DrawState.FACTORY,
                 10);
         timeline.setTargetState(ds);
         match.addMatchListener(ml);
@@ -123,26 +119,10 @@ public class GameRenderer extends BaseRenderer {
         return timeline;
     }
 
-    /* (non-Javadoc)
-     * @see battlecode.client.viewer.render.BaseRenderer#setMatchStarter(java
-     * .lang.Runnable)
-     */
-    public void setMatchStarter(Runnable starter) {
-        if (cutScene != null && cutScene.step == DrawCutScene.Step.GAME) {
-            starter.run();
-        } else {
-            matchStarter = starter;
-        }
-    }
-
     private void setDebugEnabled(boolean enabled) {
         if (debugState != null) {
             debugState.setEnabled(enabled);
         }
-    }
-
-    public BufferedMatch getMatch() {
-        return match;
     }
 
     @SuppressWarnings("unchecked")
@@ -161,7 +141,7 @@ public class GameRenderer extends BaseRenderer {
         clipRect.height = drawMap.getMapHeight();
         hudScale = AffineTransform.getScaleInstance(unitHeight, unitHeight);
 
-        if (RenderConfiguration.getInstance().isTournamentMode()) {
+        if (RenderConfiguration.isTournamentMode()) {
             (new Thread() {
 
                 public void run() {
@@ -173,19 +153,6 @@ public class GameRenderer extends BaseRenderer {
                     }
                     cutScene = new DrawCutScene(unitWidth, unitHeight,
                             match.getTeamA(), match.getTeamB(), mapName);
-                    //FIXME: commented out for now
-//					try {
-//						String path = "map-backgrounds/" + match.getMapNames()
-// [match.getHeader().getMatchNumber()] + ".xml.png";
-//						System.out.println("loading " + path);
-//						ImageFile imgFile = new ImageFile(path);
-//						drawMap.prerenderMap(imgFile.image);
-//						imgFile.unload();
-//					}
-//					catch (NullPointerException e) {
-//						e.printStackTrace();
-//						//drawMap.prerenderMap();
-//					}
                 }
             }).start();
         }
@@ -344,7 +311,6 @@ public class GameRenderer extends BaseRenderer {
             } catch (InterruptedException e) {
             }
         }
-        cutScene.setTargetEnd(targetMillis);
         setCutSceneVisible(true);
     }
 
@@ -367,13 +333,6 @@ public class GameRenderer extends BaseRenderer {
      */
     public void fadeOutCutScene() {
         cutScene.fadeOut();
-    }
-
-    private void renderFramerate(Graphics2D g2) {
-        g2.setTransform(new AffineTransform());
-        g2.setColor(Color.BLACK);
-        g2.setFont(debugFont);
-        g2.drawString("Framerate: " + fps.getFramerate(), 20, 30);
     }
 
     public static void preloadGraphics() {

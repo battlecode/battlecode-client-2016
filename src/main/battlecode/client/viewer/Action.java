@@ -3,10 +3,10 @@ package battlecode.client.viewer;
 import battlecode.common.MapLocation;
 
 public class Action {
-    public ActionType type;
-    public int roundStarted;
-    public int length;
-    public MapLocation target;
+    public final ActionType type;
+    public final int roundStarted;
+    public final int length;
+    public final MapLocation target;
 
     public Action(ActionType type,
                   int roundStarted,

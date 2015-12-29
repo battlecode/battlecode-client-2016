@@ -1,6 +1,5 @@
 package battlecode.client.viewer.render;
 
-import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.AbstractDrawState;
 import battlecode.client.viewer.DebugState;
 import battlecode.client.viewer.GameStateFactory;
@@ -49,7 +48,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
     //int[][] blockNumber;
 
     public DrawState() {
-        groundUnits = new LinkedHashMap<Integer, DrawObject>();
+        groundUnits = new LinkedHashMap<>();
         currentRound = -1;
     }
 
@@ -66,7 +65,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
 
     public void setGameMap(GameMap map) {
         super.setGameMap(map);
-        doodads = new ArrayList<DoodadAnim>();
+        doodads = new ArrayList<>();
         int doodadAttemptCount = 0;
         Random r = new Random();
         int w = map.getWidth();
@@ -93,7 +92,7 @@ public class DrawState extends AbstractDrawState<DrawObject> {
         boolean[][] alreadyTaken = new boolean[w][h];
         DoodadAnim.DoodadType[] dTypes = DoodadAnim.DoodadType.values();
         for (int d = 0; d < doodadAttemptCount; d++) {
-            ArrayList<MapLocation> possibleLocs = new ArrayList<MapLocation>();
+            ArrayList<MapLocation> possibleLocs = new ArrayList<>();
             int doodadIndex = r.nextInt(dTypes.length);
             DoodadAnim.DoodadType dType = dTypes[doodadIndex];
             for (int i = 0; i < w; i++) {

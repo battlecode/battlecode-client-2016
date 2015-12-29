@@ -41,29 +41,4 @@ public class SoundFile {
         return null;
     }
 
-    private Clip getClip(AudioFormat format, byte[] data) {
-        try {
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class,
-                    format);
-            for (Mixer.Info mi : AudioSystem.getMixerInfo()) {
-                Clip clip = null;
-                try {
-                    Mixer mixer = AudioSystem.getMixer(mi);
-                    clip = (Clip) mixer.getLine(info);
-                    clip.open(format, data, 0, data.length);
-                    clip.start();
-                    return clip;
-                } catch (Exception e) {
-                }
-                if (clip != null)
-                    try {
-                        clip.close();
-                    } catch (Exception e) {
-                    }
-            }
-        } catch (Exception e) {
-        }
-
-        return null;
-    }
 }

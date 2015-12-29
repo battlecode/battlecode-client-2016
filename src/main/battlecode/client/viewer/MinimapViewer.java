@@ -39,10 +39,6 @@ public class MinimapViewer {
         frame.toFront();
     }
 
-    public void setNull() {
-        canvas.setRenderer(null);
-    }
-
     public void setBracket() {
         canvas.setRenderer(bracket);
     }

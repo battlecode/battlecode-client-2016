@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Observable;
@@ -20,10 +19,6 @@ public class ControlPanel extends JPanel
         implements ActionListener, ChangeListener, Controller {
 
     private static final long serialVersionUID = 0; // don't serialize
-    private static final double[][] LAYOUT = {
-            {400, 20, 400},
-            {30, 30, 30}
-    };
     private MatchPlayer player;
     private JPanel panel;
     private JLabel label;
@@ -144,10 +139,6 @@ public class ControlPanel extends JPanel
         return createButton(new ImageIcon(ResourceLoader.getUrl(iconPath)), cmd);
     }
 
-    private JButton createButton(URL iconURL, String cmd) {
-        return createButton(new ImageIcon(iconURL), cmd);
-    }
-
     private JButton createButton(ImageIcon icon, String cmd) {
         JButton button = new JButton(icon);
         button.setActionCommand(cmd);
@@ -176,11 +167,7 @@ public class ControlPanel extends JPanel
     public void enableNext() {
         // we need to use invokeLater to avoid a deadlock
         // in the 3d client
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                next.setEnabled(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> next.setEnabled(true));
     }
 
     public void setPlayer(MatchPlayer player) {

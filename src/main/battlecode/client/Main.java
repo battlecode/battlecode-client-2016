@@ -25,7 +25,7 @@ public class Main {
 
     public static JFrame createFrame() {
         final JFrame frame = new JFrame("battlecode");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         return frame;
     }
 
@@ -40,33 +40,30 @@ public class Main {
                 .usingTwoScreens())
                 ? devices[1] : devices[0];
 
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(() -> {
+            frame.getContentPane().add(viewer.getComponent());
+            if (viewer.isTournamentMode() && gd.isFullScreenSupported()) {
+                //frame.setIgnoreRepaint(true);
+                frame.setResizable(false);
+                frame.setUndecorated(true);
+                gd.setFullScreenWindow(frame);
+                /*
+                // TESTING!!
+                frame.setResizable(true);
+                frame.setUndecorated(false);
+                 */
 
-            public void run() {
-                frame.getContentPane().add(viewer.getComponent());
-                if (viewer.isTournamentMode() && gd.isFullScreenSupported()) {
-                    //frame.setIgnoreRepaint(true);
-                    frame.setResizable(false);
-                    frame.setUndecorated(true);
-                    gd.setFullScreenWindow(frame);
-                    /*
-                    // TESTING!!
-                    frame.setResizable(true);
-                    frame.setUndecorated(false);
-                     */
+                viewer.getCanvas().setVisible(true);
+            } else {
+                viewer.getCanvas().addComponentListener(new ComponentAdapter() {
 
-                    viewer.getCanvas().setVisible(true);
-                } else {
-                    viewer.getCanvas().addComponentListener(new ComponentAdapter() {
+                    public void componentShown(ComponentEvent e) {
+                        frame.pack();
+                    }
+                });
 
-                        public void componentShown(ComponentEvent e) {
-                            frame.pack();
-                        }
-                    });
-
-                    frame.pack();
-                    frame.setVisible(true);
-                }
+                frame.pack();
+                frame.setVisible(true);
             }
         });
     }

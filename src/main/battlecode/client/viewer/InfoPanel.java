@@ -126,7 +126,7 @@ public class InfoPanel extends JPanel {
 
     private void setEnergon(double amount, double shields) {
         if (amount > Integer.MAX_VALUE / 2)
-            energon.setText(String.format(" Health: lots ", amount));
+            energon.setText(String.format(" Health: lots "));
         else
             energon.setText(String.format(" Health: %.1f ", amount));
     }
