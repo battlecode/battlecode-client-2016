@@ -1,10 +1,10 @@
 package battlecode.client.viewer;
 
-import battlecode.client.viewer.render.Animation;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
 import java.util.*;
+import battlecode.client.viewer.render.Animation;
 
 import static battlecode.client.viewer.render.Animation.AnimationType.*;
 
@@ -68,7 +68,7 @@ public abstract class AbstractDrawObject {
 
         hats = copy.hats;
 
-        for (Map.Entry<battlecode.client.viewer.render.Animation.AnimationType, Animation> entry :
+        for (Map.Entry<Animation.AnimationType, Animation> entry :
                 copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone
                     ());
@@ -116,9 +116,9 @@ public abstract class AbstractDrawObject {
     protected int currentRound = 0;
 
     protected LinkedList<Action> actions = null;
-    protected Map<battlecode.client.viewer.render.Animation.AnimationType, Animation> animations =
-            new EnumMap<battlecode.client.viewer.render.Animation.AnimationType, Animation>
-                    (battlecode.client.viewer.render.Animation.AnimationType.class) {
+    protected Map<Animation.AnimationType, Animation> animations =
+            new EnumMap<Animation.AnimationType, Animation>
+                    (Animation.AnimationType.class) {
 
         private static final long serialVersionUID = 0;
         // if we've written an animation for one client but not the other, we
@@ -126,7 +126,7 @@ public abstract class AbstractDrawObject {
         // want to be putting null values in the animations list
 
         @Override
-        public Animation put(battlecode.client.viewer.render.Animation.AnimationType key, Animation
+        public Animation put(Animation.AnimationType key, Animation
                 value) {
             if (value != null)
                 return super.put(key, value);
@@ -313,12 +313,12 @@ public abstract class AbstractDrawObject {
     }
 
     public boolean isAlive() {
-        Animation deathAnim = animations.get(battlecode.client.viewer.render.Animation.AnimationType
+        Animation deathAnim = animations.get(Animation.AnimationType
                 .DEATH_EXPLOSION);
         return deathAnim == null || deathAnim.isAlive()
-                || animations.get(battlecode.client.viewer.render.Animation.AnimationType
+                || animations.get(Animation.AnimationType
                 .MORTAR_ATTACK) != null
-                || animations.get(battlecode.client.viewer.render.Animation.AnimationType
+                || animations.get(Animation.AnimationType
                 .MORTAR_EXPLOSION) != null;
     }
 
@@ -377,9 +377,9 @@ public abstract class AbstractDrawObject {
         broadcast = (broadcast << 1) & 0x000FFFFF;
         if (regen > 0) regen--;
 
-        Iterator<Map.Entry<battlecode.client.viewer.render.Animation.AnimationType, Animation>> it =
+        Iterator<Map.Entry<Animation.AnimationType, Animation>> it =
                 animations.entrySet().iterator();
-        Map.Entry<battlecode.client.viewer.render.Animation.AnimationType, Animation> entry;
+        Map.Entry<Animation.AnimationType, Animation> entry;
         Animation mortarExplosionAnim = null;
         while (it.hasNext()) {
             entry = it.next();
