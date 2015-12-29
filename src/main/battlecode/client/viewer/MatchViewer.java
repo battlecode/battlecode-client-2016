@@ -1,10 +1,7 @@
 package battlecode.client.viewer;
 
 import battlecode.client.ClientProxy;
-import battlecode.client.viewer.render.BaseCanvas;
-import battlecode.client.viewer.render.BaseRenderer;
-import battlecode.client.viewer.render.GameCanvas;
-import battlecode.client.viewer.render.GameRenderer;
+import battlecode.client.viewer.render.*;
 import battlecode.client.viewer.sound.AudioPlayer;
 import battlecode.common.MapLocation;
 import battlecode.serial.notification.StartNotification;
@@ -13,7 +10,6 @@ import battlecode.world.GameMap;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Observable;
 import java.util.Observer;
 
 public class MatchViewer {
@@ -114,10 +110,10 @@ public class MatchViewer {
         if (info != null) {
             Observer paintObserver = (o, arg) -> {
                 dbg.setEnabled(bufferedMatch.isPaused());
-                AbstractDrawObject<AbstractAnimation> robot = br
+                DrawObject robot = br
                         .getRobotByID(dbg.getFocusID());
                 info.setTargetID(dbg.getFocusID());
-                AbstractDrawState ds = br.getDrawState();
+                DrawState ds = br.getDrawState();
                 GameMap gm = ds.getGameMap();
                 if (gm == null) {
                     return;

@@ -1,5 +1,6 @@
 package battlecode.client.viewer;
 
+import battlecode.client.viewer.render.DrawObject;
 import battlecode.common.GameConstants;
 
 import javax.swing.*;
@@ -79,7 +80,7 @@ public class InfoPanel extends JPanel {
         label.setPreferredSize(size);
     }
 
-    public void updateDebugChanges(AbstractDrawObject<AbstractAnimation> robot,
+    public void updateDebugChanges(DrawObject robot,
                                    int x, int y, double parts, double rubble) {
         if (robot == null) {
             clear();
@@ -107,7 +108,7 @@ public class InfoPanel extends JPanel {
         robotID.setText(" Robot " + id + " ");
     }
 
-    public void setRobot(AbstractDrawObject<AbstractAnimation> robot) {
+    public void setRobot(DrawObject robot) {
         robotID.setText(robotID.getText() + robot.getType() + " ");
         setEnergon(robot.getEnergon(), robot.getShields());
         setBytecodesUsed(robot.getBytecodesUsed());
