@@ -140,9 +140,6 @@ public class Main {
 
         }
 
-        options.setBoolean("bc.client.opengl", md.getGlClientChoice());
-        options.setBoolean("bc.client.minimap", md.getMinimapChoice());
-
         Main.showViewer(createFrame(), new MatchViewer(theProxy, md
                 .getLockstepChoice()));
 
