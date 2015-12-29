@@ -56,28 +56,20 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public static final ImageFile[] hatImages;
 
     static {
-        File[] files = ResourceLoader.getFile("art/hats/").listFiles();
+        final String[] hatNames = {
+                "art/hats/batman.png",
+                "art/hats/bird.png",
+                "art/hats/bunny.png",
+                "art/hats/christmas.png",
+                "art/hats/duck.png",
+                "art/hats/fedora.png",
+                "art/hats/kipmud.png",
+                "art/hats/smiley.png",
+        };
 
-        int hatCounter = 0;
-        int nhats = 0;
-
-        for (int x = 0; x < files.length; x++) {
-            final String fname = files[x].getPath();
-            final String extension = fname.substring(fname.lastIndexOf(".") +
-                    1, fname.length());
-            if (extension.toLowerCase().equals("png")) {
-                ++nhats;
-            }
-        }
-
-        hatImages = new ImageFile[nhats];
-        for (int x = 0; x < files.length; x++) {
-            final String fname = files[x].getPath();
-            final String extension = fname.substring(fname.lastIndexOf(".") +
-                    1, fname.length());
-            if (extension.toLowerCase().equals("png")) {
-                hatImages[hatCounter++] = new ImageFile(fname);
-            }
+        hatImages = new ImageFile[hatNames.length];
+        for (int x = 0; x < hatNames.length; x++) {
+            hatImages[x] = new ImageFile(hatNames[x]);
         }
     }
 
