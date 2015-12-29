@@ -2,8 +2,9 @@ package battlecode.client;
 
 import battlecode.client.resources.ResourceLoader;
 import battlecode.server.Config;
-import battlecode.server.MatchInputFinder;
+import battlecode.server.PlayerFinder;
 import battlecode.server.Server;
+import battlecode.world.GameMapIO;
 import info.clearthought.layout.TableLayout;
 
 import javax.swing.*;
@@ -62,7 +63,7 @@ public class MatchDialog extends JDialog implements ActionListener {
     private final EnumMap<Choice, JRadioButton> choices;
     private final EnumMap<Parameter, JComboBox> parameters;
 
-    private final MatchInputFinder finder;
+    private final PlayerFinder finder;
 
     private final String version;
 
@@ -149,7 +150,7 @@ public class MatchDialog extends JDialog implements ActionListener {
         // Initialize stuff.
         choices = new EnumMap<Choice, JRadioButton>(Choice.class);
         parameters = new EnumMap<Parameter, JComboBox>(Parameter.class);
-        finder = new MatchInputFinder();
+        finder = new PlayerFinder();
         matchOptionsGroup = new ButtonGroup();
         dlgChooser = new JFileChooser();
         dlgChooser.setFileFilter(new FileFilter() {
@@ -582,13 +583,10 @@ public class MatchDialog extends JDialog implements ActionListener {
      * to determine the choices available on the remote host.
      */
     private void populateParameters() {
-        String[][] matchInputs = finder.findMatchInputsLocally();
+        String[] matchInputs = finder.findMatchInputsLocally();
 
         if (matchInputs != null) {
-
-            for (String[] s : matchInputs) {
-                java.util.Arrays.sort(s);
-            }
+            Arrays.sort(matchInputs);
 
             // Clear dropdowns.
             for (Map.Entry<Parameter, JComboBox> entries : parameters
@@ -598,7 +596,7 @@ public class MatchDialog extends JDialog implements ActionListener {
             Set<String> items = new HashSet<String>();
 
             // Add items.
-            for (String s : matchInputs[0]) {
+            for (String s : matchInputs) {
                 if (items.contains(s))
                     continue;
                 items.add(s);
@@ -607,11 +605,9 @@ public class MatchDialog extends JDialog implements ActionListener {
             }
 
             items.clear();
-            for (String s : matchInputs[1]) {
-                if (items.contains(s))
-                    continue;
-                items.add(s);
-                parameters.get(Parameter.MAP).addItem(s);
+
+            for (String map : GameMapIO.getAvailableMaps(Config.getGlobalConfig().get("bc.game.map-path"))) {
+                parameters.get(Parameter.MAP).addItem(map);
             }
         }
     }
