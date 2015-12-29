@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.resources.ResourceLoader;
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.util.SpriteSheetFile;
@@ -19,34 +20,23 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
+import java.util.Arrays;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
 class DrawObject extends AbstractDrawObject<Animation> {
     public static final int LAYER_COUNT = 3;
-    private static final double diagonalFactor = Math.sqrt(2);
     private static final Stroke thinStroke = new BasicStroke(0.05f);
     private static final Stroke mediumStroke = new BasicStroke(0.075f);
     private static final Stroke thickStroke = new BasicStroke(0.1f);
     private static final Stroke broadcastStroke = thinStroke;
-    private static final Stroke attackStroke = mediumStroke;
-    private static final Color tintTeamA = new Color(1, 0, 0, 0.125f);
-    private static final Color tintTeamB = new Color(0, 0, 1, 0.125f);
     //	private static final Color regenColor = new Color(0.f,.6f,0.f);
     private static final Stroke outlineStroke = new BasicStroke(0.10f,
             BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new
             float[]{0.5f, 0.5f}, 0.25f);
     private static final Shape outline = new Rectangle2D.Float(0, 0, 1, 1);
-    private static final RescaleOp oneHalf = new RescaleOp(new float[]{1f,
-            1f, 1f, .5f}, new float[4], null);
     private static final ImageResource<RobotInfo> ir = new
             ImageResource<RobotInfo>();
-    private static final ImageResource<String> cir = new
-            ImageResource<String>();
-    private static final ImageFile crosshair = new ImageFile("art/crosshair" +
-            ".png");
-    private static final ImageFile crosshairBlue = new ImageFile
-            ("art/crosshair2.png");
     private static final ImageFile hatchSensor = new ImageFile
             ("art/hatch_sensor.png");
     private static final ImageFile hatchAttack = new ImageFile
@@ -60,29 +50,19 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public static final AbstractAnimation.AnimationType[] postDrawOrder = new
             AbstractAnimation.AnimationType[]{MORTAR_ATTACK,
             MORTAR_EXPLOSION, ENERGON_TRANSFER};
-    private int teleportRounds;
-    private MapLocation teleportLoc;
-    private static final double medbayRadius = 0;//= Math.sqrt(RobotType
-    // .MEDBAY.attackRadiusMaxSquared);
-    private static final double shieldsRadius = 0;//Math.sqrt(RobotType
-    // .SHIELDS.attackRadiusMaxSquared);
-    private static final double soldierRadius = 0;//Math.sqrt(RobotType
-    // .SOLDIER.attackRadiusMaxSquared);
-    private static final double artilleryRadius = 0;//Math.sqrt(GameConstants
-    // .ARTILLERY_SPLASH_RADIUS_SQUARED);
-    private static final Color shieldColor = new Color(150, 150, 255, 150);
-    private static final Color regenColor = new Color(150, 255, 150, 150);
+
     private final DrawState overallstate;
 
     public static final ImageFile[] hatImages;
 
     static {
-        File[] files = (new File("art/hats/")).listFiles();
+        File[] files = ResourceLoader.getFile("art/hats/").listFiles();
+
         int hatCounter = 0;
         int nhats = 0;
 
         for (int x = 0; x < files.length; x++) {
-            final String fname = files[x].getAbsolutePath();
+            final String fname = files[x].getPath();
             final String extension = fname.substring(fname.lastIndexOf(".") +
                     1, fname.length());
             if (extension.toLowerCase().equals("png")) {
@@ -92,11 +72,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
 
         hatImages = new ImageFile[nhats];
         for (int x = 0; x < files.length; x++) {
-            final String fname = files[x].getAbsolutePath();
+            final String fname = files[x].getPath();
             final String extension = fname.substring(fname.lastIndexOf(".") +
                     1, fname.length());
             if (extension.toLowerCase().equals("png")) {
-                //System.out.println("loading hat " + fname);
                 hatImages[hatCounter++] = new ImageFile(fname);
             }
         }
@@ -488,14 +467,5 @@ class DrawObject extends AbstractDrawObject<Animation> {
     public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {
         ExplosionAnim anim = new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
         return anim;
-    }
-
-    public void activateTeleporter() {
-        teleportRounds = 1;
-    }
-
-    public void activateTeleport(MapLocation teleportLoc) {
-        teleportRounds = 1;
-        this.teleportLoc = teleportLoc;
     }
 }

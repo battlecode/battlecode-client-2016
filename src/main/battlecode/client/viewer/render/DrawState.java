@@ -19,20 +19,6 @@ import java.util.List;
 public class DrawState extends AbstractDrawState<DrawObject> {
     private ArrayList<DoodadAnim> doodads;
 
-    private static final ImageFile rNuker = new ImageFile("art/nuker1.png");
-    private static final ImageFile rNuker2 = new ImageFile("art/nuker2.png");
-    private static final ImageFile rNukeb = new ImageFile("art/nukeb1.png");
-    private static final ImageFile rNukeb2 = new ImageFile("art/nukeb2.png");
-    private static final ImageFile rexplode = new ImageFile("art/nukeexplode" +
-            ".png");
-
-    protected static final Color dragShadow = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-    protected static final Color linkNone = new Color(0.f, 0.f, 0.f);
-    protected static final Color linkA = new Color(1.f, 0.f, 0.f);
-    protected static final Color linkB = new Color(0.f, 0.f, 1.f);
-    protected static final Color linkBoth = new Color(.75f, 0.f, .75f);
-    protected static final ImageFile encampment = new ImageFile
-            ("art/encampment.png");
     protected static final Stroke indicatorLineStroke = new BasicStroke(0.075f);
 
     private static class Factory implements GameStateFactory<DrawState> {

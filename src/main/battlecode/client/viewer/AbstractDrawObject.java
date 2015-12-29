@@ -1,5 +1,6 @@
 package battlecode.client.viewer;
 
+import battlecode.client.resources.ResourceLoader;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
@@ -11,22 +12,6 @@ import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
 
 public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected static int moveDelay;
-    private static Random hatGenerator = new Random();
-    private static final int numHats;
-
-    static {
-        int nhats = 0;
-        File[] files = (new File("art/hats/")).listFiles();
-        for (int x = 0; x < files.length; ++x) {
-            final String fname = files[x].getAbsolutePath();
-            final String extension = fname.substring(fname.lastIndexOf(".") +
-                    1, fname.length());
-            if (extension.toLowerCase().equals("png")) {
-                ++nhats;
-            }
-        }
-        numHats = nhats;
-    }
 
     public static class RobotInfo {
 
@@ -95,8 +80,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     public abstract Animation createDeathExplosionAnim(boolean isSuicide);
-
-    public abstract Animation createMortarAttackAnim(MapLocation target);
 
     public abstract Animation createMortarExplosionAnim(Animation
                                                                 mortarAttackAnim);
@@ -330,14 +313,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public void setMovementDelay(double delay) {
         movementDelay = delay;
-    }
-
-    public void setRegen() {
-        regen = 2;
-    }
-
-    public void addHat(int hat) {
-        hats += "" + (char) (((hat % numHats) + numHats) % numHats);
     }
 
     public boolean isAlive() {

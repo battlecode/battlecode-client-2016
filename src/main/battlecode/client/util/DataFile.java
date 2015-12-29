@@ -1,5 +1,7 @@
 package battlecode.client.util;
 
+import battlecode.client.resources.ResourceLoader;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,22 +17,10 @@ public abstract class DataFile extends Observable {
     public DataFile(String pathname) {
         this.pathname = pathname;
 
-        if (battlecode.server.Config.getGlobalConfig().getBoolean("bc.client" +
-                ".applet")) {
-            URL url = null;
-            try {
-                url = new URL(battlecode.server.Config.getGlobalConfig().get
-                        ("bc.client.applet.path") + pathname);
-                load(url);
-            } catch (MalformedURLException ex) {
-                System.out.println("EXCEPTION URL" + url.getPath());
-                ex.printStackTrace();
-            }
-        } else {
-            File f = new File(pathname);
-            lastModified = f.lastModified();
-            load(f);
-        }
+
+        File f = ResourceLoader.getFile(pathname);
+        lastModified = f.lastModified();
+        load(f);
 
         instances.add(this);
         if (instances.size() == 1) {
@@ -68,7 +58,7 @@ public abstract class DataFile extends Observable {
     protected abstract void reload(URL url);
 
     private void refresh() {
-        File file = new File(pathname);
+        File file = ResourceLoader.getFile(pathname);
         if (lastModified < file.lastModified()) {
             //System.out.println("reloading " + pathname);
             lastModified = file.lastModified();

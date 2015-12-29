@@ -1,5 +1,7 @@
 package battlecode.client.viewer;
 
+import battlecode.client.resources.ResourceLoader;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -56,50 +58,18 @@ public class ControlPanel extends JPanel
         label = new JLabel(matchCount + "Round 0 of 0");
         label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        if (battlecode.server.Config.getGlobalConfig().getBoolean("bc.client" +
-                ".applet")) {
-            ImageIcon playIconSwap = null, pauseIconSwap = null;
+        playIcon = new ImageIcon(ResourceLoader.getUrl("art/icons/playback-start.png"));
+        pauseIcon = new ImageIcon(ResourceLoader.getUrl("art/icons/playback-pause.png"));
 
-            try {
-                String fpath = battlecode.server.Config.getGlobalConfig().get
-                        ("bc.client.applet.path");
-                playIconSwap = new ImageIcon(new URL(fpath +
-                        "art/icons/playback-start.png"));
-                pauseIconSwap = new ImageIcon(new URL(fpath +
-                        "art/icons/playback-pause.png"));
+        start = createButton("art/icons/skip-backward.png", "start");
+        play = createButton(pauseIcon, "pause");
+        end = createButton("art/icons/skip-forward.png", "end");
+        next = createButton("art/icons/go-next.png", "next");
+        next.setEnabled(false);
 
-                start = createButton(new URL(fpath + "art/icons/skip-backward" +
-                        ".png"), "start");
-                play = createButton(pauseIconSwap, "pause");
-                end = createButton(new URL(fpath + "art/icons/skip-forward" +
-                        ".png"), "end");
-                next = createButton(new URL(fpath + "art/icons/go-next.png"),
-                        "next");
-                next.setEnabled(false);
+        back = createButton("art/icons/seek-backward.png", "back");
+        step = createButton("art/icons/seek-forward.png", "step");
 
-                back = createButton(new URL(fpath + "art/icons/seek-backward" +
-                        ".png"), "back");
-                step = createButton(new URL(fpath + "art/icons/seek-forward" +
-                        ".png"), "step");
-            } catch (MalformedURLException ex) {
-                ex.printStackTrace();
-            }
-            playIcon = playIconSwap;
-            pauseIcon = pauseIconSwap;
-        } else {
-            playIcon = new ImageIcon("art/icons/playback-start.png");
-            pauseIcon = new ImageIcon("art/icons/playback-pause.png");
-
-            start = createButton("art/icons/skip-backward.png", "start");
-            play = createButton(pauseIcon, "pause");
-            end = createButton("art/icons/skip-forward.png", "end");
-            next = createButton("art/icons/go-next.png", "next");
-            next.setEnabled(false);
-
-            back = createButton("art/icons/seek-backward.png", "back");
-            step = createButton("art/icons/seek-forward.png", "step");
-
-        }
         stepSizeFmt.setGroupingUsed(false);
         stepSizeField = new JFormattedTextField(stepSizeFmt);
         stepSizeField.setValue(1);
@@ -171,7 +141,7 @@ public class ControlPanel extends JPanel
     }
 
     private JButton createButton(String iconPath, String cmd) {
-        return createButton(new ImageIcon(iconPath), cmd);
+        return createButton(new ImageIcon(ResourceLoader.getUrl(iconPath)), cmd);
     }
 
     private JButton createButton(URL iconURL, String cmd) {
