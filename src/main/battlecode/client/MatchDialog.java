@@ -1,5 +1,6 @@
 package battlecode.client;
 
+import battlecode.client.resources.ResourceLoader;
 import battlecode.server.Config;
 import battlecode.server.MatchInputFinder;
 import battlecode.server.Server;
@@ -31,7 +32,6 @@ public class MatchDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 0; // don't serialize
 
     private final static int WIDTH = 350, BANNER_HEIGHT = 100;
-    private final static String LABEL = "art/banner.png";
 
     private boolean okPressed = false;
     private String popupVersion = null;
@@ -109,8 +109,8 @@ public class MatchDialog extends JDialog implements ActionListener {
                 currentVersion = reader.readLine();
 
                 if (version != null && !currentVersion.equals(version)) {
-                    lblVersion.setIcon(new ImageIcon("art/icons/important" +
-                            ".png"));
+                    lblVersion.setIcon(new ImageIcon(
+                            ResourceLoader.getUrl("art/icons/important.png")));
                     lblVersion.setToolTipText(
                             "A new version of BattleCode is available.");
 
@@ -183,7 +183,7 @@ public class MatchDialog extends JDialog implements ActionListener {
         }
 
         // Create and add the banner image.
-        JLabel imageLabel = new JLabel(new ImageIcon(LABEL));
+        JLabel imageLabel = new JLabel(new ImageIcon(ResourceLoader.getUrl("art/banner.png")));
         imageLabel.setMinimumSize(new Dimension(WIDTH, BANNER_HEIGHT));
         add(imageLabel, "0, 0, 9, 0, f, t");
 
@@ -302,13 +302,13 @@ public class MatchDialog extends JDialog implements ActionListener {
         btnAdd = new JButton();
         btnAdd.setActionCommand("add");
         btnAdd.addActionListener(this);
-        btnAdd.setIcon(new ImageIcon("art/icons/list-add.png"));
+        btnAdd.setIcon(new ImageIcon(ResourceLoader.getUrl("art/icons/list-add.png")));
         add(btnAdd, "8, 16, f, f");
 
         btnRemove = new JButton();
         btnRemove.setActionCommand("remove");
         btnRemove.addActionListener(this);
-        btnRemove.setIcon(new ImageIcon("art/icons/list-remove.png"));
+        btnRemove.setIcon(new ImageIcon(ResourceLoader.getUrl("art/icons/list-remove.png")));
         add(btnRemove, "8, 17, f, f");
 
         // The OK button.

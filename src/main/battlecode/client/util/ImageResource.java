@@ -20,7 +20,6 @@ public class ImageResource<E> {
         if (img != null) {
             return img;
         }
-        //System.out.println("caching " + path);
         if (useSpriteSheet) {
             img = new SpriteSheetFile(path);
         } else {

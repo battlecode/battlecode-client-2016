@@ -1,5 +1,6 @@
 /lib
 /build
+/testreport
 *.jar
 *.DS_Store
 *~
