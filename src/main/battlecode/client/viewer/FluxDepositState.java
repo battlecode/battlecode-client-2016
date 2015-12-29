@@ -14,7 +14,6 @@ public class FluxDepositState {
      * Creates a new object to maintain the display state of a flux deposit.
      *
      * @param depositID       the unique identifier of the deposit
-     * @param team            the team that owns the flux deposit
      * @param location        the world location of the map deposit
      * @param roundsAvailable the number of available rounds in the flux
      *                           deposit

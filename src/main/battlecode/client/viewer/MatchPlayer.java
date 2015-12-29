@@ -57,7 +57,6 @@ public class MatchPlayer implements Observer, ActionListener {
     private BufferedMatch match;
     private javax.swing.Timer timer;
     private String label = "";
-    private int stepSize = 1;
     // value that determines the delay in ticks between timer ticks
     private volatile static MatchPlayer currentPlayer = null;
     public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig()
@@ -68,8 +67,6 @@ public class MatchPlayer implements Observer, ActionListener {
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
                        ClientProxy dp, boolean lockstepChoice) {
-//System.out.println("Start");
-        //  	OBJFile.convertToBCMs();
         viewer = v;
         timeline = gst;
         timeline.addObserver(this);
@@ -91,12 +88,7 @@ public class MatchPlayer implements Observer, ActionListener {
             runSpeed = 1;
         }
 
-        timer = new javax.swing.Timer(delta, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                timerTick();
-            }
-        });
+        timer = new javax.swing.Timer(delta, e -> timerTick());
         timer.start();
 
         // set as the current latest player
@@ -112,11 +104,6 @@ public class MatchPlayer implements Observer, ActionListener {
     public void speedup() {
         if (fastForward > 0)
             fastForward -= 1;
-        timer.setDelay(fastForward * delta);
-    }
-
-    public void toggleFastForward() {
-        fastForward = (fastForward + 1) % 3;
         timer.setDelay(fastForward * delta);
     }
 
@@ -136,12 +123,6 @@ public class MatchPlayer implements Observer, ActionListener {
             breakRound = -1;
             proxy.writeNotification(ResumeNotification.INSTANCE);
         }
-    }
-
-    // set the number of ticks before a round switches
-    public void setTimeDelta(int max) {
-        delta = max;
-        timer.setDelay(fastForward * delta);
     }
 
     private void requestRounds() {
@@ -269,12 +250,7 @@ public class MatchPlayer implements Observer, ActionListener {
                 timer.stop();
             }
             if (viewer != null) {
-                javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        viewer.setupViewer();
-                    }
-                });
+                javax.swing.SwingUtilities.invokeLater(() -> viewer.setupViewer());
             }
         }
     }

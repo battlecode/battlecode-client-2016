@@ -34,7 +34,6 @@ public class RenderConfiguration {
 
     private float spriteSize = 25;
     private float pixelSize = 1.0f / spriteSize;
-    private AffineTransform spriteScale;
 
     private boolean resized = true;
     private AffineTransform mapInverse = new AffineTransform();
@@ -175,24 +174,12 @@ public class RenderConfiguration {
         return hats;
     }
 
-    public static boolean showCows() {
-        return cows;
-    }
-
-    public static boolean threshCows() {
-        return threshCows;
-    }
-
     public static boolean showIndicatorDots(Team t) {
         return ((indicatorDotToggles >> t.ordinal()) & 1) != 0;
     }
 
     public static boolean showSupplyTransfers() {
         return supplyTransfers;
-    }
-
-    public static boolean showSupplyIndicators() {
-        return supplyIndicators;
     }
 
     public static boolean playAmbientMusic() {
@@ -211,22 +198,6 @@ public class RenderConfiguration {
         spriteSize = size;
         pixelSize = 1.0f / spriteSize;
         resized = true;
-    }
-
-    public float getPixelSize() {
-        return pixelSize;
-    }
-
-    public boolean isPrescaled() {
-        return false;
-    }
-
-    public AffineTransform getSpriteScaleTransform() {
-        return AffineTransform.getScaleInstance(spriteSize, spriteSize);
-    }
-
-    public double getImageScale() {
-        return 1.0 / 64;
     }
 
     public void updateMapTransform(AffineTransform trans) {
@@ -250,11 +221,5 @@ public class RenderConfiguration {
             dst.y = dstPt[1];
             return dst;
         }
-    }
-
-    public static BufferedImage createCompatibleImage(int width, int height) {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice().getDefaultConfiguration()
-                .createCompatibleImage(width, height);
     }
 }

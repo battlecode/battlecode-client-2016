@@ -11,21 +11,12 @@ public class AmbientPlayer {
     public static void playAmbient(int intensity) {
         if (!ambientInitialized) return;
         currentIntensity = intensity;
-        /*if(intensity <= 0){
-			//Turn off ambient music
-			for(int i = 0; i < AMBIENT_LEVELS; i++){
-				getAmbientClip(i+1).setActive(false);
-			}
-			return;
-		}*/
-//		System.out.println(RenderConfiguration.playAmbientMusic());
+
         for (int i = 1; i < AMBIENT_LEVELS + 1; i++) {
             if (i != currentIntensity || !RenderConfiguration
                     .playAmbientMusic()) {
                 getAmbientClip(i).setGain(-80.0f);
-                getAmbientClip(i).setActive(false);
             } else {
-                getAmbientClip(i).setActive(true);
                 getAmbientClip(i).setGain(1.0f);
                 getAmbientClip(i).play();
             }
@@ -33,18 +24,15 @@ public class AmbientPlayer {
     }
 
 
-    public static ClipGroup AMBIENT_1;// = new ClipGroup
-    // ("../music/Intensity1Loop.wav", 30500000L, 10, false);
-    public static ClipGroup AMBIENT_2;// = new ClipGroup("../music/Intensity
-    // 2 Loop 6.wav", 43500000L, 10, false);
-    public static ClipGroup AMBIENT_3;// = new ClipGroup
-    // ("music/Intensity3Loop7.wav", 38500000L, 10, false);
+    public static ClipGroup AMBIENT_1;
+    public static ClipGroup AMBIENT_2;
+    public static ClipGroup AMBIENT_3;
 
     static {
         try {
-            AMBIENT_1 = new ClipGroup("music/1loop.wav", 30500000L, 10, false);
-            AMBIENT_2 = new ClipGroup("music/2loop.wav", 43500000L, 10, false);
-            AMBIENT_3 = new ClipGroup("music/3loop.wav", 38500000L, 10, false);
+            AMBIENT_1 = new ClipGroup("music/1loop.wav", 30500000L);
+            AMBIENT_2 = new ClipGroup("music/2loop.wav", 43500000L);
+            AMBIENT_3 = new ClipGroup("music/3loop.wav", 38500000L);
         } catch (Exception e) {
             ambientInitialized = false;
         }

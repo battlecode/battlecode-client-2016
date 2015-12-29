@@ -1,7 +1,6 @@
 package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
-import battlecode.common.MapLocation;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -13,44 +12,19 @@ public class DrawMap {
     private int mapWidth;
     private int mapHeight;
     private Stroke gridStroke;
-    // number of blocks at each square
-    // origin of the map
-    MapLocation origin;
     private int locPixelWidth = 32;
 
     // prerendered images
     private BufferedImage prerender;
-    private BufferedImage roadPrerender;
 
     private BufferedImage mapBG;
 
-    // for storing the loaded voids
-    //private BufferedImage[] tiles;
-    //private byte[][] tileIndices;
-    // for the stored roads
-    private BufferedImage roadTiles[][];
-    private BufferedImage voidTiles[][];
-    // 0-2 which image to draw from, 3rd bit for road v void
-    private byte[] subtileIndices;
-
     private final int subtileHeight = 4; // 4 x 4
     private final int roadTileCount = 3; // empty, full, rounded
-    private final int roadSubtileWidth = roadTileCount * subtileHeight; //
-    // side by side
-    private final int innerVoidTileCount = 5; // inCorners, horiz, vert,
-    // outCorners, water
-    private final int innerVoidSubtileWidth = innerVoidTileCount *
-            subtileHeight; // side by side
-    private final byte atlasChoiceBit = 5;
-
-    public battlecode.world.GameMap m;
 
     public DrawMap(battlecode.world.GameMap map) {
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
-        origin = map.getOrigin();
-
-        this.m = map;
 
         loadMapArt();
 
@@ -75,10 +49,6 @@ public class DrawMap {
         }
 
         g2.dispose();
-    }
-
-    public void prerenderMap(BufferedImage bg) {
-        prerender = bg;
     }
 
     public int getMapWidth() {
@@ -118,9 +88,8 @@ public class DrawMap {
 
 
     private int mapIndex(int x, int y, int sx, int sy) {
-        int index = (x * subtileHeight + sx) * mapHeight * subtileHeight
+        return (x * subtileHeight + sx) * mapHeight * subtileHeight
                 + (y * subtileHeight + sy);
-        return index;
     }
 
     public void loadMapArt() {

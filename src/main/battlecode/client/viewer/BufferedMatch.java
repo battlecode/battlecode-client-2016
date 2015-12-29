@@ -4,11 +4,10 @@ import battlecode.client.ClientProxy;
 import battlecode.world.DominationFactor;
 import battlecode.world.signal.Signal;
 import battlecode.serial.*;
-import battlecode.serial.notification.Notification;
-import battlecode.serial.notification.PauseNotification;
 
 import java.io.EOFException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public final class BufferedMatch {
     public String teamB = null;
     private String[] mapNames = null;
 
-    private List<RoundDelta> deltas = new ArrayList<>();
+    private final List<RoundDelta> deltas = new ArrayList<>();
     private DominationFactor dominationFactor = null;
     private List<Signal> currentBreak = null;
     private boolean paused = false;
@@ -192,9 +191,7 @@ public final class BufferedMatch {
         if (currentBreak == null) {
             currentBreak = new ArrayList<>();
         }
-        for (int i = 0; i < signals.length; i++) {
-            currentBreak.add(signals[i]);
-        }
+        Collections.addAll(currentBreak, signals);
     }
 
     private void handleExtensibleMetadata(ExtensibleMetadata metadata) {
@@ -217,10 +214,6 @@ public final class BufferedMatch {
 
     public String getTeamB() {
         return teamB;
-    }
-
-    public String[] getMapNames() {
-        return mapNames;
     }
 
     public boolean isPaused() {

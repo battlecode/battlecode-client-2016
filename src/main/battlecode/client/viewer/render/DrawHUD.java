@@ -10,7 +10,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +29,10 @@ class DrawHUD {
     private static BufferedImage negativeSign;
     private static BufferedMatch match;
 
-      private static final RobotType[] drawnTypes = RobotType.values();
-
 
     // [team][types]
     private static final Map<Team, Map<RobotType, ImageFile>> rImages = new
-            HashMap<Team, Map<RobotType, ImageFile>>();
+            HashMap<>();
 
     static {
         negativeSign = (new ImageFile("art/negative.png")).image;
@@ -91,9 +88,6 @@ class DrawHUD {
     public void setRatioWidth(float widthToHeight) {
         bgFill.width = width = widthToHeight;
         spriteScale = Math.min(slotSize / 2.5f, width / 2);
-    }
-
-    public void setPointsText(int value) {
     }
 
     public void setFooterText(String text) {
@@ -224,9 +218,7 @@ class DrawHUD {
         {
             g2.scale(spriteScale, spriteScale);
 
-            AffineTransform pushed2 = g2.getTransform();
             g2.translate(-0.5, 0);
-
             {
                 int[] counts = ds.getRobotCounts(team);
                 for (RobotType rt : RobotType.values()) {
@@ -267,32 +259,6 @@ class DrawHUD {
         }
         g2.setTransform(pushed);
         g2.translate(0, .35);
-    }
-
-    public void drawRobot(Graphics2D g2, DrawObject r, double size,
-                          double right, double down, boolean drawXp) {
-        AffineTransform pushed = g2.getTransform();
-        {
-            g2.scale(spriteScale * size, spriteScale * size);
-            AffineTransform pushed2 = g2.getTransform();
-            {
-                BufferedImage underImg = unitUnder.image;
-                g2.translate(-0.5, -0.5);
-                g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
-                g2.drawImage(underImg, null, null);
-            }
-            g2.setTransform(pushed2);
-            if (r != null && r.isAlive()) {
-                r.drawImmediate(g2, false, true, false, drawXp);
-            } else {
-                ImageFile boom = new ImageFile("art/explode/explode64_f05.png");
-                DrawObject.drawImageTransformed(g2, new AffineTransform(),
-                        boom.image, 1.0);
-            }
-        }
-        g2.setTransform(pushed);
-        g2.translate(spriteScale * size * right,
-                spriteScale * size * down);
     }
 
     public void drawTeamResource(Graphics2D g2, Team t) {

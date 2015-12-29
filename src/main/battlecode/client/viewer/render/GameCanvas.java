@@ -12,7 +12,6 @@ public final class GameCanvas extends BaseCanvas {
 
     private static final long serialVersionUID = 0; // don't serialize
     private volatile GameRenderer renderer = null;
-    private Runnable spaceBarListener = null;
     private boolean gotPreferredSize = false;
 
     //private Window fullscreen;
@@ -31,23 +30,11 @@ public final class GameCanvas extends BaseCanvas {
 
     public void setRenderer(BaseRenderer r) {
         renderer = (GameRenderer) r;
-        /*
-        for (MouseListener ml: getMouseListeners()) {
-        removeMouseListener(ml);
-        }
-        for (MouseMotionListener mml: getMouseMotionListeners()) {
-        removeMouseMotionListener(mml);
-        }
-         */
-        //setVisible(true);
 
-        Observer observer = new Observer() {
-
-            public void update(Observable o, Object arg) {
-                if (renderer.getTimeline() != null && renderer.getTimeline()
-                        .isActive()) {
-                    forceRepaint();
-                }
+        Observer observer = (o, arg) -> {
+            if (renderer.getTimeline() != null && renderer.getTimeline()
+                    .isActive()) {
+                forceRepaint();
             }
         };
         if (renderer.getTimeline() != null)
@@ -73,31 +60,6 @@ public final class GameCanvas extends BaseCanvas {
                 Dimension d = getSize();
                 g2.setColor(Color.GRAY);
                 g2.fill(new Rectangle(0, 0, d.width, d.height));
-
-
-//				System.out.println("Invoking python script to move pngs
-// around");
-//				
-//				Process c = null;
-//				try {
-//					c = Runtime.getRuntime().exec("python move_pngs_around
-// .py");
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				try {
-//					if (c != null)
-//						c.waitFor();
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-
-                if (bracketFile == null) {
-                    //bracketFile = new ImageFile(String.format("%d.png",
-                    // GLGameRenderer.BRACKET_INDEX));
-                }
                 BufferedImage img = bracketFile.image;
                 if (img != null) {
                     float scale = Math.min((float) d.width / img.getWidth(),

@@ -72,5 +72,6 @@ public final class StreamClientProxy implements ClientProxy {
 
     protected void finalize() throws Throwable {
         serializer.close();
+        super.finalize();
     }
 }

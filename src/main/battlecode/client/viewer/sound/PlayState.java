@@ -31,12 +31,6 @@ public class PlayState extends GameState {
 
     public static final GameStateFactory<PlayState> FACTORY = new Factory();
 
-    private static class EMPInfo {
-
-        public double energon = 100;
-        public int evolveTenure = 0;
-    }
-
     private Set<GameSoundBank.ClipGroup> activeClips;
     private Set<GameSoundBank.ClipGroup> futureClips;
     private Map<Integer, RobotType> robotTypes;
@@ -45,9 +39,9 @@ public class PlayState extends GameState {
 
 
     public PlayState() {
-        activeClips = new HashSet<GameSoundBank.ClipGroup>();
-        futureClips = new HashSet<GameSoundBank.ClipGroup>();
-        robotTypes = new HashMap<Integer, RobotType>();
+        activeClips = new HashSet<>();
+        futureClips = new HashSet<>();
+        robotTypes = new HashMap<>();
 
     }
 
@@ -80,15 +74,10 @@ public class PlayState extends GameState {
                 minGain);
     }
 
+    @SuppressWarnings("unused")
     public Void visitAttackSignal(AttackSignal s) {
         try {
             switch (robotTypes.get(s.getRobotID())) {
-                /*case WOUT2XXX:
-                    scheduleClip(GameSoundBank.ATTACK2, -10, 0);
-                    break;
-                case TURRET:
-                    scheduleClip(GameSoundBank.MORTAR, -2, 0);
-                    break;*/
                 default:
                     scheduleClip(GameSoundBank.ATTACK, -5, 0);
             }
@@ -97,17 +86,13 @@ public class PlayState extends GameState {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public Void visitDeathSignal(DeathSignal s) {
         scheduleClip(GameSoundBank.DEATH);
-        //System.out.println("Death: " + robotTypes.get(s.getObjectID()) + "
-        // " + RobotType.ARCHON);
-
-        //if(robotTypes.get(s.getObjectID()) == RobotType.ARCHON){
-        //	intensityLevel += 100;
-        //}
         return null;
     }
 
+    @SuppressWarnings("unused")
     public Void visitSpawnSignal(SpawnSignal s) {
         scheduleClip(GameSoundBank.SNIPE, -10.f);
         //System.out.println( s.getType());

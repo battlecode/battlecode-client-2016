@@ -129,7 +129,6 @@ public class MatchDialog extends JDialog implements ActionListener {
                         saveFields();
                     }
                 }
-            } catch (MalformedURLException e1) {
             } catch (IOException e1) {
             }
         }
@@ -148,8 +147,8 @@ public class MatchDialog extends JDialog implements ActionListener {
         version = Config.version();
 
         // Initialize stuff.
-        choices = new EnumMap<Choice, JRadioButton>(Choice.class);
-        parameters = new EnumMap<Parameter, JComboBox>(Parameter.class);
+        choices = new EnumMap<>(Choice.class);
+        parameters = new EnumMap<>(Parameter.class);
         finder = new PlayerFinder();
         matchOptionsGroup = new ButtonGroup();
         dlgChooser = new JFileChooser();
@@ -593,7 +592,7 @@ public class MatchDialog extends JDialog implements ActionListener {
                     .entrySet())
                 entries.getValue().removeAllItems();
 
-            Set<String> items = new HashSet<String>();
+            Set<String> items = new HashSet<>();
 
             // Add items.
             for (String s : matchInputs) {
@@ -633,7 +632,7 @@ public class MatchDialog extends JDialog implements ActionListener {
      * @return the user-selected maps in order of selection
      */
     public List<String> getAllMaps() {
-        List<String> maps = new LinkedList<String>();
+        List<String> maps = new LinkedList<>();
         for (Object obj : lstMatchesModel.toArray()) {
             if (obj instanceof String && ((String) obj).length() > 0)
                 maps.add((String) obj);

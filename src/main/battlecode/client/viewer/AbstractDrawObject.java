@@ -1,10 +1,8 @@
 package battlecode.client.viewer;
 
-import battlecode.client.resources.ResourceLoader;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
-import java.io.File;
 import java.util.*;
 
 import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
@@ -42,7 +40,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         info = new RobotInfo(type, team);
         robotID = id;
         hats = "";
-        actions = new LinkedList<Action>();
+        actions = new LinkedList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -148,11 +146,6 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     private static final double sq2 = Math.sqrt(2.);
-
-    protected int getMoveDelay() {
-        return moveDelay;
-    }
-
 
     public int getID() {
         return robotID;

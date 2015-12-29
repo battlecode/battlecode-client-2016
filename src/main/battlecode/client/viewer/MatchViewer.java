@@ -31,17 +31,6 @@ public class MatchViewer {
     private MinimapViewer minimap = null;
     private DebugState dbg;
 
-    public MatchViewer() {
-
-        proxy = null;
-        controller = null;
-        bc = null;
-    }
-
-    public ClientProxy getProxy() {
-        return proxy;
-    }
-
     public static boolean usingTwoScreens() {
         return "true".equalsIgnoreCase(System.getProperty("tv.multiscreen")) &&
                 (GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -123,32 +112,30 @@ public class MatchViewer {
         bc.setRenderer(br);
 
         if (info != null) {
-            Observer paintObserver = new Observer() {
-                public void update(Observable o, Object arg) {
-                    dbg.setEnabled(bufferedMatch.isPaused());
-                    AbstractDrawObject<AbstractAnimation> robot = br
-                            .getRobotByID(dbg.getFocusID());
-                    info.setTargetID(dbg.getFocusID());
-                    AbstractDrawState ds = br.getDrawState();
-                    GameMap gm = ds.getGameMap();
-                    if (gm == null) {
-                        return;
-                    }
-                    MapLocation origin = gm.getOrigin();
-                    MapLocation corner = new MapLocation(origin.x + br
-                            .getDrawState().getGameMap().getWidth() - 1,
-                            origin.y + br.getDrawState().getGameMap()
-                                    .getHeight() - 1);
-                    int x = (int) Math.floor(dbg.getX());
-                    int y = (int) Math.floor(dbg.getY());
-                    int clampedXLoc = Math.max(origin.x, Math.min(x, corner.x));
-                    int clampedYLoc = Math.max(origin.y, Math.min(y, corner.y));
-                    info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
-                            br.getDrawState().getPartsAtLocation(clampedXLoc,
-                                    clampedYLoc),
-                            br.getDrawState().getRubbleAtLocation
-                                    (clampedXLoc, clampedYLoc));
+            Observer paintObserver = (o, arg) -> {
+                dbg.setEnabled(bufferedMatch.isPaused());
+                AbstractDrawObject<AbstractAnimation> robot = br
+                        .getRobotByID(dbg.getFocusID());
+                info.setTargetID(dbg.getFocusID());
+                AbstractDrawState ds = br.getDrawState();
+                GameMap gm = ds.getGameMap();
+                if (gm == null) {
+                    return;
                 }
+                MapLocation origin = gm.getOrigin();
+                MapLocation corner = new MapLocation(origin.x + br
+                        .getDrawState().getGameMap().getWidth() - 1,
+                        origin.y + br.getDrawState().getGameMap()
+                                .getHeight() - 1);
+                int x = (int) Math.floor(dbg.getX());
+                int y = (int) Math.floor(dbg.getY());
+                int clampedXLoc = Math.max(origin.x, Math.min(x, corner.x));
+                int clampedYLoc = Math.max(origin.y, Math.min(y, corner.y));
+                info.updateDebugChanges(robot, clampedXLoc, clampedYLoc,
+                        br.getDrawState().getPartsAtLocation(clampedXLoc,
+                                clampedYLoc),
+                        br.getDrawState().getRubbleAtLocation
+                                (clampedXLoc, clampedYLoc));
             };
             bc.addPaintObserver(paintObserver);
         }
