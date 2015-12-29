@@ -5,6 +5,7 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import battlecode.util.SquareArray;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
 
@@ -32,8 +33,8 @@ public class DrawState extends GameState {
             };
     protected Map<Integer, DrawObject> groundUnits;
     protected int[] coreIDs = new int[4];
-    protected double[][] rubble = new double[0][0];
-    protected double[][] parts = new double[0][0];
+    protected SquareArray.Double rubble;
+    protected SquareArray.Double parts;
     protected GameMap gameMap;
     protected int currentRound;
     protected IndicatorDotSignal[] indicatorDots = new IndicatorDotSignal[0];
@@ -53,22 +54,17 @@ public class DrawState extends GameState {
             groundUnits.put(entry.getKey(), copy);
         }
 
-        if (src.rubble.length == 0) {
-            rubble = new double[0][0];
+        if (src.rubble.width == 0) {
+            rubble = new SquareArray.Double(0, 0);
         } else {
-            rubble = new double[src.rubble.length][src.rubble[0].length];
-            for (int i = 0; i < rubble.length; ++i) {
-                System.arraycopy(src.rubble[i], 0, rubble[i], 0, rubble[i].length);
-            }
+            rubble = new SquareArray.Double(src.rubble);
         }
 
-        if (src.parts.length == 0) {
-            parts = new double[0][0];
+        if (src.parts.width == 0) {
+            parts = new SquareArray.Double(0, 0);
         } else {
-            parts = new double[src.parts.length][src.parts[0].length];
-            for (int i = 0; i < parts.length; ++i) {
-                System.arraycopy(src.parts[i], 0, parts[i], 0, parts[i].length);
-            }
+            parts = new SquareArray.Double(src.parts);
+
         }
 
         coreIDs = src.coreIDs;
@@ -110,11 +106,11 @@ public class DrawState extends GameState {
     }
 
     public double getRubbleAtLocation(int x, int y) {
-        return rubble[x - origin.x][y - origin.y];
+        return rubble.get(x - origin.x, y - origin.y);
     }
 
     public double getPartsAtLocation(int x, int y) {
-        return parts[x - origin.x][y - origin.y];
+        return parts.get(x - origin.x, y - origin.y);
     }
 
     protected DrawObject getRobot(int id) {
@@ -157,14 +153,14 @@ public class DrawState extends GameState {
     public void visitRubbleChangeSignal(RubbleChangeSignal s) {
         int x = s.getLoc().x - origin.x;
         int y = s.getLoc().y - origin.y;
-        rubble[x][y] = s.getAmount();
+        rubble.set(x,y, s.getAmount());
     }
 
     @SuppressWarnings("unused")
     public void visitPartsChangeSignal(PartsChangeSignal s) {
         int x = s.getLoc().x - origin.x;
         int y = s.getLoc().y - origin.y;
-        rubble[x][y] = s.getAmount();
+        parts.set(x,y, s.getAmount());
     }
 
     @SuppressWarnings("unused")
@@ -364,19 +360,19 @@ public class DrawState extends GameState {
 
         origin = gameMap.getOrigin();
 
-        rubble = new double[map.getWidth()][map.getHeight()];
-        for (int i = 0; i < rubble.length; ++i) {
-            for (int j = 0; j < rubble[i].length; ++j) {
-                rubble[i][j] = map.initialRubbleAtLocation(i + origin.x, j +
-                        origin.y);
+        rubble = new SquareArray.Double(map.getWidth(), map.getHeight());
+        for (int i = 0; i < rubble.width; ++i) {
+            for (int j = 0; j < rubble.height; ++j) {
+                rubble.set(i, j,
+                        map.initialRubbleAtLocation(i + origin.x, j + origin.y));
             }
         }
 
-        parts = new double[map.getWidth()][map.getHeight()];
-        for (int i = 0; i < parts.length; ++i) {
-            for (int j = 0; j < parts[i].length; ++j) {
-                parts[i][j] = map.initialPartsAtLocation(i + origin.x, j +
-                        origin.y);
+        parts = new SquareArray.Double(map.getWidth(), map.getHeight());
+        for (int i = 0; i < parts.width; ++i) {
+            for (int j = 0; j < parts.height; ++j) {
+                parts.set(i, j,
+                        map.initialRubbleAtLocation(i + origin.x, j + origin.y));
             }
         }
 
@@ -537,19 +533,16 @@ public class DrawState extends GameState {
                 int y = j + gameMap.getOrigin().y;
 
                 // fill a tile with alpha based on how much rubble there is
-                float lum = (float) Math.sqrt(Math.min(1.0, rubble[i][j] /
+                float lum = (float) Math.sqrt(Math.min(1.0, rubble.get(i, j) /
                         1000.0f));
                 g2.setColor(new Color(0, 0, 0, lum));
 
-                float size = 1f;
-                float offset = ((1.0f - size) / 2);
-                g2.fill(new Rectangle2D.Float(x + offset, y + offset,
-                        size, size));
+                g2.fillRect(x, y, 1, 1);
 
                 // draw dots equal to number of parts
                 g2.setColor(new Color(0.8f, 1.0f, 0.6f, 0.7f));
-                for (int r = 0; r < parts[i][j] / 8; ++r) {
-                    for (int c = 0; r * 10 + c < parts[i][j] && c < 8; ++c) {
+                for (int r = 0; r < parts.get(i, j) / 8; ++r) {
+                    for (int c = 0; r * 10 + c < parts.get(i, j) && c < 8; ++c) {
                         g2.fill(new Rectangle2D.Float(x + c * 0.1f + 0.12f, y +
                                 r * 0.1f + 0.12f, 0.06f, 0.06f));
                     }
