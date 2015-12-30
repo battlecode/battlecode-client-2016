@@ -541,8 +541,9 @@ public class DrawState extends GameState {
 
                 // draw dots equal to number of parts
                 g2.setColor(new Color(0.8f, 1.0f, 0.6f, 0.7f));
-                for (int r = 0; r < parts.get(i, j) / 8; ++r) {
-                    for (int c = 0; r * 10 + c < parts.get(i, j) && c < 8; ++c) {
+                for (int r = 0; r < (parts.get(i, j) / 10) / 8 && r < 8; ++r) {
+                    for (int c = 0; r * 10 + c < (parts.get(i, j) / 10) && c <
+                            8; ++c) {
                         g2.fill(new Rectangle2D.Float(x + c * 0.1f + 0.12f, y +
                                 r * 0.1f + 0.12f, 0.06f, 0.06f));
                     }
