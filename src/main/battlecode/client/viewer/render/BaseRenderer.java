@@ -7,10 +7,10 @@ import java.awt.*;
 
 public abstract class BaseRenderer {
 
-    public abstract GameStateTimeline<? extends AbstractDrawState>
+    public abstract GameStateTimeline<DrawState>
     getTimeline();
 
-    public abstract AbstractDrawState getDrawState();
+    public abstract DrawState getDrawState();
 
     public abstract void setCanvasSize(Dimension dim);
 
@@ -24,7 +24,7 @@ public abstract class BaseRenderer {
 
     public abstract void addWin(Team t);
 
-    public abstract AbstractDrawObject<AbstractAnimation> getRobotByID(int id);
+    public abstract DrawObject getRobotByID(int id);
 
     public abstract void setDebugState(DebugState dbg);
 

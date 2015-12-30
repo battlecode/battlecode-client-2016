@@ -4,11 +4,11 @@ import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
 import java.util.*;
+import battlecode.client.viewer.render.Animation;
 
-import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
+import static battlecode.client.viewer.render.Animation.AnimationType.*;
 
-
-public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
+public abstract class AbstractDrawObject {
     protected static int moveDelay;
 
     public static class RobotInfo {
@@ -44,7 +44,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     @SuppressWarnings("unchecked")
-    public AbstractDrawObject(int currentRound, AbstractDrawObject<Animation>
+    public AbstractDrawObject(int currentRound, AbstractDrawObject
             copy) {
         this(currentRound, copy.info.type, copy.info.team, copy.getID());
         loc = copy.loc;
@@ -68,7 +68,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
         hats = copy.hats;
 
-        for (Map.Entry<AbstractAnimation.AnimationType, Animation> entry :
+        for (Map.Entry<Animation.AnimationType, Animation> entry :
                 copy.animations.entrySet()) {
             animations.put(entry.getKey(), (Animation) entry.getValue().clone
                     ());
@@ -116,9 +116,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     protected int currentRound = 0;
 
     protected LinkedList<Action> actions = null;
-    protected Map<AbstractAnimation.AnimationType, Animation> animations =
-            new EnumMap<AbstractAnimation.AnimationType, Animation>
-                    (AbstractAnimation.AnimationType.class) {
+    protected Map<Animation.AnimationType, Animation> animations =
+            new EnumMap<Animation.AnimationType, Animation>
+                    (Animation.AnimationType.class) {
 
         private static final long serialVersionUID = 0;
         // if we've written an animation for one client but not the other, we
@@ -126,7 +126,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         // want to be putting null values in the animations list
 
         @Override
-        public Animation put(AbstractAnimation.AnimationType key, Animation
+        public Animation put(Animation.AnimationType key, Animation
                 value) {
             if (value != null)
                 return super.put(key, value);
@@ -149,6 +149,10 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
 
     public int getID() {
         return robotID;
+    }
+
+    public MapLocation getLoc() {
+        return loc;
     }
 
     public long getBroadcast() {
@@ -309,12 +313,12 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
     }
 
     public boolean isAlive() {
-        Animation deathAnim = animations.get(AbstractAnimation.AnimationType
+        Animation deathAnim = animations.get(Animation.AnimationType
                 .DEATH_EXPLOSION);
         return deathAnim == null || deathAnim.isAlive()
-                || animations.get(AbstractAnimation.AnimationType
+                || animations.get(Animation.AnimationType
                 .MORTAR_ATTACK) != null
-                || animations.get(AbstractAnimation.AnimationType
+                || animations.get(Animation.AnimationType
                 .MORTAR_EXPLOSION) != null;
     }
 
@@ -324,7 +328,7 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         attackDir = dir;
     }
 
-    public void setSupplyTransfer(AbstractDrawObject<Animation> target,
+    public void setSupplyTransfer(AbstractDrawObject target,
                                   double amount) {
         Animation anim = createEnergonTransferAnim(target.getLocation(),
                 (float) amount, true);
@@ -373,9 +377,9 @@ public abstract class AbstractDrawObject<Animation extends AbstractAnimation> {
         broadcast = (broadcast << 1) & 0x000FFFFF;
         if (regen > 0) regen--;
 
-        Iterator<Map.Entry<AbstractAnimation.AnimationType, Animation>> it =
+        Iterator<Map.Entry<Animation.AnimationType, Animation>> it =
                 animations.entrySet().iterator();
-        Map.Entry<AbstractAnimation.AnimationType, Animation> entry;
+        Map.Entry<Animation.AnimationType, Animation> entry;
         Animation mortarExplosionAnim = null;
         while (it.hasNext()) {
             entry = it.next();

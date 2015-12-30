@@ -3,7 +3,6 @@ package battlecode.client.viewer.render;
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
 import battlecode.client.util.SpriteSheetFile;
-import battlecode.client.viewer.AbstractAnimation;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
 import battlecode.common.MapLocation;
@@ -17,9 +16,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import static battlecode.client.viewer.AbstractAnimation.AnimationType.*;
+import static battlecode.client.viewer.render.Animation.AnimationType.*;
 
-class DrawObject extends AbstractDrawObject<Animation> {
+public class DrawObject extends AbstractDrawObject {
     public static final int LAYER_COUNT = 3;
     private static final Stroke thinStroke = new BasicStroke(0.05f);
     private static final Stroke mediumStroke = new BasicStroke(0.075f);
@@ -40,10 +39,10 @@ class DrawObject extends AbstractDrawObject<Animation> {
     private static final ImageFile creepBlue = new ImageFile("art/creep2.png");
     private ImageFile img;
 
-    public static final AbstractAnimation.AnimationType[] preDrawOrder = new
-            AbstractAnimation.AnimationType[]{TELEPORT};
-    public static final AbstractAnimation.AnimationType[] postDrawOrder = new
-            AbstractAnimation.AnimationType[]{MORTAR_ATTACK,
+    public static final Animation.AnimationType[] preDrawOrder = new
+            Animation.AnimationType[]{TELEPORT};
+    public static final Animation.AnimationType[] postDrawOrder = new
+            Animation.AnimationType[]{MORTAR_ATTACK,
             MORTAR_EXPLOSION, ENERGON_TRANSFER};
 
     private final DrawState overallstate;
@@ -193,7 +192,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         if (layer == 2) {
             // these animations shouldn't be drawn in the HUD, and they expect
             // the origin of the Graphics2D to be the MapLocation (0,0)
-            for (AbstractAnimation.AnimationType type : postDrawOrder) {
+            for (Animation.AnimationType type : postDrawOrder) {
                 if (type.shown() && animations.containsKey(type)) {
                     animations.get(type).draw(g2);
                 }
@@ -229,7 +228,7 @@ class DrawObject extends AbstractDrawObject<Animation> {
         setTeamColor(g2);
         g2.setStroke(mediumStroke);
 
-        for (AbstractAnimation.AnimationType type : preDrawOrder) {
+        for (Animation.AnimationType type : preDrawOrder) {
             if (type.shown() && animations.containsKey(type)) {
                 animations.get(type).draw(g2);
             }
