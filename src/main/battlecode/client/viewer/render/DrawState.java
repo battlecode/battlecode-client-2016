@@ -372,7 +372,7 @@ public class DrawState extends GameState {
         for (int i = 0; i < parts.width; ++i) {
             for (int j = 0; j < parts.height; ++j) {
                 parts.set(i, j,
-                        map.initialRubbleAtLocation(i + origin.x, j + origin.y));
+                        map.initialPartsAtLocation(i + origin.x, j + origin.y));
             }
         }
 
