@@ -1,6 +1,5 @@
 package battlecode.client.viewer.render;
 
-import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.*;
 import battlecode.common.MapLocation;
 import battlecode.common.Team;
@@ -78,7 +77,7 @@ public class GameRenderer extends BaseRenderer {
         loadPrefs();
     }
 
-    public AbstractDrawState getDrawState() {
+    public DrawState getDrawState() {
         return ds;
     }
 
@@ -192,7 +191,7 @@ public class GameRenderer extends BaseRenderer {
         RenderConfiguration.getInstance().setSpriteSize(spriteSize);
     }
 
-    public AbstractDrawObject getRobotByID(int id) {
+    public DrawObject getRobotByID(int id) {
         return ds.getDrawObject(id);
     }
 

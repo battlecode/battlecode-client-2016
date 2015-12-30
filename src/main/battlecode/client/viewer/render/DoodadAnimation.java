@@ -2,7 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.MapLocation;
 
-class DoodadAnim extends FramedAnimation {
+class DoodadAnimation extends FramedAnimation {
     public enum DoodadType {
         EXPLOSION("art/explode/explode64_f%02d.png", 1, 1, 9);
 
@@ -22,11 +22,11 @@ class DoodadAnim extends FramedAnimation {
 
     public DoodadType type;
 
-    public DoodadAnim(MapLocation loc) {
+    public DoodadAnimation(MapLocation loc) {
         this(loc, 1, DoodadType.EXPLOSION);
     }
 
-    public DoodadAnim(MapLocation loc, double width, DoodadType type) {
+    public DoodadAnimation(MapLocation loc, double width, DoodadType type) {
         super(loc, width * type.w, type.frameCount);
         this.type = type;
     }
@@ -47,9 +47,8 @@ class DoodadAnim extends FramedAnimation {
         return true;
     }
 
-
     public Object clone() {
-        DoodadAnim clone = new DoodadAnim(loc, width, type);
+        DoodadAnimation clone = new DoodadAnimation(loc, width, type);
         clone.curFrame = curFrame;
         return clone;
     }
