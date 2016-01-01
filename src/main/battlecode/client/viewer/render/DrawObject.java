@@ -332,7 +332,7 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public double drawScale() {
-        if (info.type.isBuilding)
+        if (info.type.isBuilding || info.type == RobotType.ARCHON)
             return 1.3;
         return 1;
     }
