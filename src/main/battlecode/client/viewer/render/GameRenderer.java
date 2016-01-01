@@ -338,7 +338,16 @@ public class GameRenderer extends BaseRenderer {
         DrawObject.loadAll();
     }
 
-    public Dimension getPreferredSize() {
-        return new Dimension(Math.round(spriteSize * unitWidth), Math.round(spriteSize * unitHeight));
+    public Dimension getPreferredSize(GraphicsDevice gd) {
+        if (gd == null) {
+            return new Dimension(Math.round(spriteSize * unitWidth), Math.round(spriteSize * unitHeight));
+        } else {
+            int width = gd.getDisplayMode().getWidth();
+            int height = gd.getDisplayMode().getHeight();
+            double scale = Math.min(1.0, Math.min(width / (spriteSize *
+                    unitWidth), height / (spriteSize * unitHeight)));
+            return new Dimension((int) Math.round(scale * spriteSize *
+                    unitWidth), (int) Math.round(scale * spriteSize * unitHeight));
+        }
     }
 }

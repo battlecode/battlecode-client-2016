@@ -149,6 +149,8 @@ public abstract class BaseCanvas extends JPanel {
         spaceBarListener = runnable;
     }
 
+    public abstract void setGraphicsDevice(GraphicsDevice gd);
+
     public abstract void setRenderer(BaseRenderer renderer);
 
     public abstract void setTournamentMode();

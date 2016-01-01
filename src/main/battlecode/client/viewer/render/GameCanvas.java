@@ -13,6 +13,7 @@ public final class GameCanvas extends BaseCanvas {
     private static final long serialVersionUID = 0; // don't serialize
     private volatile GameRenderer renderer = null;
     private boolean gotPreferredSize = false;
+    private GraphicsDevice gd = null;
 
     //private Window fullscreen;
     public GameCanvas() {
@@ -22,6 +23,10 @@ public final class GameCanvas extends BaseCanvas {
     public void setTournamentMode() {
         RenderConfiguration.setTournamentMode(true);
         setVisible(true);
+    }
+
+    public void setGraphicsDevice(GraphicsDevice gd) {
+        this.gd = gd;
     }
 
     protected BaseRenderer getRenderer() {
@@ -97,7 +102,7 @@ public final class GameCanvas extends BaseCanvas {
 
     public void forceRepaint() {
         if (!gotPreferredSize) {
-            Dimension preferredSize = renderer.getPreferredSize();
+            Dimension preferredSize = renderer.getPreferredSize(this.gd);
             if (preferredSize.getHeight() != 0 && preferredSize.getWidth() !=
                     0) {
                 setPreferredSize(preferredSize);

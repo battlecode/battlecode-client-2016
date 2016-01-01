@@ -39,6 +39,7 @@ public class Main {
         final GraphicsDevice gd = (viewer.isTournamentMode() && MatchViewer
                 .usingTwoScreens())
                 ? devices[1] : devices[0];
+        viewer.getCanvas().setGraphicsDevice(gd);
 
         SwingUtilities.invokeLater(() -> {
             frame.getContentPane().add(viewer.getComponent());
