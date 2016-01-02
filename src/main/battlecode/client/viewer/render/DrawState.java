@@ -1,10 +1,7 @@
 package battlecode.client.viewer.render;
 
 import battlecode.client.viewer.*;
-import battlecode.common.Direction;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotType;
-import battlecode.common.Team;
+import battlecode.common.*;
 import battlecode.util.SquareArray;
 import battlecode.world.GameMap;
 import battlecode.world.signal.*;
@@ -533,11 +530,22 @@ public class DrawState extends GameState {
                 int y = j + gameMap.getOrigin().y;
 
                 // fill a tile with alpha based on how much rubble there is
-                float lum = (float) Math.sqrt(Math.min(1.0, rubble.get(i, j) /
-                        1000.0f));
-                g2.setColor(new Color(0, 0, 0, lum));
-
-                g2.fillRect(x, y, 1, 1);
+                float lum;
+                if (rubble.get(i, j) < GameConstants.RUBBLE_SLOW_THRESH) {
+                    lum = 0.3f;
+                } else if (rubble.get(i, j) < GameConstants
+                        .RUBBLE_OBSTRUCTION_THRESH) {
+                    lum = 0.4f;
+                } else if (rubble.get(i, j) < GameConstants
+                        .RUBBLE_OBSTRUCTION_THRESH * 2) {
+                    lum = 0.5f;
+                } else {
+                    lum = 0.6f;
+                }
+                if (rubble.get(i, j) > 0) {
+                    g2.setColor(new Color(0, 0, 0, lum));
+                    g2.fillRect(x, y, 1, 1);
+                }
 
                 // draw dots equal to number of parts
                 g2.setColor(new Color(0.8f, 1.0f, 0.6f, 0.7f));
