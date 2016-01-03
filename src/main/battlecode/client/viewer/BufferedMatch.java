@@ -2,7 +2,7 @@ package battlecode.client.viewer;
 
 import battlecode.client.ClientProxy;
 import battlecode.world.DominationFactor;
-import battlecode.world.signal.Signal;
+import battlecode.world.signal.InternalSignal;
 import battlecode.serial.*;
 
 import java.io.EOFException;
@@ -24,7 +24,7 @@ public final class BufferedMatch {
 
     private final List<RoundDelta> deltas = new ArrayList<>();
     private DominationFactor dominationFactor = null;
-    private List<Signal> currentBreak = null;
+    private List<InternalSignal> currentBreak = null;
     private boolean paused = false;
 
     private List<MatchListener> matchListeners;
@@ -56,7 +56,7 @@ public final class BufferedMatch {
         return null;
     }
 
-    public List<Signal> getDebugSignals(int round) {
+    public List<InternalSignal> getDebugSignals(int round) {
         if (deltas != null) {
             synchronized (deltas) {
                 if (round == deltas.size()) return currentBreak;
@@ -149,13 +149,13 @@ public final class BufferedMatch {
         if (currentBreak == null) {
             deltas.add(roundDelta);
         } else {
-            Signal[] signals = roundDelta.getSignals();
-            Signal[] merged = new Signal[currentBreak.size() + signals.length];
+            InternalSignal[] internalSignals = roundDelta.getInternalSignals();
+            InternalSignal[] merged = new InternalSignal[currentBreak.size() + internalSignals.length];
             for (int i = 0; i < currentBreak.size(); i++) {
                 merged[i] = currentBreak.get(i);
             }
-            for (int i = 0; i < signals.length; i++) {
-                merged[currentBreak.size() + i] = signals[i];
+            for (int i = 0; i < internalSignals.length; i++) {
+                merged[currentBreak.size() + i] = internalSignals[i];
             }
             synchronized (deltas) {
                 currentBreak = null;
@@ -186,12 +186,12 @@ public final class BufferedMatch {
     }
 
     private void handleInjectDelta(InjectDelta delta) {
-        final Signal[] signals = delta.getSignals();
+        final InternalSignal[] internalSignals = delta.getInternalSignals();
 
         if (currentBreak == null) {
             currentBreak = new ArrayList<>();
         }
-        Collections.addAll(currentBreak, signals);
+        Collections.addAll(currentBreak, internalSignals);
     }
 
     private void handleExtensibleMetadata(ExtensibleMetadata metadata) {

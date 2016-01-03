@@ -1,6 +1,6 @@
 package battlecode.client.viewer;
 
-import battlecode.world.signal.Signal;
+import battlecode.world.signal.InternalSignal;
 import battlecode.serial.RoundDelta;
 
 import java.util.*;
@@ -19,7 +19,7 @@ public class GameStateTimeline<E extends GameState> extends Observable {
     protected int currentRound = -1;
 
     private E currentStateAlignedClone = null;
-    private List<Signal> debugSignals = null;
+    private List<InternalSignal> debugInternalSignals = null;
     private int appliedDebugSignals;
 
     private volatile int roundsProcessed = -1;
@@ -94,12 +94,12 @@ public class GameStateTimeline<E extends GameState> extends Observable {
                 }
                 roundsProcessed++;
                 synchronized (this) {
-                    debugSignals = null;
+                    debugInternalSignals = null;
                 }
             }
             appliedDebugSignals = 0;
-            debugSignals = match.getDebugSignals(roundsProcessed);
-            if (debugSignals != null) {
+            debugInternalSignals = match.getDebugSignals(roundsProcessed);
+            if (debugInternalSignals != null) {
                 try {
                     while (roundsProcessed == match.getRoundsAvailable()) {
                         Thread.sleep(10);
@@ -131,12 +131,12 @@ public class GameStateTimeline<E extends GameState> extends Observable {
     }
 
     private synchronized void syncToDebugSignals() {
-        if (debugSignals != null) {
+        if (debugInternalSignals != null) {
             if (currentStateAlignedClone == null) {
                 currentStateAlignedClone = cloneState(currentState);
             }
-            while (appliedDebugSignals < debugSignals.size()) {
-                currentState.apply(debugSignals.get(appliedDebugSignals++));
+            while (appliedDebugSignals < debugInternalSignals.size()) {
+                currentState.apply(debugInternalSignals.get(appliedDebugSignals++));
                 setChanged();
             }
         }
