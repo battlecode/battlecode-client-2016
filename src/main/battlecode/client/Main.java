@@ -75,6 +75,8 @@ public class Main {
             md.setVisible(true);
         Choice choice = md.getChoice();
         md.dispose();
+        
+        options.setBoolean("bc.game.disable-zombies", md.getDisableZombies());
 
         if (!options.getBoolean("bc.dialog.skip") && md.wasCancelPressed())
             return;
