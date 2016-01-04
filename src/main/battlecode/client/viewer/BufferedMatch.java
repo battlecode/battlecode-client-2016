@@ -131,7 +131,6 @@ public final class BufferedMatch {
             matchPausedListeners = null;
         }
         matchListeners = null;
-        System.out.println("Stop buffering match");
     }
 
     private void handlePauseEvent() {
@@ -171,13 +170,13 @@ public final class BufferedMatch {
         DominationFactor dom = gameStats.getDominationFactor();
         String s = "";
         if (dom == DominationFactor.DESTROYED)
-            s = "The winning team won by TODO something here.";
+            s = "The winning team won by destruction.";
         else if (dom == DominationFactor.PWNED)
-            s = "The winning team won on TODO something here.";
+            s = "The winning team won by having more archons left.";
         else if (dom == DominationFactor.OWNED)
-            s = "The winning team won on TODO something here.";
+            s = "The winning team won on having healthier archons.";
         else if (dom == DominationFactor.BARELY_BEAT)
-            s = "The winning team won on TODO something here.";
+            s = "The winning team won on having more parts.";
         else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
             s = "The winning team won arbitrarily.";
         System.out.println(s);
@@ -201,7 +200,6 @@ public final class BufferedMatch {
             teamB = (String) metadata.get("team-b", null);
             mapNames = (String[]) metadata.get("maps", null);
         }
-        System.out.println("metadata: " + teamA + " " + teamB);
     }
 
     private void handleMatchFooter(MatchFooter matchFooter) {

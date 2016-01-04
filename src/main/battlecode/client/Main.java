@@ -170,8 +170,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("os.arch"));
-
         final Config options = battlecode.server.Main.setupConfig(args);
         if (!run(options)) {
             System.err.println("invalid bc.server.mode");
