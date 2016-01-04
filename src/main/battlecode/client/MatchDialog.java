@@ -41,7 +41,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 
     private final double[][] LAYOUT = { /* 10 x 21 */
             {20, 30, 70, 5, 100, 5, 55, 5, 40, 20},
-            {110, 25, 25, 30, 25, 25, 25, 30, 25, 25, 25, 25, 15,
+            {110, 25, 25, 30, 25, 25, 25, 30, 25, 25, 25, 25, 25, 15,
                     30, 30, 0, 15, 30, 10}
     };
 
@@ -50,7 +50,7 @@ public class MatchDialog extends JDialog implements ActionListener {
     private final JTextField txtLoadFile, txtSaveFile;
     private final JButton btnLoadBrowse, btnSaveBrowse, btnOK, btnCancel;
     private final JButton btnAdd, btnRemove;
-    private final JCheckBox chkLockstep, chkSave;
+    private final JCheckBox chkLockstep, chkSave, chkNoZombies;
     private final JFileChooser dlgChooser;
     private final JList lstMatches;
     private final DefaultListModel lstMatchesModel;
@@ -243,6 +243,7 @@ public class MatchDialog extends JDialog implements ActionListener {
         btnSaveBrowse.setEnabled(false);
         add(btnSaveBrowse, "6, 7, 8, 7, f, c");
 
+        
         // Separator.
         add(new JSeparator(), "1, 8, 8, 8, f, c");
 
@@ -264,6 +265,10 @@ public class MatchDialog extends JDialog implements ActionListener {
                     String.format("1, %d, 2, %d", offset, offset));
         }
 
+        // Disable Zombies check box
+        chkNoZombies = new JCheckBox("Disable zombie spawning");
+        add(chkNoZombies, "1, 12, 8, 12, f, c");
+        
         lstMatchesModel = new DefaultListModel();
 
         lstMatches = new JList(lstMatchesModel);
@@ -271,34 +276,34 @@ public class MatchDialog extends JDialog implements ActionListener {
         lstMatches.setLayoutOrientation(JList.VERTICAL);
         lstMatches.setAutoscrolls(true);
         JScrollPane scrMatches = new JScrollPane(lstMatches);
-        add(scrMatches, "1, 13, 6, 16, f, f");
+        add(scrMatches, "1, 14, 6, 17, f, f");
 
         // The "queue match" button.
         btnAdd = new JButton();
         btnAdd.setActionCommand("add");
         btnAdd.addActionListener(this);
         btnAdd.setIcon(new ImageIcon(ResourceLoader.getUrl("art/icons/list-add.png")));
-        add(btnAdd, "8, 13, f, f");
+        add(btnAdd, "8, 14, f, f");
 
         btnRemove = new JButton();
         btnRemove.setActionCommand("remove");
         btnRemove.addActionListener(this);
         btnRemove.setIcon(new ImageIcon(ResourceLoader.getUrl("art/icons/list-remove.png")));
-        add(btnRemove, "8, 14, f, f");
+        add(btnRemove, "8, 15, f, f");
 
         // The OK button.
         btnOK = new JButton("OK");
         btnOK.setMnemonic('O');
         btnOK.setActionCommand("ok");
         btnOK.addActionListener(this);
-        add(btnOK, "4, 17, f, c");
+        add(btnOK, "4, 18, f, c");
 
         // The cancel button.
         btnCancel = new JButton("Cancel");
         btnCancel.setMnemonic('C');
         btnCancel.setActionCommand("cancel");
         btnCancel.addActionListener(this);
-        add(btnCancel, "6, 17, 8, 17, f, c");
+        add(btnCancel, "6, 18, 8, 18, f, c");
 
         int idx;
         if (version == null || (idx = version.indexOf('.')) < 0)
@@ -307,7 +312,7 @@ public class MatchDialog extends JDialog implements ActionListener {
             lblVersion = new JLabel("v" + version.substring(idx + 1));
         lblVersion.setFont(lblVersion.getFont().deriveFont(Font.ITALIC));
         lblVersion.setHorizontalAlignment(JLabel.LEFT);
-        add(lblVersion, "1, 17, 2, 17, f, c");
+        add(lblVersion, "1, 18, 2, 18, f, c");
 
         // Restore saved prefs, if any.
         loadFields();
@@ -469,7 +474,8 @@ public class MatchDialog extends JDialog implements ActionListener {
         p.setProperty("save-file", txtSaveFile.getText());
         p.setProperty("lockstep", String.valueOf(chkLockstep.isSelected()));
         p.setProperty("lastVersion", popupVersion);
-
+        p.setProperty("disable-zombies", String.valueOf(chkNoZombies.isSelected()));
+        
         // Save parameters.
         for (Parameter param : Parameter.values()) {
             String sel = getParameter(param);
@@ -655,6 +661,15 @@ public class MatchDialog extends JDialog implements ActionListener {
         return chkLockstep.isEnabled() && chkLockstep.isSelected();
     }
 
+    /**
+     * Get whether or not to disable zombie spawning
+     * 
+     * @return true if zombie spawning is disabled
+     */
+    public boolean getDisableZombies() {
+    	return chkNoZombies.isEnabled() && chkNoZombies.isSelected();
+    }
+    
     /**
      * Gets the user's save file choice, or null if the user doesn't want to
      * save the match to a file.
