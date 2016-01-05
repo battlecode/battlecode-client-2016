@@ -48,9 +48,8 @@ class DrawHUD {
         }
         Font font;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File
-                    (ResourceLoader.getUrl("art/computerfont.ttf").toURI()))
-                    .deriveFont(14.f);
+            font = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader
+                    .getInputStream("art/computerfont.ttf")).deriveFont(14.f);
         } catch (Exception e) {
             font = new Font("Serif", Font.PLAIN, 18);
         }
