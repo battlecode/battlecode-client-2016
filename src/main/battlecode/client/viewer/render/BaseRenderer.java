@@ -88,7 +88,7 @@ public abstract class BaseRenderer {
                 RenderConfiguration.toggleAmbientMusic();
                 break;
             case 'L':
-                RenderConfiguration.toggleSupplyIndicators();
+                RenderConfiguration.toggleInfectionIndicators();
                 break;
             case 'O':
                 RenderConfiguration.toggleShowHats();
@@ -100,10 +100,10 @@ public abstract class BaseRenderer {
                 skipRounds(100);
                 break;
             case 'T':
-                RenderConfiguration.toggleSupplyTransfers();
+                RenderConfiguration.toggleTransfers();
                 break;
             case 'U':
-                RenderConfiguration.toggleCows();
+                RenderConfiguration.toggleParts();
                 break;
             case 'V':
                 RenderConfiguration.toggleIndicatorDots();

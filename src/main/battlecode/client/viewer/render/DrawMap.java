@@ -70,7 +70,7 @@ public class DrawMap {
 
         g2.setTransform(pushed);
         if (RenderConfiguration.showGridlines()) {
-            g2.setColor(new Color(0.7f, 0.7f, 0.7f, 1.0f));
+            g2.setColor(new Color(0.9f, 0.9f, 0.9f, 1.0f));
             g2.setStroke(gridStroke);
             Line2D.Float gridline = new Line2D.Float(0, 0, 0, mapHeight);
             for (int i = 1; i < mapWidth; i += 1) {

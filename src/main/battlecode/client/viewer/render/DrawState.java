@@ -243,6 +243,12 @@ public class DrawState extends GameState {
     }
 
     @SuppressWarnings("unused")
+    public void visitActivationSignal(ActivationSignal s) {
+        getRobot(s.getRobotID()).setTransfer(s.getLoc(),
+                TransferAnim.TransferAnimType.ACTIVATION);
+    }
+
+    @SuppressWarnings("unused")
     public void visitBytecodesUsedSignal(BytecodesUsedSignal s) {
         int[] robotIDs = s.getRobotIDs();
         int[] bytecodes = s.getNumBytecodes();
@@ -277,6 +283,13 @@ public class DrawState extends GameState {
                 robot.setEnergon(health[i]);
             }
         }
+    }
+
+    @SuppressWarnings("unused")
+    public void visitRepairSignal(RepairSignal s) {
+        getRobot(s.getRobotID()).setTransfer(getRobot(s.getRepairedRobotID())
+                        .getLoc(),
+                TransferAnim.TransferAnimType.REPAIR);
     }
 
     @SuppressWarnings("unused")

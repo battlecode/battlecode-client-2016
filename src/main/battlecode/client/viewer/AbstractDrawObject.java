@@ -1,6 +1,7 @@
 package battlecode.client.viewer;
 
 import battlecode.client.viewer.render.RenderConfiguration;
+import battlecode.client.viewer.render.TransferAnim;
 import battlecode.common.*;
 
 import java.util.*;
@@ -82,9 +83,8 @@ public abstract class AbstractDrawObject {
     public abstract Animation createMortarExplosionAnim(Animation
                                                                 mortarAttackAnim);
 
-    public abstract Animation createEnergonTransferAnim(MapLocation loc,
-                                                        float amt, boolean
-                                                                isFlux);
+    public abstract Animation createTransferAnim(MapLocation loc,
+                                                 TransferAnim.TransferAnimType type);
 
     protected String hats;
     protected RobotInfo info;
@@ -328,11 +328,11 @@ public abstract class AbstractDrawObject {
         attackDir = dir;
     }
 
-    public void setSupplyTransfer(AbstractDrawObject target,
-                                  double amount) {
-        Animation anim = createEnergonTransferAnim(target.getLocation(),
-                (float) amount, true);
-        animations.put(ENERGON_TRANSFER, anim);
+    public void setTransfer(MapLocation target, TransferAnim
+            .TransferAnimType type) {
+        Animation anim = createTransferAnim(target,
+                type);
+        animations.put(TRANSFER, anim);
     }
 
     public void setMoving(int delay) {
@@ -358,7 +358,7 @@ public abstract class AbstractDrawObject {
         zombieInfectedTurns = 0;
         viperInfectedTurns = 0;
         animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
-        animations.remove(ENERGON_TRANSFER);
+        animations.remove(TRANSFER);
     }
 
     public void updateRound() {

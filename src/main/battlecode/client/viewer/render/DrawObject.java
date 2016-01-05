@@ -43,7 +43,7 @@ public class DrawObject extends AbstractDrawObject {
             Animation.AnimationType[]{TELEPORT};
     public static final Animation.AnimationType[] postDrawOrder = new
             Animation.AnimationType[]{MORTAR_ATTACK,
-            MORTAR_EXPLOSION, ENERGON_TRANSFER};
+            MORTAR_EXPLOSION, TRANSFER};
 
     private final DrawState overallstate;
 
@@ -81,9 +81,9 @@ public class DrawObject extends AbstractDrawObject {
         super(currentRound, copy);
         img = copy.img;
         maxEnergon = copy.maxEnergon;
-        if (animations.containsKey(ENERGON_TRANSFER)) {
-            EnergonTransferAnim a = (EnergonTransferAnim) animations.get
-                    (ENERGON_TRANSFER);
+        if (animations.containsKey(TRANSFER)) {
+            TransferAnim a = (TransferAnim) animations.get
+                    (TRANSFER);
             a.setSource(this);
         }
         overallstate = copy.overallstate;
@@ -173,14 +173,6 @@ public class DrawObject extends AbstractDrawObject {
         if (layer == 0) {
             if (RenderConfiguration.showRangeHatch() && focused) {
                 drawRangeHatch(g2);
-            }
-            if (info.type.isBuilding) {
-                AffineTransform pushed0 = g2.getTransform();
-                g2.translate(getDrawX(), getDrawY());
-                drawImageTransformed(g2, new AffineTransform(),
-                        (info.team == Team.A ? creepRed.image
-                                : creepBlue.image), 2);
-                g2.setTransform(pushed0); // pop
             }
         }
         if (layer == 1) {
@@ -329,6 +321,28 @@ public class DrawObject extends AbstractDrawObject {
             g2.setColor(new Color(1f, 0f, 0f));
             g2.fill(rect);
         }
+
+        //add a box around robot if infected
+        if((getViperInfectedTurns() > 0 || getZombieInfectedTurns() > 0) &&
+                RenderConfiguration.showInfectionIndicators()){
+            g2.setColor(new Color(127, 255, 127));
+            Rectangle2D.Float rectLeft;
+            rectLeft = new Rectangle2D.Float(0.02f,0,0.1f, 1);
+            g2.fill(rectLeft);
+            rectLeft = new Rectangle2D.Float(0.12f,0,0.2f,0.1f);
+            g2.fill(rectLeft);
+            rectLeft = new Rectangle2D.Float(0.12f,0.9f,0.2f,0.1f);
+            g2.fill(rectLeft);
+
+            Rectangle2D.Float rectRight;
+            rectRight = new Rectangle2D.Float(0.88f,0,0.1f, 1);
+            g2.fill(rectRight);
+            rectRight = new Rectangle2D.Float(0.68f,0,0.2f,0.1f);
+            g2.fill(rectRight);
+            rectRight = new Rectangle2D.Float(0.68f,0.9f,0.2f,0.1f);
+            g2.fill(rectRight);
+
+        }
     }
 
     public double drawScale() {
@@ -445,8 +459,9 @@ public class DrawObject extends AbstractDrawObject {
         return new MortarAttackAnim(loc, target);
     }
 
-    public EnergonTransferAnim createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux) {
-        return new EnergonTransferAnim(this, loc, amt, isFlux);
+    public TransferAnim createTransferAnim(MapLocation loc, TransferAnim
+            .TransferAnimType type) {
+        return new TransferAnim(this, loc, type);
     }
 
     public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {

@@ -2,11 +2,9 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.Team;
 
-import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 
 public class RenderConfiguration {
 
@@ -23,12 +21,10 @@ public class RenderConfiguration {
     private static boolean ambientMusic = false;
     private static boolean actionlines = false;
     private static boolean hats = true;
-    // the next two are related, only thresh cows if they are shown
-    private static boolean cows = true;
-    private static boolean threshCows = false;
+    private static boolean parts = true;
     private static int indicatorDotToggles;
-    private static boolean supplyTransfers = true;
-    private static boolean supplyIndicators = true;
+    private static boolean transfers = true;
+    private static boolean infectionIndicators = true;
 
     private static boolean tournamentMode = false;
 
@@ -103,24 +99,15 @@ public class RenderConfiguration {
         indicatorDotToggles++;
     }
 
-    public static void toggleSupplyTransfers() {
-        supplyTransfers = !supplyTransfers;
+    public static void toggleTransfers() {
+        transfers = !transfers;
     }
 
-    public static void toggleSupplyIndicators() {
-        supplyIndicators = !supplyIndicators;
+    public static void toggleInfectionIndicators() {
+        infectionIndicators = !infectionIndicators;
     }
 
-    public static void toggleCows() {
-        if (!cows) {
-            cows = true;
-            threshCows = true;
-        } else if (threshCows) {
-            threshCows = false;
-        } else {
-            cows = false;
-        }
-    }
+    public static void toggleParts() { parts = !parts; }
 
     public static void setTournamentMode(boolean flag) {
         tournamentMode = flag;
@@ -133,6 +120,8 @@ public class RenderConfiguration {
             broadcast = false;
         }
     }
+
+    public static boolean showParts() { return parts; }
 
     public static boolean showBroadcast() {
         return broadcast;
@@ -174,12 +163,16 @@ public class RenderConfiguration {
         return hats;
     }
 
+    public static boolean showInfectionIndicators() {
+        return infectionIndicators;
+    }
+
     public static boolean showIndicatorDots(Team t) {
         return ((indicatorDotToggles >> t.ordinal()) & 1) != 0;
     }
 
-    public static boolean showSupplyTransfers() {
-        return supplyTransfers;
+    public static boolean showTransfers() {
+        return transfers;
     }
 
     public static boolean playAmbientMusic() {
