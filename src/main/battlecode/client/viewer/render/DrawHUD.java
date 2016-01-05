@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.resources.ResourceLoader;
 import battlecode.client.util.ImageFile;
 import battlecode.client.viewer.BufferedMatch;
 import battlecode.common.RobotType;
@@ -47,8 +48,8 @@ class DrawHUD {
         }
         Font font;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File
-                    ("art/computerfont.ttf")).deriveFont(14.f);
+            font = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader
+                    .getInputStream("art/computerfont.ttf")).deriveFont(14.f);
         } catch (Exception e) {
             font = new Font("Serif", Font.PLAIN, 18);
         }
