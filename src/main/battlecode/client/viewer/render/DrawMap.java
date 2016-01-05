@@ -5,6 +5,7 @@ import battlecode.client.util.ImageFile;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class DrawMap {
@@ -21,6 +22,8 @@ public class DrawMap {
 
     private final static int subtileHeight = 4; // 4 x 4
 
+    private boolean currentlyDetailedMap = true;
+
     public DrawMap(battlecode.world.GameMap map) {
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
@@ -29,24 +32,30 @@ public class DrawMap {
 
         //FIXME: commented out for now
 //    if (!RenderConfiguration.getInstance().isTournamentMode()) {
-        prerenderMap(map);
+        prerenderMap();
 //    }
         gridStroke = new BasicStroke(0.3f / RenderConfiguration.getInstance()
                 .getSpriteSize());
 
     }
 
-    public void prerenderMap(battlecode.world.GameMap m) {
+    public void prerenderMap() {
         Graphics2D g2 = prerender.createGraphics();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-
-        for (int x = 0; x < mapWidth; x += mapBG.getWidth() / locPixelWidth) {
-            for (int y = 0; y < mapHeight; y += mapBG.getHeight() /
-                    locPixelWidth) {
-                g2.drawImage(mapBG, null, x * locPixelWidth, y * locPixelWidth);
+        if (RenderConfiguration.showDetails()) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+            for (int x = 0; x < mapWidth; x += mapBG.getWidth() / locPixelWidth) {
+                for (int y = 0; y < mapHeight; y += mapBG.getHeight() /
+                        locPixelWidth) {
+                    g2.drawImage(mapBG, null, x * locPixelWidth, y * locPixelWidth);
+                }
             }
+            currentlyDetailedMap = true;
+        } else {
+            g2.setColor(new Color(170, 170, 170));
+            g2.fillRect(0, 0, mapWidth * locPixelWidth, mapHeight *
+                    locPixelWidth);
+            currentlyDetailedMap = false;
         }
-
         g2.dispose();
     }
 
@@ -59,6 +68,9 @@ public class DrawMap {
     }
 
     public void draw(Graphics2D g2, DrawState ds) {
+        if (currentlyDetailedMap != RenderConfiguration.showDetails()) {
+            prerenderMap();
+        }
         AffineTransform pushed = g2.getTransform();
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
@@ -69,7 +81,7 @@ public class DrawMap {
 
         g2.setTransform(pushed);
         if (RenderConfiguration.showGridlines()) {
-            g2.setColor(new Color(0.7f, 0.7f, 0.7f, 1.0f));
+            g2.setColor(new Color(0.4f, 0.4f, 0.4f, 1.0f));
             g2.setStroke(gridStroke);
             Line2D.Float gridline = new Line2D.Float(0, 0, 0, mapHeight);
             for (int i = 1; i < mapWidth; i += 1) {

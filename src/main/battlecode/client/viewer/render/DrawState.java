@@ -441,28 +441,30 @@ public class DrawState extends GameState {
                 // fill a tile with alpha based on how much rubble there is
                 float lum;
                 if (rubble.get(i, j) < GameConstants.RUBBLE_SLOW_THRESH) {
-                    lum = 0.3f;
+                    lum = 0.1f;
                 } else if (rubble.get(i, j) < GameConstants
                         .RUBBLE_OBSTRUCTION_THRESH) {
-                    lum = 0.4f;
+                    lum = 0.3f;
                 } else if (rubble.get(i, j) < GameConstants
                         .RUBBLE_OBSTRUCTION_THRESH * 2) {
                     lum = 0.5f;
                 } else {
-                    lum = 0.6f;
+                    lum = 0.7f;
                 }
                 if (rubble.get(i, j) > 0) {
                     g2.setColor(new Color(0, 0, 0, lum));
                     g2.fillRect(x, y, 1, 1);
                 }
 
-                // draw a dot with radius depending on how many parts there are
-                if (parts.get(i, j) > 0) {
-                    double radius = Math.max(0.2, Math.min(1.0, parts.get(i,
-                            j) / 100)) * 0.3;
-                    g2.setColor(new Color(0.5f, 0.15f, 0.8f, 0.8f));
-                    g2.fill(new Ellipse2D.Double(x + 0.5 - radius, y + 0.5 -
-                            radius, radius * 2, radius * 2));
+                if (RenderConfiguration.showParts()) {
+                    // draw a dot with radius depending on how many parts there are
+                    if (parts.get(i, j) > 0) {
+                        double radius = Math.max(0.2, Math.min(1.0, parts.get(i,
+                                j) / 100)) * 0.3;
+                        g2.setColor(new Color(255, 140, 25, 255));
+                        g2.fill(new Ellipse2D.Double(x + 0.5 - radius, y + 0.5 -
+                                radius, radius * 2, radius * 2));
+                    }
                 }
             }
         }

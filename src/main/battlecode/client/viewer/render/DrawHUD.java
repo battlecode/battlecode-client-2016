@@ -103,12 +103,6 @@ class DrawHUD {
     }
 
     public void draw(Graphics2D g2) {
-        AffineTransform trans = AffineTransform.getScaleInstance(bgFill
-                .width, bgFill.height);
-        BufferedImage bgImg = bg.image;
-        trans.scale(1.0 / bgImg.getWidth(), 1.0 / bgImg.getHeight());
-        //g2.drawImage(bgImg, trans, null);
-
         drawFooter(g2);
 
         g2.translate(0.5f * (width - spriteScale),
