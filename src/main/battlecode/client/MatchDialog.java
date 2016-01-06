@@ -4,6 +4,7 @@ import battlecode.client.resources.ResourceLoader;
 import battlecode.server.Config;
 import battlecode.server.PlayerFinder;
 import battlecode.server.Server;
+import battlecode.server.Version;
 import battlecode.world.GameMapIO;
 import info.clearthought.layout.TableLayout;
 
@@ -61,8 +62,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 
     private final PlayerFinder finder;
 
-    private final String version;
-
     /**
      * Represents a user's match type choice.
      */
@@ -105,11 +104,8 @@ public class MatchDialog extends JDialog implements ActionListener {
 
                 currentVersion = reader.readLine();
 
-                if (version != null && !currentVersion.equals(version)) {
-                    lblVersion.setIcon(new ImageIcon(
-                            ResourceLoader.getUrl("art/icons/important.png")));
-                    lblVersion.setToolTipText(
-                            "A new version of BattleCode is available.");
+                if (!currentVersion.equals(Version.version)) {
+                    lblVersion.setText("<html>" +lblVersion.getText() + " <font color='red'>(OUTDATED)</font></html>");
 
                     if (!currentVersion.equals(popupVersion)) {
                         popupVersion = currentVersion;
@@ -139,8 +135,6 @@ public class MatchDialog extends JDialog implements ActionListener {
 
         // Modal JDialog.
         super(owner, Dialog.ModalityType.TOOLKIT_MODAL);
-
-        version = Config.version();
 
         // Initialize stuff.
         choices = new EnumMap<>(Choice.class);
@@ -306,11 +300,11 @@ public class MatchDialog extends JDialog implements ActionListener {
         add(btnCancel, "6, 18, 8, 18, f, c");
 
         int idx;
-        if (version == null || (idx = version.indexOf('.')) < 0)
+        if (Version.version == null || (idx = Version.version.indexOf('.')) < 0)
             lblVersion = new JLabel("");
         else
-            lblVersion = new JLabel("v" + version.substring(idx + 1));
-        lblVersion.setFont(lblVersion.getFont().deriveFont(Font.ITALIC));
+            lblVersion = new JLabel("v" + Version.version.substring(idx + 1));
+        lblVersion.setFont(lblVersion.getFont().deriveFont(Font.BOLD));
         lblVersion.setHorizontalAlignment(JLabel.LEFT);
         add(lblVersion, "1, 18, 2, 18, f, c");
 
@@ -319,7 +313,7 @@ public class MatchDialog extends JDialog implements ActionListener {
 
         if (Config.getGlobalConfig().getBoolean("bc.client.check-updates")) {
             Timer t = new Timer(true);
-            t.schedule(new UpdateTask(), 1000);
+            t.schedule(new UpdateTask(), 25);
         }
     }
 
