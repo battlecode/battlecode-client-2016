@@ -167,7 +167,7 @@ public class MatchDialog extends JDialog implements ActionListener {
         // Set up the dialog window.
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(WIDTH, height);
-        setResizable(false);
+        setResizable(true);
         setTitle("BattleCode");
         setLayout(new TableLayout(LAYOUT));
 
