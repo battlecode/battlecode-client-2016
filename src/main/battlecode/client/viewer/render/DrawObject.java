@@ -108,6 +108,12 @@ public class DrawObject extends AbstractDrawObject {
         return "art/" + type + team.ordinal() + ".png";
     }
 
+    @Override
+    public void setType(RobotType type) {
+        super.setType(type);
+        img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
+    }
+
     private int getViewRange() {
         return info.type.sensorRadiusSquared;
     }
