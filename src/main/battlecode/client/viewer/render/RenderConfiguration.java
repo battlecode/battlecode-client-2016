@@ -2,11 +2,9 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.Team;
 
-import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 
 public class RenderConfiguration {
 
@@ -15,7 +13,7 @@ public class RenderConfiguration {
     private static boolean broadcast = true;
     private static boolean attack = true;
     private static boolean discrete = true;
-    private static boolean energon = true;
+    private static boolean health = true;
     private static boolean gridlines = true;
     private static boolean explosions = true;
     private static boolean rangeHatch = false;
@@ -33,12 +31,11 @@ public class RenderConfiguration {
     private static boolean tournamentMode = false;
 
     private float spriteSize = 25;
-    private float pixelSize = 1.0f / spriteSize;
 
     private boolean resized = true;
     private AffineTransform mapInverse = new AffineTransform();
-    private float[] srcPt = new float[2];
-    private float[] dstPt = new float[2];
+    private final float[] srcPt = new float[2];
+    private final float[] dstPt = new float[2];
 
     public static synchronized RenderConfiguration getInstance() {
         init();
@@ -71,8 +68,8 @@ public class RenderConfiguration {
         discrete = !discrete;
     }
 
-    public static void toggleEnergon() {
-        energon = !energon;
+    public static void toggleHealth() {
+        health = !health;
     }
 
     public static void toggleGridlines() {
@@ -150,8 +147,8 @@ public class RenderConfiguration {
         return discrete;
     }
 
-    public static boolean showEnergon() {
-        return energon;
+    public static boolean showHealth() {
+        return health;
     }
 
     public static boolean showGridlines() {
@@ -178,10 +175,6 @@ public class RenderConfiguration {
         return ((indicatorDotToggles >> t.ordinal()) & 1) != 0;
     }
 
-    public static boolean showSupplyTransfers() {
-        return supplyTransfers;
-    }
-
     public static boolean playAmbientMusic() {
         return ambientMusic;
     }
@@ -196,7 +189,6 @@ public class RenderConfiguration {
 
     public void setSpriteSize(float size) {
         spriteSize = size;
-        pixelSize = 1.0f / spriteSize;
         resized = true;
     }
 

@@ -13,10 +13,6 @@ class ExplosionAnim extends FramedAnimation {
         this(null, 1);
     }
 
-    public ExplosionAnim(MapLocation loc) {
-        this(loc, 1);
-    }
-
     public ExplosionAnim(MapLocation loc, double width) {
         super(loc, width, 4);
     }
@@ -31,10 +27,6 @@ class ExplosionAnim extends FramedAnimation {
 
     public String fileFormatString() {
         return "art/explode/explode64_f%02d.png";
-    }
-
-    public void setExplosionToggle(ExplosionToggle t) {
-        toggle = t;
     }
 
     protected boolean shouldDraw() {

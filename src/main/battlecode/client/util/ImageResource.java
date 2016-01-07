@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ImageResource<E> {
 
-    private Map<E, ImageFile> cache;
+    private final Map<E, ImageFile> cache;
 
     public ImageResource() {
         cache = new HashMap<>();

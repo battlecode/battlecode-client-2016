@@ -1,7 +1,6 @@
 package battlecode.client.viewer;
 
 import battlecode.client.viewer.render.BaseCanvas;
-import battlecode.client.viewer.render.BaseRenderer;
 import battlecode.client.viewer.render.GameCanvas;
 import battlecode.client.viewer.render.GameRenderer;
 import battlecode.common.Team;
@@ -11,10 +10,10 @@ import java.awt.*;
 
 public class MinimapViewer {
 
-    private JFrame frame;
-    private BaseCanvas canvas;
-    private BaseRenderer bracket;
-    private BaseRenderer renderer;
+    private final JFrame frame;
+    private final BaseCanvas canvas;
+    private final GameRenderer bracket;
+    private GameRenderer renderer;
 
     public MinimapViewer(boolean fullscreen) {
         frame = new JFrame("Minimap");

@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 abstract class FramedAnimation extends Animation {
-    static ImageResource<String> ir = new ImageResource<>();
+    static final ImageResource<String> ir = new ImageResource<>();
     protected final MapLocation loc;
     // not the most descriptive name
     // to let images have arbitrary aspect ratios, this is the width scale

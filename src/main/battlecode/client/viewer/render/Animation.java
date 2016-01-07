@@ -29,18 +29,12 @@ public abstract class Animation implements Cloneable {
         return loops() || (curFrame < maxFrame);
     }
 
-    public int roundAge() {
-        return curFrame;
-    }
-
     public abstract Object clone();
 
     public enum AnimationType {
         ENERGON_TRANSFER,
         DEATH_EXPLOSION,
         AURA,
-        MORTAR_ATTACK,
-        MORTAR_EXPLOSION,
         TELEPORT;
 
         public boolean shown() {
@@ -49,8 +43,6 @@ public abstract class Animation implements Cloneable {
                     return RenderConfiguration.showExplosions();
                 case AURA:
                     return RenderConfiguration.showSpawnRadii();
-                case MORTAR_ATTACK:
-                    return true;
                 case ENERGON_TRANSFER:
                     return true;
                 default:

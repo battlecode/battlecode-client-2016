@@ -1,6 +1,5 @@
 package battlecode.client.viewer;
 
-import battlecode.client.viewer.render.BaseRenderer;
 import battlecode.client.viewer.render.GameRenderer;
 import battlecode.client.viewer.sound.GameSoundBank;
 import battlecode.client.viewer.sound.MetaGameLoop;
@@ -13,13 +12,13 @@ public class TournamentTimer {
     private final Controller controller = new Controller.ControlAdapter();
     //private GameRenderer gr;
     //private GLGameRenderer gr;
-    private BaseRenderer br;
+    private GameRenderer br;
     private volatile boolean continueCued = false;
     public static volatile boolean waitBetweenMatches;
-    private Runnable spaceBarListener = () -> continueCued = true;
+    private final Runnable spaceBarListener = () -> continueCued = true;
     Team winner = Team.NEUTRAL;
     int aWins = 0, bWins = 0;
-    private Thread thread = new Thread() {
+    private final Thread thread = new Thread() {
 
         private long wakeNanoTime;
 

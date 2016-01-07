@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +24,9 @@ class DrawHUD {
     private static final ImageFile unitUnder = new ImageFile
             ("art/hud_unit_underlay.png");
     private static final ImageFile gameText = new ImageFile("art/game.png");
-    private static ImageFile numberText;
-    private static BufferedImage[] numbers;
-    private static BufferedImage negativeSign;
+    private static final ImageFile numberText;
+    private static final BufferedImage[] numbers;
+    private static final BufferedImage negativeSign;
     private static BufferedMatch match;
 
 

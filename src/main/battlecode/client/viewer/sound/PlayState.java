@@ -33,9 +33,9 @@ public class PlayState extends GameState {
 
     private Set<GameSoundBank.ClipGroup> activeClips;
     private Set<GameSoundBank.ClipGroup> futureClips;
-    private Map<Integer, RobotType> robotTypes;
+    private final Map<Integer, RobotType> robotTypes;
     private int intensityLevel = 0;
-    private boolean[][] nukeFlags = new boolean[Team.values().length][3];
+    private final boolean[][] nukeFlags = new boolean[Team.values().length][3];
 
 
     public PlayState() {

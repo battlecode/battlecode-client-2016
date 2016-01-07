@@ -28,7 +28,7 @@ public class DrawState extends GameState {
                     return groundUnits.entrySet().iterator();
                 }
             };
-    protected Map<Integer, DrawObject> groundUnits;
+    protected final Map<Integer, DrawObject> groundUnits;
     protected int[] coreIDs = new int[4];
     protected SquareArray.Double rubble;
     protected SquareArray.Double parts;
@@ -36,7 +36,6 @@ public class DrawState extends GameState {
     protected int currentRound;
     protected IndicatorDotSignal[] indicatorDots = new IndicatorDotSignal[0];
     protected IndicatorLineSignal[] indicatorLines = new IndicatorLineSignal[0];
-    private ArrayList<DoodadAnimation> doodads;
 
     protected static final Stroke indicatorLineStroke = new BasicStroke(0.075f);
 
@@ -166,7 +165,7 @@ public class DrawState extends GameState {
         int team = robot.getTeam().ordinal();
 
         if (team < 2) {
-            teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
+            teamHP[team] -= getRobot(s.getObjectID()).getHealth();
         }
 
         robot.destroyUnit();
@@ -231,7 +230,7 @@ public class DrawState extends GameState {
         putRobot(s.getRobotID(), spawn);
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
-            teamHP[team] += getRobot(s.getRobotID()).getEnergon();
+            teamHP[team] += getRobot(s.getRobotID()).getHealth();
         }
 
         return spawn;
@@ -274,7 +273,7 @@ public class DrawState extends GameState {
         for (int i = 0; i < robotIDs.length; i++) {
             DrawObject robot = getRobot(robotIDs[i]);
             if (robot != null) {
-                robot.setEnergon(health[i]);
+                robot.setHealth(health[i]);
             }
         }
     }
@@ -316,18 +315,10 @@ public class DrawState extends GameState {
 
         public void copyState(DrawState src, DrawState dst) {
             dst.copyStateFrom(src);
-            dst.doodads = src.doodads;
         }
     }
 
     public static final GameStateFactory<DrawState> FACTORY = new Factory();
-    //private Map<Integer, DrawObject> groundUnits;
-    //private Map<Integer, DrawObject> airUnits;
-    private List<DrawObject> towers;
-    // these need to be drawn before all the units,
-    // so don't draw them from DrawObjects
-    //private ArrayList<TeleportAnim> teleportAnims;
-    private MapLocation[][] convexHullsA, convexHullsB;
     // number of blocks in current draw state
     //int[][] blockNumber;
 
@@ -344,13 +335,10 @@ public class DrawState extends GameState {
     private DrawState(DrawState clone) {
         this();
         copyStateFrom(clone);
-        this.doodads = clone.doodads;
     }
 
     public void setGameMap(GameMap map) {
         gameMap = new GameMap(map);
-        doodads = new ArrayList<>();
-        int doodadAttemptCount = 0;
         Random r = new Random();
         int w = map.getWidth();
         int h = map.getHeight();
@@ -372,59 +360,6 @@ public class DrawState extends GameState {
                         map.initialPartsAtLocation(i + origin.x, j + origin.y));
             }
         }
-
-        boolean[][] alreadyTaken = new boolean[w][h];
-        DoodadAnimation.DoodadType[] dTypes = DoodadAnimation.DoodadType.values();
-        for (int d = 0; d < doodadAttemptCount; d++) {
-            ArrayList<MapLocation> possibleLocs = new ArrayList<>();
-            int doodadIndex = r.nextInt(dTypes.length);
-            DoodadAnimation.DoodadType dType = dTypes[doodadIndex];
-            for (int i = 0; i < w; i++) {
-                for (int j = 0; j < h; j++) {
-                    if (canPlace(alreadyTaken, i, j, dType.w, dType.h)) {
-                        possibleLocs.add(new MapLocation(i, j));
-                    }
-                }
-            }
-            int chosenIndex = r.nextInt(possibleLocs.size());
-            MapLocation chosenLoc = possibleLocs.get(chosenIndex);
-            doodads.add(new DoodadAnimation(new MapLocation(chosenLoc.x, chosenLoc
-                    .y),
-                    1, dType));
-            fillFalse(alreadyTaken, chosenLoc.x, chosenLoc.y, dType.w, dType.h);
-        }
-    }
-
-    private void fillFalse(boolean alreadyTaken[][],
-                           int iStart, int jStart, int fillW, int fillH) {
-        for (int i = iStart; i < iStart + fillW; i++) {
-            for (int j = jStart; j < jStart + fillH; j++) {
-                alreadyTaken[i][j] = false;
-            }
-        }
-
-    }
-
-    private boolean canPlace(boolean alreadyTaken[][],
-                             int iStart, int jStart, int w, int h) {
-        boolean allSquares = true;
-        for (int i = iStart; i < (iStart + w); i++) {
-            if (i >= gameMap.getWidth()) {
-                allSquares = false;
-                break;
-            }
-            for (int j = jStart; j < (jStart + h); j++) {
-                if (j >= gameMap.getHeight()
-                        || alreadyTaken[i][j]) {
-                    allSquares = false;
-                    break;
-                }
-            }
-            if (!allSquares) {
-                break;
-            }
-        }
-        return allSquares;
     }
 
     protected DrawObject createDrawObject(RobotType type, Team team, int id) {
@@ -433,14 +368,6 @@ public class DrawState extends GameState {
 
     protected DrawObject createDrawObject(DrawObject o) {
         return new DrawObject(currentRound, o);
-    }
-
-    public MapLocation[][] getConvexHullsA() {
-        return convexHullsA;
-    }
-
-    public MapLocation[][] getConvexHullsB() {
-        return convexHullsB;
     }
 
     public double getTeamResources(Team t) {
@@ -460,17 +387,6 @@ public class DrawState extends GameState {
     }
 
     private void drawDragged(Graphics2D g2, DebugState debug, DrawObject obj) {
-    /*
-      MapLocation loc = obj.getLoc();
-      float dx = debug.getDX(), dy = debug.getDY();
-      g2.setColor(dragShadow);
-      g2.fill(new Rectangle2D.Float(Math.round(loc.x + dx),
-      Math.round(loc.y + dy), 1, 1));
-      AffineTransform pushed = g2.getTransform(); // push
-      g2.translate(dx, dy);
-      obj.draw(g2, true);
-      g2.setTransform(pushed); // pop;
-    */
     }
 
     protected void postUpdateRound() {
@@ -488,10 +404,6 @@ public class DrawState extends GameState {
                 IndicatorLineSignal[newIndicatorLines.size()]);
         newIndicatorDots.clear();
         newIndicatorLines.clear();
-
-        for (DoodadAnimation doodad : doodads) {
-            doodad.updateRound();
-        }
     }
 
     /**
@@ -518,9 +430,6 @@ public class DrawState extends GameState {
         AffineTransform pushed = g2.getTransform();
         g2.translate(gameMap.getOrigin().x,
                 gameMap.getOrigin().y);
-        for (DoodadAnimation doodad : doodads) {
-            doodad.draw(g2);
-        }
         g2.setTransform(pushed);
 
         // draw rubble and parts

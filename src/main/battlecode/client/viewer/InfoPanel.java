@@ -9,16 +9,16 @@ import java.awt.*;
 public class InfoPanel extends JPanel {
 
     private static final long serialVersionUID = 0; // don't serialize
-    private JLabel[] indicatorStrings;
-    private JLabel robotID;
-    private JLabel bytecodes;
-    private JLabel movementDelay;
-    private JLabel attackDelay;
-    private JLabel energon;
-    private JLabel viperInfectedTurns;
-    private JLabel zombieInfectedTurns;
-    private JLabel location;
-    private GridBagConstraints layoutConstraints;
+    private final JLabel[] indicatorStrings;
+    private final JLabel robotID;
+    private final JLabel bytecodes;
+    private final JLabel movementDelay;
+    private final JLabel attackDelay;
+    private final JLabel health;
+    private final JLabel viperInfectedTurns;
+    private final JLabel zombieInfectedTurns;
+    private final JLabel location;
+    private final GridBagConstraints layoutConstraints;
 
     public InfoPanel() {
         setLayout(new GridBagLayout());
@@ -33,8 +33,8 @@ public class InfoPanel extends JPanel {
         robotID = newLabel();
         forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
         layoutConstraints.gridx++;
-        energon = newLabel();
-        forceMinimumSize(energon, " Health: 1000.0 ");
+        health = newLabel();
+        forceMinimumSize(health, " Health: 1000.0 ");
         layoutConstraints.gridx++;
         movementDelay = newLabel();
         forceMinimumSize(movementDelay, " Core delay: 100.0 ");
@@ -110,7 +110,7 @@ public class InfoPanel extends JPanel {
 
     public void setRobot(DrawObject robot) {
         robotID.setText(robotID.getText() + robot.getType() + " ");
-        setEnergon(robot.getEnergon(), robot.getShields());
+        setHealth(robot.getHealth(), robot.getShields());
         setBytecodesUsed(robot.getBytecodesUsed());
         setAttackDelay(robot.getAttackDelay());
         setMovementDelay(robot.getMovementDelay());
@@ -125,11 +125,11 @@ public class InfoPanel extends JPanel {
         }
     }
 
-    private void setEnergon(double amount, double shields) {
+    private void setHealth(double amount, double shields) {
         if (amount > Integer.MAX_VALUE / 2)
-            energon.setText(String.format(" Health: lots "));
+            health.setText(" Health: lots ");
         else
-            energon.setText(String.format(" Health: %.1f ", amount));
+            health.setText(String.format(" Health: %.1f ", amount));
     }
 
     private void setZombieInfectedTurns(int t) {

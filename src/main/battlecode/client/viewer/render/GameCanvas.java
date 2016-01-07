@@ -5,7 +5,6 @@ import battlecode.client.util.ImageFile;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Observable;
 import java.util.Observer;
 
 public final class GameCanvas extends BaseCanvas {
@@ -29,11 +28,11 @@ public final class GameCanvas extends BaseCanvas {
         this.gd = gd;
     }
 
-    protected BaseRenderer getRenderer() {
+    protected GameRenderer getRenderer() {
         return renderer;
     }
 
-    public void setRenderer(BaseRenderer r) {
+    public void setRenderer(GameRenderer r) {
         renderer = (GameRenderer) r;
 
         Observer observer = (o, arg) -> {
@@ -56,7 +55,7 @@ public final class GameCanvas extends BaseCanvas {
     }
 
     public static ImageFile bracketFile = null;
-    public final BaseRenderer bracketRenderer = new GameRenderer() {
+    public final GameRenderer bracketRenderer = new GameRenderer() {
 
         @Override
         public void draw(Graphics g) {
