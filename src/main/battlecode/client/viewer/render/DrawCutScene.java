@@ -4,7 +4,6 @@ import battlecode.client.util.ImageFile;
 import battlecode.common.Team;
 import battlecode.world.DominationFactor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -261,8 +260,4 @@ public class DrawCutScene {
     }
 
     public void fadeOut() {}
-
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
 }

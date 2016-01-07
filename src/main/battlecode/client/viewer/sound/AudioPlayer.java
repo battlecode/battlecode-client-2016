@@ -2,9 +2,6 @@ package battlecode.client.viewer.sound;
 
 import battlecode.client.viewer.GameStateTimeline;
 
-import java.util.Observable;
-import java.util.Observer;
-
 public class AudioPlayer {
 
     private AudioTimeline timeline;

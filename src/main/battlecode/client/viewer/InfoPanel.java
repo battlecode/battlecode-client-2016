@@ -9,16 +9,16 @@ import java.awt.*;
 public class InfoPanel extends JPanel {
 
     private static final long serialVersionUID = 0; // don't serialize
-    private JLabel[] indicatorStrings;
-    private JLabel robotID;
-    private JLabel bytecodes;
-    private JLabel movementDelay;
-    private JLabel attackDelay;
-    private JLabel energon;
-    private JLabel viperInfectedTurns;
-    private JLabel zombieInfectedTurns;
-    private JLabel location;
-    private GridBagConstraints layoutConstraints;
+    private final JLabel[] indicatorStrings;
+    private final JLabel robotID;
+    private final JLabel bytecodes;
+    private final JLabel movementDelay;
+    private final JLabel attackDelay;
+    private final JLabel energon;
+    private final JLabel viperInfectedTurns;
+    private final JLabel zombieInfectedTurns;
+    private final JLabel location;
+    private final GridBagConstraints layoutConstraints;
 
     public InfoPanel() {
         setLayout(new GridBagLayout());
@@ -127,7 +127,7 @@ public class InfoPanel extends JPanel {
 
     private void setEnergon(double amount, double shields) {
         if (amount > Integer.MAX_VALUE / 2)
-            energon.setText(String.format(" Health: lots "));
+            energon.setText(" Health: lots ");
         else
             energon.setText(String.format(" Health: %.1f ", amount));
     }

@@ -7,11 +7,11 @@ import java.util.*;
 
 public class GameStateTimeline<E extends GameState> extends Observable {
 
-    private GameStateFactory<E> gsf;
+    private final GameStateFactory<E> gsf;
     private List<E> keyFrames;
     private final int roundsPerKey;
 
-    protected BufferedMatch match;
+    protected final BufferedMatch match;
     private boolean active = false; // technically volatile, but we can be
     // lenient
 
@@ -51,11 +51,6 @@ public class GameStateTimeline<E extends GameState> extends Observable {
 
     public boolean isActive() {
         return active;
-    }
-
-    public boolean isFinished() {
-        return match.isFinished() && roundsProcessed >= match
-                .getRoundsAvailable();
     }
 
     public int getRoundsPerKey() {

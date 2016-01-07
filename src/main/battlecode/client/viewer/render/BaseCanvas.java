@@ -109,7 +109,7 @@ public abstract class BaseCanvas extends JPanel {
         getActionMap().put("jump", new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
-                BaseRenderer renderer = getRenderer();
+                GameRenderer renderer = getRenderer();
                 if (renderer != null) {
                     GameStateTimeline timeline = renderer.getTimeline();
                     String ac = e.getActionCommand();
@@ -143,7 +143,7 @@ public abstract class BaseCanvas extends JPanel {
         });
     }
 
-    protected abstract BaseRenderer getRenderer();
+    protected abstract GameRenderer getRenderer();
 
     public void setSpaceBarListener(Runnable runnable) {
         spaceBarListener = runnable;
@@ -151,7 +151,7 @@ public abstract class BaseCanvas extends JPanel {
 
     public abstract void setGraphicsDevice(GraphicsDevice gd);
 
-    public abstract void setRenderer(BaseRenderer renderer);
+    public abstract void setRenderer(GameRenderer renderer);
 
     public abstract void setTournamentMode();
 

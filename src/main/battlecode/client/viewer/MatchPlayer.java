@@ -14,7 +14,7 @@ import java.util.Observer;
 
 public class MatchPlayer implements Observer, ActionListener {
 
-    private MatchListener ml = new MatchListener() {
+    private final MatchListener ml = new MatchListener() {
 
         @Override
         public void headerReceived(BufferedMatch match) {
@@ -53,16 +53,16 @@ public class MatchPlayer implements Observer, ActionListener {
     private final MatchViewer viewer;
     private final Controller controller;
     private ClientProxy proxy;
-    private GameStateTimeline timeline;
-    private BufferedMatch match;
-    private javax.swing.Timer timer;
+    private final GameStateTimeline timeline;
+    private final BufferedMatch match;
+    private final javax.swing.Timer timer;
     private String label = "";
     // value that determines the delay in ticks between timer ticks
     private volatile static MatchPlayer currentPlayer = null;
     public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig()
             .getInt("bc.client.viewer-delay");
 
-    private int delta = DEFAULT_TIME_DELTA;
+    private final int delta = DEFAULT_TIME_DELTA;
     private int fastForward = 1;
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
@@ -250,7 +250,7 @@ public class MatchPlayer implements Observer, ActionListener {
                 timer.stop();
             }
             if (viewer != null) {
-                javax.swing.SwingUtilities.invokeLater(() -> viewer.setupViewer());
+                javax.swing.SwingUtilities.invokeLater(viewer::setupViewer);
             }
         }
     }

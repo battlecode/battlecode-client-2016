@@ -15,9 +15,9 @@ public class MetaGameLoop {
     private long previous = 0;
     private long realSkip = 10;
 
-    private int[] patterns = {0x10401040/*, 0x10443040, 0x10403040,
+    private final int[] patterns = {0x10401040/*, 0x10443040, 0x10403040,
     0x10443044*/};
-    private int[] fills = { /*0x50002222, 0x14214214,*/ 0x70707070 /*,
+    private final int[] fills = { /*0x50002222, 0x14214214,*/ 0x70707070 /*,
     0x32222222*/};
 
     private long startHit;

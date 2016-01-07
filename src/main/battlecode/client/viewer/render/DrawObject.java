@@ -42,8 +42,7 @@ public class DrawObject extends AbstractDrawObject {
     public static final Animation.AnimationType[] preDrawOrder = new
             Animation.AnimationType[]{TELEPORT};
     public static final Animation.AnimationType[] postDrawOrder = new
-            Animation.AnimationType[]{MORTAR_ATTACK,
-            MORTAR_EXPLOSION, ENERGON_TRANSFER};
+            Animation.AnimationType[]{ENERGON_TRANSFER};
 
     private final DrawState overallstate;
 
@@ -81,11 +80,6 @@ public class DrawObject extends AbstractDrawObject {
         super(currentRound, copy);
         img = copy.img;
         maxEnergon = copy.maxEnergon;
-        if (animations.containsKey(ENERGON_TRANSFER)) {
-            EnergonTransferAnim a = (EnergonTransferAnim) animations.get
-                    (ENERGON_TRANSFER);
-            a.setSource(this);
-        }
         overallstate = copy.overallstate;
     }
 
@@ -149,29 +143,6 @@ public class DrawObject extends AbstractDrawObject {
             } // oh well
         }
         g2.setTransform(pushed);
-    }
-
-    private static MapLocation origin = new MapLocation(0, 0);
-
-    private boolean inAngleRange(int dx, int dy, double cosHalfTheta) {
-        MapLocation dirVec = origin.add(dir);
-        int a = dirVec.x;
-        int b = dirVec.y;
-        int dotProd = a * dx + b * dy;
-        if (dotProd < 0) {
-            if (cosHalfTheta > 0) {
-                return false;
-            }
-        } else if (cosHalfTheta < 0) {
-            return true;
-        }
-        double rhs = cosHalfTheta * cosHalfTheta * (dx * dx + dy * dy) * (a *
-                a + b * b);
-        if (dotProd < 0) {
-            return (dotProd * dotProd <= rhs + 0.00001d);
-        } else {
-            return (dotProd * dotProd >= rhs - 0.00001d);
-        }
     }
 
     public void draw(Graphics2D g2, boolean focused, boolean lastRow, int
@@ -407,19 +378,9 @@ public class DrawObject extends AbstractDrawObject {
         }
     }
 
-    public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow, boolean drawXP) {
-        drawImmediate(g2, focused, false, lastRow, drawXP);
-    }
-
     public void drawImmediate(Graphics2D g2, boolean focused, boolean lastRow) {
         drawImmediate(g2, focused, false, lastRow, true);
     }
-
-    // used by the HUD
-    public void drawImmediateNoScale(Graphics2D g2, boolean focused, boolean lastRow) {
-        drawImmediate(g2, focused, true, lastRow);
-    }
-
 
     private BufferedImage getTypeSprite() {
         if (info.type.isBuilding) {
@@ -429,33 +390,11 @@ public class DrawObject extends AbstractDrawObject {
         }
     }
 
-    public void setTeam(Team team) {
-        super.setTeam(team);
-        img = ir.getResource(info, getAvatarPath(info), !info.type.isBuilding);
-    }
-
-    public void setMaxEnergon(double maxEnergon) {
-        this.maxEnergon = maxEnergon;
-    }
-
-
     public ExplosionAnim createDeathExplosionAnim(boolean unused) {
         if (isSuiciding) {
             return new SuicideAnim(); // a subclass of explosion
         } else {
             return new ExplosionAnim();
         }
-    }
-
-    public MortarAttackAnim createMortarAttackAnim(MapLocation target) {
-        return new MortarAttackAnim(loc, target);
-    }
-
-    public EnergonTransferAnim createEnergonTransferAnim(MapLocation loc, float amt, boolean isFlux) {
-        return new EnergonTransferAnim(this, loc, amt, isFlux);
-    }
-
-    public ExplosionAnim createMortarExplosionAnim(Animation mortarAttackAnim) {
-        return new ExplosionAnim(((MortarAttackAnim) mortarAttackAnim).getTargetLoc(), 1.8);
     }
 }

@@ -9,18 +9,17 @@ import java.awt.image.BufferedImage;
 
 public class DrawMap {
 
-    private int mapWidth;
-    private int mapHeight;
-    private Stroke gridStroke;
-    private int locPixelWidth = 32;
+    private final int mapWidth;
+    private final int mapHeight;
+    private final Stroke gridStroke;
+    private final int locPixelWidth = 32;
 
     // prerendered images
     private BufferedImage prerender;
 
     private BufferedImage mapBG;
 
-    private final int subtileHeight = 4; // 4 x 4
-    private final int roadTileCount = 3; // empty, full, rounded
+    private final static int subtileHeight = 4; // 4 x 4
 
     public DrawMap(battlecode.world.GameMap map) {
         mapWidth = map.getWidth();
@@ -86,11 +85,6 @@ public class DrawMap {
         }
     }
 
-
-    private int mapIndex(int x, int y, int sx, int sy) {
-        return (x * subtileHeight + sx) * mapHeight * subtileHeight
-                + (y * subtileHeight + sy);
-    }
 
     public void loadMapArt() {
         mapBG = (new ImageFile("art/map_bg.png")).image;

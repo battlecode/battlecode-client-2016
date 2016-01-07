@@ -21,7 +21,7 @@ public class MatchViewer {
     private boolean tournamentMode = false;
     private final BaseCanvas bc;
     private Config cfg = Config.getGlobalConfig();
-    private BaseRenderer br;
+    private GameRenderer br;
     private final AudioPlayer audio = new AudioPlayer();
     private InfoPanel info;
     private MinimapViewer minimap = null;
@@ -94,7 +94,7 @@ public class MatchViewer {
         bc.setSpaceBarListener(timer.getSpaceBarListener());
     }
 
-    public BaseRenderer setupViewer() {
+    public GameRenderer setupViewer() {
         if (proxy.isDebuggingAvailable()) {
             proxy.writeNotification(StartNotification.INSTANCE);
         }

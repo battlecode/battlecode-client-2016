@@ -9,8 +9,6 @@ import battlecode.client.viewer.render.Animation;
 import static battlecode.client.viewer.render.Animation.AnimationType.*;
 
 public abstract class AbstractDrawObject {
-    protected static int moveDelay;
-
     public static class RobotInfo {
 
         public final RobotType type;
@@ -79,13 +77,6 @@ public abstract class AbstractDrawObject {
 
     public abstract Animation createDeathExplosionAnim(boolean isSuicide);
 
-    public abstract Animation createMortarExplosionAnim(Animation
-                                                                mortarAttackAnim);
-
-    public abstract Animation createEnergonTransferAnim(MapLocation loc,
-                                                        float amt, boolean
-                                                                isFlux);
-
     protected String hats;
     protected RobotInfo info;
     protected MapLocation loc;
@@ -96,7 +87,6 @@ public abstract class AbstractDrawObject {
     protected double shields = 0;
     protected double flux = 0;
     protected double maxEnergon;
-    protected int totalActionRounds;
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
@@ -107,7 +97,6 @@ public abstract class AbstractDrawObject {
     protected boolean loaded = false;
     protected int regen = 0;
     protected int robotID;
-    protected Direction attackDir;
     protected boolean isSuiciding = false;
     protected int zombieInfectedTurns = 0;
     protected int viperInfectedTurns = 0;
@@ -116,7 +105,7 @@ public abstract class AbstractDrawObject {
     protected int currentRound = 0;
 
     protected LinkedList<Action> actions = null;
-    protected Map<Animation.AnimationType, Animation> animations =
+    protected final Map<Animation.AnimationType, Animation> animations =
             new EnumMap<Animation.AnimationType, Animation>
                     (Animation.AnimationType.class) {
 
@@ -134,18 +123,12 @@ public abstract class AbstractDrawObject {
                 return super.remove(key);
         }
     };
-    protected String[] indicatorStrings =
+    protected final String[] indicatorStrings =
             new String[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
-
-    public void setSuiciding(boolean is) {
-        isSuiciding = is;
-    }
 
     public void setDirection(Direction d) {
         dir = d;
     }
-
-    private static final double sq2 = Math.sqrt(2.);
 
     public int getID() {
         return robotID;
@@ -155,24 +138,12 @@ public abstract class AbstractDrawObject {
         return loc;
     }
 
-    public long getBroadcast() {
-        return broadcast;
-    }
-
-    public int broadcastRadius() {
-        return visualBroadcastRadius;
-    }
-
     public RobotType getType() {
         return info.type;
     }
 
     public Team getTeam() {
         return info.team;
-    }
-
-    public RobotType getRobotType() {
-        return info.type;
     }
 
     public float getDrawDX() {
@@ -195,20 +166,12 @@ public abstract class AbstractDrawObject {
         return loc;
     }
 
-    public Direction getDirection() {
-        return dir;
-    }
-
     public double getEnergon() {
         return energon;
     }
 
     public double getShields() {
         return shields;
-    }
-
-    public double getFlux() {
-        return flux;
     }
 
     public String getIndicatorString(int index) {
@@ -239,15 +202,6 @@ public abstract class AbstractDrawObject {
         return viperInfectedTurns;
     }
 
-    public void load() {
-        loaded = true;
-    }
-
-    public void unload(MapLocation loc) {
-        loaded = false;
-        setLocation(loc);
-    }
-
     public boolean inTransport() {
         return loaded;
     }
@@ -276,20 +230,8 @@ public abstract class AbstractDrawObject {
         this.energon = energon;
     }
 
-    public void setShields(double shields) {
-        this.shields = shields;
-    }
-
-    public void setFlux(double f) {
-        flux = f;
-    }
-
     public void setBuildDelay(int delay) {
         this.buildDelay = delay;
-    }
-
-    public void setTeam(Team team) {
-        info = new RobotInfo(info.type, team);
     }
 
     public void setString(int index, String newString) {
@@ -315,24 +257,12 @@ public abstract class AbstractDrawObject {
     public boolean isAlive() {
         Animation deathAnim = animations.get(Animation.AnimationType
                 .DEATH_EXPLOSION);
-        return deathAnim == null || deathAnim.isAlive()
-                || animations.get(Animation.AnimationType
-                .MORTAR_ATTACK) != null
-                || animations.get(Animation.AnimationType
-                .MORTAR_EXPLOSION) != null;
+        return deathAnim == null || deathAnim.isAlive();
     }
 
     public void setAttacking(MapLocation target) {
         actions.add(new Action(ActionType.ATTACKING, currentRound,
                 (int) info.type.attackDelay, target));
-        attackDir = dir;
-    }
-
-    public void setSupplyTransfer(AbstractDrawObject target,
-                                  double amount) {
-        Animation anim = createEnergonTransferAnim(target.getLocation(),
-                (float) amount, true);
-        animations.put(ENERGON_TRANSFER, anim);
     }
 
     public void setMoving(int delay) {
@@ -344,12 +274,6 @@ public abstract class AbstractDrawObject {
 
     public void setAction(int totalrounds, ActionType type) {
         actions.add(new Action(type, currentRound, totalrounds));
-    }
-
-    public void setAction(int totalrounds, ActionType type, MapLocation
-            target) {
-        actions.add(new Action(type, currentRound, totalrounds, target));
-
     }
 
     public void destroyUnit() {
@@ -380,20 +304,14 @@ public abstract class AbstractDrawObject {
         Iterator<Map.Entry<Animation.AnimationType, Animation>> it =
                 animations.entrySet().iterator();
         Map.Entry<Animation.AnimationType, Animation> entry;
-        Animation mortarExplosionAnim = null;
         while (it.hasNext()) {
             entry = it.next();
             entry.getValue().updateRound();
             if (!entry.getValue().isAlive()) {
-                if (entry.getKey() == MORTAR_ATTACK) {
-                    mortarExplosionAnim = createMortarExplosionAnim(entry.getValue());
-                }
                 if (entry.getKey() != DEATH_EXPLOSION)
                     it.remove();
             }
         }
-        if (mortarExplosionAnim != null)
-            animations.put(MORTAR_EXPLOSION, mortarExplosionAnim);
         currentRound++;
     }
 
@@ -409,10 +327,6 @@ public abstract class AbstractDrawObject {
             drawX = -dist * dir.dx;
             drawY = -dist * dir.dy;
         }
-    }
-
-    public void setPower(boolean b) {
-        turnedOn = b;
     }
 
     protected boolean isDoing(ActionType type) {

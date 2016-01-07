@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-public class GameRenderer extends BaseRenderer {
+public class GameRenderer {
 
     private BufferedMatch match;
     private GameStateTimeline<DrawState> timeline;
@@ -25,7 +25,6 @@ public class GameRenderer extends BaseRenderer {
     private int maxRounds = 0;
     private String mapName = "";
     private DebugState debugState;
-    private Font debugFont;
     private float spriteSize = RenderConfiguration.getInstance()
             .getSpriteSize();
     private float unitWidth, unitHeight; // size of gc in sprite [grid] units
@@ -34,7 +33,6 @@ public class GameRenderer extends BaseRenderer {
     private Dimension canvasSize = null;
     private final Rectangle2D.Float clipRect = new Rectangle2D.Float();
     private AffineTransform hudScale;
-    private FramerateTracker fps = new FramerateTracker(30);
     static private boolean loadedPrefsAlready = false;
     private final MatchListener ml = new MatchListener() {
 
@@ -57,7 +55,6 @@ public class GameRenderer extends BaseRenderer {
 
     public GameRenderer(BufferedMatch match) {
         this.match = match;
-        debugFont = new Font(null, Font.PLAIN, 2);
         ds = new DrawState();
 
         try {
@@ -348,6 +345,89 @@ public class GameRenderer extends BaseRenderer {
                     unitWidth), height / (spriteSize * unitHeight)));
             return new Dimension((int) Math.round(scale * spriteSize *
                     unitWidth), (int) Math.round(scale * spriteSize * unitHeight));
+        }
+    }
+
+    protected void skipRounds(int rounds) {
+        GameStateTimeline timeline = getTimeline();
+        int newRound = Math.max(Math.min(timeline.getRound() + rounds,
+                timeline.getNumRounds()), 0);
+        timeline.setRound(newRound);
+    }
+
+    protected final void toggleFastForward() {
+        MatchPlayer.getCurrent().speedup();
+        //MatchPlayer.getCurrent().toggleFastForward();
+    }
+
+    protected final void toggleSlowDown() {
+        MatchPlayer.getCurrent().slowdown();
+    }
+
+    @SuppressWarnings("empty")
+    public void handleAction(char actionCommand) {
+
+        actionCommand = Character.toUpperCase(actionCommand);
+
+        switch (actionCommand) {
+            case 'A':
+                RenderConfiguration.toggleSpawnRadii();
+                break;
+            case 'B':
+                RenderConfiguration.toggleBroadcast();
+                break;
+            case 'D':
+                RenderConfiguration.toggleDiscrete();
+                break;
+            case 'E':
+                RenderConfiguration.toggleEnergon();
+                break;
+            case 'F':
+                toggleFastForward();
+                break;
+            case 'G':
+                RenderConfiguration.toggleGridlines();
+                break;
+            case 'H':
+                RenderConfiguration.toggleActionLines();
+                break;
+            case 'I':
+                skipRounds(-50);
+                break;
+            case 'J':
+                toggleSlowDown();
+                break;
+            case 'K':
+                RenderConfiguration.toggleAttack();
+                break;
+            case 'M':
+                RenderConfiguration.toggleAmbientMusic();
+                break;
+            case 'L':
+                RenderConfiguration.toggleSupplyIndicators();
+                break;
+            case 'O':
+                RenderConfiguration.toggleShowHats();
+                break;
+            case 'R':
+                RenderConfiguration.toggleRangeHatch();
+                break;
+            case 'S':
+                skipRounds(100);
+                break;
+            case 'T':
+                RenderConfiguration.toggleSupplyTransfers();
+                break;
+            case 'U':
+                RenderConfiguration.toggleCows();
+                break;
+            case 'V':
+                RenderConfiguration.toggleIndicatorDots();
+                break;
+            case 'X':
+                RenderConfiguration.toggleExplosions();
+                break;
+            default:
         }
     }
 }

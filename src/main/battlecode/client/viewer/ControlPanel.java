@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Observable;
 import java.util.Observer;
@@ -20,18 +19,23 @@ public class ControlPanel extends JPanel
 
     private static final long serialVersionUID = 0; // don't serialize
     private MatchPlayer player;
-    private JPanel panel;
-    private JLabel label;
-    private JButton start, play, end, next, back, step;
-    private JFormattedTextField stepSizeField;
-    private NumberFormat stepSizeFmt = NumberFormat.getNumberInstance();
-    private JSlider slider;
+    private final JPanel panel;
+    private final JLabel label;
+    private final JButton start;
+    private final JButton play;
+    private final JButton end;
+    private final JButton next;
+    private final JButton back;
+    private final JButton step;
+    private final JFormattedTextField stepSizeField;
+    private final NumberFormat stepSizeFmt = NumberFormat.getNumberInstance();
+    private final JSlider slider;
     private boolean setSliderPrecise = false;
-    private String matchCount = "";
+    private final String matchCount = "";
     private final ImageIcon playIcon;
     private final ImageIcon pauseIcon;
     private InfoPanel infoPanel = null;
-    private Observer timelineObserver = new Observer() {
+    private final Observer timelineObserver = new Observer() {
 
         public void update(Observable o, Object obj) {
             GameStateTimeline gst = (GameStateTimeline) o;

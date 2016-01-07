@@ -72,7 +72,8 @@ public enum ActionType {
         this.hasMovementCooldown = hasMovementCooldown;
     }
 
-    private boolean hasAttackCooldown, hasMovementCooldown;
+    private final boolean hasAttackCooldown;
+    private final boolean hasMovementCooldown;
 
     public boolean hasAttackCooldown() {
         return hasAttackCooldown;
