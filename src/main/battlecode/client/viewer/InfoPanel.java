@@ -14,7 +14,7 @@ public class InfoPanel extends JPanel {
     private final JLabel bytecodes;
     private final JLabel movementDelay;
     private final JLabel attackDelay;
-    private final JLabel energon;
+    private final JLabel health;
     private final JLabel viperInfectedTurns;
     private final JLabel zombieInfectedTurns;
     private final JLabel location;
@@ -33,8 +33,8 @@ public class InfoPanel extends JPanel {
         robotID = newLabel();
         forceMinimumSize(robotID, " Robot 10000 NOISETOWER ");
         layoutConstraints.gridx++;
-        energon = newLabel();
-        forceMinimumSize(energon, " Health: 1000.0 ");
+        health = newLabel();
+        forceMinimumSize(health, " Health: 1000.0 ");
         layoutConstraints.gridx++;
         movementDelay = newLabel();
         forceMinimumSize(movementDelay, " Core delay: 100.0 ");
@@ -110,7 +110,7 @@ public class InfoPanel extends JPanel {
 
     public void setRobot(DrawObject robot) {
         robotID.setText(robotID.getText() + robot.getType() + " ");
-        setEnergon(robot.getEnergon(), robot.getShields());
+        setHealth(robot.getHealth(), robot.getShields());
         setBytecodesUsed(robot.getBytecodesUsed());
         setAttackDelay(robot.getAttackDelay());
         setMovementDelay(robot.getMovementDelay());
@@ -125,11 +125,11 @@ public class InfoPanel extends JPanel {
         }
     }
 
-    private void setEnergon(double amount, double shields) {
+    private void setHealth(double amount, double shields) {
         if (amount > Integer.MAX_VALUE / 2)
-            energon.setText(" Health: lots ");
+            health.setText(" Health: lots ");
         else
-            energon.setText(String.format(" Health: %.1f ", amount));
+            health.setText(String.format(" Health: %.1f ", amount));
     }
 
     private void setZombieInfectedTurns(int t) {

@@ -47,7 +47,7 @@ public abstract class AbstractDrawObject {
         this(currentRound, copy.info.type, copy.info.team, copy.getID());
         loc = copy.loc;
         dir = copy.dir;
-        energon = copy.energon;
+        health = copy.health;
         shields = copy.shields;
         flux = copy.flux;
         moving = copy.moving;
@@ -83,10 +83,10 @@ public abstract class AbstractDrawObject {
     protected Direction dir;
     protected float drawX = 0, drawY = 0;
     protected int moving = 0;
-    protected double energon = 0;
+    protected double health = 0;
     protected double shields = 0;
     protected double flux = 0;
-    protected double maxEnergon;
+    protected double maxHealth;
     protected int broadcast = 0;
     protected long controlBits = 0;
     protected int bytecodesUsed = 0;
@@ -166,8 +166,8 @@ public abstract class AbstractDrawObject {
         return loc;
     }
 
-    public double getEnergon() {
-        return energon;
+    public double getHealth() {
+        return health;
     }
 
     public double getShields() {
@@ -226,8 +226,8 @@ public abstract class AbstractDrawObject {
         this.viperInfectedTurns = viperInfectedTurns;
     }
 
-    public void setEnergon(double energon) {
-        this.energon = energon;
+    public void setHealth(double health) {
+        this.health = health;
     }
 
     public void setBuildDelay(int delay) {
@@ -277,7 +277,7 @@ public abstract class AbstractDrawObject {
     }
 
     public void destroyUnit() {
-        energon = 0;
+        health = 0;
         shields = 0;
         zombieInfectedTurns = 0;
         viperInfectedTurns = 0;

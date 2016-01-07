@@ -13,7 +13,7 @@ public class RenderConfiguration {
     private static boolean broadcast = true;
     private static boolean attack = true;
     private static boolean discrete = true;
-    private static boolean energon = true;
+    private static boolean health = true;
     private static boolean gridlines = true;
     private static boolean explosions = true;
     private static boolean rangeHatch = false;
@@ -68,8 +68,8 @@ public class RenderConfiguration {
         discrete = !discrete;
     }
 
-    public static void toggleEnergon() {
-        energon = !energon;
+    public static void toggleHealth() {
+        health = !health;
     }
 
     public static void toggleGridlines() {
@@ -147,8 +147,8 @@ public class RenderConfiguration {
         return discrete;
     }
 
-    public static boolean showEnergon() {
-        return energon;
+    public static boolean showHealth() {
+        return health;
     }
 
     public static boolean showGridlines() {

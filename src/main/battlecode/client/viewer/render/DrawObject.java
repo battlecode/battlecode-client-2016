@@ -71,7 +71,7 @@ public class DrawObject extends AbstractDrawObject {
                       DrawState state) {
         super(currentRound, type, team, id);
         img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
-        maxEnergon = type.maxHealth;
+        maxHealth = type.maxHealth;
         overallstate = state;
     }
 
@@ -79,7 +79,7 @@ public class DrawObject extends AbstractDrawObject {
     public DrawObject(int currentRound, DrawObject copy) {
         super(currentRound, copy);
         img = copy.img;
-        maxEnergon = copy.maxEnergon;
+        maxHealth = copy.maxHealth;
         overallstate = copy.overallstate;
     }
 
@@ -254,39 +254,19 @@ public class DrawObject extends AbstractDrawObject {
                     a.target.y - loc.y);
             g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
                     target.x + 0.5, target.y + 0.5));
-            // old code to draw HQ attack
-        /*
-        BufferedImage crosshairImage;
-		if (getTeam() == Team.A) {
-		    crosshairImage = crosshair.image;
-		} else {
-		    crosshairImage = crosshairBlue.image;
-		}
-		if (crosshairImage != null) {
-		    AffineTransform trans = AffineTransform.getTranslateInstance
-		    (target.x, target.y);
-		    trans.scale(1.0 / crosshairImage.getWidth(), 1.0 / crosshairImage
-		    .getHeight());
-		    g2.drawImage(crosshairImage, trans, null);
-		}
-
-		g2.draw(new Line2D.Double(getDrawDX() + 0.5, getDrawDY() + 0.5,
-					  target.x + 0.5, target.y + 0.5));
-		break;
-        */
         }
 
     }
 
     public void drawStatusBars(Graphics2D g2, boolean focused, boolean
             lastRow, boolean drawXP) {
-        boolean showEnergon = RenderConfiguration.showEnergon() || focused;
-        if (showEnergon) {
+        boolean showHealth = RenderConfiguration.showHealth() || focused;
+        if (showHealth) {
             Rectangle2D.Float rect = new Rectangle2D.Float(0, lastRow ? 0.85f
                     : 1, 1, 0.15f);
             g2.setColor(Color.BLACK);
             g2.fill(rect);
-            float frac = Math.min((float) (energon / maxEnergon), 1);
+            float frac = Math.min((float) (health / maxHealth), 1);
             rect.width = frac;
             if (frac < 0)
                 frac = 0;

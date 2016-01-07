@@ -165,7 +165,7 @@ public class DrawState extends GameState {
         int team = robot.getTeam().ordinal();
 
         if (team < 2) {
-            teamHP[team] -= getRobot(s.getObjectID()).getEnergon();
+            teamHP[team] -= getRobot(s.getObjectID()).getHealth();
         }
 
         robot.destroyUnit();
@@ -230,7 +230,7 @@ public class DrawState extends GameState {
         putRobot(s.getRobotID(), spawn);
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
-            teamHP[team] += getRobot(s.getRobotID()).getEnergon();
+            teamHP[team] += getRobot(s.getRobotID()).getHealth();
         }
 
         return spawn;
@@ -273,7 +273,7 @@ public class DrawState extends GameState {
         for (int i = 0; i < robotIDs.length; i++) {
             DrawObject robot = getRobot(robotIDs[i]);
             if (robot != null) {
-                robot.setEnergon(health[i]);
+                robot.setHealth(health[i]);
             }
         }
     }

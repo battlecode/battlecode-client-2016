@@ -380,7 +380,7 @@ public class GameRenderer {
                 RenderConfiguration.toggleDiscrete();
                 break;
             case 'E':
-                RenderConfiguration.toggleEnergon();
+                RenderConfiguration.toggleHealth();
                 break;
             case 'F':
                 toggleFastForward();
