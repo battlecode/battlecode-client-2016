@@ -195,7 +195,16 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     protected void setTeamColor(Graphics2D g2) {
-        g2.setColor(getTeam() == Team.A ? Color.RED : Color.BLUE);
+    	Team team = getTeam();
+    	if(team == Team.A) {
+    		g2.setColor(Color.RED);
+    	} else if (team == Team.B) {
+    		g2.setColor(Color.BLUE);
+    	} else if (team == Team.ZOMBIE) {
+    		g2.setColor(Color.GREEN);
+    	} else {
+    		g2.setColor(Color.GRAY);
+    	}
     }
 
 
