@@ -371,7 +371,7 @@ public class GameRenderer {
 
         switch (actionCommand) {
             case 'A':
-                RenderConfiguration.toggleDetails();
+                RenderConfiguration.toggleSpawnRadii();
                 break;
             case 'B':
                 RenderConfiguration.toggleBroadcast();
@@ -419,7 +419,7 @@ public class GameRenderer {
                 RenderConfiguration.toggleSupplyTransfers();
                 break;
             case 'U':
-                RenderConfiguration.toggleParts();
+                RenderConfiguration.toggleCows();
                 break;
             case 'V':
                 RenderConfiguration.toggleIndicatorDots();
