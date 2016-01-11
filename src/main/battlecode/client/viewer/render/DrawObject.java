@@ -303,8 +303,6 @@ public class DrawObject extends AbstractDrawObject {
                     infection = pg.getViperInfectionImage();
                 }
                 AffineTransform trans = new AffineTransform();
-                System.out.println(infection.getWidth() + " " + infection
-                        .getHeight());
                 trans.scale(1.0 / infection.getWidth(), 1.0 /
                         infection.getHeight());
                 g2.drawImage(infection, trans, null);
