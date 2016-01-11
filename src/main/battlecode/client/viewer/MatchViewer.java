@@ -151,7 +151,7 @@ public class MatchViewer {
             minimap.setTimeline(br.getTimeline());
         }
 
-        if (cfg.getBoolean("bc.client.detail") != RenderConfiguration
+        if (cfg.getBoolean("bc.client.details") != RenderConfiguration
                 .showDetails()) {
             RenderConfiguration.toggleDetails();
         }
