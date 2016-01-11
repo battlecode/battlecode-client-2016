@@ -10,7 +10,7 @@ public class RenderConfiguration {
 
     private static RenderConfiguration instance = null;
 
-    private static boolean details = false;
+    private static boolean details = true;
     private static boolean broadcast = true;
     private static boolean attack = true;
     private static boolean discrete = true;
@@ -125,7 +125,7 @@ public class RenderConfiguration {
         }
     }
 
-    public static boolean showDetails() { return !details; }
+    public static boolean showDetails() { return details; }
 
     public static boolean showBroadcast() {
         return broadcast;
