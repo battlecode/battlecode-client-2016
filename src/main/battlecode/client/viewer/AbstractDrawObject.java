@@ -1,5 +1,6 @@
 package battlecode.client.viewer;
 
+import battlecode.client.viewer.render.DrawObject;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
@@ -76,6 +77,7 @@ public abstract class AbstractDrawObject {
     }
 
     public abstract Animation createDeathExplosionAnim(boolean isSuicide);
+    public abstract Animation createTransferAnim(MapLocation target);
 
     protected String hats;
     protected RobotInfo info;
@@ -254,6 +256,11 @@ public abstract class AbstractDrawObject {
         movementDelay = delay;
     }
 
+    public void setTransfer(MapLocation target) {
+        Animation anim = createTransferAnim(target);
+        animations.put(TRANSFER, anim);
+    }
+
     public boolean isAlive() {
         Animation deathAnim = animations.get(Animation.AnimationType
                 .DEATH_EXPLOSION);
@@ -282,7 +289,7 @@ public abstract class AbstractDrawObject {
         zombieInfectedTurns = 0;
         viperInfectedTurns = 0;
         animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
-        animations.remove(ENERGON_TRANSFER);
+        animations.remove(TRANSFER);
     }
 
     public void updateRound() {

@@ -41,7 +41,7 @@ public class DrawObject extends AbstractDrawObject {
     public static final Animation.AnimationType[] preDrawOrder = new
             Animation.AnimationType[]{TELEPORT};
     public static final Animation.AnimationType[] postDrawOrder = new
-            Animation.AnimationType[]{ENERGON_TRANSFER};
+            Animation.AnimationType[]{TRANSFER};
 
     private final DrawState overallstate;
 
@@ -382,5 +382,9 @@ public class DrawObject extends AbstractDrawObject {
         } else {
             return new ExplosionAnim();
         }
+    }
+
+    public TransferAnim createTransferAnim(MapLocation target) {
+        return new TransferAnim(this, target);
     }
 }

@@ -32,7 +32,7 @@ public abstract class Animation implements Cloneable {
     public abstract Object clone();
 
     public enum AnimationType {
-        ENERGON_TRANSFER,
+        TRANSFER,
         DEATH_EXPLOSION,
         AURA,
         TELEPORT;
@@ -43,7 +43,7 @@ public abstract class Animation implements Cloneable {
                     return RenderConfiguration.showExplosions();
                 case AURA:
                     return RenderConfiguration.showSpawnRadii();
-                case ENERGON_TRANSFER:
+                case TRANSFER:
                     return true;
                 default:
                     return false;

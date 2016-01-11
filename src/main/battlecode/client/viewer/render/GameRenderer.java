@@ -416,7 +416,7 @@ public class GameRenderer {
                 skipRounds(100);
                 break;
             case 'T':
-                RenderConfiguration.toggleSupplyTransfers();
+                RenderConfiguration.toggleTransfers();
                 break;
             case 'U':
                 RenderConfiguration.toggleParts();

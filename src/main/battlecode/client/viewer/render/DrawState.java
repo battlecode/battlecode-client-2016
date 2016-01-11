@@ -279,6 +279,13 @@ public class DrawState extends GameState {
     }
 
     @SuppressWarnings("unused")
+    public void visitRepairSignal(RepairSignal s) {
+        DrawObject from = getRobot(s.getRobotID());
+        DrawObject to = getRobot(s.getRepairedRobotID());
+        from.setTransfer(to.getLoc());
+    }
+
+    @SuppressWarnings("unused")
     public void visitRobotDelaySignal(RobotDelaySignal s) {
         int[] robotIDs = s.getRobotIDs();
         double[] coreDelays = s.getCoreDelays();

@@ -10,7 +10,7 @@ public class RenderConfiguration {
 
     private static RenderConfiguration instance = null;
 
-    private static boolean details = false;
+    private static boolean details = true;
     private static boolean broadcast = true;
     private static boolean attack = true;
     private static boolean discrete = true;
@@ -24,7 +24,7 @@ public class RenderConfiguration {
     private static boolean hats = true;
     private static boolean parts = true;
     private static int indicatorDotToggles;
-    private static boolean supplyTransfers = true;
+    private static boolean transfers = true;
     private static boolean supplyIndicators = true;
 
     private static boolean tournamentMode = false;
@@ -101,8 +101,8 @@ public class RenderConfiguration {
         indicatorDotToggles++;
     }
 
-    public static void toggleSupplyTransfers() {
-        supplyTransfers = !supplyTransfers;
+    public static void toggleTransfers() {
+        transfers = !transfers;
     }
 
     public static void toggleSupplyIndicators() {
@@ -173,6 +173,10 @@ public class RenderConfiguration {
 
     public static boolean showIndicatorDots(Team t) {
         return ((indicatorDotToggles >> t.ordinal()) & 1) != 0;
+    }
+
+    public static boolean showTransfers() {
+        return transfers;
     }
 
     public static boolean playAmbientMusic() {
