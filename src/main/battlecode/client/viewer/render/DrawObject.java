@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
+import battlecode.client.util.PrerenderedGraphics;
 import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
@@ -36,6 +37,8 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile hatchAttack = new ImageFile
             ("art/hatch_attack.png");
     private static final ImageFile creep = new ImageFile("art/creep.png");
+    private static final PrerenderedGraphics pg = new PrerenderedGraphics();
+
     private ImageFile img;
 
     public static final Animation.AnimationType[] preDrawOrder = new
@@ -295,30 +298,16 @@ public class DrawObject extends AbstractDrawObject {
 
         if (RenderConfiguration.showInfectionIndicators()) {
             if (getViperInfectedTurns() > 0 || getZombieInfectedTurns() > 0) {
-                // If viper infected (or both), use purple.
-                // If zombie infected, use green.
-
-                Color infectionColor = new Color(0.5f, 1.0f, 0.5f, 1.0f);
+                BufferedImage infection = pg.getZombieInfectionImage();
                 if (getViperInfectedTurns() > 0) {
-                    infectionColor = new Color(0.5f, 0.15f, 0.8f, 1.0f);
+                    infection = pg.getViperInfectionImage();
                 }
-
-                g2.setColor(infectionColor);
-                Rectangle2D.Float rectLeft;
-                rectLeft = new Rectangle2D.Float(0.02f,0,0.1f, 1);
-                g2.fill(rectLeft);
-                rectLeft = new Rectangle2D.Float(0.12f,0,0.2f,0.1f);
-                g2.fill(rectLeft);
-                rectLeft = new Rectangle2D.Float(0.12f,0.9f,0.2f,0.1f);
-                g2.fill(rectLeft);
-
-                Rectangle2D.Float rectRight;
-                rectRight = new Rectangle2D.Float(0.88f,0,0.1f, 1);
-                g2.fill(rectRight);
-                rectRight = new Rectangle2D.Float(0.68f,0,0.2f,0.1f);
-                g2.fill(rectRight);
-                rectRight = new Rectangle2D.Float(0.68f,0.9f,0.2f,0.1f);
-                g2.fill(rectRight);
+                AffineTransform trans = new AffineTransform();
+                System.out.println(infection.getWidth() + " " + infection
+                        .getHeight());
+                trans.scale(1.0 / infection.getWidth(), 1.0 /
+                        infection.getHeight());
+                g2.drawImage(infection, trans, null);
             }
         }
     }
