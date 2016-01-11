@@ -18,7 +18,7 @@ public class DebugState extends Observable implements MouseListener,
         MouseMotionListener {
 
     private static final String CONTROL_BITS_CMD = "Set control bits";
-    private static final String KILL_ROBOT_CMD = "Suicide";
+    private static final String KILL_ROBOT_CMD = "Kill";
 
     private final ClientProxy proxy;
 
@@ -60,6 +60,8 @@ public class DebugState extends Observable implements MouseListener,
                 popupMenu.add(killRobotItem);
                 popupMenu.add(createTeamSpawnMenu(Team.A));
                 popupMenu.add(createTeamSpawnMenu(Team.B));
+                popupMenu.add(createTeamSpawnMenu(Team.NEUTRAL));
+                popupMenu.add(createTeamSpawnMenu(Team.ZOMBIE));
             }
         });
     }
@@ -108,8 +110,22 @@ public class DebugState extends Observable implements MouseListener,
     }
 
     private JMenu createTeamSpawnMenu(Team team) {
-        JMenu menu = new JMenu(team == Team.A ? "Spawn red" : "Spawn blue");
+        String menuString = "Spawn ";
+        switch (team) {
+            case A: menuString += "red"; break;
+            case B: menuString += "blue"; break;
+            case NEUTRAL: menuString += "neutral"; break;
+            case ZOMBIE: menuString += "zombie"; break;
+            default: break;
+        }
+        JMenu menu = new JMenu(menuString);
         for (RobotType type : RobotType.values()) {
+            if (type.isZombie && team != Team.ZOMBIE) {
+                continue;
+            }
+            if (!type.isZombie && team == Team.ZOMBIE) {
+                continue;
+            }
             menu.add(createMenuItem(team, type));
         }
         return menu;
@@ -125,7 +141,7 @@ public class DebugState extends Observable implements MouseListener,
     private JMenuItem createMenuItem(Team team, RobotType type) {
         JMenuItem menuItem = new JMenuItem(type.toString().toLowerCase());
         menuItem.addActionListener(menuListener);
-        menuItem.setActionCommand(team.toString() + type.toString());
+        menuItem.setActionCommand(team.toString() + " " + type.toString());
         return menuItem;
     }
 
@@ -135,7 +151,8 @@ public class DebugState extends Observable implements MouseListener,
         }
         controlBitsItem.setEnabled(targetID != -1);
         killRobotItem.setEnabled(targetID != -1);
-        spawnLoc = new MapLocation(Math.round(p.x), Math.round(p.y));
+        spawnLoc = new MapLocation((int) Math.floor(p.x), (int) Math.floor(p
+                .y));
         popupMenu.show(e.getComponent(), e.getX(), e.getY());
         return true;
     }
@@ -164,8 +181,9 @@ public class DebugState extends Observable implements MouseListener,
                 proxy.writeNotification(new InjectNotification(new DeathSignal(targetID)));
                 break;
             default:
-                Team team = Enum.valueOf(Team.class, cmd.substring(0, 1));
-                RobotType type = Enum.valueOf(RobotType.class, cmd.substring(1));
+                String[] split = cmd.split(" ");
+                Team team = Enum.valueOf(Team.class, split[0]);
+                RobotType type = Enum.valueOf(RobotType.class, split[1]);
                 proxy.writeNotification(new InjectNotification(new SpawnSignal(spawnLoc, type, team, null, 0)));
                 break;
         }
