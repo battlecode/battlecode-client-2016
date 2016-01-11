@@ -25,7 +25,7 @@ public class RenderConfiguration {
     private static boolean parts = true;
     private static int indicatorDotToggles;
     private static boolean supplyTransfers = true;
-    private static boolean supplyIndicators = true;
+    private static boolean infectionIndicators = true;
 
     private static boolean tournamentMode = false;
 
@@ -105,8 +105,8 @@ public class RenderConfiguration {
         supplyTransfers = !supplyTransfers;
     }
 
-    public static void toggleSupplyIndicators() {
-        supplyIndicators = !supplyIndicators;
+    public static void toggleInfectionIndicators() {
+        infectionIndicators = !infectionIndicators;
     }
 
     public static void toggleParts() {
@@ -173,6 +173,10 @@ public class RenderConfiguration {
 
     public static boolean showIndicatorDots(Team t) {
         return ((indicatorDotToggles >> t.ordinal()) & 1) != 0;
+    }
+
+    public static boolean showInfectionIndicators() {
+        return infectionIndicators;
     }
 
     public static boolean playAmbientMusic() {

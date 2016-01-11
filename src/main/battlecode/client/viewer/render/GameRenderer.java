@@ -404,7 +404,7 @@ public class GameRenderer {
                 RenderConfiguration.toggleAmbientMusic();
                 break;
             case 'L':
-                RenderConfiguration.toggleSupplyIndicators();
+                RenderConfiguration.toggleInfectionIndicators();
                 break;
             case 'O':
                 RenderConfiguration.toggleShowHats();
