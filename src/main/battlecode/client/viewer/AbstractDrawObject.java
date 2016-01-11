@@ -92,7 +92,6 @@ public abstract class AbstractDrawObject {
     protected int bytecodesUsed = 0;
     protected double attackDelay = 0;
     protected double movementDelay = 0;
-    protected final int visualBroadcastRadius = 2;
     protected boolean turnedOn = true;
     protected boolean loaded = false;
     protected int regen = 0;
@@ -215,7 +214,7 @@ public abstract class AbstractDrawObject {
     }
 
     public void setBroadcast() {
-        broadcast++;
+        broadcast = 3;
     }
 
     public void setZombieInfectedTurns(int zombieInfectedTurns) {
@@ -298,7 +297,7 @@ public abstract class AbstractDrawObject {
 
         updateDrawLoc();
 
-        broadcast = (broadcast << 1) & 0x000FFFFF;
+        broadcast = Math.max(0, broadcast - 1);
         if (regen > 0) regen--;
 
         Iterator<Map.Entry<Animation.AnimationType, Animation>> it =

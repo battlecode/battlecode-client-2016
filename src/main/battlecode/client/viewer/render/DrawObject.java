@@ -367,16 +367,13 @@ public class DrawObject extends AbstractDrawObject {
 
     // draw translated to robot location
     public void drawBroadcast(Graphics2D g2) {
-        if (broadcast != 0x00 && RenderConfiguration.showBroadcast()) {
-            g2.setStroke(broadcastStroke);
-            double drdR = visualBroadcastRadius * 0.05; // dradius/dRound
-            for (int i = 0; i < 15; i++) {
-                if ((broadcast & (1 << i)) != 0x00) {
-                    double r = i * drdR;
-                    g2.setColor(new Color(1, 0, 1, 0.05f * (15 - i)));
-                    g2.draw(new Ellipse2D.Double(0.5 - r, 0.5 - r, 2 * r, 2 * r));
-                }
-            }
+        if (broadcast > 0 && RenderConfiguration.showBroadcast()) {
+            BufferedImage broadcast = pg.getBroadcastImage();
+            AffineTransform trans = new AffineTransform();
+            trans.translate(-1.0f, -1.0f);
+            trans.scale(3.0 / broadcast.getWidth(), 3.0 /
+                    broadcast.getHeight());
+            g2.drawImage(broadcast, trans, null);
         }
     }
 

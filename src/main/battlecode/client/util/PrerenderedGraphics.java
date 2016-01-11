@@ -3,6 +3,7 @@ package battlecode.client.util;
 import battlecode.client.viewer.render.RenderConfiguration;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -10,6 +11,8 @@ import java.awt.image.BufferedImage;
  * A class that pre-renders images so that we don't have to draw them later.
  */
 public class PrerenderedGraphics {
+    private static final Stroke thinStroke = new BasicStroke(0.05f);
+
     private BufferedImage broadcastImage;
     private BufferedImage zombieInfectionImage;
     private BufferedImage viperInfectionImage;
@@ -19,27 +22,34 @@ public class PrerenderedGraphics {
     }
 
     public void prerender(float spriteSize) {
-        prerenderBroadcastImage(RenderConfiguration.getInstance().getSpriteSize
+        prerenderBroadcastImage((int) RenderConfiguration.getInstance()
+                .getSpriteSize
                 ());
-        prerenderInfectionImages(RenderConfiguration.getInstance()
+        prerenderInfectionImages((int) RenderConfiguration.getInstance()
                 .getSpriteSize());
     }
 
-    public void prerenderBroadcastImage(float spriteSize) {
-        broadcastImage = new BufferedImage((int) Math.ceil(spriteSize),
-                (int) Math.ceil(spriteSize), BufferedImage.TYPE_INT_ARGB);
+    public void prerenderBroadcastImage(int spriteSize) {
+        broadcastImage = new BufferedImage(3 * spriteSize, 3 * spriteSize, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = broadcastImage.createGraphics();
+        g2.setStroke(thinStroke);
+        g2.setColor(new Color(1, 0, 1, 0.75f));
+        for (int i = 3; i <= 5; i++) {
+            double r = i * 0.2 * spriteSize;
+            g2.draw(new Ellipse2D.Double(1.5 * spriteSize - r, 1.5 * spriteSize
+                    - r, 2 * r, 2 * r));
+        }
         g2.dispose();
     }
 
-    public void prerenderInfectionImages(float spriteSize) {
+    public void prerenderInfectionImages(int spriteSize) {
         Color green = new Color(0.5f, 1.0f, 0.5f, 1.0f);
         Color purple = new Color(0.5f, 0.15f, 0.8f, 1.0f);
         zombieInfectionImage = getInfectionImage(spriteSize, green);
         viperInfectionImage = getInfectionImage(spriteSize, purple);
     }
 
-    public BufferedImage getInfectionImage(float spriteSize, Color
+    public BufferedImage getInfectionImage(int spriteSize, Color
         infectionColor) {
         BufferedImage result = new BufferedImage((int) Math.ceil(spriteSize),
                 (int) Math.ceil(spriteSize), BufferedImage.TYPE_INT_ARGB);
