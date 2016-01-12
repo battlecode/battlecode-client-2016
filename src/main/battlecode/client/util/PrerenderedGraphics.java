@@ -13,36 +13,43 @@ public class PrerenderedGraphics {
     private BufferedImage broadcastImage;
     private BufferedImage zombieInfectionImage;
     private BufferedImage viperInfectionImage;
+    private int spriteSize = 0;
 
     public PrerenderedGraphics() {
-        prerender(RenderConfiguration.getInstance().getSpriteSize());
+        updateSpriteSize();
     }
 
-    public void prerender(float spriteSize) {
-        prerenderBroadcastImage(RenderConfiguration.getInstance().getSpriteSize
-                ());
-        prerenderInfectionImages(RenderConfiguration.getInstance()
-                .getSpriteSize());
+    public void updateSpriteSize() {
+        if (spriteSize != (int) RenderConfiguration.getInstance()
+                .getSpriteSize()) {
+            spriteSize = (int) RenderConfiguration.getInstance()
+                    .getSpriteSize();
+            prerender();
+        }
     }
 
-    public void prerenderBroadcastImage(float spriteSize) {
-        broadcastImage = new BufferedImage((int) Math.ceil(spriteSize),
-                (int) Math.ceil(spriteSize), BufferedImage.TYPE_INT_ARGB);
+    public void prerender() {
+        prerenderBroadcastImage();
+        prerenderInfectionImages();
+    }
+
+    public void prerenderBroadcastImage() {
+        broadcastImage = new BufferedImage(spriteSize, spriteSize,
+                BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = broadcastImage.createGraphics();
         g2.dispose();
     }
 
-    public void prerenderInfectionImages(float spriteSize) {
+    public void prerenderInfectionImages() {
         Color green = new Color(0.5f, 1.0f, 0.5f, 1.0f);
         Color purple = new Color(0.5f, 0.15f, 0.8f, 1.0f);
-        zombieInfectionImage = getInfectionImage(spriteSize, green);
-        viperInfectionImage = getInfectionImage(spriteSize, purple);
+        zombieInfectionImage = getInfectionImage(green);
+        viperInfectionImage = getInfectionImage(purple);
     }
 
-    public BufferedImage getInfectionImage(float spriteSize, Color
-        infectionColor) {
-        BufferedImage result = new BufferedImage((int) Math.ceil(spriteSize),
-                (int) Math.ceil(spriteSize), BufferedImage.TYPE_INT_ARGB);
+    public BufferedImage getInfectionImage(Color infectionColor) {
+        BufferedImage result = new BufferedImage(spriteSize,
+                spriteSize, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = result.createGraphics();
 
         g2.setColor(infectionColor);
@@ -73,14 +80,17 @@ public class PrerenderedGraphics {
     }
 
     public BufferedImage getBroadcastImage() {
+        updateSpriteSize();
         return broadcastImage;
     }
 
     public BufferedImage getZombieInfectionImage() {
+        updateSpriteSize();
         return zombieInfectionImage;
     }
 
     public BufferedImage getViperInfectionImage() {
+        updateSpriteSize();
         return viperInfectionImage;
     }
 }
