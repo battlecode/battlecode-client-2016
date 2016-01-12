@@ -2,6 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
+import battlecode.client.util.PrerenderedGraphics;
 import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
@@ -36,6 +37,8 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile hatchAttack = new ImageFile
             ("art/hatch_attack.png");
     private static final ImageFile creep = new ImageFile("art/creep.png");
+    private static final PrerenderedGraphics pg = new PrerenderedGraphics();
+
     private ImageFile img;
 
     public static final Animation.AnimationType[] preDrawOrder = new
@@ -291,6 +294,19 @@ public class DrawObject extends AbstractDrawObject {
             rect.width = ((float) aliveRounds) / buildDelay;
             g2.setColor(new Color(1f, 0f, 0f));
             g2.fill(rect);
+        }
+
+        if (RenderConfiguration.showInfectionIndicators()) {
+            if (getViperInfectedTurns() > 0 || getZombieInfectedTurns() > 0) {
+                BufferedImage infection = pg.getZombieInfectionImage();
+                if (getViperInfectedTurns() > 0) {
+                    infection = pg.getViperInfectionImage();
+                }
+                AffineTransform trans = new AffineTransform();
+                trans.scale(1.0 / infection.getWidth(), 1.0 /
+                        infection.getHeight());
+                g2.drawImage(infection, trans, null);
+            }
         }
     }
 
