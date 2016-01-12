@@ -60,9 +60,14 @@ public abstract class AbstractDrawObject {
         loaded = copy.loaded;
         regen = copy.regen;
 
-        actions = (LinkedList<Action>) actions.clone();
+        actions = (LinkedList<Action>) copy.actions.clone();
         attackDelay = copy.attackDelay;
         movementDelay = copy.movementDelay;
+
+        buildDelay = copy.buildDelay;
+        zombieInfectedTurns = copy.zombieInfectedTurns;
+        viperInfectedTurns = copy.viperInfectedTurns;
+        aliveRounds = copy.aliveRounds;
 
         hats = copy.hats;
 
