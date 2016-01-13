@@ -120,8 +120,7 @@ public class Main {
 
                     proxies.add(localProxy);
 
-                    server = new Server(options, Server.Mode.LOCAL,
-                            proxies.toArray(new Proxy[proxies.size()]));
+                    server = new Server(options, true);
 
                     localProxy.addOutputHandler(server);
 
@@ -132,9 +131,13 @@ public class Main {
                 serverThread = new Thread(server);
 
                 new GameNotification(new GameInfo(
-                        md.getParameter(Parameter.TEAM_A), md.getParameter
-                        (Parameter.TEAM_B), md.getAllMaps().toArray(new
-                        String[md.getAllMaps().size()])
+                        md.getParameter(Parameter.TEAM_A),
+                        null,
+                        md.getParameter(Parameter.TEAM_B),
+                        null,
+                        md.getAllMaps().toArray(new String[md.getAllMaps().size()]),
+                        proxies.toArray(new Proxy[proxies.size()]),
+                        false
                 )).accept(server);
 
                 theProxy = localProxy;
