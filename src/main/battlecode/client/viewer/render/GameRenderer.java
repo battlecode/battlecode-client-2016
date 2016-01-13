@@ -94,8 +94,10 @@ public class GameRenderer {
         } else if (t == Team.B) {
             bWins++;
         }
-        if (cutScene != null)
+        if (cutScene != null) {
             cutScene.setWinner(t);
+            cutScene.setScore(aWins, bWins);
+        }
     }
 
     public void loadPrefs() {
@@ -149,6 +151,7 @@ public class GameRenderer {
                     }
                     cutScene = new DrawCutScene(unitWidth, unitHeight,
                             match.getTeamA(), match.getTeamB(), mapName);
+                    cutScene.setScore(aWins, bWins);
                 }
             }).start();
         }
@@ -351,7 +354,7 @@ public class GameRenderer {
     protected void skipRounds(int rounds) {
         GameStateTimeline timeline = getTimeline();
         int newRound = Math.max(Math.min(timeline.getRound() + rounds,
-                timeline.getNumRounds()), 0);
+                timeline.getNumRounds() - 1), 0);
         timeline.setRound(newRound);
     }
 

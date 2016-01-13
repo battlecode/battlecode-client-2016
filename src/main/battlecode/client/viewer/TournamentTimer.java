@@ -82,7 +82,8 @@ public class TournamentTimer {
                 doSleep(2000);
                 br.setCutSceneVisible(false);
                 new MatchPlayer(null, controller, gst, null, false);
-                while (gst.getRound() < gst.getNumRounds() || winner == null) {
+                while (gst.getRound() < gst.getNumRounds() || winner == null
+                        || !gst.getMatch().isFinished()) {
                     doSleep(100);
                 }
                 if (minimap == null)
