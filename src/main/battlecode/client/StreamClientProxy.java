@@ -3,9 +3,9 @@ package battlecode.client;
 import battlecode.serial.ServerEvent;
 import battlecode.serial.notification.Notification;
 import battlecode.server.Config;
-import battlecode.server.serializer.JavaSerializerFactory;
-import battlecode.server.serializer.Serializer;
-import battlecode.server.serializer.XStreamSerializerFactory;
+import battlecode.serial.serializer.JavaSerializerFactory;
+import battlecode.serial.serializer.Serializer;
+import battlecode.serial.serializer.XStreamSerializerFactory;
 
 import java.io.*;
 import java.util.zip.GZIPInputStream;

@@ -9,9 +9,9 @@ import battlecode.server.Config;
 import battlecode.server.Server;
 import battlecode.server.proxy.FileProxy;
 import battlecode.server.proxy.Proxy;
-import battlecode.server.serializer.JavaSerializerFactory;
-import battlecode.server.serializer.SerializerFactory;
-import battlecode.server.serializer.XStreamSerializerFactory;
+import battlecode.serial.serializer.JavaSerializerFactory;
+import battlecode.serial.serializer.SerializerFactory;
+import battlecode.serial.serializer.XStreamSerializerFactory;
 
 import javax.swing.*;
 import java.awt.*;
