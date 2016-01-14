@@ -95,6 +95,8 @@ public class PrerenderedGraphics {
         BufferedImage result = new BufferedImage(spriteSize, spriteSize,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = result.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         Color parts = new Color(255, 140, 25, 255);
         g2.setColor(parts);
         Ellipse2D.Double circle = new Ellipse2D.Double((0.5 - radius) *
