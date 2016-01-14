@@ -6,11 +6,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class ImageFile {
     public BufferedImage image;
-    private HashMap<Dimension, BufferedImage> cache;
 
     public ImageFile(String pathname) {
         try {
@@ -25,17 +23,12 @@ public class ImageFile {
         } catch (IOException e) {
             image = null;
         }
-        cache = new HashMap<>();
-        cache.put(new Dimension(image.getWidth(), image.getHeight()), image);
     }
 
-    public ImageFile(BufferedImage image) {
-        this.image = image;
-    }
-
-    public void resize(int width, int height) {
-        this.image = getScaledInstance(image, width, height,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    public ImageFile(String pathname, int width, int height) {
+        this(pathname);
+        this.image = getScaledInstance(image, width, height, RenderingHints
+                .VALUE_INTERPOLATION_BILINEAR);
     }
 
     // Temporary resizing algorithm, taken from http://stackoverflow.com/questions/24745147/java-resize-image-without-losing-quality
@@ -73,6 +66,8 @@ public class ImageFile {
 
             BufferedImage tmp = new BufferedImage(w, h, type);
             Graphics2D g2 = tmp.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
             g2.drawImage(ret, 0, 0, w, h, null);
             g2.dispose();
