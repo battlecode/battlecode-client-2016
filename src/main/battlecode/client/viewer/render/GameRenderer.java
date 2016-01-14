@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.util.PrerenderedGraphics;
 import battlecode.client.viewer.*;
 import battlecode.common.MapLocation;
 import battlecode.common.Team;
@@ -14,6 +15,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 public class GameRenderer {
+    public static final PrerenderedGraphics pg = new PrerenderedGraphics();
 
     private BufferedMatch match;
     private GameStateTimeline<DrawState> timeline;
