@@ -37,7 +37,6 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile hatchAttack = new ImageFile
             ("art/hatch_attack.png");
     private static final ImageFile creep = new ImageFile("art/creep.png");
-    private static final PrerenderedGraphics pg = new PrerenderedGraphics();
 
     private ImageFile img;
 
@@ -298,9 +297,10 @@ public class DrawObject extends AbstractDrawObject {
 
         if (RenderConfiguration.showInfectionIndicators()) {
             if (getViperInfectedTurns() > 0 || getZombieInfectedTurns() > 0) {
-                BufferedImage infection = pg.getZombieInfectionImage();
+                BufferedImage infection = GameRenderer.pg
+                        .getZombieInfectionImage();
                 if (getViperInfectedTurns() > 0) {
-                    infection = pg.getViperInfectionImage();
+                    infection = GameRenderer.pg.getViperInfectionImage();
                 }
                 AffineTransform trans = new AffineTransform();
                 trans.scale(1.0 / infection.getWidth(), 1.0 /

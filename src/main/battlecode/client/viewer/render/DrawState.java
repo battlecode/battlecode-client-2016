@@ -8,6 +8,7 @@ import battlecode.world.signal.*;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
@@ -469,8 +470,6 @@ public class DrawState extends GameState {
         }
 
         AffineTransform pushed = g2.getTransform();
-        g2.translate(gameMap.getOrigin().x,
-                gameMap.getOrigin().y);
         g2.setTransform(pushed);
 
         // draw rubble and parts
@@ -502,9 +501,13 @@ public class DrawState extends GameState {
                     if (parts.get(i, j) > 0) {
                         double radius = Math.max(0.2, Math.min(1.0, parts.get(i,
                                 j) / 100) * 0.4);
-                        g2.setColor(new Color(255, 140, 25, 200));
-                        g2.fill(new Ellipse2D.Double(x + 0.5 - radius, y + 0.5 -
-                                radius, radius * 2, radius * 2));
+                        BufferedImage parts = GameRenderer.pg.getPartsImage
+                                (radius);
+                        AffineTransform trans = new AffineTransform();
+                        trans.translate(x, y);
+                        trans.scale(1.0 / parts.getWidth(), 1.0 /
+                                parts.getHeight());
+                        g2.drawImage(parts, trans, null);
                     }
                 }
             }
