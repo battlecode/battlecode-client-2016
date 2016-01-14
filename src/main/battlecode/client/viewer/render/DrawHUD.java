@@ -108,12 +108,82 @@ class DrawHUD {
         g2.translate(0.5f * (width - spriteScale),
                 0.5f * (slotSize - spriteScale));
         try {
-            drawTeamResource(g2, team);
+            if (team.isPlayer()) {
+                drawTeamResource(g2, team);
+            }
+            g2.translate(0, .4);
+            if (team.isPlayer()) {
+                g2.translate(-0.05, -0.3);
+                int nArchons = Math.max(4, ds.getArchons(team).size());
+                int archonNum = 0;
+                for (DrawObject archon : ds.getArchons(team).values()) {
+                    if (archonNum < nArchons - 1) {
+                        drawRobot(g2, archon, 1.0 / nArchons, 2.0, 0);
+                    } else {
+                        drawRobot(g2, archon, 1.0 / nArchons, -2.0 * (nArchons -
+                                1), 0);
+                    }
+                    archonNum++;
+                }
+                for (int i = archonNum; i < nArchons; ++i) {
+                    if (archonNum < nArchons - 1) {
+                        drawBlankRobot(g2, 1.0 / nArchons, 2.0, 0);
+                    } else {
+                        drawBlankRobot(g2, 1.0 / nArchons, -2.0 * (nArchons -
+                                1), 0);
+                    }
+                    archonNum++;
+                }
+                g2.translate(0.05, 0.3);
+            }
         } catch (ConcurrentModificationException e) {
             e.printStackTrace();
         }
-        g2.translate(0, -0.3);
+        g2.translate(0, -0.25);
         drawCount(g2);
+    }
+
+    public void drawRobot(Graphics2D g2, DrawObject r, double size, double
+            right, double down) {
+        AffineTransform pushed = g2.getTransform();
+        {
+            g2.scale(spriteScale * size, spriteScale * size);
+            AffineTransform pushed2 = g2.getTransform();
+            {
+                BufferedImage underImg = unitUnder.image;
+                g2.translate(-0.5, -0.5);
+                g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+                g2.drawImage(underImg, null, null);
+            }
+            g2.setTransform(pushed2);
+            if (r != null && r.isAlive()) {
+                r.drawImmediate(g2, false, false);
+            } else {
+                ImageFile boom = new ImageFile("art/explode/explode64_f05.png");
+                DrawObject.drawImageTransformed(g2, new AffineTransform(),
+                        boom.image, 1.0);
+            }
+        }
+        g2.setTransform(pushed);
+        g2.translate(spriteScale * size * right, spriteScale * size * down);
+    }
+
+    public void drawBlankRobot(Graphics2D g2, double size, double right,
+                               double down) {
+        AffineTransform pushed = g2.getTransform();
+        {
+            g2.scale(spriteScale * size, spriteScale * size);
+            AffineTransform pushed2 = g2.getTransform();
+            {
+                BufferedImage underImg = unitUnder.image;
+                g2.translate(-0.5, -0.5);
+                g2.scale(2.0 / underImg.getWidth(), 2.0 / underImg.getHeight());
+                g2.drawImage(underImg, null, null);
+            }
+            g2.setTransform(pushed2);
+        }
+        g2.setTransform(pushed);
+        g2.translate(spriteScale * size * right, spriteScale * size * down);
     }
 
     private void drawFooter(Graphics2D g2) {
@@ -302,7 +372,7 @@ class DrawHUD {
                 g2.scale(2.0 / underImg.getWidth(), 1.0 / underImg.getHeight());
                 if (t == Team.A) g2.setColor(Color.red);
                 else g2.setColor(Color.blue);
-                double percent = Math.min(ds.getTeamStrength(t) / 1000.0, 1.0);
+                double percent = Math.min(ds.getTeamStrength(t) / 3000.0, 1.0);
                 int height = (int) (maxHeight * percent);
                 g2.fillRect(0, maxHeight - height, underImg.getWidth() / 2, height);
 
@@ -330,7 +400,6 @@ class DrawHUD {
 
         }
         g2.setTransform(pushed);
-        g2.translate(0, .4);
     }
 
 }

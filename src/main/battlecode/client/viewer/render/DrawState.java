@@ -29,6 +29,8 @@ public class DrawState extends GameState {
                 }
             };
     protected final Map<Integer, DrawObject> groundUnits;
+    protected Map<Team, Map<Integer, DrawObject> > archons = new
+            EnumMap<>(Team.class);
     protected int[] coreIDs = new int[4];
     protected SquareArray.Double rubble;
     protected SquareArray.Double parts;
@@ -48,6 +50,27 @@ public class DrawState extends GameState {
                 ()) {
             DrawObject copy = createDrawObject(entry.getValue());
             groundUnits.put(entry.getKey(), copy);
+        }
+
+        archons.get(Team.A).clear();
+        archons.get(Team.B).clear();
+        for (Map.Entry<Integer, DrawObject> entry : src.archons.get(Team.A)
+                .entrySet()) {
+            if (groundUnits.containsKey(entry.getKey())) {
+                archons.get(Team.A).put(entry.getKey(), groundUnits.get(entry
+                        .getKey()));
+            } else {
+                archons.get(Team.A).put(entry.getKey(), null);
+            }
+        }
+        for (Map.Entry<Integer, DrawObject> entry : src.archons.get(Team.B)
+                .entrySet()) {
+            if (groundUnits.containsKey(entry.getKey())) {
+                archons.get(Team.B).put(entry.getKey(), groundUnits.get(entry
+                        .getKey()));
+            } else {
+                archons.get(Team.B).put(entry.getKey(), null);
+            }
         }
 
         if (src.rubble.width == 0) {
@@ -78,11 +101,17 @@ public class DrawState extends GameState {
         indicatorLines = src.indicatorLines;
     }
 
+    public void tryToAddArchon(DrawObject archon) {
+        if (archon.getType() == RobotType.ARCHON && archon.getTeam().isPlayer()) {
+            archons.get(archon.getTeam()).put(archon.getID(), archon);
+        }
+    }
+
     public int[] getRobotCounts(Team t) {
         // naive way for now...
         int[] counts = new int[RobotType.values().length];
         for (Map.Entry<Integer, DrawObject> e : drawables) {
-            if (e.getValue().getTeam() == t)
+            if (e.getValue().getTeam() == t && e.getValue().getHealth() > 0)
                 counts[e.getValue().getType().ordinal()]++;
         }
         return counts;
@@ -91,8 +120,9 @@ public class DrawState extends GameState {
     public int getTeamStrength(Team t) {
         int sum = 0;
         for (Map.Entry<Integer, DrawObject> e : drawables) {
-            if (e.getValue().getTeam() == t)
-                sum += e.getValue().getType().strengthWeight;
+            if (e.getValue().getTeam() == t && e.getValue().getHealth() > 0) {
+                sum += e.getValue().getType().partCost;
+            }
         }
         return sum;
     }
@@ -228,6 +258,7 @@ public class DrawState extends GameState {
             parent.setAction(s.getDelay(), ActionType.BUILDING);
         }
         putRobot(s.getRobotID(), spawn);
+        tryToAddArchon(spawn);
         int team = getRobot(s.getRobotID()).getTeam().ordinal();
         if (team < 2) {
             teamHP[team] += getRobot(s.getRobotID()).getHealth();
@@ -324,6 +355,8 @@ public class DrawState extends GameState {
 
     public DrawState() {
         groundUnits = new LinkedHashMap<>();
+        archons.put(Team.A, new HashMap<>());
+        archons.put(Team.B, new HashMap<>());
         currentRound = -1;
     }
 
@@ -378,6 +411,10 @@ public class DrawState extends GameState {
         return researchProgress[t.ordinal()][i];
     }
 
+    public Map<Integer, DrawObject> getArchons(Team t) {
+        return archons.get(t);
+    }
+
     public DrawObject getDrawObject(int id) {
         try {
             return getRobot(id);
@@ -396,6 +433,10 @@ public class DrawState extends GameState {
             obj.updateRound();
             if (!obj.isAlive()) {
                 it.remove();
+                if (obj.getType() == RobotType.ARCHON && obj.getTeam()
+                        .isPlayer()) {
+                    archons.get(obj.getTeam()).put(obj.getID(), null);
+                }
             }
         }
         indicatorDots = newIndicatorDots.toArray(new
@@ -460,8 +501,8 @@ public class DrawState extends GameState {
                     // draw a dot with radius depending on how many parts there are
                     if (parts.get(i, j) > 0) {
                         double radius = Math.max(0.2, Math.min(1.0, parts.get(i,
-                                j) / 100)) * 0.3;
-                        g2.setColor(new Color(255, 140, 25, 255));
+                                j) / 100) * 0.4);
+                        g2.setColor(new Color(255, 140, 25, 200));
                         g2.fill(new Ellipse2D.Double(x + 0.5 - radius, y + 0.5 -
                                 radius, radius * 2, radius * 2));
                     }
