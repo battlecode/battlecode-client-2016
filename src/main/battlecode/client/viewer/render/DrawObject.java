@@ -71,9 +71,9 @@ public class DrawObject extends AbstractDrawObject {
     public DrawObject(int currentRound, RobotType type, Team team, int id,
                       DrawState state) {
         super(currentRound, type, team, id);
-        img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
         maxHealth = type.maxHealth;
         overallstate = state;
+        loadImage();
     }
 
 
@@ -85,12 +85,26 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public static void loadAll() {
+        int spriteSize = Math.round(RenderConfiguration.getInstance().getSpriteSize());
         for (RobotType type : RobotType.values()) {
             for (Team team : Team.values()) {
                 RobotInfo robotInfo = new RobotInfo(type, team);
-                ir.getResource(robotInfo, getAvatarPath(robotInfo), !type
-                        .isBuilding);
+                ir.getResource(robotInfo, getAvatarPath(robotInfo),
+                        spriteSize, spriteSize);
             }
+        }
+    }
+
+    private int prevSpriteSize = -1;
+    private void loadImage() {
+        // Reloads "img", the ImageFile for the sprite, if the target spriteSize
+        // changes.
+        int spriteSize = Math.round(RenderConfiguration.getInstance()
+                .getSpriteSize());
+        if (spriteSize != prevSpriteSize) {
+            img = ir.getResource(info, getAvatarPath(info), spriteSize,
+                    spriteSize);
+            prevSpriteSize = spriteSize;
         }
     }
 
@@ -106,7 +120,7 @@ public class DrawObject extends AbstractDrawObject {
     @Override
     public void setType(RobotType type) {
         super.setType(type);
-        img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
+        loadImage();
     }
 
     private int getViewRange() {
@@ -148,6 +162,8 @@ public class DrawObject extends AbstractDrawObject {
 
     public void draw(Graphics2D g2, boolean focused, boolean lastRow, int
             layer) {
+        // Reload the image, in case the screen was resized.
+        loadImage();
         if (layer == 0) {
             if (RenderConfiguration.showRangeHatch() && focused) {
                 drawRangeHatch(g2);
@@ -385,11 +401,7 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     private BufferedImage getTypeSprite() {
-        if (info.type.isBuilding) {
-            return img.image;
-        } else {
-            return ((SpriteSheetFile) img).spriteForDirection(dir);
-        }
+        return img.image;
     }
 
     public ExplosionAnim createDeathExplosionAnim(boolean unused) {
