@@ -110,7 +110,6 @@ public class DrawObject extends AbstractDrawObject {
         int spriteSize = Math.round(RenderConfiguration.getInstance()
                 .getSpriteSize());
         if (spriteSize != prevSpriteSize || !lazy) {
-            System.out.println("loading!");
             img = ir.getResource(info, getAvatarPath(info), spriteSize,
                     spriteSize);
             prevSpriteSize = spriteSize;
