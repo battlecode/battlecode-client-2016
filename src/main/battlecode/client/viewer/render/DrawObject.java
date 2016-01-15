@@ -73,7 +73,7 @@ public class DrawObject extends AbstractDrawObject {
         super(currentRound, type, team, id);
         maxHealth = type.maxHealth;
         overallstate = state;
-        loadImage();
+        loadImage(true);
     }
 
 
@@ -96,12 +96,21 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     private int prevSpriteSize = -1;
-    private void loadImage() {
+    /**
+     * Reloads the sprite image. If lazy is true, then the sprite will only
+     * be reloaded if the sprite size has changed from before. If lazy is
+     * false, then the sprite will always be reloaded (used when the
+     * RobotType changes).
+     *
+     * @param lazy whether to perform lazy loading.
+     */
+    private void loadImage(boolean lazy) {
         // Reloads "img", the ImageFile for the sprite, if the target spriteSize
         // changes.
         int spriteSize = Math.round(RenderConfiguration.getInstance()
                 .getSpriteSize());
-        if (spriteSize != prevSpriteSize) {
+        if (spriteSize != prevSpriteSize || !lazy) {
+            System.out.println("loading!");
             img = ir.getResource(info, getAvatarPath(info), spriteSize,
                     spriteSize);
             prevSpriteSize = spriteSize;
@@ -120,7 +129,7 @@ public class DrawObject extends AbstractDrawObject {
     @Override
     public void setType(RobotType type) {
         super.setType(type);
-        loadImage();
+        loadImage(false);
     }
 
     private int getViewRange() {
@@ -163,7 +172,7 @@ public class DrawObject extends AbstractDrawObject {
     public void draw(Graphics2D g2, boolean focused, boolean lastRow, int
             layer) {
         // Reload the image, in case the screen was resized.
-        loadImage();
+        loadImage(true);
         if (layer == 0) {
             if (RenderConfiguration.showRangeHatch() && focused) {
                 drawRangeHatch(g2);
