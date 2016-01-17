@@ -37,7 +37,6 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile hatchAttack = new ImageFile
             ("art/hatch_attack.png");
     private static final ImageFile creep = new ImageFile("art/creep.png");
-    private static final PrerenderedGraphics pg = new PrerenderedGraphics();
 
     private ImageFile img;
 
@@ -72,9 +71,9 @@ public class DrawObject extends AbstractDrawObject {
     public DrawObject(int currentRound, RobotType type, Team team, int id,
                       DrawState state) {
         super(currentRound, type, team, id);
-        img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
         maxHealth = type.maxHealth;
         overallstate = state;
+        loadImage(true);
     }
 
 
@@ -86,12 +85,34 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public static void loadAll() {
+        int spriteSize = Math.round(RenderConfiguration.getInstance().getSpriteSize());
         for (RobotType type : RobotType.values()) {
             for (Team team : Team.values()) {
                 RobotInfo robotInfo = new RobotInfo(type, team);
-                ir.getResource(robotInfo, getAvatarPath(robotInfo), !type
-                        .isBuilding);
+                ir.getResource(robotInfo, getAvatarPath(robotInfo),
+                        spriteSize, spriteSize);
             }
+        }
+    }
+
+    private int prevSpriteSize = -1;
+    /**
+     * Reloads the sprite image. If lazy is true, then the sprite will only
+     * be reloaded if the sprite size has changed from before. If lazy is
+     * false, then the sprite will always be reloaded (used when the
+     * RobotType changes).
+     *
+     * @param lazy whether to perform lazy loading.
+     */
+    private void loadImage(boolean lazy) {
+        // Reloads "img", the ImageFile for the sprite, if the target spriteSize
+        // changes.
+        int spriteSize = Math.round(RenderConfiguration.getInstance()
+                .getSpriteSize());
+        if (spriteSize != prevSpriteSize || !lazy) {
+            img = ir.getResource(info, getAvatarPath(info), spriteSize,
+                    spriteSize);
+            prevSpriteSize = spriteSize;
         }
     }
 
@@ -107,7 +128,7 @@ public class DrawObject extends AbstractDrawObject {
     @Override
     public void setType(RobotType type) {
         super.setType(type);
-        img = ir.getResource(info, getAvatarPath(info), !type.isBuilding);
+        loadImage(false);
     }
 
     private int getViewRange() {
@@ -149,6 +170,8 @@ public class DrawObject extends AbstractDrawObject {
 
     public void draw(Graphics2D g2, boolean focused, boolean lastRow, int
             layer) {
+        // Reload the image, in case the screen was resized.
+        loadImage(true);
         if (layer == 0) {
             if (RenderConfiguration.showRangeHatch() && focused) {
                 drawRangeHatch(g2);
@@ -298,9 +321,10 @@ public class DrawObject extends AbstractDrawObject {
 
         if (RenderConfiguration.showInfectionIndicators()) {
             if (getViperInfectedTurns() > 0 || getZombieInfectedTurns() > 0) {
-                BufferedImage infection = pg.getZombieInfectionImage();
+                BufferedImage infection = GameRenderer.pg
+                        .getZombieInfectionImage();
                 if (getViperInfectedTurns() > 0) {
-                    infection = pg.getViperInfectionImage();
+                    infection = GameRenderer.pg.getViperInfectionImage();
                 }
                 AffineTransform trans = new AffineTransform();
                 trans.scale(1.0 / infection.getWidth(), 1.0 /
@@ -385,11 +409,7 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     private BufferedImage getTypeSprite() {
-        if (info.type.isBuilding) {
-            return img.image;
-        } else {
-            return ((SpriteSheetFile) img).spriteForDirection(dir);
-        }
+        return img.image;
     }
 
     public ExplosionAnim createDeathExplosionAnim(boolean unused) {
