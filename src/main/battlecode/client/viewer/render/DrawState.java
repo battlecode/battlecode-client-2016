@@ -513,6 +513,12 @@ public class DrawState extends GameState {
             }
         }
 
+        if (gameMap.isArmageddon()) {
+            boolean isDay = (currentRound % (GameConstants.ARMAGEDDON_DAY_TIMER + GameConstants.ARMAGEDDON_NIGHT_TIMER)) < GameConstants.ARMAGEDDON_DAY_TIMER;
+            g2.setColor(new Color(0, 0, 0, isDay ? 0 : 100));
+            g2.fillRect(gameMap.getOrigin().x, gameMap.getOrigin().y, gameMap.getWidth(), gameMap.getHeight());
+        }
+        
         for (IndicatorDotSignal s : indicatorDots) {
             if (RenderConfiguration.showIndicatorDots(s.team) && (focusID ==
                     -1 || focusID == s.robotID)) {
@@ -563,6 +569,7 @@ public class DrawState extends GameState {
         if (!debug.isDragging()) {
             debug.setTarget(hoverID, hoverLoc, controlBits);
         }
+        
 
     }
 }
