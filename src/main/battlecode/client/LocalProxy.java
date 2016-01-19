@@ -3,7 +3,9 @@ package battlecode.client;
 import battlecode.serial.ServerEvent;
 import battlecode.serial.notification.Notification;
 import battlecode.serial.notification.NotificationHandler;
+import battlecode.server.GameInfo;
 import battlecode.server.proxy.Proxy;
+import battlecode.server.proxy.ProxyFactory;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -19,6 +21,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class LocalProxy implements Proxy, ClientProxy {
 
+    /**
+     * Singleton instance; we only support one client in a JVM
+     * at a time.
+     */
+    public static final LocalProxy INSTANCE = new LocalProxy();
+
+    /**
+     * "Factory" that returns INSTANCE.
+     */
+    public static final ProxyFactory FACTORY = info -> INSTANCE;
+
     private final Queue<ServerEvent> inputQueue;
 
     private final List<NotificationHandler> outputHandlers;
@@ -26,7 +39,7 @@ public class LocalProxy implements Proxy, ClientProxy {
     /**
      * Create a new LocalProxy.
      */
-    public LocalProxy() {
+    private LocalProxy() {
         this.outputHandlers = new ArrayList<>();
         this.inputQueue = new ConcurrentLinkedQueue<>();
     }

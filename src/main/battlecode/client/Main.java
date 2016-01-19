@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,44 +101,38 @@ public class Main {
                 break;
 
             case LOCAL:
-                LocalProxy localProxy = new LocalProxy();
-
                 final Server server;
 
-                List<Proxy> proxies = new ArrayList<>();
-
-                try {
-
-                    if (saveFile != null) {
-                        final SerializerFactory serializerFactory;
-                        if (options.getBoolean("bc.server.output-xml")) {
-                            serializerFactory = new XStreamSerializerFactory();
-                        } else {
-                            serializerFactory = new JavaSerializerFactory();
-                        }
-                        proxies.add(new FileProxy(saveFile, serializerFactory));
-                    }
-
-                    proxies.add(localProxy);
-
-                    server = new Server(options, Server.Mode.LOCAL,
-                            proxies.toArray(new Proxy[proxies.size()]));
-
-                    localProxy.addOutputHandler(server);
-
-                } catch (IOException e) {
-                    return;
+                final SerializerFactory serializerFactory;
+                if (options.getBoolean("bc.server.output-xml")) {
+                    serializerFactory = new XStreamSerializerFactory();
+                } else {
+                    serializerFactory = new JavaSerializerFactory();
                 }
+
+                server = new Server(
+                        options,
+                        true,
+                        new FileProxy.Factory(serializerFactory),
+                        LocalProxy.FACTORY
+                );
+
+                LocalProxy.INSTANCE.addOutputHandler(server);
+
 
                 serverThread = new Thread(server);
 
                 new GameNotification(new GameInfo(
-                        md.getParameter(Parameter.TEAM_A), md.getParameter
-                        (Parameter.TEAM_B), md.getAllMaps().toArray(new
-                        String[md.getAllMaps().size()])
+                        md.getParameter(Parameter.TEAM_A),
+                        null,
+                        md.getParameter(Parameter.TEAM_B),
+                        null,
+                        md.getAllMaps().toArray(new String[md.getAllMaps().size()]),
+                        saveFile == null ? null : new File(saveFile),
+                        false
                 )).accept(server);
 
-                theProxy = localProxy;
+                theProxy = LocalProxy.INSTANCE;
 
                 break;
 
