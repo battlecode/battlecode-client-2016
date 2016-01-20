@@ -1,5 +1,6 @@
 package battlecode.client.viewer.render;
 
+import battlecode.client.resources.ResourceLoader;
 import battlecode.client.util.ImageFile;
 import battlecode.common.Team;
 import battlecode.world.DominationFactor;
@@ -10,7 +11,6 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
@@ -26,6 +26,7 @@ public class DrawCutScene {
     private final ImageFile imgTeamA, imgTeamB;
     private final String teamA, teamB;
     private final String mapName;
+    private int aWins, bWins;
     private ImageFile imgWinner;
     private String winner;
     private Color winnerColor;
@@ -63,10 +64,12 @@ public class DrawCutScene {
         System.out.println("&&&&&&&&&&&&&&& " + teamA + " " + teamB);
         this.teamA = getTeamName(teamA);
         this.teamB = getTeamName(teamB);
+        this.aWins = 0;
+        this.bWins = 0;
         this.mapName = mapName;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File
-                    ("art/computerfont.ttf")).deriveFont(48.f);
+            font = Font.createFont(Font.TRUETYPE_FONT, ResourceLoader
+                    .getInputStream("art/computerfont.ttf")).deriveFont(20.f);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load font", e);
         }
@@ -88,6 +91,11 @@ public class DrawCutScene {
             winner = teamB;
             winnerColor = teamBColor;
         }
+    }
+
+    public void setScore(int aWins, int bWins) {
+        this.aWins = aWins;
+        this.bWins = bWins;
     }
 
     public void setDominationFactor(DominationFactor dom) {
@@ -141,8 +149,11 @@ public class DrawCutScene {
                     50);
 
         g2.setColor(neutralColor);
-        drawText.draw("map: " + mapName, rect.getCenterX(), rect.getCenterY()
+        drawText.draw("Map: " + mapName, rect.getCenterX(), rect.getCenterY()
                 + 3 * textHeight + 80 + 80 + 15);
+        drawText.draw("Match score: " + aWins + " - " + bWins, rect
+                .getCenterX(), rect.getCenterY() + 5 * textHeight + 80 + 80 +
+                15);
 
         g2.setTransform(pushed);
     }
@@ -235,7 +246,6 @@ public class DrawCutScene {
         g2.setColor(winnerColor);
         drawText.drawTwoLine(winner, rect.getCenterX(), rect.getCenterY() -
                 textHeight / 2, true);
-        g2.setColor(neutralColor);
         drawText.draw("WINS!", rect.getCenterX(), rect.getCenterY() +
                 textHeight / 2);
         if (imgWinner != null && imgWinner.image != null)
@@ -246,16 +256,18 @@ public class DrawCutScene {
         if (dom == DominationFactor.DESTROYED)
             s = "DESTRUCTION";
         else if (dom == DominationFactor.PWNED)
-            s = "more towers remaining";
+            s = "more archons left";
         else if (dom == DominationFactor.OWNED)
-            s = "more HQ health";
+            s = "more archon health";
         else if (dom == DominationFactor.BARELY_BEAT)
-            s = "SUPERIOR SANITATION";
+            s = "more parts";
         else if (dom == DominationFactor.WON_BY_DUBIOUS_REASONS)
             s = "???";
 
-        g2.setColor(winnerColor);
         drawText.draw("Reason: " + s, rect.getCenterX(), rect.getCenterY() + textHeight * 5 / 2);
+        g2.setColor(neutralColor);
+        drawText.draw("Match score: " + aWins + " - " + bWins, rect
+                .getCenterX(), rect.getCenterY() + textHeight * 8 / 2);
         g2.setTransform(pushed);
     }
 

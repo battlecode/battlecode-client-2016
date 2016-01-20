@@ -115,21 +115,21 @@ class DrawHUD {
             if (team.isPlayer()) {
                 g2.translate(-0.05, -0.3);
                 int nArchons = Math.max(4, ds.getArchons(team).size());
-                int archonNum = 0;
-                for (DrawObject archon : ds.getArchons(team).values()) {
-                    if (archonNum < nArchons - 1) {
-                        drawRobot(g2, archon, 1.0 / nArchons, 2.0, 0);
-                    } else {
-                        drawRobot(g2, archon, 1.0 / nArchons, -2.0 * (nArchons -
-                                1), 0);
-                    }
-                    archonNum++;
-                }
-                for (int i = archonNum; i < nArchons; ++i) {
-                    if (archonNum < nArchons - 1) {
+                for (int i = 0; i < nArchons; ++i) {
+                    if (i < nArchons - 1) {
                         drawBlankRobot(g2, 1.0 / nArchons, 2.0, 0);
                     } else {
                         drawBlankRobot(g2, 1.0 / nArchons, -2.0 * (nArchons -
+                                1), 0);
+                    }
+                }
+                int archonNum = 0;
+                for (DrawObject archon : ds.getArchons(team).values()) {
+                    if (archonNum < ds.getArchons(team).size() - 1) {
+                        drawRobot(g2, archon, 1.0 / nArchons, 2.0, 0);
+                    } else {
+                        drawRobot(g2, archon, 1.0 / nArchons, -2.0 * (ds
+                                .getArchons(team).size() -
                                 1), 0);
                     }
                     archonNum++;
@@ -243,11 +243,11 @@ class DrawHUD {
             g2.drawImage(gameText.image, textScale, null);
 
             // if team A won more than one round, give it a red circle
-            if (aWins > 0) {
-                g2.translate(0.f, 1.25f);
+            for (int i = 0; i < aWins; ++i) {
+                g2.translate(1.1f * i, 1f);
                 g2.setColor(Color.RED);
                 g2.fillOval(0, 0, 1, 1);
-                g2.translate(0.f, -1.25f);
+                g2.translate(-1.1f * i, -1f);
             }
 
             g2.translate(3, 0);
@@ -258,12 +258,11 @@ class DrawHUD {
             }
         } else if (footerText.length() == 4) { // round counter
             // if team B won more than one round, give it a blue circle
-            if (bWins > 0) {
-                // damn yangs magic offsets -_-
-                g2.translate(0.75f, 1.25f);
+            for (int i = 0; i < bWins; ++i) {
+                g2.translate(0.75f - 1.1f * i, 1f);
                 g2.setColor(Color.BLUE);
                 g2.fillOval(0, 0, 1, 1);
-                g2.translate(-0.75f, -1.25f);
+                g2.translate(-0.75f + 1.1f * i, -1f);
             }
 
             g2.translate(-1.5, 0);

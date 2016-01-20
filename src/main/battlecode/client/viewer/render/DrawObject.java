@@ -2,8 +2,6 @@ package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
-import battlecode.client.util.PrerenderedGraphics;
-import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
 import battlecode.common.MapLocation;
@@ -107,8 +105,8 @@ public class DrawObject extends AbstractDrawObject {
     private void loadImage(boolean lazy) {
         // Reloads "img", the ImageFile for the sprite, if the target spriteSize
         // changes.
-        int spriteSize = Math.round(RenderConfiguration.getInstance()
-                .getSpriteSize());
+        int spriteSize = (int) Math.round(RenderConfiguration.getInstance()
+                .getSpriteSize() * drawScale());
         if (spriteSize != prevSpriteSize || !lazy) {
             img = ir.getResource(info, getAvatarPath(info), spriteSize,
                     spriteSize);
@@ -183,7 +181,7 @@ public class DrawObject extends AbstractDrawObject {
                 g2.setTransform(pushed0); // pop
             }
         }
-        if (layer == 1) {
+        if (layer == 1 || (layer == 2 && info.type == RobotType.ARCHON)) {
             AffineTransform pushed1 = g2.getTransform();
             g2.translate(getDrawX(), getDrawY());
             drawImmediate(g2, focused, lastRow);
@@ -335,7 +333,7 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public double drawScale() {
-        if (info.type.isBuilding)
+        if (info.type == RobotType.ARCHON || info.type == RobotType.BIGZOMBIE)
             return 1.3;
         return 1;
     }
@@ -413,8 +411,9 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public ExplosionAnim createDeathExplosionAnim(boolean unused) {
-        if (isSuiciding) {
-            return new SuicideAnim(); // a subclass of explosion
+        if (getType() == RobotType.ARCHON || getTeam() == Team.NEUTRAL ||
+                getType() == RobotType.ZOMBIEDEN) {
+            return new LargeExplosionAnim(getTeam()); // a subclass of explosion
         } else {
             return new ExplosionAnim();
         }

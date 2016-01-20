@@ -116,11 +116,8 @@ public class RenderConfiguration {
     public static void setTournamentMode(boolean flag) {
         tournamentMode = flag;
 
-        // TODO remove this someday. this is a hack. I think.
-        // anyways tournament streams look better without broadcasts and with
-        // discrete movement
         if (tournamentMode) {
-            discrete = false;
+            discrete = true;
             broadcast = false;
         }
     }
