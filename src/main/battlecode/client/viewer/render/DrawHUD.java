@@ -156,8 +156,14 @@ class DrawHUD {
                 g2.drawImage(underImg, null, null);
             }
             g2.setTransform(pushed2);
-            if (r != null && r.isAlive()) {
-                r.drawImmediate(g2, false, false);
+            // If the robot has positive health, then draw its sprite.
+            // Otherwise, draw a static explosion image.
+            if (r != null && r.getHealth() > 0) {
+                // focused = false
+                // isHUD = true (will disable drawing broadcasts)
+                // lastRow = false
+                // drawXP = false
+                r.drawImmediate(g2, false, true, false, false);
             } else {
                 ImageFile boom = new ImageFile("art/explode/explode64_f05.png");
                 DrawObject.drawImageTransformed(g2, new AffineTransform(),
