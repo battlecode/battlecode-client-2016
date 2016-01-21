@@ -71,7 +71,7 @@ public class DrawObject extends AbstractDrawObject {
     public DrawObject(int currentRound, RobotType type, Team team, int id,
                       DrawState state) {
         super(currentRound, type, team, id);
-        maxHealth = type.maxHealth;
+        maxHealth = type.maxHealth(currentRound);
         overallstate = state;
         loadImage(true);
     }
