@@ -23,8 +23,6 @@ abstract class FramedAnimation extends UnitAnimation {
 
     @Override
     public void draw(Graphics2D g2, boolean isHUD) {
-        g2.setColor(Color.MAGENTA);
-        g2.drawRect(0, 0, 3, 3);
         if (shouldDraw()) {
             String path = String.format(fileFormatString(), this.curFrame +
                     offset());
