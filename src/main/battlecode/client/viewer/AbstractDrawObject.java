@@ -1,12 +1,13 @@
 package battlecode.client.viewer;
 
+import battlecode.client.viewer.render.ClearAnimation;
+import battlecode.client.viewer.render.ExplosionAnim;
 import battlecode.client.viewer.render.RenderConfiguration;
 import battlecode.common.*;
 
 import java.util.*;
-import battlecode.client.viewer.render.Animation;
 
-import static battlecode.client.viewer.render.Animation.AnimationType.*;
+import battlecode.client.viewer.render.UnitAnimation;
 
 public abstract class AbstractDrawObject {
     public static class RobotInfo {
@@ -38,7 +39,8 @@ public abstract class AbstractDrawObject {
         info = new RobotInfo(type, team);
         robotID = id;
         hats = "";
-        actions = new LinkedList<>();
+        actions = new ArrayList<>();
+        unitAnimations = new ArrayList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +62,6 @@ public abstract class AbstractDrawObject {
         loaded = copy.loaded;
         regen = copy.regen;
 
-        actions = (LinkedList<Action>) copy.actions.clone();
         attackDelay = copy.attackDelay;
         movementDelay = copy.movementDelay;
 
@@ -71,16 +72,22 @@ public abstract class AbstractDrawObject {
 
         hats = copy.hats;
 
-        for (Map.Entry<Animation.AnimationType, Animation> entry :
-                copy.animations.entrySet()) {
-            animations.put(entry.getKey(), (Animation) entry.getValue().clone
-                    ());
+        for (Action action : copy.actions) {
+            this.actions.add(action);
+        }
+
+        for (UnitAnimation animation : copy.unitAnimations) {
+            this.unitAnimations.add((UnitAnimation) animation.clone());
+        }
+
+        if (copy.deathAnimation != null) {
+            this.deathAnimation = (ExplosionAnim) copy.deathAnimation.clone();
         }
 
         updateDrawLoc();
     }
 
-    public abstract Animation createDeathExplosionAnim(boolean isSuicide);
+    public abstract ExplosionAnim createDeathExplosionAnim(boolean isSuicide);
 
     protected String hats;
     protected RobotInfo info;
@@ -109,25 +116,10 @@ public abstract class AbstractDrawObject {
     protected int aliveRounds = 0;
     protected int currentRound = 0;
 
-    protected LinkedList<Action> actions = null;
-    protected final Map<Animation.AnimationType, Animation> animations =
-            new EnumMap<Animation.AnimationType, Animation>
-                    (Animation.AnimationType.class) {
+    protected final List<Action> actions;
+    protected final List<UnitAnimation> unitAnimations;
+    protected ExplosionAnim deathAnimation;
 
-        private static final long serialVersionUID = 0;
-        // if we've written an animation for one client but not the other, we
-        // don't
-        // want to be putting null values in the animations list
-
-        @Override
-        public Animation put(Animation.AnimationType key, Animation
-                value) {
-            if (value != null)
-                return super.put(key, value);
-            else
-                return super.remove(key);
-        }
-    };
     protected final String[] indicatorStrings =
             new String[GameConstants.NUMBER_OF_INDICATOR_STRINGS];
 
@@ -216,6 +208,13 @@ public abstract class AbstractDrawObject {
     }
 
     public void setLocation(MapLocation loc) {
+        if (this.loc != null) {
+            int dx = loc.x - this.loc.x, dy = loc.y - this.loc.y;
+            for (UnitAnimation anim : this.unitAnimations) {
+                anim.unitMoved(dx, dy);
+            }
+        }
+
         this.loc = loc;
     }
 
@@ -260,14 +259,16 @@ public abstract class AbstractDrawObject {
     }
 
     public boolean isAlive() {
-        Animation deathAnim = animations.get(Animation.AnimationType
-                .DEATH_EXPLOSION);
-        return deathAnim == null || deathAnim.isAlive();
+        return deathAnimation == null || deathAnimation.isAlive();
     }
 
     public void setAttacking(MapLocation target) {
         actions.add(new Action(ActionType.ATTACKING, currentRound,
                 (int) info.type.attackDelay, target));
+    }
+
+    public void setClearing(MapLocation target) {
+        unitAnimations.add(new ClearAnimation(target.x - loc.x, target.y - loc.y));
     }
 
     public void setMoving(int delay) {
@@ -286,8 +287,7 @@ public abstract class AbstractDrawObject {
         shields = 0;
         zombieInfectedTurns = 0;
         viperInfectedTurns = 0;
-        animations.put(DEATH_EXPLOSION, createDeathExplosionAnim(false));
-        animations.remove(ENERGON_TRANSFER);
+        deathAnimation = createDeathExplosionAnim(false);
     }
 
     public void updateRound() {
@@ -306,17 +306,19 @@ public abstract class AbstractDrawObject {
         broadcast = (broadcast << 1) & 0x000FFFFF;
         if (regen > 0) regen--;
 
-        Iterator<Map.Entry<Animation.AnimationType, Animation>> it =
-                animations.entrySet().iterator();
-        Map.Entry<Animation.AnimationType, Animation> entry;
+        Iterator<UnitAnimation> it = unitAnimations.iterator();
         while (it.hasNext()) {
-            entry = it.next();
-            entry.getValue().updateRound();
-            if (!entry.getValue().isAlive()) {
-                if (entry.getKey() != DEATH_EXPLOSION)
-                    it.remove();
+            final UnitAnimation anim = it.next();
+            anim.updateRound();
+            if (!anim.isAlive()) {
+                it.remove();
             }
         }
+
+        if (deathAnimation != null) {
+            deathAnimation.updateRound();
+        }
+
         currentRound++;
     }
 

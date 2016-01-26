@@ -15,14 +15,11 @@ public class LargeExplosionAnim extends ExplosionAnim {
         this.team = team;
     }
 
-    public void draw(Graphics2D g2) {
-        super.draw(g2);
+    @Override
+    public void draw(Graphics2D g2, boolean isHUD) {
+        super.draw(g2, isHUD);
         if (shouldDraw()) {
             AffineTransform pushed = g2.getTransform();
-            if (loc != null) {
-                g2.translate(loc.x, loc.y);
-            }
-            g2.translate(-0.5 * (width - 1), -0.5 * (width - 1));
             Color color;
             switch (this.team) {
                 case A: color = new Color(1, 0, 0, 0.5f); break;
