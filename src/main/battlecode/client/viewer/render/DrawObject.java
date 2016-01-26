@@ -2,8 +2,6 @@ package battlecode.client.viewer.render;
 
 import battlecode.client.util.ImageFile;
 import battlecode.client.util.ImageResource;
-import battlecode.client.util.PrerenderedGraphics;
-import battlecode.client.util.SpriteSheetFile;
 import battlecode.client.viewer.AbstractDrawObject;
 import battlecode.client.viewer.Action;
 import battlecode.common.MapLocation;
@@ -16,8 +14,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
-import static battlecode.client.viewer.render.Animation.AnimationType.*;
 
 public class DrawObject extends AbstractDrawObject {
     public static final int LAYER_COUNT = 3;
@@ -39,11 +35,6 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile creep = new ImageFile("art/creep.png");
 
     private ImageFile img;
-
-    public static final Animation.AnimationType[] preDrawOrder = new
-            Animation.AnimationType[]{TELEPORT};
-    public static final Animation.AnimationType[] postDrawOrder = new
-            Animation.AnimationType[]{ENERGON_TRANSFER};
 
     private final DrawState overallstate;
 
@@ -190,15 +181,6 @@ public class DrawObject extends AbstractDrawObject {
             drawImmediate(g2, focused, lastRow);
             g2.setTransform(pushed1); // pop
         }
-        if (layer == 2) {
-            // these animations shouldn't be drawn in the HUD, and they expect
-            // the origin of the Graphics2D to be the MapLocation (0,0)
-            for (Animation.AnimationType type : postDrawOrder) {
-                if (type.shown() && animations.containsKey(type)) {
-                    animations.get(type).draw(g2);
-                }
-            }
-        }
     }
 
     public void drawAction(Graphics2D g2, Action a,
@@ -215,6 +197,7 @@ public class DrawObject extends AbstractDrawObject {
                 }
                 break;
             default:
+                break;
         }
     }
 
@@ -238,19 +221,18 @@ public class DrawObject extends AbstractDrawObject {
         setTeamColor(g2);
         g2.setStroke(mediumStroke);
 
-        for (Animation.AnimationType type : preDrawOrder) {
-            if (type.shown() && animations.containsKey(type)) {
-                animations.get(type).draw(g2);
+        for (UnitAnimation animation : unitAnimations) {
+            if (animation.shown()) {
+                animation.draw(g2, isHUD);
             }
         }
-        if (animations.containsKey(DEATH_EXPLOSION)) {
-            if (DEATH_EXPLOSION.shown() || isHUD) {
-                Animation deathExplosion = animations.get(DEATH_EXPLOSION);
-                if (deathExplosion.isAlive()) {
-                    deathExplosion.draw(g2);
+
+        if (deathAnimation != null) {
+            if (deathAnimation.shown() || isHUD) {
+                if (deathAnimation.isAlive()) {
+                    deathAnimation.draw(g2, isHUD);
                 }
             }
-
         } else {
             drawRobotImage(g2);
             drawStatusBars(g2, focused, lastRow, drawXP);

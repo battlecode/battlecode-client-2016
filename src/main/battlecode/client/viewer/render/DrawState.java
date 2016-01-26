@@ -173,7 +173,7 @@ public class DrawState extends GameState {
 
     @SuppressWarnings("unused")
     public void visitClearRubbleSignal(ClearRubbleSignal s) {
-        // TODO: put an animation here
+        getRobot(s.getRobotID()).setClearing(s.getLoc());
     }
 
     @SuppressWarnings("unused")

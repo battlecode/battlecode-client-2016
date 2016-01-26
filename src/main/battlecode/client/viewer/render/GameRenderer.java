@@ -378,6 +378,9 @@ public class GameRenderer {
             case 'B':
                 RenderConfiguration.toggleBroadcast();
                 break;
+            case 'C':
+                RenderConfiguration.toggleClearing();
+                break;
             case 'D':
                 RenderConfiguration.toggleDiscrete();
                 break;
