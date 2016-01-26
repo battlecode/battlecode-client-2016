@@ -478,21 +478,12 @@ public class DrawState extends GameState {
                 int x = i + gameMap.getOrigin().x;
                 int y = j + gameMap.getOrigin().y;
 
+                double r = rubble.get(i, j);
+
                 // fill a tile with alpha based on how much rubble there is
-                float lum;
-                if (rubble.get(i, j) < GameConstants.RUBBLE_SLOW_THRESH) {
-                    lum = 0.1f;
-                } else if (rubble.get(i, j) < GameConstants
-                        .RUBBLE_OBSTRUCTION_THRESH) {
-                    lum = 0.3f;
-                } else if (rubble.get(i, j) < GameConstants
-                        .RUBBLE_OBSTRUCTION_THRESH * 2) {
-                    lum = 0.5f;
-                } else {
-                    lum = 0.7f;
-                }
-                if (rubble.get(i, j) > 0) {
-                    g2.setColor(new Color(0, 0, 0, lum));
+
+                if (r > 0) {
+                    g2.setColor(getRubbleColor(r));
                     g2.fillRect(x, y, 1, 1);
                 }
 
@@ -571,5 +562,48 @@ public class DrawState extends GameState {
         }
         
 
+    }
+
+    // woo, hardcoded constants!
+    // these are some lookup tables for colors
+    private static final Color[] NO_SLOWS = new Color[10];
+    private static final Color[] SLOWS = new Color[10];
+    private static final Color[] OBSTRUCTS = new Color[100];
+    static {
+        for (int r = 0; r < 50; r += 5) {
+            // for rubble from 0 to 49.99
+            // bucketed in 5s
+            NO_SLOWS[r/5] = new Color(0,0,0, r/50f * .2f);
+        }
+        for (int r = 50; r < 100; r += 5) {
+            // for rubble from 50 to 99.99
+            // bucketed in 5s
+            SLOWS[r/5-10] = new Color(0,0,.2f, .3f + (r - 50f)/50f * .2f);
+        }
+
+        // lower than 4 won't be used
+        for (int i = 4; i < 100; i++) {
+            // bucketed by floored cube root
+            // rubble amount in this bucket:
+            final double r = i * i * i;
+
+            OBSTRUCTS[i] = new Color(0,0,0, .4f + .6f * (float)(Math.log(r)/Math.log(1_000_001)));
+        }
+    }
+
+    /**
+     * @param r the amount of rubble in a tile
+     * @return the color to be overlayed over the tile
+     */
+    public static Color getRubbleColor(double r) {
+        if (r < 50) {
+            return NO_SLOWS[(int)Math.floor(r) / 5];
+        } else if (r < 100) {
+            return SLOWS[(int)Math.floor(r) / 5 - 10];
+        } else if (r < 1_000_000) {
+            return OBSTRUCTS[(int)Math.floor(Math.cbrt(r))];
+        } else {
+            return Color.BLACK;
+        }
     }
 }
