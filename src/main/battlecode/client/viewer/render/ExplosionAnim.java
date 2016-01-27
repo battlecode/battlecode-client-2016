@@ -2,7 +2,7 @@ package battlecode.client.viewer.render;
 
 import battlecode.common.MapLocation;
 
-class ExplosionAnim extends FramedAnimation {
+public class ExplosionAnim extends FramedAnimation {
     public enum ExplosionToggle {
         EXPLOSIONS,
     }
@@ -10,11 +10,17 @@ class ExplosionAnim extends FramedAnimation {
     protected ExplosionToggle toggle = ExplosionToggle.EXPLOSIONS;
 
     public ExplosionAnim() {
-        this(null, 1);
+        super(4);
     }
 
-    public ExplosionAnim(MapLocation loc, double width) {
-        super(loc, width, 4);
+    @Override
+    public boolean shown() {
+        return RenderConfiguration.showExplosions();
+    }
+
+    @Override
+    public void unitMoved(int dx, int dy) {
+        // Can't actually happen, so we don't do anything.
     }
 
     protected boolean loops() {
@@ -40,7 +46,7 @@ class ExplosionAnim extends FramedAnimation {
 
 
     public Object clone() {
-        ExplosionAnim clone = new ExplosionAnim(loc, width);
+        ExplosionAnim clone = new ExplosionAnim();
         clone.curFrame = curFrame;
         clone.toggle = toggle;
         return clone;

@@ -15,8 +15,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import static battlecode.client.viewer.render.Animation.AnimationType.*;
-
 public class DrawObject extends AbstractDrawObject {
     public static final int LAYER_COUNT = 3;
     private static final Stroke thinStroke = new BasicStroke(0.05f);
@@ -37,11 +35,6 @@ public class DrawObject extends AbstractDrawObject {
     private static final ImageFile creep = new ImageFile("art/creep.png");
 
     private ImageFile img;
-
-    public static final Animation.AnimationType[] preDrawOrder = new
-            Animation.AnimationType[]{TELEPORT};
-    public static final Animation.AnimationType[] postDrawOrder = new
-            Animation.AnimationType[]{ENERGON_TRANSFER};
 
     private final DrawState overallstate;
 
@@ -69,7 +62,7 @@ public class DrawObject extends AbstractDrawObject {
     public DrawObject(int currentRound, RobotType type, Team team, int id,
                       DrawState state) {
         super(currentRound, type, team, id);
-        maxHealth = type.maxHealth;
+        maxHealth = type.maxHealth(currentRound);
         overallstate = state;
         loadImage(true);
     }
@@ -187,15 +180,6 @@ public class DrawObject extends AbstractDrawObject {
             drawImmediate(g2, focused, lastRow);
             g2.setTransform(pushed1); // pop
         }
-        if (layer == 2) {
-            // these animations shouldn't be drawn in the HUD, and they expect
-            // the origin of the Graphics2D to be the MapLocation (0,0)
-            for (Animation.AnimationType type : postDrawOrder) {
-                if (type.shown() && animations.containsKey(type)) {
-                    animations.get(type).draw(g2);
-                }
-            }
-        }
     }
 
     public void drawAction(Graphics2D g2, Action a,
@@ -212,6 +196,7 @@ public class DrawObject extends AbstractDrawObject {
                 }
                 break;
             default:
+                break;
         }
     }
 
@@ -235,19 +220,18 @@ public class DrawObject extends AbstractDrawObject {
         setTeamColor(g2);
         g2.setStroke(mediumStroke);
 
-        for (Animation.AnimationType type : preDrawOrder) {
-            if (type.shown() && animations.containsKey(type)) {
-                animations.get(type).draw(g2);
+        for (UnitAnimation animation : unitAnimations) {
+            if (animation.shown()) {
+                animation.draw(g2, isHUD);
             }
         }
-        if (animations.containsKey(DEATH_EXPLOSION)) {
-            if (DEATH_EXPLOSION.shown() || isHUD) {
-                Animation deathExplosion = animations.get(DEATH_EXPLOSION);
-                if (deathExplosion.isAlive()) {
-                    deathExplosion.draw(g2);
+
+        if (deathAnimation != null) {
+            if (deathAnimation.shown() || isHUD) {
+                if (deathAnimation.isAlive()) {
+                    deathAnimation.draw(g2, isHUD);
                 }
             }
-
         } else {
             drawRobotImage(g2);
             drawStatusBars(g2, focused, lastRow, drawXP);
@@ -333,8 +317,10 @@ public class DrawObject extends AbstractDrawObject {
     }
 
     public double drawScale() {
-        if (info.type == RobotType.ARCHON || info.type == RobotType.BIGZOMBIE)
+        if (info.type.isBuilding || info.type == RobotType.ARCHON || info.type
+                == RobotType.BIGZOMBIE) {
             return 1.3;
+        }
         return 1;
     }
 
@@ -412,7 +398,7 @@ public class DrawObject extends AbstractDrawObject {
 
     public ExplosionAnim createDeathExplosionAnim(boolean unused) {
         if (getType() == RobotType.ARCHON || getTeam() == Team.NEUTRAL ||
-                getType() == RobotType.ZOMBIEDEN) {
+            getType() == RobotType.ZOMBIEDEN) {
             return new LargeExplosionAnim(getTeam()); // a subclass of explosion
         } else {
             return new ExplosionAnim();

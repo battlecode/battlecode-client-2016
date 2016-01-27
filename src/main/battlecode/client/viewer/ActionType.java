@@ -58,13 +58,7 @@ public enum ActionType {
      * Indicates that a robot is in the process of teleporting.
      */
     TELEPORTING(false, true),
-
     DEFUSING(true, true),
-    MINING(true, true),
-    MININGSTOPPING(true, true),
-    CAPTURING(true, true),
-    REGENING(true, true),
-    SHIELDING(true, true),
     BUILDING(true, true);
 
     ActionType(boolean hasAttackCooldown, boolean hasMovementCooldown) {

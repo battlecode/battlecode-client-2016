@@ -13,6 +13,7 @@ public class RenderConfiguration {
     private static boolean details = true;
     private static boolean broadcast = true;
     private static boolean attack = true;
+    private static boolean clearing = true;
     private static boolean discrete = true;
     private static boolean health = true;
     private static boolean gridlines = true;
@@ -59,6 +60,10 @@ public class RenderConfiguration {
 
     public static void toggleAttack() {
         attack = !attack;
+    }
+
+    public static void toggleClearing() {
+        clearing = !clearing;
     }
 
     public static void toggleActionLines() {
@@ -130,6 +135,10 @@ public class RenderConfiguration {
 
     public static boolean showAttack() {
         return attack;
+    }
+
+    public static boolean showClearing() {
+        return clearing;
     }
 
     public static boolean showActionLines() {
