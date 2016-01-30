@@ -328,15 +328,15 @@ public abstract class AbstractDrawObject {
         } else {
             // still waiting perfection of delay system
             // float dist = .5f;
-        	int rounds = 0;
+        	int actionLength = 1;
+        	int moving = 0;
         	for (Action a : actions) {
-        		if (a.type == ActionType.MOVING) {
-        			rounds = currentRound - a.roundStarted;
-        		}
+                if (a.type == ActionType.MOVING) {
+                	actionLength = a.length;
+                	moving = 1;
+                }
         	}
-//        	assert(rounds < info.type.movementDelay && rounds >=0);
-            float dist = (float) (rounds / info.type.movementDelay);
-            System.out.println("moving: " + rounds + " movementdelay: " + info.type.movementDelay);
+            float dist = (float) Math.max(Math.min(moving * (Math.floor(movementDelay) / actionLength), 1), 0);
             drawX = -dist * dir.dx;
             drawY = -dist * dir.dy;
         }
