@@ -131,7 +131,7 @@ wget -O team130.png http://www.battlecode.org/static/img/hat.png
 wget -O team131.png http://s3.amazonaws.com/battlecode-avatars/avatars/3d71f2631a0cc57f8a5563dd135611aa.png
 wget -O team132.png http://s3.amazonaws.com/battlecode-avatars/avatars/561f2ec76bd7a53241a1ce5caaa964cc.png
 wget -O team133.png http://s3.amazonaws.com/battlecode-avatars/avatars/4e576ba36c4b08bd2a429aa8a7154f53.png
-wget -O team134.png http://s3.amazonaws.com/battlecode-avatars/avatars/e52968ca0f6577b0b047f66a5485d362.png
+wget -O team134.png http://s3.amazonaws.com/battlecode-avatars/avatars/7bc74fb32aa0fe24de27a4a86bd6b82e.png
 wget -O team135.png http://www.battlecode.org/static/img/hat.png
 wget -O team136.png http://www.battlecode.org/static/img/hat.png
 wget -O team137.png http://s3.amazonaws.com/battlecode-avatars/avatars/70d4815593a9b05368b127827270fe9b.png
@@ -169,9 +169,9 @@ wget -O team168.png http://s3.amazonaws.com/battlecode-avatars/avatars/a0f6e377b
 wget -O team169.png http://www.battlecode.org/static/img/hat.png
 wget -O team170.png http://www.battlecode.org/static/img/hat.png
 wget -O team171.png http://s3.amazonaws.com/battlecode-avatars/avatars/8f4f31ea4b7826a22249cde7b4552838.png
-wget -O team172.png http://www.battlecode.org/static/img/hat.png
+wget -O team172.png http://s3.amazonaws.com/battlecode-avatars/avatars/f0cd2246ca86a081d78cf691a5be7870.png
 wget -O team173.png http://www.battlecode.org/static/img/hat.png
-wget -O team174.png http://s3.amazonaws.com/battlecode-avatars/avatars/2fc747e01ab57819e1f3fcb0352db73f.png
+wget -O team174.png http://s3.amazonaws.com/battlecode-avatars/avatars/c903ff52545c8fc689d1d5f7288c1554.png
 wget -O team175.png http://s3.amazonaws.com/battlecode-avatars/avatars/ffa14c508d40c45fb29a9f15d743f664.png
 wget -O team176.png http://www.battlecode.org/static/img/hat.png
 wget -O team177.png http://www.battlecode.org/static/img/hat.png
@@ -302,7 +302,7 @@ wget -O team300.png http://www.battlecode.org/static/img/hat.png
 wget -O team301.png http://www.battlecode.org/static/img/hat.png
 wget -O team303.png http://www.battlecode.org/static/img/hat.png
 wget -O team304.png http://www.battlecode.org/static/img/hat.png
-wget -O team305.png http://www.battlecode.org/static/img/hat.png
+wget -O team305.png http://s3.amazonaws.com/battlecode-avatars/avatars/2bdce0cc95812c82f4600acb91bb6bd9.png
 wget -O team306.png http://s3.amazonaws.com/battlecode-avatars/avatars/d6cbf75e2a91e9daf28079748a5346a1.png
 wget -O team307.png http://www.battlecode.org/static/img/hat.png
 wget -O team308.png http://www.battlecode.org/static/img/hat.png
@@ -313,7 +313,7 @@ wget -O team312.png http://www.battlecode.org/static/img/hat.png
 wget -O team313.png http://www.battlecode.org/static/img/hat.png
 wget -O team314.png http://s3.amazonaws.com/battlecode-avatars/avatars/67b5176d523bc26a6ecd2167c33aae0c.png
 wget -O team315.png http://www.battlecode.org/static/img/hat.png
-wget -O team316.png http://www.battlecode.org/static/img/hat.png
+wget -O team316.png http://s3.amazonaws.com/battlecode-avatars/avatars/82fc2637e03d881258fe84083270da12.png
 wget -O team317.png http://www.battlecode.org/static/img/hat.png
 wget -O team318.png http://www.battlecode.org/static/img/hat.png
 wget -O team319.png http://www.battlecode.org/static/img/hat.png
@@ -373,7 +373,7 @@ wget -O team365.png http://s3.amazonaws.com/battlecode-avatars/avatars/a05762f8f
 wget -O team364.png http://www.battlecode.org/static/img/hat.png
 wget -O team363.png http://s3.amazonaws.com/battlecode-avatars/avatars/51f36cd7df658e7dc141d9b3e0dca9e9.png
 wget -O team374.png http://www.battlecode.org/static/img/hat.png
-wget -O team373.png http://www.battlecode.org/static/img/hat.png
+wget -O team373.png http://s3.amazonaws.com/battlecode-avatars/avatars/e8ee0be10b325b4d9b1ec0bb8af505eb.png
 wget -O team371.png http://s3.amazonaws.com/battlecode-avatars/avatars/aa20075e422ec2be305378c9d10622ff.png
 wget -O team377.png http://s3.amazonaws.com/battlecode-avatars/avatars/98d6a8067a4305ac46ca00a815382acf.png
 wget -O team378.png http://www.battlecode.org/static/img/hat.png
@@ -395,3 +395,14 @@ wget -O team394.png http://www.battlecode.org/static/img/hat.png
 wget -O team395.png http://www.battlecode.org/static/img/hat.png
 wget -O team396.png http://www.battlecode.org/static/img/hat.png
 wget -O team397.png http://www.battlecode.org/static/img/hat.png
+wget -O team398.png http://www.battlecode.org/static/img/hat.png
+wget -O team399.png http://www.battlecode.org/static/img/hat.png
+wget -O team400.png http://www.battlecode.org/static/img/hat.png
+wget -O team401.png http://www.battlecode.org/static/img/hat.png
+wget -O team402.png http://www.battlecode.org/static/img/hat.png
+wget -O team403.png http://s3.amazonaws.com/battlecode-avatars/avatars/963b2c6b6d95c736a6a6378de6f7018a.png
+wget -O team404.png http://www.battlecode.org/static/img/hat.png
+wget -O team405.png http://www.battlecode.org/static/img/hat.png
+wget -O team406.png http://www.battlecode.org/static/img/hat.png
+wget -O team408.png http://www.battlecode.org/static/img/hat.png
+wget -O team407.png http://www.battlecode.org/static/img/hat.png
