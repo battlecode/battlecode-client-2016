@@ -62,7 +62,7 @@ public class MatchPlayer implements Observer, ActionListener {
     public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig()
             .getInt("bc.client.viewer-delay");
     public static final int NUM_OF_SPEEDS = 10;
-    public static final int DEFAULT_FASTFORWARD = NUM_OF_SPEEDS/2;
+    public static final int DEFAULT_FASTFORWARD = 3;
     private final int delta = DEFAULT_TIME_DELTA;
     private int fastForward = DEFAULT_FASTFORWARD;
 
