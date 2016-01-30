@@ -365,6 +365,10 @@ public class GameRenderer {
     protected final void toggleSlowDown() {
         MatchPlayer.getCurrent().slowdown();
     }
+    
+    protected final void toggleDefaultSpeed() {
+    	MatchPlayer.getCurrent().setDefaultSpeed();
+    }
 
     @SuppressWarnings("empty")
     public void handleAction(char actionCommand) {
@@ -411,6 +415,9 @@ public class GameRenderer {
             case 'L':
                 RenderConfiguration.toggleInfectionIndicators();
                 break;
+            case 'N':
+            	toggleDefaultSpeed();
+            	break;
             case 'O':
                 RenderConfiguration.toggleShowHats();
                 break;

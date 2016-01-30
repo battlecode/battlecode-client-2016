@@ -107,6 +107,11 @@ public class MatchPlayer implements Observer, ActionListener {
             fastForward -= 1;
         timer.setDelay((int) (fastForward * delta / (float) DEFAULT_FASTFORWARD));
     }
+    
+    public void setDefaultSpeed() {
+    	fastForward = DEFAULT_FASTFORWARD;
+    	timer.setDelay(DEFAULT_TIME_DELTA);
+    }
 
     // get the latest match player
     public static MatchPlayer getCurrent() {
