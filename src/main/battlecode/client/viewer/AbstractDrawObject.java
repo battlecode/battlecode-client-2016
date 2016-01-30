@@ -323,26 +323,22 @@ public abstract class AbstractDrawObject {
     }
 
     private void updateDrawLoc() {
-        if (RenderConfiguration.showDiscrete()
-                || !isDoing(ActionType.MOVING)) {
+        if (RenderConfiguration.showDiscrete()) {
             drawX = drawY = 0;
         } else {
             // still waiting perfection of delay system
             // float dist = .5f;
-            float dist = (float) Math.max(Math.min(moving * (movementDelay / info.type.movementDelay), 1), 0);
-            //System.out.println("moving: " + moving + "actionDelay: " + actionDelay + "total " + totalActionRounds);
+        	int rounds = 0;
+        	for (Action a : actions) {
+        		if (a.type == ActionType.MOVING) {
+        			rounds = currentRound - a.roundStarted;
+        		}
+        	}
+//        	assert(rounds < info.type.movementDelay && rounds >=0);
+            float dist = (float) (rounds / info.type.movementDelay);
+            System.out.println("moving: " + rounds + " movementdelay: " + info.type.movementDelay);
             drawX = -dist * dir.dx;
             drawY = -dist * dir.dy;
         }
     }
-
-    protected boolean isDoing(ActionType type) {
-        for (Action a : actions) {
-            if (a.type == type) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
