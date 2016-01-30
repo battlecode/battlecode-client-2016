@@ -61,9 +61,10 @@ public class MatchPlayer implements Observer, ActionListener {
     private volatile static MatchPlayer currentPlayer = null;
     public static final int DEFAULT_TIME_DELTA = Config.getGlobalConfig()
             .getInt("bc.client.viewer-delay");
-
+    public static final int NUM_OF_SPEEDS = 10;
+    public static final int DEFAULT_FASTFORWARD = 3;
     private final int delta = DEFAULT_TIME_DELTA;
-    private int fastForward = 1;
+    private int fastForward = DEFAULT_FASTFORWARD;
 
     public MatchPlayer(MatchViewer v, Controller c, GameStateTimeline gst,
                        ClientProxy dp, boolean lockstepChoice) {
@@ -96,15 +97,15 @@ public class MatchPlayer implements Observer, ActionListener {
     }
 
     public void slowdown() {
-        if (fastForward < 2)
+        if (fastForward < NUM_OF_SPEEDS-1)
             fastForward += 1;
-        timer.setDelay(fastForward * delta);
+        timer.setDelay((int) (fastForward * delta / (float) DEFAULT_FASTFORWARD));
     }
 
     public void speedup() {
         if (fastForward > 0)
             fastForward -= 1;
-        timer.setDelay(fastForward * delta);
+        timer.setDelay((int) (fastForward * delta / (float) DEFAULT_FASTFORWARD));
     }
 
     // get the latest match player
